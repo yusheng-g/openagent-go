@@ -188,6 +188,7 @@ func (h *Handler) handleChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	setSSEHeaders(w)
+	flusher.Flush() // flush headers immediately so the client sees streaming start
 
 	// Subscribe to the session's event bus. Live-only — history is NOT
 	// replayed because this is a new chat, not a reconnection. Replaying
@@ -303,6 +304,7 @@ func (h *Handler) newSession(info SessionInfo, modelID string) *sessionState {
 		openagent.WithTools(h.tools...),
 		openagent.WithInstructions(h.instructions),
 		openagent.WithMaxTurns(h.maxTurns),
+			openagent.WithRunObserver(&stageObserver{bus: h.bus, sid: info.ID}),
 		openagent.WithApprover(&restApprover{
 			submit: func(call openagent.ToolCall, resp chan approveResponse) {
 				h.submitApproval(s, call, resp)
@@ -427,3 +429,34 @@ func generateID() string {
 	rand.Read(b)
 	return hex.EncodeToString(b)
 }
+
+// stageObserver publishes pipeline stage events to the SSE bus so
+// frontends can render a live pipeline visualization.
+type stageObserver struct {
+	bus *eventbus.Bus[SSEEvent]
+	sid string
+}
+
+func (o *stageObserver) ObserveStage(ctx context.Context, evt openagent.StageEvent) {
+	sd := struct {
+		Name       string         `json:"name"`
+		Phase      string         `json:"phase"`
+		Detail     map[string]any `json:"detail,omitempty"`
+		DurationMs int64          `json:"duration_ms,omitempty"`
+		Err        string         `json:"error,omitempty"`
+	}{
+		Name:   evt.Name,
+		Phase:  evt.Phase,
+		Detail: evt.Detail,
+	}
+	if evt.Phase == "leave" {
+		sd.DurationMs = evt.Duration.Milliseconds()
+	}
+	if evt.Err != nil {
+		sd.Err = evt.Err.Error()
+	}
+	b, _ := json.Marshal(sd)
+	o.bus.Publish(o.sid, SSEEvent{Type: "stage", Stage: b})
+}
+
+var _ openagent.RunObserver = (*stageObserver)(nil)

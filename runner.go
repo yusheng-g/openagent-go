@@ -587,8 +587,11 @@ func (r *runner) executeOneTool(ctx context.Context, session Session, call ToolC
 		}
 	}
 
-	// ── ⑥ Approval: check before executing (all tools, including built-in) ──
-	if r.agent.Approver != nil {
+	// ── ⑥ Approval: check before executing ──
+	// Handoff tools (transfer_to_*) are internal team mechanisms —
+	// they do not require user approval. The team runner handles
+	// handoff routing internally.
+	if r.agent.Approver != nil && !strings.HasPrefix(call.Function.Name, "transfer_to_") {
 		allowed, reason := r.agent.Approver.Approve(ctx, call, *def, session)
 		if !allowed {
 			return Message{

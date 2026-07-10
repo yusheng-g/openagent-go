@@ -40,6 +40,20 @@ func (p *LLMPlanner) WithMaxRetries(n int) *LLMPlanner {
 
 // Plan implements [Planner].
 func (p *LLMPlanner) Plan(ctx context.Context, goal string, agents []openagent.AgentInfo, history []openagent.Message) (*PlanDef, error) {
+	return p.planWithModel(ctx, goal, agents, history, false, nil)
+}
+
+// PlanStream generates a PlanDef with streaming text chunks emitted via onChunk.
+// Each token/reasoning delta from the LLM is passed to onChunk as it arrives.
+// The final PlanDef is returned after the full response is received and validated.
+func (p *LLMPlanner) PlanStream(ctx context.Context, goal string, agents []openagent.AgentInfo, history []openagent.Message, onChunk func(string)) (*PlanDef, error) {
+	return p.planWithModel(ctx, goal, agents, history, true, onChunk)
+}
+
+// planWithModel is the shared implementation for Plan and PlanStream.
+// When streaming is true, ChatCompletionStream is used and deltas are
+// emitted via onChunk. Otherwise a single ChatCompletion call is made.
+func (p *LLMPlanner) planWithModel(ctx context.Context, goal string, agents []openagent.AgentInfo, history []openagent.Message, streaming bool, onChunk func(string)) (*PlanDef, error) {
 	agentNames := make(map[string]bool)
 	for _, a := range agents {
 		agentNames[a.Name] = true
@@ -55,25 +69,25 @@ func (p *LLMPlanner) Plan(ctx context.Context, goal string, agents []openagent.A
 		}
 
 		if attempt > 0 && lastErr != nil {
-			// Ask LLM to fix validation errors.
 			messages = append(messages, openagent.Message{
 				Role:    openagent.RoleUser,
 				Content: fmt.Sprintf("Your previous plan was invalid. Please fix these issues:\n%s\n\nGenerate a corrected plan.", lastErr.Error()),
 			})
 		}
 
-		resp, err := p.model.ChatCompletion(ctx, openagent.ChatCompletionRequest{
-			Messages: messages,
-			MaxTokens: 2048,
-		})
+		var fullText string
+		var err error
+
+		if streaming {
+			fullText, err = p.streamCall(ctx, messages, onChunk)
+		} else {
+			fullText, err = p.syncCall(ctx, messages)
+		}
 		if err != nil {
 			return nil, fmt.Errorf("planner: model call failed: %w", err)
 		}
-		if len(resp.Choices) == 0 {
-			return nil, fmt.Errorf("planner: model returned no choices")
-		}
 
-		def, err := parsePlanJSON(resp.Choices[0].Message.Content)
+		def, err := parsePlanJSON(fullText)
 		if err != nil {
 			lastErr = err
 			continue
@@ -88,6 +102,53 @@ func (p *LLMPlanner) Plan(ctx context.Context, goal string, agents []openagent.A
 	}
 
 	return nil, fmt.Errorf("planner: failed to generate a valid plan after %d attempts: %w", p.maxRetries+1, lastErr)
+}
+
+func (p *LLMPlanner) syncCall(ctx context.Context, messages []openagent.Message) (string, error) {
+	resp, err := p.model.ChatCompletion(ctx, openagent.ChatCompletionRequest{
+		Messages:  messages,
+		MaxTokens: 2048,
+	})
+	if err != nil {
+		return "", err
+	}
+	if len(resp.Choices) == 0 {
+		return "", fmt.Errorf("model returned no choices")
+	}
+	return resp.Choices[0].Message.Content, nil
+}
+
+func (p *LLMPlanner) streamCall(ctx context.Context, messages []openagent.Message, onChunk func(string)) (string, error) {
+	reader, err := p.model.ChatCompletionStream(ctx, openagent.ChatCompletionRequest{
+		Messages:  messages,
+		MaxTokens: 2048,
+	})
+	if err != nil {
+		// Fall back to synchronous call if streaming is not supported.
+		return p.syncCall(ctx, messages)
+	}
+	defer reader.Close()
+
+	// ReasoningContent is the model's internal monologue (deepseek-r1, o1).
+	// Display it to the user as "thinking" but do NOT include it in the text
+	// we parse as JSON — the actual plan is in Content.
+	var fullText strings.Builder
+	for reader.Next() {
+		chunk := reader.Current()
+		for _, delta := range chunk.Choices {
+			if delta.ReasoningContent != "" {
+				onChunk(delta.ReasoningContent)
+			}
+			if delta.Content != "" {
+				fullText.WriteString(delta.Content)
+				onChunk(delta.Content)
+			}
+		}
+	}
+	if err := reader.Err(); err != nil {
+		return "", err
+	}
+	return fullText.String(), nil
 }
 
 // ── Prompt ──

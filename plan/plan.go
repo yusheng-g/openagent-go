@@ -142,6 +142,45 @@ func (p *Plan) Plan(ctx context.Context, goal string, history []openagent.Messag
 	return def, nil
 }
 
+// PlanStream generates a PlanDef with streaming text chunks emitted via onChunk.
+// If the underlying Planner supports streaming (i.e. is an *LLMPlanner), LLM
+// output tokens are passed to onChunk as they arrive. Otherwise falls back to
+// a synchronous Plan() call with no streaming.
+func (p *Plan) PlanStream(ctx context.Context, goal string, history []openagent.Message, onChunk func(string)) (*PlanDef, error) {
+	if p.planner == nil {
+		return nil, fmt.Errorf("plan: no Planner configured")
+	}
+	if len(p.agents) == 0 {
+		return nil, fmt.Errorf("plan: no agents configured")
+	}
+
+	// Use streaming if planner supports it.
+	type streamPlanner interface {
+		PlanStream(ctx context.Context, goal string, agents []openagent.AgentInfo, history []openagent.Message, onChunk func(string)) (*PlanDef, error)
+	}
+	if sp, ok := p.planner.(streamPlanner); ok {
+		def, err := sp.PlanStream(ctx, goal, p.agentInfos, history, onChunk)
+		if err != nil {
+			return nil, err
+		}
+		// Re-validate.
+		agentNames := make(map[string]bool)
+		for _, a := range p.agentInfos {
+			agentNames[a.Name] = true
+		}
+		if err := Validate(def, agentNames); err != nil {
+			return nil, fmt.Errorf("planner produced invalid plan: %w", err)
+		}
+		if len(def.Steps) > p.config.MaxSteps {
+			return nil, fmt.Errorf("plan has %d steps, max is %d", len(def.Steps), p.config.MaxSteps)
+		}
+		return def, nil
+	}
+
+	// Fallback: no streaming support in planner.
+	return p.Plan(ctx, goal, history)
+}
+
 // ── Execute (run an existing plan) ──
 
 // Execute runs a previously generated PlanDef to completion.

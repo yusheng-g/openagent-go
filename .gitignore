@@ -38,3 +38,10 @@ plugins/
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Frontend (Vue/Vite)
+node_modules/
+dist/
+*.local
+*.tsbuildinfo
+.DS_Store

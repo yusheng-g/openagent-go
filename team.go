@@ -317,6 +317,7 @@ const (
 	TeamAgentStart TeamEventType = "agent_start" // agent begins execution
 	TeamAgentEnd   TeamEventType = "agent_end"   // agent finished
 	TeamHandoff    TeamEventType = "handoff"     // handoff between agents
+	TeamThought    TeamEventType = "thought"     // reasoning content (o1, deepseek-r1)
 	TeamTextDelta  TeamEventType = "text_delta"  // text token from current agent
 	TeamToolCall     TeamEventType = "tool_call"     // tool call (non-handoff, for approval)
 	TeamToolProgress TeamEventType = "tool_progress" // streaming tool output chunk
@@ -330,6 +331,7 @@ const (
 type TeamEvent struct {
 	Type     TeamEventType
 	Agent    string    // current agent name
+	Target   string    // handoff target agent (handoff)
 	Text     string    // text_delta, tool_result content
 	Message  string    // handoff message (handoff)
 	ToolCall *ToolCall // tool_call
@@ -537,7 +539,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 
 		// ── Emit handoff event ──
 		if ch != nil {
-			ch <- TeamEvent{Type: TeamHandoff, Agent: tr.currentName, Message: req.message}
+			ch <- TeamEvent{Type: TeamHandoff, Agent: tr.currentName, Target: req.target, Message: req.message}
 		}
 
 		tr.currentName = req.target
@@ -560,6 +562,9 @@ func (tr *teamRunner) runAgentStreaming(ctx context.Context, runner AgentRunner,
 			return nil, err
 		}
 		switch evt.Type {
+			case StreamThought:
+				ch <- TeamEvent{Type: TeamThought, Agent: tr.currentName, Text: evt.Text}
+
 		case StreamTextDelta:
 			ch <- TeamEvent{Type: TeamTextDelta, Agent: tr.currentName, Text: evt.Text}
 

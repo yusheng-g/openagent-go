@@ -459,6 +459,8 @@ func teamEventToSSE(evt openagent.TeamEvent) SSEEvent {
 			se.Error = evt.Error.Error()
 		}
 		return se
+		case openagent.TeamThought:
+			return SSEEvent{Type: "thought", Agent: evt.Agent, Text: evt.Text}
 
 	case openagent.TeamTextDelta:
 		return SSEEvent{Type: "text_delta", Agent: evt.Agent, Text: evt.Text}
@@ -487,7 +489,7 @@ func teamEventToSSE(evt openagent.TeamEvent) SSEEvent {
 		return se
 
 	case openagent.TeamHandoff:
-		return SSEEvent{Type: "handoff", Agent: evt.Agent, HandoffTo: evt.Message}
+		return SSEEvent{Type: "handoff", Agent: evt.Agent, HandoffTo: evt.Target}
 
 	case openagent.TeamDone:
 		se := SSEEvent{Type: "done"}

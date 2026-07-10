@@ -207,12 +207,23 @@ func (h *PlanHandler) handleGenerate(w http.ResponseWriter, r *http.Request) {
 
 	s := h.getOrCreateSession(id)
 
-	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, `{"error":"streaming not supported"}`, http.StatusInternalServerError)
+		return
+	}
+	setSSEHeaders(w)
+
+	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
 	defer cancel()
 
-	def, err := s.plan.Plan(ctx, body.Goal, nil)
+	// Emit plan_thinking events as the LLM generates the plan,
+	// then plan_generated with the final PlanDef.
+	def, err := s.plan.PlanStream(ctx, body.Goal, nil, func(chunk string) {
+		_ = writeSSE(w, flusher, SSEEvent{Type: "plan_thinking", Text: chunk})
+	})
 	if err != nil {
-		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
+		_ = writeSSE(w, flusher, SSEEvent{Type: "plan_error", Error: err.Error()})
 		return
 	}
 
@@ -224,8 +235,8 @@ func (h *PlanHandler) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 	s.mu.Unlock()
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(def)
+	b, _ := json.Marshal(def)
+	_ = writeSSE(w, flusher, SSEEvent{Type: "plan_generated", Text: string(b)})
 }
 
 // ── Get current plan ──
@@ -587,7 +598,7 @@ func (h *PlanHandler) handleReplan(w http.ResponseWriter, r *http.Request) {
 	h.bus.Publish(id, SSEEvent{Type: "replanning", StepID: failedID})
 
 	// Call planner with user feedback.
-	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(r.Context(), 120*time.Second)
 	defer cancel()
 
 	newDef, err := s.plan.ReplanWithFeedback(ctx, def, state, failedID, body.Feedback)

@@ -20,6 +20,7 @@
 package rest
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -90,6 +91,9 @@ type SSEEvent struct {
 
 	// error detail (agent_end, retrying, error)
 	Error string `json:"error,omitempty"`
+
+	// stage (pipeline visualization)
+	Stage json.RawMessage `json:"stage,omitempty"`
 }
 
 // SSEToolCall mirrors an LLM function-call tool invocation.

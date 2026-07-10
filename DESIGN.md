@@ -89,6 +89,7 @@ The Runner is private — `Agent.Run()` creates it internally.
 
 ```go
 const (
+    StreamThought      = "thought"        // reasoning content (o1, deepseek-r1)
     StreamTextDelta    = "text_delta"     // per-character output
     StreamToolCall     = "tool_call"      // tool invocation start
     StreamToolProgress = "tool_progress"  // streaming tool output chunk
@@ -243,7 +244,7 @@ type Approver interface {
 }
 ```
 
-nil = allow all. Implementations: `cmd/tui` (bubbletea v2 Y/N), `examples/webui` (SSE dialog with Allow Once / Allow Directory).
+nil = allow all. Implementations: `cmd/tui` (bubbletea v2 Y/N), `examples/backend` (SSE dialog with Allow Once / Allow Directory).
 
 ### ⑦ RunHooks
 
@@ -378,7 +379,9 @@ openagent-go/
 │   ├── delegate/         Agent-as-tool parallel delegation
 │   ├── plugin/           WASM plugin example
 │   ├── sandbox/          Sandbox demo
-│   └── webui/            Web UI demo (SSE + approval + plan + goal + pipeline)
+│   ├── backend/          Full REST + SSE API server
+│   └── frontend/
+│       └── vue-app/   Vue 3 SPA reference UI
 │
 ├── DESIGN.md             Architecture (English)
 ├── DESIGN.zh.md          Architecture (Chinese)
@@ -426,7 +429,7 @@ All interfaces in root package. Implementations in sub-packages. No circular dep
 | — | SkillLoader | ✅ | filesystem implementation |
 | ③ | InputGuard | ✅ | guard/llm |
 | ⑤ | OutputGuard | ✅ | guard/llm |
-| ⑥ | Approver | ✅ | TUI + WebUI, human-in-the-loop |
+| ⑥ | Approver | ✅ | TUI + Frontend, human-in-the-loop |
 | ⑦ | RunHooks | ✅ | slog + OpenTelemetry |
 | — | RunObserver | ✅ | per-stage enter/leave, Runner wired |
 | — | Router | ✅ | first-agent + LLM-based |
@@ -504,7 +507,7 @@ type Router interface {
 }
 ```
 
-`AgentInfo.Type` auto-populated: `WithTeamAgent` → `AgentInternal`, `AddAgent` with ACP runner → `AgentExternal`. Flows to Router, Team prompt, Plan planner, and WebUI.
+`AgentInfo.Type` auto-populated: `WithTeamAgent` → `AgentInternal`, `AddAgent` with ACP runner → `AgentExternal`. Flows to Router, Team prompt, Plan planner, and frontend.
 
 ### Agent as Tool (Parallel Delegation)
 
@@ -538,6 +541,8 @@ result, _ := p.Run(ctx, session, "Build a REST API for todos")
 
 `Planner` generates a DAG from the goal. `Executor` topo-sorts into batches, runs each batch with goroutines, auto-replans on failure (up to `MaxReplans` times). `AutoReplan=false` pauses on failure for manual retry/replan.
 
+**Frontend UI:** The Plan page provides a full workflow — input a goal, watch the LLM stream its thinking via `plan_thinking` events, then review the rendered DAG. Pre-execution actions: `[Execute]` `[Replan]` `[Clear]`. Replan accepts natural language feedback to regenerate the DAG before execution begins. During execution, step cards update in real-time with status colors and expandable output. Failed steps offer `[Retry]` and `[Replan]` with feedback.
+
 ## Goal (Autonomous Mode)
 
 ```go
@@ -560,7 +565,7 @@ sub := bus.Subscribe(sessionID)   // subscribe (auto-replays history)
 bus.Publish(sessionID, evt)       // fanout to all subscribers
 ```
 
-Generic pub/sub with per-session topics and history replay. Used by WebUI for multi-tab sync, plan progress, and pipeline panel events.
+Generic pub/sub with per-session topics and history replay. Used by the frontend for multi-tab sync, plan progress, and pipeline panel events.
 
 ## Sandbox
 
@@ -578,11 +583,11 @@ Three-layer security: file tools validate paths → shell tool runs inside OS sa
 
 ## Pipeline Panel (Observability)
 
-The Runner emits `StageEvent` at each of the 8 nodes (enter/leave). A `RunObserver` implementation bridges these to the frontend, where an SVG flow diagram renders live:
+The Runner emits `StageEvent` at each of the 8 nodes (enter/leave). A `RunObserver` implementation bridges these to the frontend, where an sidebar Monitor panel renders live:
 
 - 7 nodes: Fetch → Guard-In → Prompt → Model → Guard-Out → Tool → Store
 - Status: gray (pending) → blue pulse (active) → green (done + duration) → red (error)
-- Animated particles flow along connectors when data moves between stages
+
 - Info bar: round counter + token usage
 
 The observer adds `turn`/`maxTurns` and `tokens_prompt`/`tokens_completion` to `model.call` detail so the frontend shows per-round progress.
@@ -607,4 +612,5 @@ The observer adds `turn`/`maxTurns` and `tokens_prompt`/`tokens_completion` to `
 
 - `cmd/cli/` — CLI tool: `openagent run "msg"` and `openagent goal "task"`, streaming output
 - `cmd/tui/` — bubbletea v2 terminal chat, streaming + Y/N approval
-- `examples/webui/` — browser chat with SSE streaming, plan DAG rendering, pipeline panel, permission memory, and `/plan` + `/goal` slash commands
+- `examples/backend/` — Full REST + SSE API server (single, team, plan)
+- `examples/frontend/vue-app/` — Vue 3 SPA with Chat, Team, Plan modes, streaming, DAG, pipeline monitor
