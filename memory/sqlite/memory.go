@@ -437,6 +437,12 @@ func (m *Memory) ftsSearch(ctx context.Context, sessionID, query string, limit i
 		return r
 	}, query)
 
+	// After stripping special chars, the query may be empty or only
+	// whitespace. FTS5 rejects empty MATCH strings with a syntax error.
+	if strings.TrimSpace(ftsQuery) == "" {
+		return nil, nil
+	}
+
 	rows, err := m.db.QueryContext(ctx,
 		`SELECT m.role, m.content, m.content_parts, m.tool_calls, m.tool_call_id
 		 FROM messages_fts f

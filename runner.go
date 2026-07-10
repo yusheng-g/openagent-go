@@ -191,12 +191,24 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 		// ── ④ Model: call LLM ──
 		lastReq = r.buildModelRequest(session, messages)
 
-		// Warn if approaching the model context window.
+		// Last-resort truncation: if the full message set exceeds the model's
+		// context window, drop oldest non-system messages to fit. The compaction
+		// pipeline normally keeps the working set within budget; this triggers
+		// only when system prompts, compressed context, or large tool results
+		// push it past the hard limit.
 		if cw := r.agent.Model.ContextWindow(); cw > 0 {
 			est := countMessages(session.ModelID, messages)
 			if est > cw {
+				before := len(messages)
+				messages = trimToContextWindow(session.ModelID, messages, cw)
+				lastReq = r.buildModelRequest(session, messages)
 				r.observe(ctx, StageModelCall, "enter",
-					map[string]any{"warning": "context window exceeded", "estimated_tokens": est, "window": cw},
+					map[string]any{
+						"warning":          "context window exceeded — messages trimmed",
+						"estimated_tokens": est,
+						"window":           cw,
+						"trimmed":          before - len(messages),
+					},
 					time.Time{}, nil)
 			}
 		}
@@ -773,6 +785,74 @@ func countMessages(modelID string, msgs []Message) int {
 		n += countMessageTokens(modelID, m)
 	}
 	return n
+}
+
+// trimToContextWindow drops oldest non-system messages until the total
+// estimated token count fits within the model's context window.
+// System messages are always preserved. A 5% safety margin accounts for
+// tokenizer estimation inaccuracy. Leading orphaned tool results are
+// cleaned up after each removal.
+//
+// This is a last-resort protection — the compaction pipeline normally
+// keeps the working set within the configured token budget. It triggers
+// only when system prompts, compressed context, or large tool results
+// push the total past the model's hard limit.
+func trimToContextWindow(modelID string, messages []Message, window int) []Message {
+	if window <= 0 || len(messages) == 0 {
+		return messages
+	}
+
+	// Separate system messages (always preserved).
+	var sys, rest []Message
+	for _, m := range messages {
+		if m.Role == RoleSystem {
+			sys = append(sys, m)
+		} else {
+			rest = append(rest, m)
+		}
+	}
+
+	// 5% safety margin — tiktoken is accurate but not exact.
+	budget := window * 95 / 100
+	sysTokens := countMessages(modelID, sys)
+	budget -= sysTokens
+	if budget <= 0 {
+		budget = window / 4 // keep at least 25% for non-system
+	}
+
+	// Drop oldest non-system messages one at a time.
+	for len(rest) > 2 {
+		if countMessages(modelID, rest) <= budget {
+			break
+		}
+		rest = rest[1:]
+		// Clean up orphaned tool results (RoleTool without preceding
+		// assistant tool_calls provides no useful context).
+		for len(rest) > 0 && rest[0].Role == RoleTool {
+			rest = rest[1:]
+		}
+	}
+
+	// Ensure the first non-system message is a user message. Starting
+	// with assistant (with or without tool_calls) violates the API's
+	// conversation format — the model expects user/assistant alternation
+	// beginning with user. If the first message is an assistant with
+	// tool_calls, remove it and all consecutive tool results as a unit.
+	for len(rest) > 0 && rest[0].Role != RoleUser {
+		if rest[0].Role == RoleAssistant && len(rest[0].ToolCalls) > 0 {
+			rest = rest[1:] // drop assistant
+			for len(rest) > 0 && rest[0].Role == RoleTool {
+				rest = rest[1:] // drop its tool results
+			}
+		} else {
+			rest = rest[1:]
+		}
+	}
+
+	result := make([]Message, 0, len(sys)+len(rest))
+	result = append(result, sys...)
+	result = append(result, rest...)
+	return result
 }
 
 // ── Streaming + retry ──

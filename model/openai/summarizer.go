@@ -133,19 +133,14 @@ Rules:
 // existing summary with new messages, rather than starting from scratch.
 // This enables rolling/incremental compression without information decay.
 func summarizerIncrementalPrompt(previous *openagent.CompressedContext) string {
-	var hintsStr strings.Builder
-	for _, h := range previous.Hints {
-		hintsStr.WriteString(fmt.Sprintf("    {\"description\": %q, \"query\": %q},\n", h.Description, h.Query))
-	}
+	hintsJSON, _ := json.Marshal(previous.Hints)
 	return fmt.Sprintf(`You are a conversation summarizer updating an existing summary.
 
 EXISTING SUMMARY (from earlier in the conversation):
 %s
 
 EXISTING RETRIEVAL HINTS:
-[
 %s
-]
 
 Below are NEW messages that occurred after the existing summary. Update the summary to incorporate the new information.
 
@@ -162,7 +157,7 @@ Respond with ONLY valid JSON (no markdown, no commentary):
   "hints": [
     {"description": "short label", "query": "search terms"}
   ]
-}`, previous.Summary, hintsStr.String())
+}`, previous.Summary, string(hintsJSON))
 }
 
 var _ openagent.Summarizer = (*Summarizer)(nil)
