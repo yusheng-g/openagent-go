@@ -356,6 +356,9 @@ func (h *Handler) submitApproval(s *sessionState, call openagent.ToolCall, resp 
 
 func streamToSSE(evt openagent.StreamEvent) SSEEvent {
 	switch evt.Type {
+		case openagent.StreamThought:
+		return SSEEvent{Type: "thought", Text: evt.Text}
+
 	case openagent.StreamTextDelta:
 		return SSEEvent{Type: "text_delta", Text: evt.Text}
 

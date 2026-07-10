@@ -234,6 +234,7 @@ type RunResult struct {
 type StreamEventType string
 
 const (
+	StreamThought        StreamEventType = "thought"      // reasoning content (o1, deepseek-r1)
 	StreamTextDelta      StreamEventType = "text_delta"
 	StreamToolCall       StreamEventType = "tool_call"
 	StreamToolProgress   StreamEventType = "tool_progress"  // streaming tool output chunk

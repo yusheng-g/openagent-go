@@ -49,10 +49,24 @@ func main() {
 	ctx := context.Background()
 	events := agent.RunStream(ctx, session, openagent.UserMessage("what is 12 + 34?"))
 
+	var inThought bool
 	fmt.Print("Assistant: ")
 	for event := range events {
 		switch event.Type {
+		case openagent.StreamThought:
+			if !inThought {
+				fmt.Println()
+				fmt.Print("🧠 Thinking: ")
+				inThought = true
+			}
+			fmt.Print(event.Text)
+
 		case openagent.StreamTextDelta:
+			if inThought {
+				fmt.Println()
+				fmt.Print("Assistant: ")
+				inThought = false
+			}
 			fmt.Print(event.Text) // real-time character output
 
 		case openagent.StreamToolCall:

@@ -1180,6 +1180,8 @@ func (a *webApprover) pathWithinWorkspace(rawArgs string) bool {
 
 func streamToSSE(evt openagent.StreamEvent) sseEvent {
 	switch evt.Type {
+	case openagent.StreamThought:
+		return sseEvent{Type: "thought", Text: evt.Text}
 	case openagent.StreamTextDelta:
 		return sseEvent{Type: "delta", Text: evt.Text}
 	case openagent.StreamToolCall:

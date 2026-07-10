@@ -863,8 +863,13 @@ func (r *runner) callModelOnce(ctx context.Context, req ChatCompletionRequest, c
 	if err != nil {
 		return nil, err
 	}
-	if ch != nil && len(resp.Choices) > 0 && resp.Choices[0].Message.Content != "" {
-		ch <- StreamEvent{Type: StreamTextDelta, Text: resp.Choices[0].Message.Content}
+	if ch != nil && len(resp.Choices) > 0 {
+		if rc := resp.Choices[0].Message.ReasoningContent; rc != "" {
+			ch <- StreamEvent{Type: StreamThought, Text: rc}
+		}
+		if resp.Choices[0].Message.Content != "" {
+			ch <- StreamEvent{Type: StreamTextDelta, Text: resp.Choices[0].Message.Content}
+		}
 	}
 	return resp, nil
 }
@@ -889,8 +894,13 @@ func accumulateStream(reader StreamReader, ch chan<- StreamEvent) (*ChatCompleti
 			if delta.FinishReason != "" {
 				finishReason = delta.FinishReason
 			}
-			if ch != nil && delta.Content != "" {
-				ch <- StreamEvent{Type: StreamTextDelta, Text: delta.Content}
+			if ch != nil {
+				if delta.ReasoningContent != "" {
+					ch <- StreamEvent{Type: StreamThought, Text: delta.ReasoningContent}
+				}
+				if delta.Content != "" {
+					ch <- StreamEvent{Type: StreamTextDelta, Text: delta.Content}
+				}
 			}
 			for _, tcd := range delta.ToolCalls {
 				tc := toolAcc[tcd.Index]

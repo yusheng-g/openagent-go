@@ -72,9 +72,10 @@ type StreamChunk struct {
 
 // StreamDelta is the delta content within a chunk.
 type StreamDelta struct {
-	Content      string          `json:"content,omitempty"`       // text delta (empty if tool call)
-	ToolCalls    []ToolCallDelta `json:"tool_calls,omitempty"`    // incremental tool call fragments
-	FinishReason string          `json:"finish_reason,omitempty"` // set in final chunk
+	Content          string          `json:"content,omitempty"`           // text delta (empty if tool call)
+	ReasoningContent string          `json:"reasoning_content,omitempty"` // reasoning/thinking (o1, deepseek-r1)
+	ToolCalls        []ToolCallDelta `json:"tool_calls,omitempty"`        // incremental tool call fragments
+	FinishReason     string          `json:"finish_reason,omitempty"`     // set in final chunk
 }
 
 // ToolCallDelta is an incremental tool call update in a stream chunk.

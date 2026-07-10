@@ -14,12 +14,13 @@ const (
 // For text-only messages, use Content. For multimodal (images, audio), use
 // ContentParts — the model implementation will serialize accordingly.
 type Message struct {
-	Role         Role          `json:"role"`
-	Content      string        `json:"content,omitempty"`
-	ContentParts []ContentPart `json:"content_parts,omitempty"`
-	Name         string        `json:"name,omitempty"`
-	ToolCalls    []ToolCall    `json:"tool_calls,omitempty"`
-	ToolCallID   string        `json:"tool_call_id,omitempty"`
+	Role             Role          `json:"role"`
+	Content          string        `json:"content,omitempty"`
+	ContentParts     []ContentPart `json:"content_parts,omitempty"`
+	ReasoningContent string        `json:"reasoning_content,omitempty"` // reasoning/thinking tokens (o1, deepseek-r1, etc.)
+	Name             string        `json:"name,omitempty"`
+	ToolCalls        []ToolCall    `json:"tool_calls,omitempty"`
+	ToolCallID       string        `json:"tool_call_id,omitempty"`
 }
 
 // IsMultimodal returns true if this message carries multimodal content parts.

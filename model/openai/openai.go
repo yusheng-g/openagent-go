@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	openaisdk "github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
@@ -211,8 +212,9 @@ func toResponse(c *openaisdk.ChatCompletion) *openagent.ChatCompletionResponse {
 	resp := &openagent.ChatCompletionResponse{}
 	for _, choice := range c.Choices {
 		msg := openagent.Message{
-			Role:    openagent.RoleAssistant,
-			Content: choice.Message.Content,
+			Role:             openagent.RoleAssistant,
+			Content:          choice.Message.Content,
+			ReasoningContent: extractReasoning(choice.Message.RawJSON()),
 		}
 		for _, tc := range choice.Message.ToolCalls {
 			msg.ToolCalls = append(msg.ToolCalls, openagent.ToolCall{
@@ -285,8 +287,9 @@ func toStreamChunk(c openaisdk.ChatCompletionChunk) openagent.StreamChunk {
 	}
 	for _, choice := range c.Choices {
 		sd := openagent.StreamDelta{
-			Content:      choice.Delta.Content,
-			FinishReason: choice.FinishReason,
+			Content:          choice.Delta.Content,
+			ReasoningContent: extractReasoning(choice.Delta.RawJSON()),
+			FinishReason:     choice.FinishReason,
 		}
 		for _, tc := range choice.Delta.ToolCalls {
 			sd.ToolCalls = append(sd.ToolCalls, openagent.ToolCallDelta{
@@ -302,4 +305,47 @@ func toStreamChunk(c openaisdk.ChatCompletionChunk) openagent.StreamChunk {
 		sc.Choices = append(sc.Choices, sd)
 	}
 	return sc
+}
+
+// extractReasoning extracts "reasoning_content" from raw JSON. The openai-go
+// SDK doesn't have a typed field for it (as of v3.41), but reasoning models
+// (o1, deepseek-r1) include it in delta chunks and message responses.
+func extractReasoning(raw string) string {
+	if raw == "" {
+		return ""
+	}
+	// Fast path: look for "reasoning_content":"..." in the raw JSON.
+	const key = `"reasoning_content":"`
+	idx := strings.Index(raw, key)
+	if idx < 0 {
+		return ""
+	}
+	start := idx + len(key)
+	// Scan until the closing unescaped quote.
+	var buf strings.Builder
+	for i := start; i < len(raw); i++ {
+		if raw[i] == '\\' && i+1 < len(raw) {
+			switch raw[i+1] {
+			case '"':
+				buf.WriteByte('"')
+				i++
+			case 'n':
+				buf.WriteByte('\n')
+				i++
+			case 't':
+				buf.WriteByte('\t')
+				i++
+			case '\\':
+				buf.WriteByte('\\')
+				i++
+			default:
+				buf.WriteByte(raw[i])
+			}
+		} else if raw[i] == '"' {
+			break
+		} else {
+			buf.WriteByte(raw[i])
+		}
+	}
+	return buf.String()
 }
