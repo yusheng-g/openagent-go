@@ -266,6 +266,8 @@ func (b *agentBridge) SetSessionMode(ctx context.Context, params acpsdk.SetSessi
 
 // agentSender implements SessionEventSender. It pushes streaming events
 // to the ACP client via AgentSideConnection.SessionUpdate.
+// Every SessionNotification includes SessionId so the client can
+// associate updates with the correct session.
 type agentSender struct {
 	sessionID string
 	bridge    *agentBridge
@@ -278,7 +280,8 @@ func (s *agentSender) SendAgentMessage(text string) error {
 	}
 	content := acpsdk.ContentBlock{Text: &acpsdk.ContentBlockText{Text: text}}
 	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
-		Update: acpsdk.UpdateAgentMessage(content),
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    acpsdk.UpdateAgentMessage(content),
 	})
 }
 
@@ -288,7 +291,8 @@ func (s *agentSender) SendAgentThought(text string) error {
 	}
 	content := acpsdk.ContentBlock{Text: &acpsdk.ContentBlockText{Text: text}}
 	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
-		Update: acpsdk.UpdateAgentThought(content),
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    acpsdk.UpdateAgentThought(content),
 	})
 }
 
@@ -308,7 +312,8 @@ func (s *agentSender) SendToolCall(tc ToolCallEvent) error {
 		update = acpsdk.StartToolCall(acpsdk.ToolCallId(tc.ID), tc.Title)
 	}
 	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
-		Update: update,
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    update,
 	})
 }
 
