@@ -24,6 +24,28 @@ import (
 	"github.com/yusheng-g/openagent-go/tool"
 )
 
+// readOnlyTools returns a filtered set of tools with only read operations —
+// no shell, no write. Used by the reviewer agent to prevent accidental
+// modifications during code review.
+func readOnlyTools(all []openagent.Tool) []openagent.Tool {
+	return toolsWithout(all, "shell", "write")
+}
+
+// toolsWithout returns a filtered set of tools excluding the named tools.
+func toolsWithout(all []openagent.Tool, names ...string) []openagent.Tool {
+	skip := make(map[string]bool, len(names))
+	for _, n := range names {
+		skip[n] = true
+	}
+	out := make([]openagent.Tool, 0, len(all))
+	for _, t := range all {
+		if !skip[t.Definition().Name] {
+			out = append(out, t)
+		}
+	}
+	return out
+}
+
 func main() {
 	apiKey := os.Getenv("OPENAGENT_API_KEY")
 	modelID := os.Getenv("OPENAGENT_MODEL")
@@ -65,7 +87,7 @@ func main() {
 	agent := openagent.NewAgent("assistant",
 		openagent.WithModel(llm),
 		openagent.WithMemory(mem),
-		openagent.WithInstructions("You are a capable assistant. Use shell, read, write, ls, and grep tools to explore, build, and edit the codebase. Be concise and action-oriented."),
+		openagent.WithInstructions("You are a capable assistant. Be concise and action-oriented."),
 		openagent.WithTools(sandboxTools...),
 		openagent.WithMaxTurns(10),
 	)
@@ -75,25 +97,29 @@ func main() {
 	analyst := openagent.NewAgent("analyst",
 		openagent.WithModel(llm),
 		openagent.WithMemory(mem),
+		openagent.WithTools(readOnlyTools(sandboxTools)...),
 		openagent.WithInstructions("You are a requirements analyst. Understand the user's request, break it into clear requirements, then hand off to the designer with a structured spec. Include constraints and acceptance criteria. Use transfer_to_designer when done."),
 		openagent.WithMaxTurns(2),
 	)
 	designer := openagent.NewAgent("designer",
 		openagent.WithModel(llm),
 		openagent.WithMemory(mem),
-		openagent.WithInstructions("You are a software designer. Take the specification, design the architecture with components and interfaces, then hand off to the coder with a clear design document. Use transfer_to_coder when done."),
+		openagent.WithTools(toolsWithout(sandboxTools, "shell")...),
+		openagent.WithInstructions("You are a software designer. Take the specification from the analyst, design the architecture with components and interfaces. Write a design document to disk. Then hand off to the coder with clear file paths to the design doc. Use transfer_to_coder when done."),
 		openagent.WithMaxTurns(2),
 	)
 	coder := openagent.NewAgent("coder",
 		openagent.WithModel(llm),
 		openagent.WithMemory(mem),
-		openagent.WithInstructions("You are a software developer. Take the design and write clean, well-structured code. Include error handling and comments. Hand off to the reviewer with your complete implementation. Use transfer_to_reviewer when done."),
+		openagent.WithTools(sandboxTools...),
+		openagent.WithInstructions("You are a software developer. Take the design and IMPLEMENT it by writing actual files to disk. When done, hand off to the reviewer with the list of files you created or modified (full paths). Use transfer_to_reviewer when done."),
 		openagent.WithMaxTurns(5),
 	)
 	reviewer := openagent.NewAgent("reviewer",
 		openagent.WithModel(llm),
 		openagent.WithMemory(mem),
-		openagent.WithInstructions("You are a code reviewer. Review the implementation for correctness, style, and bugs. If issues found, hand off back to the coder with specific feedback. If approved, produce the final summary for the user. Do NOT hand off further — you are the final gate."),
+		openagent.WithTools(readOnlyTools(sandboxTools)...),
+		openagent.WithInstructions("You are a code reviewer. Use read to examine the actual code files on disk. Check for correctness, style, and bugs. If issues found, hand off back to the coder with specific feedback referencing exact file paths and line numbers. If approved, produce the final summary. You are the final gate — do NOT hand off further."),
 		openagent.WithMaxTurns(2),
 	)
 	teamHandler := rest.NewTeamHandler(mem,

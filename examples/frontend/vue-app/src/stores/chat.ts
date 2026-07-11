@@ -91,6 +91,9 @@ export const useChatStore = defineStore('chat', () => {
       case 'thought': {
         // Real-time reasoning display. Reasoning models spend 5+ seconds
         // generating reasoning_content before the final answer.
+        // In team mode, agent_start creates thinkingMsg with the agent name
+        // so the user immediately knows who is thinking. In single-agent
+        // mode, thought is the first event — create thinkingMsg lazily.
         pendingThought += event.text || ''
         if (!currentStreamMsg) {
           if (!thinkingMsg) {
@@ -98,6 +101,7 @@ export const useChatStore = defineStore('chat', () => {
               id: msgId(),
               role: 'thought',
               content: '',
+              agent: event.agent,
               timestamp: now(),
             })
           }
@@ -107,33 +111,40 @@ export const useChatStore = defineStore('chat', () => {
       }
 
       case 'text_delta': {
-        // Replace the thinking indicator with the agent message.
-        if (thinkingMsg) {
-          messages.value = messages.value.filter(m => m !== thinkingMsg)
-          thinkingMsg = null
-        }
+        // Convert thinkingMsg to agent message in-place so its position
+        // relative to tool calls (which were pushed AFTER thinkingMsg)
+        // is preserved. Pushing a new agent message at the end would
+        // place it after tool calls — wrong visual order.
         if (!currentStreamMsg) {
-          currentStreamMsg = pushMsg({
-            id: msgId(),
-            role: 'agent',
-            content: '',
-            thoughtContent: pendingThought || undefined,
-            agent: event.agent,
-            timestamp: now(),
-            isStreaming: true,
-          })
+          if (thinkingMsg) {
+            thinkingMsg.role = 'agent'
+            thinkingMsg.thoughtContent = pendingThought || undefined
+            thinkingMsg.content = event.text || ''
+            thinkingMsg.isStreaming = true
+            currentStreamMsg = thinkingMsg
+            thinkingMsg = null
+          } else {
+            currentStreamMsg = pushMsg({
+              id: msgId(),
+              role: 'agent',
+              content: event.text || '',
+              thoughtContent: pendingThought || undefined,
+              agent: event.agent,
+              timestamp: now(),
+              isStreaming: true,
+            })
+          }
           pendingThought = ''
+        } else {
+          currentStreamMsg.content += event.text || ''
         }
-        currentStreamMsg.content += event.text || ''
         break
       }
 
       case 'tool_call': {
-        if (thinkingMsg) {
-          messages.value = messages.value.filter(m => m !== thinkingMsg)
-          thinkingMsg = null
-        }
-        pendingThought = ''
+        // Keep thinkingMsg visible — tool calls don't interrupt the
+        // agent's reasoning; they are part of the agent's working process.
+        // Only text_delta replaces the Thinking collapse with final output.
         const tc = event.tool_call
         if (tc) {
           const proxy = pushMsg({
@@ -200,10 +211,10 @@ export const useChatStore = defineStore('chat', () => {
       }
 
       case 'done': {
-        if (thinkingMsg) {
-          messages.value = messages.value.filter(m => m !== thinkingMsg)
-          thinkingMsg = null
-        }
+        // If text_delta never arrived (e.g. tool denied, agent stopped),
+        // thinkingMsg is still in the array — keep it visible so the user
+        // can see what the agent was thinking. Normal path: thinkingMsg was
+        // already converted to currentStreamMsg (set to null in text_delta).
         pendingThought = ''
         if (currentStreamMsg) {
           currentStreamMsg.isStreaming = false
@@ -236,6 +247,22 @@ export const useChatStore = defineStore('chat', () => {
           currentStreamMsg = null
         }
         pendingThought = ''
+        // Team mode only: show who is about to act. The label appears
+        // before thinking so the user never sees unlabelled reasoning.
+        pushMsg({
+          id: msgId(),
+          role: 'agent_label',
+          content: event.agent || '',
+          agent: event.agent,
+          timestamp: now(),
+        })
+        thinkingMsg = pushMsg({
+          id: msgId(),
+          role: 'thought',
+          content: '',
+          agent: event.agent,
+          timestamp: now(),
+        })
         break
       }
 

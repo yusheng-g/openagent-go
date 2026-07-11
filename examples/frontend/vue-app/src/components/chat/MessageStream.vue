@@ -21,7 +21,22 @@
 
         <!-- Handoff -->
         <div v-else-if="item.kind === 'msg' && item.msg.role === 'handoff'" class="msg-handoff">
-          <div class="handoff-label">{{ item.msg.content }}</div>
+          <div class="handoff-line"></div>
+          <div class="handoff-pill">
+            <span class="handoff-from">{{ item.msg.content.split(' → ')[0] }}</span>
+            <svg class="handoff-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+            <span class="handoff-to">{{ item.msg.content.split(' → ')[1] || item.msg.content }}</span>
+          </div>
+          <div class="handoff-line"></div>
+        </div>
+
+        <!-- Agent label (team mode — appears before thinking so user immediately knows who is about to act) -->
+        <div v-else-if="item.kind === 'msg' && item.msg.role === 'agent_label'" class="agent-label-line">
+          <span class="agent-label-emoji">🤖</span>
+          <span class="agent-label-name">{{ item.msg.content }}</span>
         </div>
 
         <!-- System -->
@@ -29,17 +44,16 @@
 
         <!-- Thought -->
         <n-collapse v-else-if="item.kind === 'msg' && item.msg.role === 'thought'" class="msg-thought">
-          <n-collapse-item title="Thinking...">
+          <n-collapse-item title="☁️ Thinking">
             <MarkdownContent :content="item.msg.content" />
           </n-collapse-item>
         </n-collapse>
 
         <!-- Agent -->
         <div v-else-if="item.kind === 'msg' && item.msg.role === 'agent'" class="msg-agent">
-          <div v-if="item.msg.agent" class="agent-label">{{ item.msg.agent }}</div>
           <div v-if="item.msg.thoughtContent" class="thought-inline">
             <n-collapse>
-              <n-collapse-item title="Thinking...">
+              <n-collapse-item title="☁️ Thinking">
                 <div class="thought-text">{{ item.msg.thoughtContent }}</div>
               </n-collapse-item>
             </n-collapse>
@@ -175,23 +189,84 @@ function truncate(s: string): string {
 }
 .empty-state { margin-top: 80px; }
 
+.agent-label-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px 2px;
+  margin: 0;
+}
+
+.agent-label-emoji {
+  font-size: 0.95em;
+}
+
+.agent-label-name {
+  font-size: 0.78em;
+  font-weight: 600;
+  opacity: 0.55;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .sys-msg {
   text-align: center; font-size: 0.7em; opacity: 0.3;
   padding: 2px 12px;
 }
 
 .msg-handoff {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 16px; margin: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 24px;
+  margin: 6px 0;
+  user-select: none;
 }
-.handoff-label {
-  font-size: 0.8em; font-weight: 600; opacity: 0.65;
-  padding: 6px 14px; border-radius: 6px;
-  background: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  color: rgba(255,255,255,0.75);
-  text-transform: uppercase; letter-spacing: 0.04em;
-  white-space: nowrap;
+
+.handoff-line {
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(99, 102, 241, 0.3),
+    rgba(99, 102, 241, 0.3),
+    transparent
+  );
+}
+
+.handoff-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.10), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.06);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.handoff-pill:hover {
+  border-color: rgba(99, 102, 241, 0.32);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
+}
+
+.handoff-from,
+.handoff-to {
+  font-size: 0.78em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.handoff-arrow {
+  width: 18px;
+  height: 18px;
+  color: rgba(99, 102, 241, 0.55);
+  flex-shrink: 0;
 }
 
 .thought-inline { margin-bottom: 8px; opacity: 0.6; font-size: 0.85em; }
@@ -220,10 +295,6 @@ function truncate(s: string): string {
 }
 
 .msg-agent { padding: 4px 16px; max-width: 85%; align-self: flex-start; }
-.agent-label {
-  font-size: 0.72em; font-weight: 700; opacity: 0.55; margin-bottom: 2px;
-  text-transform: uppercase; letter-spacing: 0.04em;
-}
 .agent-body { font-size: 0.92em; line-height: 1.6; }
 .cursor { animation: blink 1s step-end infinite; }
 @keyframes blink { 50% { opacity: 0; } }

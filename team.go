@@ -329,14 +329,15 @@ const (
 
 // TeamEvent is emitted by Team.RunStream.
 type TeamEvent struct {
-	Type     TeamEventType
-	Agent    string    // current agent name
-	Target   string    // handoff target agent (handoff)
-	Text     string    // text_delta, tool_result content
-	Message  string    // handoff message (handoff)
-	ToolCall *ToolCall // tool_call
-	Result   *TeamResult
-	Error    error
+	Type       TeamEventType
+	Agent      string    // current agent name
+	Target     string    // handoff target agent (handoff)
+	Text       string    // text_delta, tool_result content
+	ToolCallID string    // tool_result, tool_progress (matches tool_call.id)
+	Message    string    // handoff message (handoff)
+	ToolCall   *ToolCall // tool_call
+	Result     *TeamResult
+	Error      error
 }
 
 // RunStream executes the team with streaming events.
@@ -365,8 +366,9 @@ type teamRunner struct {
 	runMessages []Message // all messages from this team run (used as prefix for next agent)
 	totalTurns  int
 	totalUsage  Usage
-	forceFinal  bool   // true = next agent gets no transfer tools
-	currentName string // currently executing agent
+	forceFinal       bool   // true = next agent gets no transfer tools
+	currentName      string // currently executing agent
+	handoffHintGiven bool   // true after one "please hand off" retry per agent turn
 
 	// Per-run handoff queue — isolated from concurrent Team.Run() calls.
 	handoffMu       sync.Mutex
@@ -424,23 +426,18 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 			result, runErr = runner.RunWithPrefix(ctx, session, tr.runMessages, currentInput)
 		}
 
-		// ── Emit agent_end ──
-		if tr.team.observer != nil {
-			tr.team.observer.ObserveStage(ctx, StageEvent{
-				Name: "team.agent", Phase: "leave",
-				Detail: map[string]any{"agent": tr.currentName},
-				Err:    runErr,
-			})
-		}
-		if ch != nil {
-			ev := TeamEvent{Type: TeamAgentEnd, Agent: tr.currentName}
-			if runErr != nil {
-				ev.Error = runErr
-			}
-			ch <- ev
-		}
-
 		if runErr != nil {
+			// Agent run failed — emit agent_end with error and return.
+			if tr.team.observer != nil {
+				tr.team.observer.ObserveStage(ctx, StageEvent{
+					Name: "team.agent", Phase: "leave",
+					Detail: map[string]any{"agent": tr.currentName},
+					Err:    runErr,
+				})
+			}
+			if ch != nil {
+				ch <- TeamEvent{Type: TeamAgentEnd, Agent: tr.currentName, Error: runErr}
+			}
 			return nil, fmt.Errorf("agent %q: %w", tr.currentName, runErr)
 		}
 
@@ -467,8 +464,43 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 		tr.handoffMu.Unlock()
 
 		if len(handoffs) == 0 {
-			// Agent finished without handing off — team is done
+			// Agent finished without handing off.
+			// If the agent had handoff tools but didn't use them, retry
+			// once with an explicit hint — silently, no SSE event.
+			// The frontend sees a continuous stream from the same agent.
+			if !tr.forceFinal && !tr.handoffHintGiven && len(tr.buildHandoffTools()) > 0 {
+				tr.handoffHintGiven = true
+				currentInput = Message{
+					Role: RoleUser,
+					Content: "⚠️ You must hand off. Your last response did not call transfer_to_*. " +
+						"Use the appropriate transfer_to_<name> tool now to pass control. " +
+						"If you are the final reviewer and the work is truly complete, " +
+						"produce a short summary without handing off and the team will stop.",
+				}
+				continue
+			}
+			// forceFinal, already hinted, or no handoff tools — truly done.
+			if tr.team.observer != nil {
+				tr.team.observer.ObserveStage(ctx, StageEvent{
+					Name: "team.agent", Phase: "leave",
+					Detail: map[string]any{"agent": tr.currentName},
+				})
+			}
+			if ch != nil {
+				ch <- TeamEvent{Type: TeamAgentEnd, Agent: tr.currentName}
+			}
 			return tr.finalize(result.FinalOutput, ch), nil
+		}
+
+		// Emit agent_end before transitioning to the next agent.
+		if tr.team.observer != nil {
+			tr.team.observer.ObserveStage(ctx, StageEvent{
+				Name: "team.agent", Phase: "leave",
+				Detail: map[string]any{"agent": tr.currentName},
+			})
+		}
+		if ch != nil {
+			ch <- TeamEvent{Type: TeamAgentEnd, Agent: tr.currentName}
 		}
 
 		// Take the first handoff from this agent run.
@@ -535,6 +567,19 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 				Role:    RoleUser,
 				Content: req.message,
 			}
+			// If the target agent previously handed off TO the current
+			// agent, this is a return handoff (a follow-up question or
+			// clarification). Add context so the target knows to answer
+			// and hand off back — rather than treating it as a new
+			// forward workflow task.
+			if tr.isReturnHandoff(tr.currentName, req.target) {
+				currentInput = Message{
+					Role: RoleUser,
+					Content: fmt.Sprintf("⚠️ Return handoff from %s (asking a follow-up). "+
+						"Answer their question concisely, then hand off back to %s with your answer.\n\n"+
+						"Message: %s", tr.currentName, tr.currentName, req.message),
+				}
+			}
 		}
 
 		// ── Emit handoff event ──
@@ -543,6 +588,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 		}
 
 		tr.currentName = req.target
+		tr.handoffHintGiven = false // reset for next agent
 	}
 }
 
@@ -579,12 +625,12 @@ func (tr *teamRunner) runAgentStreaming(ctx context.Context, runner AgentRunner,
 			}
 
 		case StreamToolProgress:
-			ch <- TeamEvent{Type: TeamToolProgress, Agent: tr.currentName, Text: evt.Text}
+			ch <- TeamEvent{Type: TeamToolProgress, Agent: tr.currentName, ToolCallID: evt.ToolCallID, Text: evt.Text}
 
 		case StreamToolResult:
 			// Filter results of handoff tools by matching ToolCallID.
 			if !strings.HasPrefix(toolCallNames[evt.Message.ToolCallID], "transfer_to_") {
-				ch <- TeamEvent{Type: TeamToolResult, Agent: tr.currentName, Text: evt.Message.Content}
+				ch <- TeamEvent{Type: TeamToolResult, Agent: tr.currentName, ToolCallID: evt.Message.ToolCallID, Text: evt.Message.Content}
 			}
 
 		case StreamRetrying:
@@ -607,6 +653,37 @@ func (tr *teamRunner) runAgentStreaming(ctx context.Context, runner AgentRunner,
 }
 
 // ── Loop detection ──
+
+// buildHandoffTools returns the handoff tools for the current agent.
+// Used to check whether the agent had any way to hand off.
+func (tr *teamRunner) buildHandoffTools() []Tool {
+	if tr.forceFinal {
+		return nil
+	}
+	myName := tr.currentName
+	tr.team.mu.Lock()
+	defer tr.team.mu.Unlock()
+	members := make([]AgentInfo, 0, len(tr.team.agents)-1)
+	for _, name := range tr.team.order {
+		if name == myName {
+			continue
+		}
+		members = append(members, AgentInfo{
+			Name:        name,
+			Description: tr.team.agents[name].description,
+			Type:        tr.team.agents[name].agentType,
+		})
+	}
+	handoffTools := make([]Tool, 0, len(members))
+	for _, m := range members {
+		handoffTools = append(handoffTools, &handoffTool{
+			record:   tr.recordHandoff,
+			target:   m.Name,
+			desc:     m.Description,
+		})
+	}
+	return handoffTools
+}
 
 func (tr *teamRunner) detectLoop() string {
 	if len(tr.chain) < 2 {
@@ -641,6 +718,21 @@ func (tr *teamRunner) detectLoop() string {
 	}
 
 	return ""
+}
+
+// isReturnHandoff reports whether target is handing off back to source
+// after source previously handed off to target. Example: designer→coder,
+// then coder→designer ("hey can you clarify X?").
+//
+// Return handoffs should be answered concisely and handed back — they are
+// consultations, not forward workflow transitions.
+func (tr *teamRunner) isReturnHandoff(from, to string) bool {
+	for _, e := range tr.chain {
+		if e.From == to && e.To == from {
+			return true
+		}
+	}
+	return false
 }
 
 // ── Agent preparation ──

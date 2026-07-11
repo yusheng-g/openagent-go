@@ -76,6 +76,7 @@ type teamSessionState struct {
 	info      SessionInfo
 	team      *openagent.Team
 	agentList []agentInfo
+	agentMems []*teamAgentMemory // per-agent memory wrappers for cleanup
 
 	mu              sync.Mutex
 	pendingApproval *pendingApproval
@@ -148,12 +149,26 @@ func (h *TeamHandler) handleDeleteSession(w http.ResponseWriter, r *http.Request
 	id := r.PathValue("id")
 
 	h.mu.Lock()
+	s := h.sessions[id]
 	delete(h.sessions, id)
 	h.mu.Unlock()
 
+	// Session may not exist (double-delete is harmless).
+	if s == nil {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+	defer cancel()
+
+	// Clean up agent-private memory partitions.
+	for _, tam := range s.agentMems {
+		_ = tam.DeleteSession(ctx, id)
+	}
+
+	// Clean up team-shared memory.
 	if h.memory != nil {
-		ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
-		defer cancel()
 		_ = h.memory.DeleteSession(ctx, id)
 	}
 
@@ -310,9 +325,16 @@ func (h *TeamHandler) handleAddAgent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Wrap memory for agent-private persistence, same as newSession.
+	var agentMem openagent.Memory
+	var tam *teamAgentMemory
+	if h.memory != nil {
+		tam = newTeamAgentMemory(body.Name, h.memory)
+		agentMem = tam
+	}
 	agent := openagent.NewAgent(body.Name,
 		openagent.WithModel(h.model),
-		openagent.WithMemory(h.memory),
+		openagent.WithMemory(agentMem),
 		openagent.WithInstructions(body.Instructions),
 		openagent.WithMaxTurns(3),
 		openagent.WithApprover(&restApprover{
@@ -331,6 +353,9 @@ func (h *TeamHandler) handleAddAgent(w http.ResponseWriter, r *http.Request) {
 	s.agentList = append(s.agentList, agentInfo{
 		Name: body.Name, Description: body.Description, Type: "internal",
 	})
+	if tam != nil {
+		s.agentMems = append(s.agentMems, tam)
+	}
 	s.mu.Unlock()
 
 	w.Header().Set("Content-Type", "application/json")
@@ -358,6 +383,20 @@ func (h *TeamHandler) handleRemoveAgent(w http.ResponseWriter, r *http.Request) 
 	s.team.RemoveAgent(name)
 
 	s.mu.Lock()
+	// Clean up the agent's private memory partition.
+	filteredMems := s.agentMems[:0]
+	for _, tam := range s.agentMems {
+		if tam.agentName == name {
+			ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+			_ = tam.DeleteSession(ctx, id)
+			cancel()
+		} else {
+			filteredMems = append(filteredMems, tam)
+		}
+	}
+	s.agentMems = filteredMems
+
+	// Remove from the agent list.
 	filtered := s.agentList[:0]
 	for _, a := range s.agentList {
 		if a.Name != name {
@@ -398,13 +437,27 @@ func (h *TeamHandler) newSession(info SessionInfo) *teamSessionState {
 	teamOpts = append(teamOpts, openagent.WithTeamMaxHandoffs(10))
 
 	for _, t := range h.agents {
-		agent := cloneAgentForSession(t.Agent, h.memory, s, h.submitApproval)
+		// Wrap memory so each agent gets agent-private persistence
+		// (tool calls/results) separate from team-shared messages
+		// (user input, handoffs, text output).
+		var agentMem openagent.Memory
+		var tam *teamAgentMemory
+		if h.memory != nil {
+			tam = newTeamAgentMemory(t.Name, h.memory)
+			agentMem = tam
+		} else if t.Agent.Memory != nil {
+			agentMem = t.Agent.Memory
+		}
+		agent := cloneAgentForSession(t.Agent, agentMem, s, h.submitApproval)
 		teamOpts = append(teamOpts,
 			openagent.WithTeamAgent(t.Name, t.Description, agent),
 		)
 		s.agentList = append(s.agentList, agentInfo{
 			Name: t.Name, Description: t.Description, Type: "internal",
 		})
+		if tam != nil {
+			s.agentMems = append(s.agentMems, tam)
+		}
 	}
 
 	s.team = openagent.NewTeam(teamOpts...)
@@ -412,15 +465,11 @@ func (h *TeamHandler) newSession(info SessionInfo) *teamSessionState {
 }
 
 func cloneAgentForSession(tmpl *openagent.Agent, mem openagent.Memory, s *teamSessionState, submitFn func(*teamSessionState, openagent.ToolCall, chan approveResponse)) *openagent.Agent {
-	// Use the template's memory if set; otherwise fall back to the handler's
-	// shared memory so team agents retain context across chat turns.
-	memory := tmpl.Memory
-	if memory == nil {
-		memory = mem
-	}
+	// mem is already resolved by the caller — either a teamAgentMemory
+	// wrapper for agent-private persistence or the template's own memory.
 	return openagent.NewAgent(tmpl.Name,
 		openagent.WithModel(tmpl.Model),
-		openagent.WithMemory(memory),
+		openagent.WithMemory(mem),
 		openagent.WithTools(tmpl.Tools...),
 		openagent.WithInstructions(tmpl.Instructions),
 		openagent.WithMaxTurns(tmpl.MaxTurns),
@@ -487,15 +536,18 @@ func teamEventToSSE(evt openagent.TeamEvent) SSEEvent {
 		}
 		return SSEEvent{Type: "tool_call", Agent: evt.Agent, ToolCall: tcj}
 
+	case openagent.TeamToolProgress:
+		return SSEEvent{Type: "tool_progress", Agent: evt.Agent, ToolCallID: evt.ToolCallID, Text: evt.Text}
+
 	case openagent.TeamToolResult:
-		return SSEEvent{Type: "tool_result", Agent: evt.Agent, Text: evt.Text}
+		return SSEEvent{Type: "tool_result", Agent: evt.Agent, ToolCallID: evt.ToolCallID, Text: evt.Text}
 
 	case openagent.TeamRetrying:
-		se := SSEEvent{Type: "retrying", Agent: evt.Agent}
+		msg := "retrying"
 		if evt.Error != nil {
-			se.Error = evt.Error.Error()
+			msg = evt.Error.Error()
 		}
-		return se
+		return SSEEvent{Type: "retrying", Agent: evt.Agent, Text: msg}
 
 	case openagent.TeamHandoff:
 		return SSEEvent{Type: "handoff", Agent: evt.Agent, HandoffTo: evt.Target}

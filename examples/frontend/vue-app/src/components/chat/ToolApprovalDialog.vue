@@ -14,8 +14,8 @@
       </div>
 
       <div class="approval-actions">
-        <n-button type="error" @click="$emit('resolve', false, feedback.trim() || undefined)">Deny</n-button>
-        <n-button type="primary" @click="$emit('resolve', true)">Allow</n-button>
+        <n-button type="error" @click="handleResolve(false)">Deny</n-button>
+        <n-button type="primary" @click="handleResolve(true)">Allow</n-button>
       </div>
     </div>
   </n-modal>
@@ -27,9 +27,14 @@ import { NModal, NButton, NInput } from 'naive-ui'
 import type { SSEToolCall } from '@/types'
 
 const props = defineProps<{ toolCall: SSEToolCall }>()
-defineEmits<{ resolve: [allowed: boolean, feedback?: string] }>()
+const emit = defineEmits<{ resolve: [allowed: boolean, feedback?: string] }>()
 
 const feedback = ref('')
+
+function handleResolve(allowed: boolean) {
+  const text = (feedback.value || '').trim()
+  emit('resolve', allowed, text || undefined)
+}
 
 const formattedArgs = computed(() => {
   try {

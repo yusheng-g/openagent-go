@@ -54,7 +54,7 @@ export interface SSEEvent {
 
 // ── Chat message (UI model) ──
 
-export type MessageRole = 'user' | 'agent' | 'thought' | 'tool_call' | 'tool_result' | 'system' | 'handoff'
+export type MessageRole = 'user' | 'agent' | 'thought' | 'tool_call' | 'tool_result' | 'system' | 'handoff' | 'agent_label'
 
 export interface ChatMessage {
   id: string
