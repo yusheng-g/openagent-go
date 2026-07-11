@@ -14,6 +14,7 @@ export const useChatStore = defineStore('chat', () => {
   let abortController: AbortController | null = null
   let currentStreamMsg: ChatMessage | null = null
   let pendingThought: string = ''
+  let thinkingMsg: ChatMessage | null = null
   let pendingToolCalls: Map<string, ChatMessage> = new Map()
   let onStageEvent: ((event: any) => void) | null = null
 
@@ -29,29 +30,35 @@ export const useChatStore = defineStore('chat', () => {
     return Date.now()
   }
 
+  /** Push a message to the list and return its reactive proxy.
+   *  Vue wraps objects pushed into a reactive array with a Proxy.
+   *  All callers MUST mutate the returned proxy — not the raw object —
+   *  otherwise Vue won't detect the change and won't re-render. */
+  function pushMsg(msg: ChatMessage): ChatMessage {
+    messages.value.push(msg)
+    return messages.value[messages.value.length - 1]!
+  }
+
   function sendMessage(
     sessionId: string,
     text: string,
     sessionType: 'single' | 'team' | 'plan',
     modelId?: string,
   ) {
-    // Reset state
     error.value = null
     streaming.value = true
     pendingToolCalls.clear()
     currentStreamMsg = null
+    thinkingMsg = null
     pendingThought = ''
 
-    // Add user message
-    const userMsg: ChatMessage = {
+    pushMsg({
       id: msgId(),
       role: 'user',
       content: text,
       timestamp: now(),
-    }
-    messages.value.push(userMsg)
+    })
 
-    // Determine URL
     let url: string
     switch (sessionType) {
       case 'team': url = `/team/sessions/${sessionId}/chat`; break
@@ -59,7 +66,6 @@ export const useChatStore = defineStore('chat', () => {
       default: url = `/sessions/${sessionId}/chat`
     }
 
-    // Start SSE stream
     abortController = new AbortController()
     streamChat(url, { message: text, modelId }, handleEvent, abortController.signal)
       .then(() => {
@@ -77,14 +83,31 @@ export const useChatStore = defineStore('chat', () => {
   function handleEvent(event: SSEEvent) {
     switch (event.type) {
       case 'thought': {
-        // Buffer reasoning tokens to attach to the next agent message.
+        // Real-time reasoning display. Reasoning models spend 5+ seconds
+        // generating reasoning_content before the final answer.
         pendingThought += event.text || ''
+        if (!currentStreamMsg) {
+          if (!thinkingMsg) {
+            thinkingMsg = pushMsg({
+              id: msgId(),
+              role: 'thought',
+              content: '',
+              timestamp: now(),
+            })
+          }
+          thinkingMsg.content += event.text || ''
+        }
         break
       }
 
       case 'text_delta': {
+        // Replace the thinking indicator with the agent message.
+        if (thinkingMsg) {
+          messages.value = messages.value.filter(m => m !== thinkingMsg)
+          thinkingMsg = null
+        }
         if (!currentStreamMsg) {
-          currentStreamMsg = {
+          currentStreamMsg = pushMsg({
             id: msgId(),
             role: 'agent',
             content: '',
@@ -92,41 +115,38 @@ export const useChatStore = defineStore('chat', () => {
             agent: event.agent,
             timestamp: now(),
             isStreaming: true,
-          }
+          })
           pendingThought = ''
-          messages.value.push(currentStreamMsg)
         }
         currentStreamMsg.content += event.text || ''
         break
       }
 
       case 'tool_call': {
-        // Tool calls clear pending thought without displaying it —
-        // the reasoning before a tool call is the model's internal planning.
+        if (thinkingMsg) {
+          messages.value = messages.value.filter(m => m !== thinkingMsg)
+          thinkingMsg = null
+        }
         pendingThought = ''
         const tc = event.tool_call
         if (tc) {
-          const msg: ChatMessage = {
+          const proxy = pushMsg({
             id: msgId(),
             role: 'tool_call',
             content: tc.function.arguments || '',
             agent: event.agent,
             toolCall: tc,
             timestamp: now(),
-          }
-          messages.value.push(msg)
-          pendingToolCalls.set(tc.id, msg)
+          })
+          pendingToolCalls.set(tc.id, proxy)
         }
         break
       }
 
       case 'tool_progress': {
-        // Update the matching tool call with progress
         if (event.tool_call_id) {
           const msg = pendingToolCalls.get(event.tool_call_id)
-          if (msg) {
-            msg.content += event.text || ''
-          }
+          if (msg) msg.content += event.text || ''
         }
         break
       }
@@ -153,13 +173,12 @@ export const useChatStore = defineStore('chat', () => {
       }
 
       case 'retrying': {
-        const msg: ChatMessage = {
+        pushMsg({
           id: msgId(),
           role: 'system',
           content: `Retrying: ${event.text || 'transient error'}`,
           timestamp: now(),
-        }
-        messages.value.push(msg)
+        })
         break
       }
 
@@ -170,6 +189,10 @@ export const useChatStore = defineStore('chat', () => {
       }
 
       case 'done': {
+        if (thinkingMsg) {
+          messages.value = messages.value.filter(m => m !== thinkingMsg)
+          thinkingMsg = null
+        }
         pendingThought = ''
         if (currentStreamMsg) {
           currentStreamMsg.isStreaming = false
@@ -192,29 +215,23 @@ export const useChatStore = defineStore('chat', () => {
       }
 
       case 'agent_start':
-        // Team agent turn begins — shown as a subtle label above its messages.
-        // The text_delta events that follow carry the same agent name.
         break
 
       case 'agent_end':
-        // Team agent turn ends. No visible marker needed.
         break
 
       case 'handoff': {
-        // Handoff between team agents — show a subtle transition badge.
-        const msg: ChatMessage = {
+        pushMsg({
           id: msgId(),
           role: 'system',
           content: `${event.agent} → ${event.handoff_to}`,
           agent: event.agent,
           timestamp: now(),
-        }
-        messages.value.push(msg)
+        })
         break
       }
 
       case 'stage':
-        // Forward to pipeline panel via a callback set by the view.
         if (onStageEvent) onStageEvent(event)
         break
 
@@ -246,6 +263,7 @@ export const useChatStore = defineStore('chat', () => {
     error.value = null
     pendingToolCalls.clear()
     currentStreamMsg = null
+    thinkingMsg = null
     pendingThought = ''
   }
 
