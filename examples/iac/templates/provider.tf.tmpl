@@ -1,0 +1,51 @@
+# HuaweiCloud Provider Configuration
+# Variables are filled by the module_planner agent.
+
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    huaweicloud = {
+      source  = "huaweicloud/huaweicloud"
+      version = "~> 1.50"
+    }
+  }
+  backend "local" {
+    path = "terraform.tfstate"
+  }
+}
+
+provider "huaweicloud" {
+  region     = var.region
+  access_key = var.access_key
+  secret_key = var.secret_key
+}
+
+variable "region" {
+  description = "HuaweiCloud region"
+  type        = string
+  default     = "cn-north-4"
+}
+
+variable "access_key" {
+  description = "HuaweiCloud Access Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "secret_key" {
+  description = "HuaweiCloud Secret Key"
+  type        = string
+  sensitive   = true
+}
+
+variable "project_name" {
+  description = "Project name for resource naming"
+  type        = string
+  default     = "openagent-iac"
+}
+
+variable "environment" {
+  description = "Environment (dev/staging/prod)"
+  type        = string
+  default     = "dev"
+}

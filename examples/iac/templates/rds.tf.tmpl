@@ -1,0 +1,54 @@
+# RDS (Relational Database Service) Module — PostgreSQL / MySQL
+# {{ .ProjectName }} — {{ .Environment }}
+
+resource "huaweicloud_rds_instance" "{{ .Name }}" {
+  name                = "{{ .Name }}"
+  flavor              = "{{ .Flavor }}"
+  ha_replication_mode = "{{ .HAMode }}"
+
+  vpc_id    = var.vpc_id
+  subnet_id = var.subnet_id
+
+  security_group_id = var.security_group_id
+
+  availability_zone = [
+    var.availability_zone,
+  ]
+
+  db {
+    type     = "{{ .Engine }}"
+    version  = "{{ .Version }}"
+    password = var.db_password
+    port     = {{ .Port }}
+  }
+
+  volume {
+    type = "{{ .VolumeType }}"
+    size = {{ .VolumeSize }}
+  }
+
+  backup_strategy {
+    start_time = "03:00-04:00"
+    keep_days  = {{ .BackupDays }}
+  }
+
+  tags = {
+    Name        = "{{ .Name }}"
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "openagent-iac"
+  }
+}
+
+output "{{ .Name }}_id" {
+  value     = huaweicloud_rds_instance.{{ .Name }}.id
+  sensitive = true
+}
+
+output "{{ .Name }}_private_ip" {
+  value = huaweicloud_rds_instance.{{ .Name }}.private_ips[0]
+}
+
+output "{{ .Name }}_port" {
+  value = {{ .Port }}
+}

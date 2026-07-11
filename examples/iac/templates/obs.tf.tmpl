@@ -1,0 +1,33 @@
+# OBS (Object Storage Service) Bucket Module
+# {{ .ProjectName }} — {{ .Environment }}
+
+resource "huaweicloud_obs_bucket" "{{ .Name }}" {
+  bucket = "{{ .BucketName }}"
+  acl    = "{{ .ACL }}"
+
+  {{ if .Versioning }}
+  versioning = true
+  {{ end }}
+
+  {{ if .Website }}
+  website {
+    index_document = "index.html"
+    error_document = "error.html"
+  }
+  {{ end }}
+
+  tags = {
+    Name        = "{{ .Name }}"
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "openagent-iac"
+  }
+}
+
+output "{{ .Name }}_bucket" {
+  value = huaweicloud_obs_bucket.{{ .Name }}.bucket
+}
+
+output "{{ .Name }}_domain" {
+  value = huaweicloud_obs_bucket.{{ .Name }}.bucket_domain_name
+}

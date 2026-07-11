@@ -1,0 +1,40 @@
+# CDN (Content Delivery Network) Module
+# {{ .ProjectName }} — {{ .Environment }}
+
+resource "huaweicloud_cdn_domain" "{{ .Name }}" {
+  name   = "{{ .Domain }}"
+  type   = "{{ .ServiceType }}"
+  status = "online"
+
+  sources {
+    origin      = "{{ .Origin }}"
+    origin_type = "{{ .OriginType }}"
+    active      = 1
+  }
+
+  configs {
+    origin_protocol       = "{{ .OriginProtocol }}"
+    ipv6_enable           = true
+    range_based_retrieval = true
+
+    https_settings {
+      https_status    = "{{ .HTTPSStatus }}"
+      certificate_name = "{{ .CertName }}"
+      certificate_body = var.ssl_certificate_body
+      private_key      = var.ssl_private_key
+    }
+  }
+
+  tags = {
+    Name        = "{{ .Name }}"
+    ManagedBy   = "openagent-iac"
+  }
+}
+
+output "{{ .Name }}_domain" {
+  value = huaweicloud_cdn_domain.{{ .Name }}.name
+}
+
+output "{{ .Name }}_cname" {
+  value = huaweicloud_cdn_domain.{{ .Name }}.cname
+}
