@@ -586,12 +586,23 @@ func (r *runner) executeOneTool(ctx context.Context, session Session, call ToolC
 			Content:    fmt.Sprintf("tool %q not found", call.Function.Name),
 		}
 	}
+	tool := r.findTool(call.Function.Name)
 
 	// ── ⑥ Approval: check before executing ──
 	// Handoff tools (transfer_to_*) are internal team mechanisms —
 	// they do not require user approval. The team runner handles
 	// handoff routing internally.
-	if r.agent.Approver != nil && !strings.HasPrefix(call.Function.Name, "transfer_to_") {
+	//
+	// Self-approving tools (read-only within workspace boundary)
+	// also skip approval — they are statically safe.
+	needsApproval := r.agent.Approver != nil &&
+		!strings.HasPrefix(call.Function.Name, "transfer_to_")
+	if needsApproval {
+		if sa, ok := tool.(SelfApproving); ok && sa.CanSelfApprove(json.RawMessage(call.Function.Arguments)) {
+			needsApproval = false
+		}
+	}
+	if needsApproval {
 		allowed, reason := r.agent.Approver.Approve(ctx, call, *def, session)
 		if !allowed {
 			return Message{
@@ -623,7 +634,7 @@ func (r *runner) executeOneTool(ctx context.Context, session Session, call ToolC
 		return msg
 	}
 
-	tool := r.findTool(call.Function.Name)
+	tool = r.findTool(call.Function.Name)
 
 	if r.agent.Hooks != nil {
 		_ = r.agent.Hooks.OnToolStart(ctx, *def, args)

@@ -77,7 +77,7 @@
               <n-collapse-item v-if="stepState(selectedId).error" name="error" title="Error">
                 <div class="modal-error">{{ stepState(selectedId).error }}</div>
               </n-collapse-item>
-              <n-collapse-item v-if="stepState(selectedId).toolCalls.length" name="tools" title="Tool calls ({{ stepState(selectedId).toolCalls.length }})">
+              <n-collapse-item v-if="stepState(selectedId).toolCalls.length" name="tools" :title="'Tool calls (' + stepState(selectedId).toolCalls.length + ')'">
                 <div v-for="(tc, i) in stepState(selectedId).toolCalls" :key="i" class="modal-tool">
                   <span class="mt-name">{{ tc.name }}</span>
                   <pre class="mt-args">{{ tc.args }}</pre>

@@ -50,6 +50,21 @@ func (t *Grep) Definition() openagent.FunctionDefinition {
 	}
 }
 
+func (t *Grep) CanSelfApprove(args json.RawMessage) bool {
+	var params struct {
+		Path string `json:"path"`
+	}
+	json.Unmarshal(args, &params)
+	if params.Path == "" {
+		return true // default to workspace root is safe
+	}
+	abs, err := validatePath(t.workDir, params.Path)
+	if err != nil {
+		return false
+	}
+	return isWithinWorkspace(t.workDir, abs)
+}
+
 func (t *Grep) Execute(ctx context.Context, args json.RawMessage) (string, error) {
 	var params struct {
 		Pattern string `json:"pattern"`

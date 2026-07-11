@@ -41,6 +41,12 @@ func validatePath(workDir, p string) (string, error) {
 
 // ── ReadFile ──
 
+// isWithinWorkspace reports whether resolved (absolute, symlink-resolved) is
+// within workDir. Returns false if resolved escapes the workspace boundary.
+func isWithinWorkspace(workDir, resolved string) bool {
+	return resolved == workDir || strings.HasPrefix(resolved, workDir+string(os.PathSeparator))
+}
+
 // ReadFile reads a file from the sandbox workspace.
 type ReadFile struct {
 	workDir string
@@ -63,6 +69,20 @@ func (t *ReadFile) Definition() openagent.FunctionDefinition {
 			"required": ["path"]
 		}`),
 	}
+}
+
+func (t *ReadFile) CanSelfApprove(args json.RawMessage) bool {
+	var params struct {
+		Path string `json:"path"`
+	}
+	if err := json.Unmarshal(args, &params); err != nil || params.Path == "" {
+		return false
+	}
+	abs, err := validatePath(t.workDir, params.Path)
+	if err != nil {
+		return false
+	}
+	return isWithinWorkspace(t.workDir, abs)
 }
 
 func (t *ReadFile) Execute(ctx context.Context, args json.RawMessage) (string, error) {
@@ -223,6 +243,21 @@ func (t *ListDir) Definition() openagent.FunctionDefinition {
 			}
 		}`),
 	}
+}
+
+func (t *ListDir) CanSelfApprove(args json.RawMessage) bool {
+	var params struct {
+		Path string `json:"path"`
+	}
+	json.Unmarshal(args, &params)
+	if params.Path == "" {
+		return true // default to workspace root is safe
+	}
+	abs, err := validatePath(t.workDir, params.Path)
+	if err != nil {
+		return false
+	}
+	return isWithinWorkspace(t.workDir, abs)
 }
 
 func (t *ListDir) Execute(ctx context.Context, args json.RawMessage) (string, error) {

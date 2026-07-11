@@ -34,6 +34,17 @@ type ToolStreamChunk struct {
 	Error   error  `json:"-"`
 }
 
+// SelfApproving is an optional interface for tools that can determine at
+// runtime whether they're safe to execute without user approval. Read-only
+// tools (read, ls, grep) check that their resolved target path is within
+// the workspace boundary; anything outside still requires approval.
+//
+// Runner calls CanSelfApprove BEFORE the tool executes. If true, the
+// Approver is bypassed for this specific call.
+type SelfApproving interface {
+	CanSelfApprove(args json.RawMessage) bool
+}
+
 // StreamExecutor is an optional interface for tools that produce streaming
 // output during execution. The Runner checks for this interface before
 // calling [Tool.Execute]:
