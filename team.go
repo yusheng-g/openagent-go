@@ -384,7 +384,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 	}
 	if rr.Fallback && tr.team.observer != nil {
 		tr.team.observer.ObserveStage(ctx, StageEvent{
-			Name: "team.route", Phase: "leave",
+			Name: StageTeamRoute, Phase: "leave",
 			Detail: map[string]any{"agent": rr.Agent, "fallback": rr.Reason},
 		})
 	}
@@ -415,7 +415,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 		}
 		if tr.team.observer != nil {
 			tr.team.observer.ObserveStage(ctx, StageEvent{
-				Name: "team.agent", Phase: "enter",
+				Name: StageTeamAgent, Phase: "enter",
 				Detail: map[string]any{"agent": tr.currentName, "handoff_index": len(tr.chain)},
 			})
 		}
@@ -436,7 +436,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 			// Agent run failed — emit agent_end with error and return.
 			if tr.team.observer != nil {
 				tr.team.observer.ObserveStage(ctx, StageEvent{
-					Name: "team.agent", Phase: "leave",
+					Name: StageTeamAgent, Phase: "leave",
 					Detail: map[string]any{"agent": tr.currentName},
 					Err:    runErr,
 				})
@@ -500,7 +500,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 			// forceFinal, already hinted, or no handoff tools — truly done.
 			if tr.team.observer != nil {
 				tr.team.observer.ObserveStage(ctx, StageEvent{
-					Name: "team.agent", Phase: "leave",
+					Name: StageTeamAgent, Phase: "leave",
 					Detail: map[string]any{"agent": tr.currentName},
 				})
 			}
@@ -513,7 +513,7 @@ func (tr *teamRunner) run(ctx context.Context, session Session, input Message, c
 		// Emit agent_end before transitioning to the next agent.
 		if tr.team.observer != nil {
 			tr.team.observer.ObserveStage(ctx, StageEvent{
-				Name: "team.agent", Phase: "leave",
+				Name: StageTeamAgent, Phase: "leave",
 				Detail: map[string]any{"agent": tr.currentName},
 			})
 		}

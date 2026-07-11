@@ -277,9 +277,10 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 		workingMessages = append(workingMessages, choice.Message)
 		r.appendMemory(ctx, session, choice.Message)
 
-		// ── ⑤ Guard.out: output check ──
+		// ── ⑤ Guard.out: output check (model output + tool results) ──
+		var guardOutStart time.Time
 		if r.agent.OutGuard != nil {
-			goStart := time.Now()
+			guardOutStart = time.Now()
 			r.observe(ctx, StageGuardOut, "enter", nil, time.Time{}, nil)
 			gr := r.agent.OutGuard.Check(ctx, GuardOutput{
 				Session: session,
@@ -288,7 +289,7 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 			})
 			if !gr.Allowed {
 				runErr = fmt.Errorf("output guard blocked: %s", gr.Reason)
-				r.observe(ctx, StageGuardOut, "leave", nil, goStart, runErr)
+				r.observe(ctx, StageGuardOut, "leave", nil, guardOutStart, runErr)
 				if ch != nil {
 					ch <- StreamEvent{Type: StreamError, Error: runErr}
 				}
@@ -296,17 +297,20 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 			}
 			if gr.Tripwire {
 				runErr = fmt.Errorf("output guard tripwire: %s", gr.Reason)
-				r.observe(ctx, StageGuardOut, "leave", nil, goStart, runErr)
+				r.observe(ctx, StageGuardOut, "leave", nil, guardOutStart, runErr)
 				if ch != nil {
 					ch <- StreamEvent{Type: StreamError, Error: runErr}
 				}
 				return result, runErr
 			}
-			r.observe(ctx, StageGuardOut, "leave", nil, goStart, nil)
+			// Leave deferred until after tool result guard checks.
 		}
 
 		// ── Abnormal finish ──
 		if len(choice.Message.ToolCalls) == 0 {
+			if r.agent.OutGuard != nil {
+				r.observe(ctx, StageGuardOut, "leave", nil, guardOutStart, nil)
+			}
 			if choice.FinishReason != "" && choice.FinishReason != "stop" {
 				result.Messages = append(result.Messages, Message{
 					Role:    RoleSystem,
@@ -329,6 +333,7 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 				})
 				if gr.Tripwire {
 					runErr = fmt.Errorf("output guard tripwire on tool result: %s", gr.Reason)
+					r.observe(ctx, StageGuardOut, "leave", nil, guardOutStart, runErr)
 					if ch != nil {
 						ch <- StreamEvent{Type: StreamError, Error: runErr}
 					}
@@ -344,6 +349,9 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 			result.Messages = append(result.Messages, tr)
 			r.appendMemory(ctx, session, tr)
 			workingMessages = append(workingMessages, tr)
+		}
+		if r.agent.OutGuard != nil {
+			r.observe(ctx, StageGuardOut, "leave", nil, guardOutStart, nil)
 		}
 
 		// If any tool executed this turn is EndTurn (e.g. transfer_to_*),

@@ -19,11 +19,11 @@ type Result struct {
 }
 
 // Sandbox isolates command execution. Tool implementations that execute
-// code (ShellTool, CodeTool, etc.) use this interface. nil Sandbox = no
-// sandbox provided — tools should refuse to execute or use a default.
+// code (ShellTool, etc.) use this interface. nil Sandbox = no sandbox
+// configured — tools should refuse to execute or reject commands.
 //
-// NOTE: This interface is defined for future use. No built-in tools or
-// examples currently implement it. See BUGS.md #35.
+// Built-in implementation: sandbox/native (Linux: bwrap, macOS: Seatbelt).
+// See tool/shell.go for the canonical consumer.
 type Sandbox interface {
 	Run(ctx context.Context, cmd Command) (Result, error)
 }

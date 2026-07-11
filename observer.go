@@ -15,6 +15,10 @@ const (
 	StageGuardOut     = "guard.out"     // output guard (model + tool results)
 	StageToolExecute  = "tool.execute"  // single tool execution
 	StageMemoryAppend = "memory.append" // write message to storage
+
+	// Team-level stages (Team observer, not Agent observer).
+	StageTeamAgent = "team.agent" // agent enter/leave within a team run
+	StageTeamRoute = "team.route" // router fallback event
 )
 
 // ── StageEvent ──
