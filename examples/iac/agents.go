@@ -71,6 +71,7 @@ type agentDef struct {
 // skillDir is the workspace skills/ path for the skill loader.
 func buildIACAgents(
 	model openagent.Model,
+	mem openagent.Memory,
 	tfTool *tools.TerraformTool,
 	fileTools []openagent.Tool,
 	skillDir string,
@@ -86,6 +87,7 @@ func buildIACAgents(
 
 	intentParser := openagent.NewAgent("intent_parser",
 		openagent.WithModel(model),
+		openagent.WithMemory(mem),
 		openagent.WithDescription("Analyzes user input (GitHub URL or natural language) to infer application runtime, database, cache, storage, CDN, HTTPS needs. Outputs a structured ApplicationProfile JSON."),
 		openagent.WithInstructions(`You are an Application Intent Parser. Analyze the user's deployment request and produce a JSON ApplicationProfile.
 
@@ -116,6 +118,7 @@ Output ONLY the JSON object. No markdown, no explanation.
 
 	architect := openagent.NewAgent("architect",
 		openagent.WithModel(model),
+		openagent.WithMemory(mem),
 		openagent.WithDescription("Designs cloud architecture from an ApplicationProfile. Uses pricing and deployment pattern skills. Produces 3 architecture options (A/B/C) with resource lists and monthly cost estimates. Requires human approval to select which option to implement."),
 		openagent.WithSkillLoader(skillLoader),
 		openagent.WithInstructions(`You are a Cloud Architect. Design infrastructure for the given ApplicationProfile.
@@ -153,6 +156,7 @@ Return ONLY a JSON array. No markdown fences.
 
 	modulePlanner := openagent.NewAgent("module_planner",
 		openagent.WithModel(model),
+		openagent.WithMemory(mem),
 		openagent.WithDescription("Translates a selected architecture plan into Terraform configuration files. Reads module templates from disk, fills variables, and writes .tf files."),
 		openagent.WithSkillLoader(skillLoader),
 		openagent.WithTools(moduleTools...),
@@ -181,6 +185,7 @@ Return ONLY a JSON array. No markdown fences.
 
 	reviewer := openagent.NewAgent("reviewer",
 		openagent.WithModel(model),
+		openagent.WithMemory(mem),
 		openagent.WithDescription("Reviews Terraform configurations: runs terraform init + plan, parses plan output, produces human-readable summary of changes, costs, and risks."),
 		openagent.WithTools(tfRO...),
 		openagent.WithInstructions(`You are a Terraform Plan Reviewer. Review configurations before they are applied.
@@ -203,6 +208,7 @@ Be concise. This is an approval gate.`),
 
 	applier := openagent.NewAgent("applier",
 		openagent.WithModel(model),
+		openagent.WithMemory(mem),
 		openagent.WithDescription("Applies approved Terraform plans. Runs terraform apply and reports results."),
 		openagent.WithTools(tfApply...),
 		openagent.WithInstructions(`You are the Terraform Applier. Apply an approved plan.
@@ -221,6 +227,7 @@ Be concise. This is an approval gate.`),
 
 	monitor := openagent.NewAgent("monitor",
 		openagent.WithModel(model),
+		openagent.WithMemory(mem),
 		openagent.WithDescription("Post-deployment health checks and optimization recommendations."),
 		openagent.WithTools(tfT[3]), // terraform_output
 		openagent.WithInstructions(`You are a Post-Deployment Monitor.

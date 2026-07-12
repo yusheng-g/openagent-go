@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/yusheng-g/openagent-go"
+	"github.com/yusheng-g/openagent-go/memory/file"
 	"github.com/yusheng-g/openagent-go/model/openai"
 	"github.com/yusheng-g/openagent-go/rest"
 	"github.com/yusheng-g/openagent-go/sandbox/native"
@@ -62,6 +63,13 @@ func main() {
 	// ── Model ──
 	model := openai.New(apiKey, modelID, baseURL).WithContextWindow(128_000)
 
+	// ── Memory ──
+	mem, err := file.New(filepath.Join(iacDir, "memory"))
+	if err != nil {
+		log.Fatalf("memory: %v", err)
+	}
+	defer mem.Close()
+
 	// ── File tools ──
 	// Agents use read_file/write_file/ls to inspect templates and write .tf files.
 	var fileTools []openagent.Tool
@@ -91,7 +99,7 @@ func main() {
 	}
 
 	// ── Agents ──
-	agentDefs := buildIACAgents(model, tfTool, fileTools, skillDir)
+	agentDefs := buildIACAgents(model, mem, tfTool, fileTools, skillDir)
 
 	var planTemplates []rest.PlanAgentTemplate
 	for _, def := range agentDefs {
@@ -100,7 +108,8 @@ func main() {
 		})
 	}
 
-	ph := rest.NewPlanHandler(nil, model, planTemplates...)
+	ph := rest.NewPlanHandler(mem, model, planTemplates...)
+	ph.WithSessionTTL(6 * time.Hour)
 
 	// ── Routes ──
 	mux := http.NewServeMux()
