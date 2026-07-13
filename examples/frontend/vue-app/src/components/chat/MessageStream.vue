@@ -84,15 +84,24 @@
         :disabled="disabled"
         @keydown="onKeydown"
       />
+      <n-select
+        v-if="chatStore.availableModels.length > 1"
+        v-model:value="chatStore.selectedModelId"
+        :options="chatStore.availableModels.map(m => ({ label: m.id, value: m.id }))"
+        size="small"
+        placeholder="Model"
+        class="model-select"
+      />
       <n-button type="primary" :disabled="!inputText.trim() || disabled" @click="send" class="send-btn">Send</n-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch, computed } from 'vue'
-import { NEmpty, NCollapse, NCollapseItem, NInput, NButton } from 'naive-ui'
+import { ref, nextTick, watch, computed, onMounted } from 'vue'
+import { NEmpty, NCollapse, NCollapseItem, NInput, NButton, NSelect } from 'naive-ui'
 import type { ChatMessage, UsageInfo } from '@/types'
+import { useChatStore } from '@/stores/chat'
 import MarkdownContent from '@/components/common/MarkdownContent.vue'
 import UsageBar from '@/components/chat/UsageBar.vue'
 
@@ -104,6 +113,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{ send: [text: string] }>()
+const chatStore = useChatStore()
 
 const inputText = ref('')
 const scrollRef = ref<HTMLElement | null>(null)
@@ -117,6 +127,8 @@ watch(() => props.messages.length, () => {
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() }
 }
+onMounted(() => { chatStore.fetchModels() })
+
 function send() {
   const t = inputText.value.trim()
   if (!t || props.disabled) return
@@ -312,6 +324,7 @@ function truncate(s: string): string {
   align-items: flex-end; flex-shrink: 0;
 }
 .send-btn { flex-shrink: 0; }
+.model-select { width: 160px; flex-shrink: 0; }
 
 .error-msg {
   background: rgba(239, 68, 68, 0.12); color: #ef4444;

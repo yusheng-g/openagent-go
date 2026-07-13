@@ -7,6 +7,8 @@ import * as api from '@/api'
 export const useChatStore = defineStore('chat', () => {
   const messages = ref<ChatMessage[]>([])
   const streaming = ref(false)
+  const selectedModelId = ref<string>('')
+  const availableModels = ref<Array<{ id: string; provider?: string }>>([])
   const pendingApproval = ref<PendingApproval | null>(null)
   // Queue for concurrent tool approvals (SSE events and HTTP responses
   // race on different channels). The exposed pendingApproval shows the
@@ -47,8 +49,8 @@ export const useChatStore = defineStore('chat', () => {
     sessionId: string,
     text: string,
     sessionType: 'single' | 'team' | 'plan',
-    modelId?: string,
   ) {
+    const modelId = selectedModelId.value || undefined
     error.value = null
     streaming.value = true
     pendingApproval.value = null
@@ -324,6 +326,14 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  async function fetchModels() {
+    if (availableModels.value.length > 0) return
+    try {
+      const data = await api.listModels()
+      availableModels.value = data.models || []
+    } catch { /* /models not available — use empty list */ }
+  }
+
   function clearChat() {
     abortController?.abort()
     messages.value = []
@@ -340,6 +350,7 @@ export const useChatStore = defineStore('chat', () => {
 
   return {
     messages, streaming, pendingApproval, usage, error,
-    sendMessage, approveTool, clearChat, setStageHandler,
+    selectedModelId, availableModels,
+    sendMessage, approveTool, clearChat, setStageHandler, fetchModels,
   }
 })

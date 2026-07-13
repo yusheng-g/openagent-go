@@ -187,6 +187,10 @@ export function retryPlanStep(sessionId: string, stepId: string): Promise<{ stat
   return request(`/plan/sessions/${sessionId}/steps/${stepId}/retry`, { method: 'POST' })
 }
 
+export function listModels(): Promise<{ models: Array<{ id: string; provider?: string }> }> {
+  return request('/models')
+}
+
 export function replan(sessionId: string, feedback: string): Promise<{ status: string }> {
   return request(`/plan/sessions/${sessionId}/replan`, {
     method: 'POST',
