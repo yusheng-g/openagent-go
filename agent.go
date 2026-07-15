@@ -39,9 +39,14 @@ type Agent struct {
 	SkillLoader SkillLoader
 
 	// Configuration
-	MaxTurns             int // max loop iterations, 0 = default (20)
-	MaxWorkingTokens     int // max tokens for working set before compaction; 0 = 70% of model context window
-	MaxCompressedTokens  int // max tokens for compressed summary, 0 = no limit (default 2048)
+	MaxTurns            int // max loop iterations, 0 = default (20)
+	MaxWorkingTokens    int // max tokens for working set before compaction; 0 = 70% of model context window
+	MaxCompressedTokens int // max tokens for compressed summary, 0 = no limit (default 2048)
+
+	// noSpawn, when true, prevents the built-in spawn tool from being
+	// auto-injected. Sub-agents (created via AsTool or the spawn tool itself)
+	// set this to prevent infinite recursion.
+	noSpawn bool
 }
 
 // Clone returns a shallow copy of the Agent that is safe to mutate.
@@ -234,15 +239,15 @@ type RunResult struct {
 type StreamEventType string
 
 const (
-	StreamThought        StreamEventType = "thought"      // reasoning content (o1, deepseek-r1)
-	StreamTextDelta      StreamEventType = "text_delta"
-	StreamToolCall       StreamEventType = "tool_call"
-	StreamToolProgress   StreamEventType = "tool_progress"  // streaming tool output chunk
-	StreamToolResult     StreamEventType = "tool_result"
-	StreamRetrying       StreamEventType = "retrying"
-	StreamDone           StreamEventType = "done"
-	StreamError          StreamEventType = "error"
-	StreamAborted        StreamEventType = "aborted" // context cancelled, deadline exceeded
+	StreamThought      StreamEventType = "thought" // reasoning content (o1, deepseek-r1)
+	StreamTextDelta    StreamEventType = "text_delta"
+	StreamToolCall     StreamEventType = "tool_call"
+	StreamToolProgress StreamEventType = "tool_progress" // streaming tool output chunk
+	StreamToolResult   StreamEventType = "tool_result"
+	StreamRetrying     StreamEventType = "retrying"
+	StreamDone         StreamEventType = "done"
+	StreamError        StreamEventType = "error"
+	StreamAborted      StreamEventType = "aborted" // context cancelled, deadline exceeded
 )
 
 // StreamEvent is emitted by RunStream for real-time rendering.
@@ -259,36 +264,91 @@ type StreamEvent struct {
 
 // AsTool wraps this agent as a Tool so a coordinator can delegate sub-tasks
 // in parallel. Unlike handoff (transfer_to_*), the sub-agent runs with
-// isolated context and returns its output to the coordinator — the coordinator
-// continues running after receiving results.
+// isolated context and returns its output — the coordinator continues running
+// after receiving results. Pre-configured agents (with specific tool subsets)
+// should use this. For dynamic sub-agent spawning at runtime, the built-in
+// "spawn" tool (auto-injected by the Runner) lets the model decide agent
+// name, description, and task on the fly.
 //
-// Context isolation:
-//   - New session per call (invisible to coordinator's memory)
-//   - No prefix (no coordinator conversation history leaked)
-//   - Only the task string as input
+// Constraints (safe by construction):
+//   - MaxTurns capped at 3
+//   - No Approver — the caller already decided to delegate
+//   - No Memory — the sub-agent session is ephemeral
+//   - No spawn tool — a sub-agent cannot spawn grandchildren
+//   - No agent-as-tool tools — same reason
 //
 // Usage:
 //
+//	coder := openagent.NewAgent("coder", openagent.WithTools(shell, write))
 //	coordinator := openagent.NewAgent("coordinator",
-//	    openagent.WithTools(
-//	        researcher.AsTool(),
-//	        writer.AsTool(),
-//	    ),
+//	    openagent.WithTools(coder.AsTool()),
 //	)
 func (a *Agent) AsTool() Tool {
-	return &agentTool{agent: a}
+	clone := a.Clone()
+	clone.MaxTurns = 3
+	clone.Approver = nil
+	clone.Memory = nil
+	clone.noSpawn = true
+	clone.Tools = stripAgentTools(clone.Tools)
+
+	return &subAgentTool{agent: clone}
+}
+
+// stripAgentTools removes any tool that wraps an Agent (i.e. was created by
+// AsTool) from the slice. This prevents sub-agents from spawning grandchildren.
+func stripAgentTools(tools []Tool) []Tool {
+	out := tools[:0]
+	for _, t := range tools {
+		if _, ok := t.(*subAgentTool); !ok {
+			out = append(out, t)
+		}
+	}
+	return out
+}
+
+// ── Built-in subagent tool (auto-injected by Runner) ──
+
+// builtinSubAgentDef is the function definition for the "subagent" built-in tool.
+// The Runner auto-injects it when the agent has a Model and noSpawn is false.
+var builtinSubAgentDef = FunctionDefinition{
+	Name: "subagent",
+	Description: "Create a temporary sub-agent to handle a task in parallel. " +
+		"The sub-agent runs in an isolated context — no memory of the current conversation. " +
+		"It has the same tools available as you.",
+	Parameters: json.RawMessage(`{
+		"type": "object",
+		"properties": {
+			"name": {
+				"type": "string",
+				"description": "A short name for the sub-agent."
+			},
+			"description": {
+				"type": "string",
+				"description": "One-line description of what this sub-agent does."
+			},
+			"prompt": {
+				"type": "string",
+				"description": "System prompt for the sub-agent — defines its role and how to approach the task."
+			},
+			"task": {
+				"type": "string",
+				"description": "The task to complete — passed as the user message."
+			}
+		},
+		"required": ["name", "prompt", "task"]
+	}`),
 }
 
 // globalAgentSeq is a monotonically increasing counter used to
-// prevent session ID collisions in agentTool.Execute.
+// prevent session ID collisions in subAgentTool.ExecuteStream.
 var globalAgentSeq atomic.Int64
 
-// agentTool wraps an Agent as a Tool for parallel delegation.
-type agentTool struct {
+// subAgentTool wraps an Agent as a Tool (created by AsTool).
+type subAgentTool struct {
 	agent *Agent
 }
 
-func (t *agentTool) Definition() FunctionDefinition {
+func (t *subAgentTool) Definition() FunctionDefinition {
 	name := t.agent.Name
 	desc := t.agent.Description
 	if desc == "" {
@@ -296,15 +356,14 @@ func (t *agentTool) Definition() FunctionDefinition {
 	}
 	return FunctionDefinition{
 		Name: name,
-		Description: fmt.Sprintf("Ask the %s agent to complete a task. %s "+
-			"Provide a clear, self-contained task description — the agent "+
-			"does not see the coordinator's conversation history.", name, desc),
+		Description: fmt.Sprintf("Delegate a task to the %s agent. %s "+
+			"It runs in an isolated context with no access to the current conversation history.", name, desc),
 		Parameters: json.RawMessage(`{
 			"type": "object",
 			"properties": {
 				"task": {
 					"type": "string",
-					"description": "The task to complete. Be specific and self-contained."
+					"description": "The task to complete."
 				}
 			},
 			"required": ["task"]
@@ -312,15 +371,38 @@ func (t *agentTool) Definition() FunctionDefinition {
 	}
 }
 
-func (t *agentTool) Execute(ctx context.Context, args json.RawMessage) (string, error) {
+// Execute runs the sub-agent and returns its final output. It delegates to
+// [agentTool.ExecuteStream] so that the Runner's streaming path is used when
+// the coordinator is itself streaming.
+func (t *subAgentTool) Execute(ctx context.Context, args json.RawMessage) (string, error) {
+	var buf strings.Builder
+	for chunk := range t.ExecuteStream(ctx, args) {
+		if chunk.Error != nil {
+			return buf.String(), chunk.Error
+		}
+		buf.WriteString(chunk.Content)
+	}
+	return buf.String(), nil
+}
+
+// ExecuteStream runs the sub-agent with streaming. Text deltas, tool calls,
+// and tool results are emitted as [ToolStreamChunk] events so the coordinator
+// can show real-time progress even while the sub-agent is still working.
+func (t *subAgentTool) ExecuteStream(ctx context.Context, args json.RawMessage) <-chan ToolStreamChunk {
 	var params struct {
 		Task string `json:"task"`
 	}
 	if err := json.Unmarshal(args, &params); err != nil {
-		return "", fmt.Errorf("agent tool %q: %w", t.agent.Name, err)
+		ch := make(chan ToolStreamChunk, 1)
+		ch <- ToolStreamChunk{Error: fmt.Errorf("agent tool %q: %w", t.agent.Name, err)}
+		close(ch)
+		return ch
 	}
 	if params.Task == "" {
-		return "", fmt.Errorf("agent tool %q: task is required", t.agent.Name)
+		ch := make(chan ToolStreamChunk, 1)
+		ch <- ToolStreamChunk{Error: fmt.Errorf("agent tool %q: task is required", t.agent.Name)}
+		close(ch)
+		return ch
 	}
 
 	// New session — fully isolated from the coordinator.
@@ -329,11 +411,45 @@ func (t *agentTool) Execute(ctx context.Context, args json.RawMessage) (string, 
 		CreatedAt: time.Now(),
 	}
 
-	input := UserMessage(params.Task)
-	// prefix is nil — the sub-agent sees only its instructions + the task.
-	result, err := t.agent.Run(ctx, session, input)
-	if err != nil {
-		return "", fmt.Errorf("agent %q: %w", t.agent.Name, err)
-	}
-	return result.FinalOutput, nil
+	ch := make(chan ToolStreamChunk, 16)
+	go func() {
+		defer close(ch)
+		streamCh := t.agent.RunStream(ctx, session, UserMessage(params.Task))
+		for evt := range streamCh {
+			switch evt.Type {
+			case StreamThought:
+				ch <- ToolStreamChunk{Content: evt.Text}
+			case StreamTextDelta:
+				ch <- ToolStreamChunk{Content: evt.Text}
+			case StreamToolCall:
+				if len(evt.Message.ToolCalls) > 0 {
+					tc := evt.Message.ToolCalls[0]
+					ch <- ToolStreamChunk{
+						Content: fmt.Sprintf("\n🔧 %s(%s)\n",
+							tc.Function.Name,
+							truncateStr(tc.Function.Arguments, 200)),
+					}
+				}
+			case StreamToolResult:
+				content := evt.Message.Content
+				if len(content) > 500 {
+					content = content[:500] + "..."
+				}
+				ch <- ToolStreamChunk{Content: "→ " + content + "\n"}
+			case StreamRetrying:
+				// non-fatal, silently skip
+			case StreamError:
+				ch <- ToolStreamChunk{Error: evt.Error}
+				return
+			case StreamAborted:
+				if evt.Error != nil {
+					ch <- ToolStreamChunk{Error: evt.Error}
+				}
+				return
+			case StreamDone:
+				// Normal completion — final output already streamed as text_delta.
+			}
+		}
+	}()
+	return ch
 }

@@ -9,7 +9,7 @@ import type { SSEEvent } from '@/types'
  */
 export async function streamChat(
   url: string,
-  body: { message: string; modelId?: string },
+  body: { message: string; modelId?: string; provider?: string },
   onEvent: (event: SSEEvent) => void,
   signal?: AbortSignal,
 ): Promise<void> {

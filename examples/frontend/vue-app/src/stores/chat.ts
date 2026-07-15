@@ -352,6 +352,11 @@ export const useChatStore = defineStore('chat', () => {
           p._approvalQueue.push(approval)
           if (!p.pendingApproval) p.pendingApproval = p._approvalQueue[0]
           if (currentSessionId.value && getPane(currentSessionId.value) === p) {
+            // Sync module-level queue from pane queue so approveTool
+            // sees the same state. Without this, approveTool shifts
+            // an empty _approvalQueue and p.pendingApproval stays stale.
+            _approvalQueue.length = 0
+            _approvalQueue.push(...p._approvalQueue)
             pendingApproval.value = p.pendingApproval
           }
           break
@@ -453,6 +458,10 @@ export const useChatStore = defineStore('chat', () => {
     if (!pendingApproval.value) return
     _approvalQueue.shift()
     pendingApproval.value = _approvalQueue[0] || null
+    // Also pop from the pane's queue so future approvals don't replay stale entries.
+    const p = getPane(sessionId)
+    p._approvalQueue.shift()
+    p.pendingApproval = p._approvalQueue[0] || null
     try {
       switch (sessionType) {
         case 'single': await api.approveTool(sessionId, allowed, feedback); break

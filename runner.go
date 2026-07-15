@@ -77,6 +77,9 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 	if r.agent.Memory != nil {
 		r.builtinTools = append(r.builtinTools, builtinRecallDef)
 	}
+	if !r.agent.noSpawn {
+		r.builtinTools = append(r.builtinTools, builtinSubAgentDef)
+	}
 
 	result := &RunResult{}
 
@@ -597,24 +600,67 @@ func (r *runner) executeTools(ctx context.Context, session Session, calls []Tool
 
 	results := make([]Message, len(calls))
 
-	// When an Approver is configured, execute tools sequentially.
-	// The approver presents one tool at a time to the user; concurrent
-	// execution would race on the approval channel (single pendingApproval).
+	// When an Approver is configured, fire all approvals first (the user
+	// clicks through dialogs quickly), then execute approved tools in
+	// parallel. Before this change, each tool's approval + execution was
+	// serialised — tool_1's approval dialog wouldn't appear until tool_0
+	// finished executing (subagent runs can take 10+ seconds).
 	if r.agent.Approver != nil {
+		// Phase 1: approve all tools sequentially.
+		approved := make([]bool, len(calls))
 		for i, call := range calls {
-			func() {
+			def := r.toolDef(call.Function.Name)
+			if def == nil {
+				results[i] = Message{
+					Role:       RoleTool,
+					ToolCallID: call.ID,
+					Content:    fmt.Sprintf("tool %q not found", call.Function.Name),
+				}
+				continue
+			}
+			tool := r.findTool(call.Function.Name)
+			needsApproval := !strings.HasPrefix(call.Function.Name, "transfer_to_")
+			if needsApproval && tool != nil {
+				if sa, ok := tool.(SelfApproving); ok && sa.CanSelfApprove(json.RawMessage(call.Function.Arguments)) {
+					needsApproval = false
+				}
+			}
+			if needsApproval {
+				allowed, reason := r.agent.Approver.Approve(ctx, call, *def, session)
+				if !allowed {
+					results[i] = Message{
+						Role:       RoleTool,
+						ToolCallID: call.ID,
+						Content:    fmt.Sprintf("tool %q rejected: %s", call.Function.Name, reason),
+					}
+					continue
+				}
+			}
+			approved[i] = true
+		}
+
+		// Phase 2: execute approved tools concurrently.
+		var wg sync.WaitGroup
+		for i, call := range calls {
+			if !approved[i] {
+				continue
+			}
+			wg.Add(1)
+			go func(idx int, tc ToolCall) {
+				defer wg.Done()
 				defer func() {
 					if rec := recover(); rec != nil {
-						results[i] = Message{
+						results[idx] = Message{
 							Role:       RoleTool,
-							ToolCallID: call.ID,
+							ToolCallID: tc.ID,
 							Content:    fmt.Sprintf("tool panic: %v", rec),
 						}
 					}
 				}()
-				results[i] = r.executeOneTool(ctx, session, call, ch)
-			}()
+				results[idx] = r.executeOneToolInternal(ctx, session, tc, ch)
+			}(i, call)
 		}
+		wg.Wait()
 		return results
 	}
 
@@ -633,7 +679,7 @@ func (r *runner) executeTools(ctx context.Context, session Session, calls []Tool
 					}
 				}
 			}()
-			results[idx] = r.executeOneTool(ctx, session, tc, ch)
+			results[idx] = r.executeOneToolInternal(ctx, session, tc, ch)
 		}(i, call)
 	}
 
@@ -641,8 +687,11 @@ func (r *runner) executeTools(ctx context.Context, session Session, calls []Tool
 	return results
 }
 
-func (r *runner) executeOneTool(ctx context.Context, session Session, call ToolCall, ch chan<- StreamEvent) Message {
-	// Resolve tool definition — needed for approval, hooks, and observer.
+// executeOneToolInternal executes a single tool call — resolving definitions,
+// firing hooks/observer events, and dispatching built-in vs registered tools.
+// Approval is handled upstream by [executeTools] (Phase 1); this function
+// assumes the tool has already been approved.
+func (r *runner) executeOneToolInternal(ctx context.Context, session Session, call ToolCall, ch chan<- StreamEvent) Message {
 	def := r.toolDef(call.Function.Name)
 	if def == nil {
 		return Message{
@@ -651,36 +700,10 @@ func (r *runner) executeOneTool(ctx context.Context, session Session, call ToolC
 			Content:    fmt.Sprintf("tool %q not found", call.Function.Name),
 		}
 	}
-	tool := r.findTool(call.Function.Name)
-
-	// ── ⑥ Approval: check before executing ──
-	// Handoff tools (transfer_to_*) are internal team mechanisms —
-	// they do not require user approval. The team runner handles
-	// handoff routing internally.
-	//
-	// Self-approving tools (read-only within workspace boundary)
-	// also skip approval — they are statically safe.
-	needsApproval := r.agent.Approver != nil &&
-		!strings.HasPrefix(call.Function.Name, "transfer_to_")
-	if needsApproval {
-		if sa, ok := tool.(SelfApproving); ok && sa.CanSelfApprove(json.RawMessage(call.Function.Arguments)) {
-			needsApproval = false
-		}
-	}
-	if needsApproval {
-		allowed, reason := r.agent.Approver.Approve(ctx, call, *def, session)
-		if !allowed {
-			return Message{
-				Role:       RoleTool,
-				ToolCallID: call.ID,
-				Content:    fmt.Sprintf("tool %q rejected: %s", call.Function.Name, reason),
-			}
-		}
-	}
 
 	args := json.RawMessage(call.Function.Arguments)
 
-	// Built-in skill tools: execute directly, share hooks/observer pipeline.
+	// Built-in tools: execute directly, share hooks/observer pipeline.
 	switch call.Function.Name {
 	case "use_skill":
 		toolStart := r.fireToolHooks(ctx, *def, args)
@@ -697,7 +720,14 @@ func (r *runner) executeOneTool(ctx context.Context, session Session, call ToolC
 		msg := r.executeRecall(ctx, session, call)
 		r.fireToolHooksEnd(ctx, *def, args, msg.Content, toolStart, nil)
 		return msg
+	case "subagent":
+		toolStart := r.fireToolHooks(ctx, *def, args)
+		msg := r.executeSubAgent(ctx, session, call, ch)
+		r.fireToolHooksEnd(ctx, *def, args, msg.Content, toolStart, nil)
+		return msg
 	}
+
+	tool := r.findTool(call.Function.Name)
 
 	if r.agent.Hooks != nil {
 		_ = r.agent.Hooks.OnToolStart(ctx, *def, args)
@@ -812,6 +842,8 @@ func (r *runner) toolDef(name string) *FunctionDefinition {
 		return &builtinReloadSkillsDef
 	case "recall_memory":
 		return &builtinRecallDef
+	case "subagent":
+		return &builtinSubAgentDef
 	}
 	if t := r.findTool(name); t != nil {
 		d := t.Definition()
@@ -821,7 +853,9 @@ func (r *runner) toolDef(name string) *FunctionDefinition {
 }
 
 func (r *runner) appendMemory(ctx context.Context, session Session, msg Message) {
-	if msg.Transient { return }
+	if msg.Transient {
+		return
+	}
 	if r.agent.Memory == nil {
 		return
 	}
@@ -1228,4 +1262,110 @@ func (r *runner) executeRecall(ctx context.Context, session Session, call ToolCa
 	}
 
 	return Message{Role: RoleTool, ToolCallID: call.ID, Content: buf.String()}
+}
+
+// executeSubAgent handles the built-in subagent tool. It creates a temporary
+// sub-agent on the fly from the model-provided name/description/prompt, runs it
+// with the caller's Model and Tools (minus subagent/AsTool tools), and returns
+// the result. The sub-agent has no Approver and no Memory.
+func (r *runner) executeSubAgent(ctx context.Context, session Session, call ToolCall, ch chan<- StreamEvent) Message {
+	var args struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Prompt      string `json:"prompt"`
+		Task        string `json:"task"`
+	}
+	if err := json.Unmarshal([]byte(call.Function.Arguments), &args); err != nil || args.Name == "" || args.Prompt == "" || args.Task == "" {
+		return Message{
+			Role:       RoleTool,
+			ToolCallID: call.ID,
+			Content:    "subagent: name, prompt, and task are required",
+		}
+	}
+
+	if args.Description == "" {
+		args.Description = args.Task
+		if len(args.Description) > 80 {
+			args.Description = args.Description[:77] + "..."
+		}
+	}
+
+	// Build a sub-agent from the caller's capabilities.
+	sub := Agent{
+		Name:         args.Name,
+		Description:  args.Description,
+		Instructions: args.Prompt,
+		Model:        r.runModel,
+		Tools:        stripAgentTools(r.agent.Tools),
+		MaxTurns:     3,
+		noSpawn:      true,
+		// no Approver, no Memory — safe sub-agent
+	}
+
+	subSession := Session{
+		ID:        fmt.Sprintf("%s-%d-%d", args.Name, time.Now().UnixNano(), globalAgentSeq.Add(1)),
+		CreatedAt: time.Now(),
+	}
+
+	// Streaming: forward sub-agent output as tool progress events.
+	if ch != nil {
+		streamCh := sub.RunStream(ctx, subSession, UserMessage(args.Task))
+		var buf strings.Builder
+		var finalOutput string
+		for evt := range streamCh {
+			switch evt.Type {
+			case StreamThought:
+				ch <- StreamEvent{
+					Type:       StreamToolProgress,
+					Text:       evt.Text,
+					ToolCallID: call.ID,
+				}
+			case StreamTextDelta:
+				buf.WriteString(evt.Text)
+				ch <- StreamEvent{
+					Type:       StreamToolProgress,
+					Text:       evt.Text,
+					ToolCallID: call.ID,
+				}
+			case StreamError:
+				errText := "unknown error"
+				if evt.Error != nil {
+					errText = evt.Error.Error()
+				}
+				return Message{
+					Role:       RoleTool,
+					ToolCallID: call.ID,
+					Content:    fmt.Sprintf("subagent: %s", errText),
+				}
+			case StreamAborted:
+				return Message{
+					Role:       RoleTool,
+					ToolCallID: call.ID,
+					Content:    buf.String(),
+				}
+			case StreamDone:
+				if evt.Result != nil && evt.Result.FinalOutput != "" {
+					finalOutput = evt.Result.FinalOutput
+				}
+			}
+		}
+		if buf.Len() > 0 {
+			return Message{Role: RoleTool, ToolCallID: call.ID, Content: buf.String()}
+		}
+		if finalOutput == "" {
+			finalOutput = "(completed, no output)"
+		}
+		return Message{Role: RoleTool, ToolCallID: call.ID, Content: finalOutput}
+	}
+
+	// Blocking path: no event channel.
+	result, err := sub.Run(ctx, subSession, UserMessage(args.Task))
+	if err != nil {
+		return Message{
+			Role:       RoleTool,
+			ToolCallID: call.ID,
+			Content:    fmt.Sprintf("subagent error: %v", err),
+		}
+	}
+	return Message{Role: RoleTool, ToolCallID: call.ID, Content: result.FinalOutput}
 }
