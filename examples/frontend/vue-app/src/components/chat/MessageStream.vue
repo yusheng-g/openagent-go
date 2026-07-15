@@ -103,12 +103,12 @@
       <span class="stat-sep">·</span>
       <n-popselect
         v-if="chatStore.availableModels.length > 0"
-        v-model:value="chatStore.selectedModelId"
-        :options="chatStore.availableModels.map(m => ({ label: m.id, value: m.id }))"
+        v-model:value="chatStore.selectedModelKey"
+        :options="chatStore.availableModels.map(m => ({ label: m.provider ? `${m.id} (${m.provider})` : m.id, value: (m.provider || '') + ':' + m.id }))"
         trigger="click"
       >
         <span class="stat-item model">
-          {{ chatStore.selectedModelId || chatStore.availableModels[0].id }}
+          {{ chatStore.selectedModelLabel }}
         </span>
       </n-popselect>
       <span class="stat-sep">·</span>

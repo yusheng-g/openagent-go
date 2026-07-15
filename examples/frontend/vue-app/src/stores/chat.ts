@@ -26,8 +26,17 @@ interface SessionPane {
 
 export const useChatStore = defineStore('chat', () => {
   // ── Global (cross-session) state ──
-  const selectedModelId = ref<string>('')
+  // selectedModelKey stores "provider:modelId" (composite key from registry).
+  // When provider is empty the key is just ":modelId".
+  const selectedModelKey = ref<string>('')
   const availableModels = ref<Array<{ id: string; provider?: string }>>([])
+  // Human-readable label for the current model selection.
+  const selectedModelLabel = computed(() => {
+    const key = selectedModelKey.value
+    const m = availableModels.value.find(m => (m.provider || '') + ':' + m.id === key)
+    if (m) return m.provider ? `${m.id} (${m.provider})` : m.id
+    return key.replace(/^:/, '') // strip leading colon if any
+  })
   const contextWindow = ref(0)
   const messageCount = ref(0)
   const currentSessionId = ref<string | null>(null)
@@ -158,7 +167,11 @@ export const useChatStore = defineStore('chat', () => {
     sessionType: 'single' | 'team' | 'plan',
   ) {
     currentSessionType.value = sessionType
-    const modelId = selectedModelId.value || availableModels.value[0]?.id
+    // Parse "provider:modelId" key into separate fields for the API.
+    const key = selectedModelKey.value || availableModels.value[0]?.id || ''
+    const colon = key.indexOf(':')
+    const modelProvider = colon >= 0 ? key.slice(0, colon) : ''
+    const modelId = colon >= 0 ? key.slice(colon + 1) : key
 
     // Capture the pane for this session — SSE events will push here.
     // saveActive already wrote the current state, so the pane is fresh.
@@ -215,7 +228,7 @@ export const useChatStore = defineStore('chat', () => {
     // if the user switches to another tab mid-stream.
     const handler = makeHandler(pane)
 
-    streamChat(url, { message: text, modelId }, handler, pane.abortController!.signal)
+    streamChat(url, { message: text, modelId, provider: modelProvider }, handler, pane.abortController!.signal)
       .then(() => {
         pane.streaming = false
         pane.currentStreamMsg = null
@@ -458,8 +471,9 @@ export const useChatStore = defineStore('chat', () => {
     try {
       const data = await api.listModels()
       availableModels.value = data.models || []
-      if (availableModels.value.length > 0 && !selectedModelId.value) {
-        selectedModelId.value = availableModels.value[0].id
+      if (availableModels.value.length > 0 && !selectedModelKey.value) {
+        const first = availableModels.value[0]
+        selectedModelKey.value = (first.provider || '') + ':' + first.id
       }
     } catch { /* /models not available */ }
   }
@@ -473,7 +487,14 @@ export const useChatStore = defineStore('chat', () => {
       const d = await fn(sessionId)
       contextWindow.value = d.contextWindow || 0
       messageCount.value = d.messageCount || 0
-      if (d.modelId) selectedModelId.value = d.modelId
+      // Restore session model, or use first available.  Prevents stale
+      // key leaking from a previous session into one that never selected a model.
+      if (d.modelId) {
+        selectedModelKey.value = (d.provider ? d.provider + ':' : '') + d.modelId
+      } else if (availableModels.value.length > 0) {
+        const first = availableModels.value[0]
+        selectedModelKey.value = (first.provider || '') + ':' + first.id
+      }
     } catch { /* ignore */ }
   }
 
@@ -569,7 +590,7 @@ export const useChatStore = defineStore('chat', () => {
 
   return {
     messages, streaming, pendingApproval, usage, error,
-    selectedModelId, availableModels, contextWindow, messageCount,
+    selectedModelKey, selectedModelLabel, availableModels, contextWindow, messageCount,
     currentSessionId, currentSessionType,
     sendMessage, approveTool, clearChat, setStageHandler, fetchModels, fetchSessionDetail,
     fetchMessages, activateSession,

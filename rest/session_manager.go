@@ -116,6 +116,7 @@ func (sm *sessionManager[E]) create(w http.ResponseWriter, r *http.Request) {
 		Title:     req.Title,
 		Kind:      sm.hooks.kind,
 		ModelID:   req.ModelID,
+		Provider:  req.Provider,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}

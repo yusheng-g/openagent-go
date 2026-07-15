@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -78,12 +79,34 @@ func (h *Handler) fillDetail(e *sessionState, detail *SessionDetail) {
 
 // RegisterModel adds a model to the handler's registry.
 // id is the string the frontend sends as modelID (e.g. "deepseek-v3").
-// provider is optional metadata shown in /models (e.g. "openai", "anthropic").
+// provider identifies which API serves this model (e.g. "deepseek", "openai").
+// The internal key is "provider:id" so different providers can serve the same model name.
 func (h *Handler) RegisterModel(id string, model openagent.Model, provider string) {
 	h.modelsMu.Lock()
 	defer h.modelsMu.Unlock()
-	h.models[id] = model
+	h.models[provider+":"+id] = model
 	h.modelList = append(h.modelList, ModelInfo{ID: id, Provider: provider})
+}
+
+// lookupModel finds a registered model. When provider is non-empty, it uses
+// the exact composite key "provider:modelId". Otherwise it scans all registered
+// models for matching modelId — this handles the common case where the frontend
+// sends only modelId without provider.
+func (h *Handler) lookupModel(provider, modelID string) openagent.Model {
+	h.modelsMu.RLock()
+	defer h.modelsMu.RUnlock()
+	if provider != "" {
+		return h.models[provider+":"+modelID]
+	}
+	for key, m := range h.models {
+		if key == "default" {
+			continue
+		}
+		if strings.HasSuffix(key, ":"+modelID) {
+			return m
+		}
+	}
+	return nil
 }
 
 // Register adds the handler's routes to mux using Go 1.22+ patterns.
@@ -193,20 +216,28 @@ func (h *Handler) handleChat(w http.ResponseWriter, r *http.Request) {
 	defer h.sm.Bus().Unsubscribe(id, sub)
 
 	// Resolve model: chat-level override > session default > handler default.
+	provider := body.Provider
 	modelID := body.ModelID
-	if modelID == "" {
-		h.sm.withMeta(id, func(inf *SessionInfo) { modelID = inf.ModelID })
+	if provider == "" && modelID == "" {
+		h.sm.withMeta(id, func(inf *SessionInfo) {
+			provider = inf.Provider
+			modelID = inf.ModelID
+		})
 	}
-	h.modelsMu.RLock()
-	model := h.models[modelID]
-	h.modelsMu.RUnlock()
+	// Composite key "provider:modelId" for exact match.
+	// When provider is empty, find the first registered model for the given ID.
+	model := h.lookupModel(provider, modelID)
 	if model == nil {
 		model = h.defaultModel
+		provider = ""
 		modelID = ""
 	}
 
 	// Persist the resolved model so GET /sessions reflects the actual model.
-	if inf, ok := h.sm.withMeta(id, func(inf *SessionInfo) { inf.ModelID = modelID }); ok {
+	if inf, ok := h.sm.withMeta(id, func(inf *SessionInfo) {
+		inf.ModelID = modelID
+		inf.Provider = provider
+	}); ok {
 		h.sm.syncMeta(inf)
 	}
 

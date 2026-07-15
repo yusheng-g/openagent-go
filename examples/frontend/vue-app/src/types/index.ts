@@ -7,6 +7,7 @@ export interface SessionInfo {
   title?: string
   kind: 'single' | 'team' | 'plan'
   modelId?: string
+  provider?: string
   createdAt: string
   updatedAt: string
 }
@@ -19,11 +20,13 @@ export interface SessionDetail extends SessionInfo {
 export interface CreateSessionRequest {
   title?: string
   modelId?: string
+  provider?: string
 }
 
 export interface ChatRequest {
   message: string
   modelId?: string
+  provider?: string
 }
 
 export interface ApproveRequest {

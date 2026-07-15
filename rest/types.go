@@ -32,6 +32,7 @@ type SessionInfo struct {
 	Title     string    `json:"title,omitempty"`
 	Kind      string    `json:"kind"` // "single", "team", "plan"
 	ModelID   string    `json:"modelId,omitempty"`
+	Provider  string    `json:"provider,omitempty"` // identifies which provider serves this model
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -47,16 +48,16 @@ type SessionDetail struct {
 
 // CreateSessionRequest is the optional body for POST /sessions.
 type CreateSessionRequest struct {
-	Title   string `json:"title,omitempty"`
-	ModelID string `json:"modelId,omitempty"` // override model per session
+	Title    string `json:"title,omitempty"`
+	ModelID  string `json:"modelId,omitempty"`
+	Provider string `json:"provider,omitempty"`
 }
 
 // ChatRequest is the body for POST /sessions/{id}/chat.
-// Model overrides the session model for this single request (e.g. for
-// switching between gpt-4o and gpt-4 within the same conversation).
 type ChatRequest struct {
-	Message string `json:"message"`
-	ModelID string `json:"modelId,omitempty"` // override model for this turn
+	Message  string `json:"message"`
+	ModelID  string `json:"modelId,omitempty"`
+	Provider string `json:"provider,omitempty"`
 }
 
 // ApproveRequest is the body for POST /sessions/{id}/approve.
