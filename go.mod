@@ -12,6 +12,7 @@ require (
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/openai/openai-go/v3 v3.41.0
 	github.com/pkoukk/tiktoken-go v0.1.8
+	github.com/runzhi214/openagent-go-plugin-api v0.1.1
 	github.com/tetratelabs/wazero v1.12.0
 	go.opentelemetry.io/otel v1.44.0
 	go.opentelemetry.io/otel/trace v1.44.0
