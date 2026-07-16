@@ -1,0 +1,8 @@
+[package]
+name = "openagent-cli-sdk"
+version = "0.1.0"
+edition = "2021"
+description = "SDK for building WASM plugins for openagent-cli"
+
+[lib]
+crate-type = ["rlib"]

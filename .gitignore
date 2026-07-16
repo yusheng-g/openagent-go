@@ -32,6 +32,10 @@ build/
 plugins/
 *.wasm
 
+# Rust
+target/
+Cargo.lock
+
 # env file
 .env
 

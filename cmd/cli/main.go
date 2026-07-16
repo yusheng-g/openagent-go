@@ -1,194 +1,250 @@
-// openagent CLI — single-agent chat and autonomous goal mode.
-//
-//	go run ./cmd/cli/ run "What is 15+27?"
-//	go run ./cmd/cli/ goal "Fix all failing tests"
-//
-// Or build and install:
-//
-//	go build -o openagent ./cmd/cli/
-//	./openagent run "Hello"
+// openagent-cli — openagent-go CLI.
+
 package main
 
 import (
+	"bytes"
 	"context"
-	"flag"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
-	"path/filepath"
-	"strings"
+	"os/signal"
+	"syscall"
 
-	openagent "github.com/yusheng-g/openagent-go"
-	"github.com/yusheng-g/openagent-go/memory/sqlite"
-	"github.com/yusheng-g/openagent-go/model/openai"
-	"github.com/yusheng-g/openagent-go/sandbox/native"
-	opentool "github.com/yusheng-g/openagent-go/tool"
+	"github.com/spf13/cobra"
+
+	"github.com/yusheng-g/openagent-go/cmd/cli/config"
+	"github.com/yusheng-g/openagent-go/cmd/cli/keyring"
+	"github.com/yusheng-g/openagent-go/cmd/cli/plugin"
+	cliwasm "github.com/yusheng-g/openagent-go/cmd/cli/plugin/wasm"
+	"github.com/yusheng-g/openagent-go/cmd/cli/server"
 )
+
 
 func main() {
 	log.SetFlags(0)
 
-	// ── Flags ──
-	var (
-		modelID  = envOr("OPENAGENT_MODEL", "gpt-4o")
-		apiKey   = envOr("OPENAGENT_API_KEY", "")
-		baseURL  = os.Getenv("OPENAGENT_BASE_URL")
-		memPath  string
-		workDir  string
-		maxTurns int
-		toolList string
-	)
-	flag.StringVar(&modelID, "model", modelID, "Model ID")
-	flag.StringVar(&apiKey, "api-key", apiKey, "API key")
-	flag.StringVar(&baseURL, "base-url", baseURL, "Base URL")
-	flag.StringVar(&memPath, "memory", "", "SQLite memory path (empty = no persistence)")
-	flag.StringVar(&workDir, "workspace", "", "Workspace root (empty = current dir)")
-	flag.IntVar(&maxTurns, "max-turns", 0, "Max turns (0 = default 20, goal mode uses 50)")
-	flag.StringVar(&toolList, "tools", "shell,read,write,ls,grep", "Built-in tools to enable (comma-separated)")
-	flag.Parse()
+	// 1. Paths.
+	cfgPath, err := config.Path()
+	if err != nil {
+		log.Fatalf("config path: %v", err)
+	}
+	pluginPaths := []string{config.DefaultPluginsDir()}
 
-	if apiKey == "" {
-		log.Fatal("OPENAGENT_API_KEY not set. Use --api-key or set the environment variable.")
+	// 2. Read settings.json.
+	raw, err := os.ReadFile(cfgPath)
+	if err != nil && !os.IsNotExist(err) {
+		log.Fatalf("read settings: %v", err)
+	}
+	var preCfg config.Config
+	json.Unmarshal(raw, &preCfg)
+	if len(preCfg.Plugins) > 0 {
+		pluginPaths = preCfg.Plugins
 	}
 
-	cmd := flag.Arg(0)
-	if cmd != "run" && cmd != "goal" {
-		fmt.Fprintf(os.Stderr, "Usage: openagent <run|goal> [flags] <message>\n\n")
-		fmt.Fprintf(os.Stderr, "  openagent run \"What is 15+27?\"\n")
-		fmt.Fprintf(os.Stderr, "  openagent goal \"Fix all failing tests\"\n")
-		os.Exit(2)
+	// 3. Keyring + runtime.
+	kr, err := keyring.Open()
+	if err != nil {
+		log.Fatalf("keyring: %v", err)
 	}
+	httpClient := &defaultHTTPClient{client: http.DefaultClient}
 
-	input := strings.Join(flag.Args()[1:], " ")
-	if input == "" {
-		log.Fatal("no input message provided")
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
+	wasmRuntime, err := cliwasm.NewRuntime(ctx, kr, httpClient, &stdLogger{})
+	if err != nil {
+		log.Fatalf("wasm runtime: %v", err)
 	}
+	defer wasmRuntime.Close(ctx)
 
-	// ── Setup ──
-	if workDir == "" {
-		workDir, _ = filepath.Abs(".")
-	}
-
-	llm := openai.New(apiKey, modelID, baseURL).WithContextWindow(128_000)
-
-	var mem openagent.Memory
-	if memPath != "" {
-		var err error
-		mem, err = sqlite.New(memPath)
-		if err != nil {
-			log.Fatalf("open memory: %v", err)
-		}
-	}
-
-	tools := buildTools(workDir, toolList)
-
-	instructions := `You are a precise, no-nonsense assistant running in a CLI.
-- Answer concisely. Don't explain unless asked.
-- If you need to explore, do it in one or two well-targeted commands — don't retry the same thing.
-- When a tool returns an error, read the error and adjust. Don't repeat the same failing call.
-- Use relative paths only (the workspace is the current directory).
-- Stop when the task is done. Don't keep exploring.`
-
-	agent := openagent.NewAgent("cli",
-		openagent.WithModel(llm),
-		openagent.WithInstructions(instructions),
-		openagent.WithMemory(mem),
-		openagent.WithTools(tools...),
-		openagent.WithMaxTurns(20),
-	)
-
-	session := openagent.Session{
-		ID:   "cli",
-		UserID: "user",
-
-		ModelID: modelID,
-		ProjectContext: fmt.Sprintf("Workspace: %s", workDir),
-	}
-
-	// ── Execute ──
-	ctx := context.Background()
-
-	switch cmd {
-	case "run":
-		printStream(agent.RunStream(ctx, session, openagent.UserMessage(input)), true)
-
-	case "goal":
-		if maxTurns == 0 {
-			maxTurns = 50
-		}
-		agent = openagent.NewAgent("cli",
-			openagent.WithModel(llm),
-			openagent.WithInstructions(instructions),
-			openagent.WithMemory(mem),
-			openagent.WithTools(tools...),
-			openagent.WithMaxTurns(maxTurns),
-		)
-		printStream(agent.RunGoalStream(ctx, session, input), false)
-	}
-}
-
-func printStream(ch <-chan openagent.StreamEvent, fatal bool) {
-	for evt := range ch {
-		switch evt.Type {
-		case openagent.StreamTextDelta:
-			fmt.Print(evt.Text)
-		case openagent.StreamToolCall:
-			if len(evt.Message.ToolCalls) > 0 {
-				fmt.Printf("\n🔧 %s", evt.Message.ToolCalls[0].Function.Name)
+	// 4. Load every .wasm and route capabilities.
+	settings := raw
+	mgr := plugin.NewManager(pluginPaths)
+	hub := &cliwasm.ObserverHub{}
+	for _, p := range pluginPaths {
+		files, _ := mgr.ResolveWasmFiles(p)
+		for _, f := range files {
+			wasmBytes, err := os.ReadFile(f)
+			if err != nil {
+				log.Printf("plugin: read %s: %v", f, err)
+				continue
 			}
-		case openagent.StreamToolResult:
-			text := evt.Message.Content
-			if len(text) > 500 {
-				text = text[:500] + "..."
+			mod, meta, err := wasmRuntime.Instantiate(ctx, wasmBytes, f)
+			if err != nil {
+				log.Printf("plugin: load %s: %v", f, err)
+				continue
 			}
-			fmt.Printf(" → %s\n", text)
-		case openagent.StreamDone:
-			fmt.Println()
-		case openagent.StreamError:
-			if fatal { log.Fatalf("error: %v", evt.Error) } else { log.Printf("error: %v", evt.Error) }
-		case openagent.StreamAborted:
-			if fatal { log.Fatalf("aborted: %v", evt.Error) } else { log.Printf("aborted: %v", evt.Error) }
+
+			log.Printf("plugin: loaded %s (%s) type=%s", meta.Name, meta.Description, meta.Type)
+
+			if meta.Is("settings") {
+				merged, err := mod.CallInit(ctx, settings)
+				if err != nil {
+					log.Printf("plugin %s init: %v", meta.Name, err)
+					continue
+				}
+				settings = merged
+			}
+
+			if meta.Is("commands") {
+				cmds, err := mod.ReadCommands(ctx)
+				if err != nil {
+					log.Printf("plugin %s commands: %v", meta.Name, err)
+					continue
+				}
+				for _, cd := range cmds {
+					name := cd.Name
+					rootCmd.AddCommand(&cobra.Command{
+						Use: cd.Use, Short: cd.Short, Long: cd.Long,
+						RunE: func(cmd *cobra.Command, args []string) error {
+							argsJSON, _ := json.Marshal(args)
+							out, err := cliwasm.RunCommand(ctx, name, string(argsJSON))
+							if err != nil {
+								return err
+							}
+							fmt.Print(out)
+							return nil
+						},
+					})
+					log.Printf("plugin: registered command %q", name)
+				}
+			}
+
+			if meta.Is("observers") {
+				hub.Add(mod)
+			}
+		}
+	}
+
+	// 5. Parse final merged config.
+	var cfg config.Config
+	if err := json.Unmarshal(settings, &cfg); err != nil {
+		log.Fatalf("parse merged settings: %v", err)
+	}
+	for k, v := range cfg.Env {
+		os.Setenv(k, v)
+	}
+	pretty, _ := json.MarshalIndent(&cfg, "", "  ")
+	log.Printf("Merged settings:\n%s", string(pretty))
+
+	// 6. Build cobra tree.
+	rootCmd.AddCommand(buildServeCmd(cfg))
+	rootCmd.AddCommand(keyringCmd)
+
+	// 7. Wrap every command's RunE to notify observers on entry/exit with error.
+	wrapCmd(rootCmd, func(cmd *cobra.Command) {
+		hub.OnCommandStart(ctx, cmd.CommandPath())
+	}, func(cmd *cobra.Command, err error) {
+		hub.OnCommandEnd(ctx, cmd.CommandPath(), err)
+	})
+
+	// 8. Notify observers: startup + defer shutdown.
+	hub.OnStartup(ctx)
+	defer hub.OnShutdown(context.Background())
+
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
+}
+
+// wrapCmd recursively wraps every RunE on a cobra Command tree so that
+// beforeFn runs before execution and afterFn runs after with the error
+// (nil on success). This ensures observer callbacks see errors from
+// all commands.
+func wrapCmd(c *cobra.Command, beforeFn func(*cobra.Command), afterFn func(*cobra.Command, error)) {
+	for _, sub := range c.Commands() {
+		wrapCmd(sub, beforeFn, afterFn)
+	}
+	if c.RunE != nil {
+		orig := c.RunE
+		c.RunE = func(cmd *cobra.Command, args []string) error {
+			beforeFn(cmd)
+			err := orig(cmd, args)
+			afterFn(cmd, err)
+			return err
 		}
 	}
 }
 
-func envOr(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
+// ── root ──
+
+var rootCmd = &cobra.Command{
+	Use:   "openagent-cli",
+	Short: "openagent CLI",
 }
 
-func buildTools(workDir, toolList string) []openagent.Tool {
-	var tools []openagent.Tool
-	enabled := make(map[string]bool)
-	for _, name := range strings.Split(toolList, ",") {
-		enabled[strings.TrimSpace(name)] = true
-	}
+// ── serve ──
 
-	// Shell tool needs native sandbox.
-	if enabled["shell"] {
-		sandbox, err := native.New(workDir)
-		if err == nil {
-			tools = append(tools, opentool.NewShell(sandbox, workDir))
-		} else {
-			log.Printf("WARNING: sandbox unavailable (%v), shell tool disabled", err)
-		}
+func buildServeCmd(cfg config.Config) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "serve",
+		Short: "Start the server (REST by default, or --acp for ACP)",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			acp, _ := cmd.Flags().GetBool("acp")
+			p, _ := cmd.Flags().GetInt("port")
+			if p > 0 {
+				cfg.Server.Port = p
+			}
+			ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+			defer cancel()
+			return server.Run(ctx, server.Options{Config: &cfg, ACP: acp})
+		},
 	}
-
-	// File tools.
-	if enabled["read"] {
-		tools = append(tools, opentool.NewReadFile(workDir))
-	}
-	if enabled["write"] {
-		tools = append(tools, opentool.NewWriteFile(workDir))
-	}
-	if enabled["ls"] {
-		tools = append(tools, opentool.NewListDir(workDir))
-	}
-	if enabled["grep"] {
-		tools = append(tools, opentool.NewGrep(workDir))
-	}
-
-	return tools
+	cmd.Flags().Bool("acp", false, "ACP mode over stdio")
+	cmd.Flags().Int("port", 0, "REST port (overrides settings)")
+	return cmd
 }
+
+// ── keyring ──
+
+var keyringCmd = &cobra.Command{Use: "keyring", Short: "Manage credentials in the system keyring"}
+var keyringSetCmd = &cobra.Command{
+	Use: "set <key> <value>", Short: "Store a credential", Args: cobra.ExactArgs(2),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		kr, _ := keyring.Open()
+		return kr.Set("openagent", args[0], args[1])
+	},
+}
+var keyringGetCmd = &cobra.Command{
+	Use: "get <key>", Short: "Read a credential", Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		kr, _ := keyring.Open()
+		v, _ := kr.Get("openagent", args[0])
+		if v == "" { fmt.Println("(not found)") } else { fmt.Println(v) }
+		return nil
+	},
+}
+var keyringDeleteCmd = &cobra.Command{
+	Use: "delete <key>", Short: "Remove a credential", Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		kr, _ := keyring.Open()
+		kr.Delete("openagent", args[0])
+		return nil
+	},
+}
+
+func init() { keyringCmd.AddCommand(keyringSetCmd, keyringGetCmd, keyringDeleteCmd) }
+
+// ── HTTP / logger ──
+
+type defaultHTTPClient struct{ client *http.Client }
+
+func (c *defaultHTTPClient) Do(method, url string, headers map[string]string, body []byte) (int, []byte, error) {
+	req, _ := http.NewRequest(method, url, bytes.NewReader(body))
+	for k, v := range headers { req.Header.Set(k, v) }
+	resp, err := c.client.Do(req)
+	if err != nil { return 0, nil, err }
+	defer resp.Body.Close()
+	respBody, _ := io.ReadAll(resp.Body)
+	return resp.StatusCode, respBody, nil
+}
+
+type stdLogger struct{}
+
+func (l *stdLogger) Info(msg string)  { log.Printf("[plugin] %s", msg) }
+func (l *stdLogger) Warn(msg string)  { log.Printf("[plugin] WARN: %s", msg) }
+func (l *stdLogger) Error(msg string) { log.Printf("[plugin] ERROR: %s", msg) }
