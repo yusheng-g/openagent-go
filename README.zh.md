@@ -1,5 +1,7 @@
 # openagent-go
 
+> [English](README.md) | [Architecture](DESIGN.md) | [架构 (中文)](DESIGN.zh.md)
+
 一个完全可插拔的多智能体 AI Agent 框架，Go 语言实现。
 
 ## 特性
@@ -10,12 +12,18 @@
 - **SSE 流式输出** — 实时逐 token 渲染，支持 reasoning 展示、工具调用卡片
 - **三层记忆系统** — Working（token 驱动）、Compressed（增量摘要）、Archive（可检索，永不删除）
 - **沙箱环境** — 原生 OS 级别隔离，安全执行 shell、文件、网络操作
-- **ACP 支持** — Agent Communication Protocol，连接外部 agent 进程
-- **可观测性** — Pipeline 阶段监控面板，显示耗时和工具详情
+- **WASM 插件系统** — 设置注入、命令扩展、生命周期观察，通过 `.wasm` 模块动态加载
+- **内置子代理工具** — 模型运行时动态 spawn 并行子 agent
+- **完整 CLI** — `openagent-cli` 配置驱动模型、keyring 密钥管理、cobra 命令扩展
+- **RunHooks 状态传递** — Start/End 回调共享不透明状态，OTEL 正确嵌套 span，slog 精确计时
 
 ## 快速开始
 
 ```bash
+# CLI
+go build -o openagent-cli ./cmd/cli/
+./openagent-cli serve --port 8080
+
 # 后端
 OPENAGENT_API_KEY=sk-... OPENAGENT_MODEL=gpt-4o go run ./examples/backend/
 
@@ -57,11 +65,12 @@ cd examples/frontend/vue-app && npm install && npm run dev
 | `examples/observer/` | Pipeline 观测器 |
 | `examples/delegate/` | Agent 作为工具委托 |
 | `examples/sandbox/` | 原生沙箱工具 |
-| `examples/plugin/` | WASM 插件系统 |
+| `examples/plugin/` | WASM 工具 + 阶段插件 |
 | `examples/skill/` | 按需加载技能 |
 | `examples/acp/` | ACP agent 协议 |
 | `examples/backend/` | 完整 REST + SSE API 服务 |
 | `examples/frontend/vue-app/` | Vue 3 SPA 参考前端 |
+| `cmd/cli/` | 完整 CLI，含 WASM 插件运行时 |
 
 ## 包
 
@@ -84,3 +93,4 @@ cd examples/frontend/vue-app && npm install && npm run dev
 | `hooks/otel/` | OpenTelemetry 钩子 |
 | `hooks/slog/` | 结构化日志钩子 |
 | `tool/` | 内置工具 (shell, read, write, ls, grep) |
+| `cmd/cli/` | CLI 运行时、WASM 宿主、Rust SDK |

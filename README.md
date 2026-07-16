@@ -1,5 +1,7 @@
 # openagent-go
 
+> [中文](README.zh.md) | [Architecture](DESIGN.md) | [架构 (中文)](DESIGN.zh.md)
+
 A fully pluggable, multi-agent AI agent framework in Go.
 
 ## Features
@@ -10,13 +12,19 @@ A fully pluggable, multi-agent AI agent framework in Go.
 - **Streaming SSE** — real-time token-by-token output, reasoning display, tool call cards
 - **Memory system** — three-layer: Working (token-driven), Compressed (incremental summary), Archive (searchable)
 - **Sandbox** — native OS-level confinement for shell, file, and network operations
-- **ACP support** — Agent Communication Protocol for external agent processes
-- **Observability** — pipeline stage monitor with timing and tool details
+- **WASM plugin system** — settings injection, command extension, lifecycle observers via `.wasm` modules
+- **Built-in subagent tool** — model dynamically spawns parallel sub-agents at runtime
+- **Full CLI** — `openagent-cli` with config-driven models, keyring secrets, cobra commands
+- **RunHooks with state** — start/end callbacks share opaque state; OTEL spans nest, slog logs duration
 
 ## Quick Start
 
 ```bash
-# Backend
+# CLI
+go build -o openagent-cli ./cmd/cli/
+./openagent-cli serve --port 8080
+
+# Backend (programmatic)
 OPENAGENT_API_KEY=sk-... OPENAGENT_MODEL=gpt-4o go run ./examples/backend/
 
 # Frontend
@@ -57,11 +65,12 @@ Open `http://localhost:5173` — three modes available:
 | `examples/observer/` | Pipeline observer |
 | `examples/delegate/` | Agent as tool delegation |
 | `examples/sandbox/` | Native sandbox tools |
-| `examples/plugin/` | WASM plugin system |
+| `examples/plugin/` | WASM tool + stage plugins |
 | `examples/skill/` | On-demand skill loading |
 | `examples/acp/` | ACP agent protocol |
 | `examples/backend/` | Full REST + SSE API server |
 | `examples/frontend/vue-app/` | Vue 3 SPA reference UI |
+| `cmd/cli/` | Full-featured CLI with WASM plugin runtime |
 
 ## Packages
 
@@ -84,3 +93,4 @@ Open `http://localhost:5173` — three modes available:
 | `hooks/otel/` | OpenTelemetry hooks |
 | `hooks/slog/` | Structured logging hooks |
 | `tool/` | Built-in tools (shell, read, write, ls, grep) |
+| `cmd/cli/` | CLI runtime, WASM host, Rust SDK |

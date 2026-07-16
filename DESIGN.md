@@ -1,5 +1,7 @@
 # openagent-go Architecture
 
+> [中文](DESIGN.zh.md) | [README](README.md) | [README (中文)](README.zh.md)
+
 ## Overview
 
 openagent-go is a **fully pluggable**, open-source AI agent framework in Go. The core is a minimal mainline loop—all capabilities are added through pluggable modules.
@@ -105,11 +107,11 @@ const (
 
 ```go
 type Session struct {
-    ID, UserID, AgentName, ModelID string
-    Temperature, MaxTokens         float64 / int
-    UserProfile, ProjectContext    string
-    Turn                           int
-    CreatedAt                      time.Time
+    ID, UserID, ModelID   string
+    Temperature, MaxTokens float64 / int
+    UserProfile, ProjectContext string
+    Turn                         int
+    CreatedAt                    time.Time
 }
 ```
 
@@ -131,7 +133,7 @@ Layer 3: Archive    — Search() + recall_memory tool; original messages NEVER d
 type Memory interface {
     io.Closer
     Count(ctx, sessionID) (int, error)
-    Recent(ctx, sessionID, n int) ([]Message, error)                  // pure query
+    Recent(ctx, sessionID, n int, offset int) ([]Message, error)         // pure query
     Compact(ctx, sessionID, throughIndex int, messages []Message) error  // Runner-driven
     Compressed(ctx, sessionID) (*CompressedContext, error)
     Search(ctx, sessionID, query string, limit int) ([]SearchResult, error)
@@ -178,7 +180,7 @@ nil = fallback to keyword/FTS5 search. Configured on Memory via `WithEmbedder()`
 type PromptBuilder func(ctx context.Context, input PromptInput) ([]Message, error)
 
 type PromptInput struct {
-    AgentName, AgentDescription, Instructions string
+    AgentDescription, Instructions string
     WorkingMessages   []Message
     Compressed        *CompressedContext
     Tools             []FunctionDefinition
@@ -234,7 +236,13 @@ type StreamExecutor interface {
 }
 ```
 
-Built-in tools: `shell`, `read`, `write`, `ls`, `grep` (in `tool/` package). Skill tools (`use_skill`, `reload_skills`) auto-injected by the Runner. WASM tool plugins via `plugin/wasm`.
+Built-in tools: `shell`, `read`, `write`, `ls`, `grep` (in `tool/` package). Auto-injected tools: `use_skill`, `reload_skills`, `recall_memory`, `subagent`. WASM tool plugins via `plugin/wasm`.
+
+**Subagent tool:** The `subagent` built-in tool lets the model dynamically spawn temporary sub-agents at runtime — `subagent(name, description, prompt, task)`. The sub-agent runs with the caller's tools (minus subagent itself), no Approver, no Memory, limited turns. Results stream back as `StreamToolProgress` events. Safe by construction: noSpawn prevents recursion.
+
+**AsTool():** For pre-configured agents with specific tool subsets: `coder.AsTool()` wraps the agent as a Tool. The sub-agent gets MaxTurns=3, no Approver, no Memory, noSpawn, and stripped agent-spawning tools.
+
+**Two-phase execution:** When an Approver is configured, tools are first approved sequentially (user clicks through dialogs quickly), then approved tools execute concurrently in goroutines. Before this, tool execution was serial under approval.
 
 ### ⑥ Approver
 
@@ -250,12 +258,14 @@ nil = allow all. Implementations: `cmd/tui` (bubbletea v2 Y/N), `examples/backen
 
 ```go
 type RunHooks interface {
-    OnAgentStart(ctx, req) error
-    OnAgentEnd(ctx, req, resp, err)
-    OnToolStart(ctx, tool, args) error
-    OnToolEnd(ctx, tool, args, result, err)
+    OnAgentStart(ctx context.Context, req ChatCompletionRequest) (any, error)
+    OnAgentEnd(ctx context.Context, req ChatCompletionRequest, resp *ChatCompletionResponse, runErr error, startState any)
+    OnToolStart(ctx context.Context, tool FunctionDefinition, args json.RawMessage) (any, error)
+    OnToolEnd(ctx context.Context, tool FunctionDefinition, args json.RawMessage, result *string, err *error, startState any)
 }
 ```
+
+Start methods return an opaque `any` value that the Runner passes to the corresponding End method. This lets implementations carry state from start to finish — OTEL creates a span in Start, defers End in the callback. slog captures `time.Now()` in Start and logs `time.Since()` in End. `result` and `err` are pointers so hooks can redact/truncate/inject metadata before memory storage.
 
 Aligned with OpenAI Agents SDK naming. Implementations: `hooks/slog`, `hooks/otel`.
 
@@ -365,7 +375,7 @@ openagent-go/
 │
 ├── cmd/
 │   ├── tui/              Terminal chat (bubbletea v2)
-│   └── cli/              CLI tool (run + goal commands)
+│   └── cli/              Full CLI: WASM plugin runtime, cobra commands, Rust SDK
 │
 ├── examples/
 │   ├── basic/            Non-streaming example
