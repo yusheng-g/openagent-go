@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -37,6 +38,7 @@ type Options struct {
 
 type agentContext struct {
 	Agent        *openagent.Agent
+	Approver     *acpApprover
 	ModelInfos   []modelReg
 	Mem          openagent.Memory
 	SessionStore rest.SessionStore
@@ -91,17 +93,21 @@ func buildAgentContext(cfg *config.Config) (*agentContext, error) {
 
 	skillLoader := skillfs.New(skillRoot)
 
+	approver := &acpApprover{reqs: make(map[string]openacp.PermissionRequester)}
+
 	agent := openagent.NewAgent("assistant",
 		openagent.WithModel(primaryModel),
 		openagent.WithMemory(mem),
 		openagent.WithPrompt(promptBuilder),
 		openagent.WithSkillLoader(skillLoader),
 		openagent.WithTools(agentTools...),
+		openagent.WithApprover(approver),
 		openagent.WithMaxTurns(100),
 	)
 
 	return &agentContext{
 		Agent:        agent,
+		Approver:     approver,
 		ModelInfos:   modelInfos,
 		Mem:          mem,
 		SessionStore: sessionStore,
@@ -551,9 +557,10 @@ func (s *sqliteACPStore) Close() error { return nil }
 func runACP(ac *agentContext) error {
 	store := newACPStore(ac.Mem)
 	srv := &acpHandler{
-		agent:      ac.Agent,
-		store:      store,
-		modelInfos: ac.ModelInfos,
+		agent:          ac.Agent,
+		approver:       ac.Approver,
+		store:          store,
+		modelInfos:     ac.ModelInfos,
 		defaultModelID: firstModelID(ac.ModelInfos),
 	}
 	server := openacp.NewServer("openagent-acp", "1.0.0", srv)
@@ -573,6 +580,7 @@ func newACPStore(mem openagent.Memory) ACPSessionStore {
 
 type acpHandler struct {
 	agent          *openagent.Agent
+	approver       *acpApprover
 	store          ACPSessionStore
 	modelInfos     []modelReg
 	defaultModelID string
@@ -589,6 +597,27 @@ func (h *acpHandler) findModel(modelID string) openagent.Model {
 		}
 	}
 	return nil
+}
+
+func (h *acpHandler) buildConfigOptions(currentModelID string) []openacp.SessionConfigOption {
+	if len(h.modelInfos) == 0 {
+		return nil
+	}
+	opts := make([]openacp.SessionConfigOptValue, len(h.modelInfos))
+	for i, mi := range h.modelInfos {
+		id := mi.ID
+		if mi.Provider != "" {
+			id = mi.Provider + "/" + mi.ID
+		}
+		opts[i] = openacp.SessionConfigOptValue{Value: id, Label: id}
+	}
+	return []openacp.SessionConfigOption{{
+		Type:         "select",
+		Name:         "model",
+		Label:        "Model",
+		CurrentValue: currentModelID,
+		Options:      opts,
+	}}
 }
 
 func (h *acpHandler) OnInitialize(ctx context.Context, req openacp.InitializeRequest) (*openacp.InitializeResponse, error) {
@@ -614,7 +643,11 @@ func (h *acpHandler) OnNewSession(ctx context.Context, req openacp.NewSessionReq
 		return nil, fmt.Errorf("acp create session: %w", err)
 	}
 	h.store.SetModel(ctx, id, h.defaultModelID)
-	return &openacp.NewSessionResponse{SessionID: id}, nil
+	log.Printf("acp OnNewSession: id=%s cwd=%s model=%s", id, req.Cwd, h.defaultModelID)
+	return &openacp.NewSessionResponse{
+		SessionID:     id,
+		ConfigOptions: h.buildConfigOptions(h.defaultModelID),
+	}, nil
 }
 
 func (h *acpHandler) OnLoadSession(ctx context.Context, req openacp.LoadSessionRequest, sender openacp.SessionEventSender) (*openacp.LoadSessionResponse, error) {
@@ -638,7 +671,13 @@ func (h *acpHandler) OnLoadSession(ctx context.Context, req openacp.LoadSessionR
 	if si.Title != "" {
 		sender.SendSessionInfo(si.Title, nil)
 	}
-	return &openacp.LoadSessionResponse{}, nil
+	modelID, _ := h.store.GetModel(ctx, req.SessionID)
+	if modelID == "" {
+		modelID = h.defaultModelID
+	}
+	return &openacp.LoadSessionResponse{
+		ConfigOptions: h.buildConfigOptions(modelID),
+	}, nil
 }
 
 func (h *acpHandler) OnListSessions(ctx context.Context, req openacp.ListSessionsRequest) (*openacp.ListSessionsResponse, error) {
@@ -670,6 +709,8 @@ func (h *acpHandler) OnPrompt(ctx context.Context, req openacp.PromptRequest, se
 		return nil, fmt.Errorf("no text in prompt")
 	}
 
+	log.Printf("acp OnPrompt: session=%s input=%q", req.SessionID, input)
+
 	h.store.AppendMessage(ctx, req.SessionID, "user", input)
 
 	var responseText strings.Builder
@@ -677,27 +718,62 @@ func (h *acpHandler) OnPrompt(ctx context.Context, req openacp.PromptRequest, se
 	if mID, ok := h.store.GetModel(ctx, req.SessionID); ok {
 		if m := h.findModel(mID); m != nil {
 			session.Model = m
+			log.Printf("acp OnPrompt: using model=%s", mID)
 		}
+	} else {
+		log.Printf("acp OnPrompt: no model found for session, using default")
 	}
+
+	var planEntries []openacp.PlanEntry
+
+	log.Printf("acp OnPrompt: starting RunStream")
 	ch := h.agent.RunStream(ctx, session, openagent.UserMessage(input))
+	eventCount := 0
 	for evt := range ch {
+		eventCount++
+		log.Printf("acp OnPrompt: event #%d type=%s", eventCount, evt.Type)
 		switch evt.Type {
 		case openagent.StreamTextDelta:
 			responseText.WriteString(evt.Text)
-			sender.SendAgentMessage(evt.Text)
+			if err := sender.SendAgentMessage(evt.Text); err != nil {
+				log.Printf("acp OnPrompt: SendAgentMessage error: %v", err)
+			}
 		case openagent.StreamToolCall:
 			if len(evt.Message.ToolCalls) > 0 {
 				tc := evt.Message.ToolCalls[0]
-				sender.SendToolCall(openacp.ToolCallEvent{ID: tc.ID, Title: tc.Function.Name, Status: "in_progress", RawInput: map[string]any{"args": tc.Function.Arguments}})
+				log.Printf("acp OnPrompt: tool_call=%s", tc.Function.Name)
+				if err := sender.SendToolCall(openacp.ToolCallEvent{ID: tc.ID, Title: tc.Function.Name, Status: "in_progress", RawInput: map[string]any{"args": tc.Function.Arguments}}); err != nil {
+					log.Printf("acp OnPrompt: SendToolCall error: %v", err)
+				}
+				planEntries = append(planEntries, openacp.PlanEntry{
+					Title:    tc.Function.Name,
+					Priority: "medium",
+					Status:   "in_progress",
+				})
+				sender.SendPlan(planEntries)
 			}
 		case openagent.StreamToolResult:
-			sender.SendToolCall(openacp.ToolCallEvent{ID: evt.Message.ToolCallID, Status: "completed", RawOutput: map[string]any{"result": evt.Message.Content}})
+			log.Printf("acp OnPrompt: tool_result id=%s", evt.Message.ToolCallID)
+			if err := sender.SendToolCall(openacp.ToolCallEvent{ID: evt.Message.ToolCallID, Status: "completed", RawOutput: map[string]any{"result": evt.Message.Content}}); err != nil {
+				log.Printf("acp OnPrompt: SendToolCall result error: %v", err)
+			}
+			for i := range planEntries {
+				if planEntries[i].Status == "in_progress" {
+					planEntries[i].Status = "completed"
+					break
+				}
+			}
+			sender.SendPlan(planEntries)
 		case openagent.StreamError:
+			log.Printf("acp OnPrompt: stream error: %v", evt.Error)
 			return nil, evt.Error
 		case openagent.StreamAborted:
+			log.Printf("acp OnPrompt: stream aborted")
 			return &openacp.PromptResponse{StopReason: "cancelled"}, nil
 		}
 	}
+
+	log.Printf("acp OnPrompt: stream ended, total events=%d, response len=%d", eventCount, responseText.Len())
 
 	finalText := responseText.String()
 	h.store.AppendMessage(ctx, req.SessionID, "assistant", finalText)
@@ -708,6 +784,7 @@ func (h *acpHandler) OnPrompt(ctx context.Context, req openacp.PromptRequest, se
 	}
 	h.store.SetTitle(ctx, req.SessionID, title)
 
+	log.Printf("acp OnPrompt: done, returning end_turn, response=%q", finalText[:min(len(finalText), 200)])
 	return &openacp.PromptResponse{StopReason: "end_turn"}, nil
 }
 
@@ -719,15 +796,28 @@ func (h *acpHandler) OnDeleteSession(ctx context.Context, sid string) error {
 
 func (h *acpHandler) OnCloseSession(ctx context.Context, sid string) error { return nil }
 
-func (h *acpHandler) OnSetSessionConfigOption(ctx context.Context, sessionID string, opt openacp.SetConfigOption) error {
-	modelID, ok := opt.Value.(string)
-	if !ok {
-		return nil
+func (h *acpHandler) OnSetSessionConfigOption(ctx context.Context, sessionID string, opt openacp.SetConfigOption) ([]openacp.SessionConfigOption, error) {
+	switch opt.ID {
+	case "model":
+		modelID, ok := opt.Value.(string)
+		if !ok {
+			return nil, nil
+		}
+		if m := h.findModel(modelID); m == nil {
+			return nil, nil
+		}
+		if err := h.store.SetModel(ctx, sessionID, modelID); err != nil {
+			return nil, err
+		}
+		return h.buildConfigOptions(modelID), nil
+	default:
+		// Unknown or boolean option — accept silently, return current options.
+		currentModel, _ := h.store.GetModel(ctx, sessionID)
+		if currentModel == "" {
+			currentModel = h.defaultModelID
+		}
+		return h.buildConfigOptions(currentModel), nil
 	}
-	if m := h.findModel(modelID); m == nil {
-		return nil
-	}
-	return h.store.SetModel(ctx, sessionID, modelID)
 }
 
 func (h *acpHandler) OnSetSessionMode(ctx context.Context, sessionID string, modeID string) error {
@@ -736,6 +826,75 @@ func (h *acpHandler) OnSetSessionMode(ctx context.Context, sessionID string, mod
 
 // Compile-time check: acpHandler implements ConfigHandler.
 var _ openacp.ConfigHandler = (*acpHandler)(nil)
+
+// ── Permission (ACP request_permission) ──
+
+type acpApprover struct {
+	mu   sync.Mutex
+	reqs map[string]openacp.PermissionRequester
+}
+
+func (a *acpApprover) register(sessionID string, req openacp.PermissionRequester) {
+	a.mu.Lock()
+	a.reqs[sessionID] = req
+	a.mu.Unlock()
+}
+
+func (a *acpApprover) unregister(sessionID string) {
+	a.mu.Lock()
+	delete(a.reqs, sessionID)
+	a.mu.Unlock()
+}
+
+func (a *acpApprover) Approve(ctx context.Context, call openagent.ToolCall, def openagent.FunctionDefinition, session openagent.Session) (bool, string) {
+	a.mu.Lock()
+	req := a.reqs[session.ID]
+	a.mu.Unlock()
+	if req == nil {
+		return true, ""
+	}
+	options := []openacp.PermissionOption{
+		{Kind: "allow_once", Name: "Allow once", OptionID: "allow_once"},
+		{Kind: "allow_always", Name: "Allow always", OptionID: "allow_always"},
+		{Kind: "reject_once", Name: "Reject once", OptionID: "reject_once"},
+	}
+	outcome, err := req.RequestPermission(ctx, openacp.ToolCallEvent{
+		ID:       call.ID,
+		Title:    def.Name,
+		RawInput: json.RawMessage(call.Function.Arguments),
+	}, options)
+	if err != nil {
+		log.Printf("acp: permission request failed (allowing tool %q): %v", def.Name, err)
+		return true, ""
+	}
+	if outcome.Cancelled {
+		return false, "cancelled"
+	}
+	switch outcome.OptionID {
+	case "allow_once", "allow_always":
+		return true, ""
+	case "reject_once", "reject_always":
+		return false, "rejected"
+	default:
+		return true, ""
+	}
+}
+
+func (h *acpHandler) RegisterPermissionRequester(sessionID string, req openacp.PermissionRequester) {
+	if h.approver != nil {
+		h.approver.register(sessionID, req)
+	}
+}
+
+func (h *acpHandler) UnregisterPermissionRequester(sessionID string) {
+	if h.approver != nil {
+		h.approver.unregister(sessionID)
+	}
+}
+
+// Compile-time checks.
+var _ openagent.Approver = (*acpApprover)(nil)
+var _ openacp.PermissionRegistrar = (*acpHandler)(nil)
 
 // ── ACP over WebSocket ──
 
@@ -763,7 +922,7 @@ func RunACPWS(ctx context.Context, cfg *config.Config, port int) error {
 		}
 		defer ws.Close()
 
-		handler := &acpHandler{agent: ac.Agent, store: store, modelInfos: ac.ModelInfos, defaultModelID: firstModelID(ac.ModelInfos)}
+		handler := &acpHandler{agent: ac.Agent, approver: ac.Approver, store: store, modelInfos: ac.ModelInfos, defaultModelID: firstModelID(ac.ModelInfos)}
 		br := &wsBridge{conn: ws}
 		server := openacp.NewServer("openagent-acp", "1.0.0", handler)
 		log.Printf("acp-ws: client connected")

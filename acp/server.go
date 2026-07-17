@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"log/slog"
 	"os"
 	"sync"
+	"time"
 
 	acpsdk "github.com/coder/acp-go-sdk"
 )
@@ -52,7 +54,7 @@ type AgentHandler interface {
 // ConfigHandler is an optional extension of [AgentHandler]. Implement it
 // to support session/config_set and session/mode changes.
 type ConfigHandler interface {
-	OnSetSessionConfigOption(ctx context.Context, sessionID string, opt SetConfigOption) error
+	OnSetSessionConfigOption(ctx context.Context, sessionID string, opt SetConfigOption) ([]SessionConfigOption, error)
 	OnSetSessionMode(ctx context.Context, sessionID string, modeID string) error
 }
 
@@ -94,6 +96,10 @@ type SessionEventSender interface {
 
 	// SendUsage reports token counts and context window size.
 	SendUsage(info UsageInfo) error
+
+	// SendConfigOptionUpdate pushes the full set of config options and
+	// their current values to the client.
+	SendConfigOptionUpdate(opts []SessionConfigOption) error
 }
 
 // ── Server ──
@@ -279,6 +285,7 @@ func (b *agentBridge) NewSession(ctx context.Context, params acpsdk.NewSessionRe
 
 func (b *agentBridge) Prompt(ctx context.Context, params acpsdk.PromptRequest) (acpsdk.PromptResponse, error) {
 	sessionID := string(params.SessionId)
+	log.Printf("acp bridge Prompt: session=%s", sessionID)
 
 	sender := &agentSender{
 		sessionID: sessionID,
@@ -288,6 +295,11 @@ func (b *agentBridge) Prompt(ctx context.Context, params acpsdk.PromptRequest) (
 
 	b.setSender(sessionID, sender)
 	defer b.deleteSender(sessionID)
+
+	if pr, ok := b.handler.(PermissionRegistrar); ok {
+		pr.RegisterPermissionRequester(sessionID, sender)
+		defer pr.UnregisterPermissionRequester(sessionID)
+	}
 
 	blocks := make([]ContentBlock, len(params.Prompt))
 	for i, pb := range params.Prompt {
@@ -301,9 +313,11 @@ func (b *agentBridge) Prompt(ctx context.Context, params acpsdk.PromptRequest) (
 		Blocks:    blocks,
 	}, sender)
 	if err != nil {
+		log.Printf("acp bridge Prompt: OnPrompt error: %v", err)
 		return acpsdk.PromptResponse{}, err
 	}
 
+	log.Printf("acp bridge Prompt: done, stopReason=%s", resp.StopReason)
 	return acpsdk.PromptResponse{
 		StopReason: acpsdk.StopReason(resp.StopReason),
 	}, nil
@@ -367,9 +381,9 @@ func (b *agentBridge) ResumeSession(ctx context.Context, params acpsdk.ResumeSes
 	sessionID := string(params.SessionId)
 	sender := &agentSender{sessionID: sessionID, bridge: b, conn: b.conn}
 	_, err := b.handler.OnLoadSession(ctx, LoadSessionRequest{
-		SessionID:            sessionID,
-		Cwd:                  params.Cwd,
-		McpServers:           mcpServers,
+		SessionID:             sessionID,
+		Cwd:                   params.Cwd,
+		McpServers:            mcpServers,
 		AdditionalDirectories: params.AdditionalDirectories,
 	}, sender)
 	if err != nil {
@@ -390,9 +404,9 @@ func (b *agentBridge) LoadSession(ctx context.Context, params acpsdk.LoadSession
 	sessionID := string(params.SessionId)
 	sender := &agentSender{sessionID: sessionID, bridge: b, conn: b.conn}
 	_, err := b.handler.OnLoadSession(ctx, LoadSessionRequest{
-		SessionID:            sessionID,
-		Cwd:                  params.Cwd,
-		McpServers:           mcpServers,
+		SessionID:             sessionID,
+		Cwd:                   params.Cwd,
+		McpServers:            mcpServers,
 		AdditionalDirectories: params.AdditionalDirectories,
 	}, sender)
 	if err != nil {
@@ -421,8 +435,12 @@ func (b *agentBridge) SetSessionConfigOption(ctx context.Context, params acpsdk.
 		opt.Value = string(params.ValueId.Value)
 	}
 
-	if err := ch.OnSetSessionConfigOption(ctx, sessionID, opt); err != nil {
+	if updatedOpts, err := ch.OnSetSessionConfigOption(ctx, sessionID, opt); err != nil {
 		return acpsdk.SetSessionConfigOptionResponse{}, err
+	} else if len(updatedOpts) > 0 {
+		if sender := b.getSender(sessionID); sender != nil {
+			sender.SendConfigOptionUpdate(updatedOpts)
+		}
 	}
 	return acpsdk.SetSessionConfigOptionResponse{}, nil
 }
@@ -477,13 +495,18 @@ type agentSender struct {
 
 func (s *agentSender) SendAgentMessage(text string) error {
 	if s.conn == nil {
+		log.Printf("acp SendAgentMessage: conn is nil, text=%q", text[:min(len(text), 100)])
 		return nil
 	}
 	content := acpsdk.ContentBlock{Text: &acpsdk.ContentBlockText{Text: text}}
-	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+	err := s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
 		SessionId: acpsdk.SessionId(s.sessionID),
 		Update:    acpsdk.UpdateAgentMessage(content),
 	})
+	if err != nil {
+		log.Printf("acp SendAgentMessage: SessionUpdate error: %v", err)
+	}
+	return err
 }
 
 func (s *agentSender) SendAgentThought(text string) error {
@@ -623,22 +646,83 @@ func (s *agentSender) SendUsage(info UsageInfo) error {
 	})
 }
 
+func (s *agentSender) SendConfigOptionUpdate(opts []SessionConfigOption) error {
+	if s.conn == nil {
+		return nil
+	}
+	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update: acpsdk.SessionUpdate{
+			ConfigOptionUpdate: &acpsdk.SessionConfigOptionUpdate{
+				ConfigOptions: convertConfigOptions(opts),
+				SessionUpdate: "configOptionUpdate",
+			},
+		},
+	})
+}
+
+func (s *agentSender) RequestPermission(ctx context.Context, toolCall ToolCallEvent, options []PermissionOption) (PermissionOutcome, error) {
+	if s.conn == nil {
+		return PermissionOutcome{Cancelled: true}, nil
+	}
+	sdkOpts := make([]acpsdk.PermissionOption, len(options))
+	for i, o := range options {
+		sdkOpts[i] = acpsdk.PermissionOption{
+			Kind:     acpsdk.PermissionOptionKind(o.Kind),
+			Name:     o.Name,
+			OptionId: acpsdk.PermissionOptionId(o.OptionID),
+		}
+	}
+	title := toolCall.Title
+	status := acpsdk.ToolCallStatusInProgress
+	reqCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	resp, err := s.conn.RequestPermission(reqCtx, acpsdk.RequestPermissionRequest{
+		Options:   sdkOpts,
+		SessionId: acpsdk.SessionId(s.sessionID),
+		ToolCall: acpsdk.ToolCallUpdate{
+			ToolCallId: acpsdk.ToolCallId(toolCall.ID),
+			Title:      &title,
+			RawInput:   toolCall.RawInput,
+			Status:     &status,
+		},
+	})
+	if err != nil {
+		return PermissionOutcome{Cancelled: true}, err
+	}
+	if resp.Outcome.Cancelled != nil {
+		return PermissionOutcome{Cancelled: true}, nil
+	}
+	if resp.Outcome.Selected != nil {
+		return PermissionOutcome{OptionID: string(resp.Outcome.Selected.OptionId)}, nil
+	}
+	return PermissionOutcome{Cancelled: true}, nil
+}
+
 // ── Helpers ──
 
 func sessionListCapPtr(ok bool) *acpsdk.SessionListCapabilities {
-	if !ok { return nil }
+	if !ok {
+		return nil
+	}
 	return &acpsdk.SessionListCapabilities{}
 }
 func sessionResumeCapPtr(ok bool) *acpsdk.SessionResumeCapabilities {
-	if !ok { return nil }
+	if !ok {
+		return nil
+	}
 	return &acpsdk.SessionResumeCapabilities{}
 }
 func sessionDeleteCapPtr(ok bool) *acpsdk.SessionDeleteCapabilities {
-	if !ok { return nil }
+	if !ok {
+		return nil
+	}
 	return &acpsdk.SessionDeleteCapabilities{}
 }
 func sessionCloseCapPtr(ok bool) *acpsdk.SessionCloseCapabilities {
-	if !ok { return nil }
+	if !ok {
+		return nil
+	}
 	return &acpsdk.SessionCloseCapabilities{}
 }
 

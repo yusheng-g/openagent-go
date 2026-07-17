@@ -10,6 +10,8 @@
 //	openacp "github.com/yusheng-g/openagent-go/acp"
 package acp
 
+import "context"
+
 // ── Content / Prompt ──
 
 // ContentBlock represents a piece of content in a prompt.
@@ -33,16 +35,16 @@ type PromptResponse struct {
 // NewSessionRequest configures a new ACP session.
 // See: https://agentclientprotocol.com/protocol/session-setup#creating-a-session
 type NewSessionRequest struct {
-	Cwd                  string      // working directory (required)
-	McpServers           []McpServer // MCP servers the agent should connect to
-	AdditionalDirectories []string   // additional workspace roots
+	Cwd                   string      // working directory (required)
+	McpServers            []McpServer // MCP servers the agent should connect to
+	AdditionalDirectories []string    // additional workspace roots
 }
 
 // NewSessionResponse is the result of creating a session.
 type NewSessionResponse struct {
-	SessionID     string                 // unique session identifier
-	ConfigOptions []SessionConfigOption  // initial config options (if supported)
-	Modes         *SessionModeState      // initial mode state (if supported)
+	SessionID     string                // unique session identifier
+	ConfigOptions []SessionConfigOption // initial config options (if supported)
+	Modes         *SessionModeState     // initial mode state (if supported)
 }
 
 // LoadSessionRequest requests resuming an existing ACP session.
@@ -77,7 +79,7 @@ type SessionInfo struct {
 
 // ListSessionsResponse is the result of listing available sessions.
 type ListSessionsResponse struct {
-	NextCursor *string        // present if there are more results
+	NextCursor *string // present if there are more results
 	Sessions   []SessionInfo
 }
 
@@ -93,11 +95,11 @@ type McpServer struct {
 // SessionConfigOption describes a configuration option presented to the user.
 // Type is "select" or "boolean"; for "select", Options is populated.
 type SessionConfigOption struct {
-	Type         string                   `json:"type"`
-	Name         string                   `json:"name,omitempty"`
-	Label        string                   `json:"label,omitempty"`
-	CurrentValue string                   `json:"currentValue,omitempty"`
-	Options      []SessionConfigOptValue  `json:"options,omitempty"`
+	Type         string                  `json:"type"`
+	Name         string                  `json:"name,omitempty"`
+	Label        string                  `json:"label,omitempty"`
+	CurrentValue string                  `json:"currentValue,omitempty"`
+	Options      []SessionConfigOptValue `json:"options,omitempty"`
 }
 
 // SessionConfigOptValue is a single option value in a select config.
@@ -233,6 +235,12 @@ type ModeHandler interface {
 	OnUserMessage(text string)
 }
 
+// ConfigOptionHandler is an optional extension of [EventHandler]. Implement
+// it to receive config option updates pushed by the agent.
+type ConfigOptionHandler interface {
+	OnConfigOptionUpdate(opts []SessionConfigOption)
+}
+
 // ToolCallEvent represents a tool invocation by the agent.
 type ToolCallEvent struct {
 	ID        string
@@ -258,4 +266,42 @@ type ForkSessionRequest struct {
 // ForkSessionResponse is the result of forking a session.
 type ForkSessionResponse struct {
 	SessionID string
+}
+
+// ── Permission ──
+
+// PermissionOption represents a choice presented to the user when the
+// agent requests permission to execute a tool.
+type PermissionOption struct {
+	Kind     string // "allow_once", "allow_always", "reject_once", "reject_always"
+	Name     string
+	OptionID string
+}
+
+// PermissionOutcome is the user's decision on a permission request.
+type PermissionOutcome struct {
+	Cancelled bool
+	OptionID  string // set when not cancelled
+}
+
+// PermissionRequester is implemented by [SessionEventSender] to ask the
+// client for tool execution permission via the ACP request_permission flow.
+type PermissionRequester interface {
+	RequestPermission(ctx context.Context, toolCall ToolCallEvent, options []PermissionOption) (PermissionOutcome, error)
+}
+
+// PermissionRegistrar is an optional extension of [AgentHandler]. The
+// bridge calls RegisterPermissionRequester when a prompt starts and
+// UnregisterPermissionRequester when it finishes, wiring the per-session
+// sender into the agent's Approver.
+type PermissionRegistrar interface {
+	RegisterPermissionRequester(sessionID string, req PermissionRequester)
+	UnregisterPermissionRequester(sessionID string)
+}
+
+// PermissionHandler is an optional extension of [EventHandler] on the
+// client side. Implement it to receive permission requests from the agent
+// and present them to the user.
+type PermissionHandler interface {
+	OnRequestPermission(options []PermissionOption, toolCall ToolCallEvent) PermissionOutcome
 }

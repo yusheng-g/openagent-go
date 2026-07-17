@@ -107,12 +107,12 @@ func (s *Sandbox) bwrapArgs(cmd openagent.Command) ([]string, bool) {
 	}
 
 	args := []string{
-		"--unshare-all",            // new namespaces for everything
-		"--share-net",              // but keep host network access
-		"--new-session",            // new session, no controlling tty
-		"--die-with-parent",        // kill container when parent dies
-		"--proc", "/proc",          // mount proc
-		"--dev", "/dev",            // minimal /dev
+		"--unshare-all",     // new namespaces for everything
+		"--share-net",       // but keep host network access
+		"--new-session",     // new session, no controlling tty
+		"--die-with-parent", // kill container when parent dies
+		"--proc", "/proc",   // mount proc
+		"--dev", "/dev", // minimal /dev
 		"--ro-bind", "/usr", "/usr",
 		"--ro-bind", "/bin", "/bin",
 		"--ro-bind", "/lib", "/lib",
@@ -122,6 +122,31 @@ func (s *Sandbox) bwrapArgs(cmd openagent.Command) ([]string, bool) {
 	// Bind workspace as writable /workspace.
 	args = append(args, "--bind", s.workDir, "/workspace")
 	args = append(args, "--chdir", "/workspace")
+
+	// DNS / name resolution.
+	for _, f := range []string{
+		"/etc/resolv.conf",
+		"/etc/hosts",
+		"/etc/nsswitch.conf",
+	} {
+		if _, err := os.Stat(f); err == nil {
+			args = append(args, "--ro-bind", f, f)
+		}
+	}
+
+	// User / group lookup so names resolve inside the user namespace.
+	for _, f := range []string{"/etc/passwd", "/etc/group"} {
+		if _, err := os.Stat(f); err == nil {
+			args = append(args, "--ro-bind", f, f)
+		}
+	}
+
+	// CA certificates for TLS (HTTPS / curl).
+	for _, f := range []string{"/etc/ssl", "/etc/pki"} {
+		if _, err := os.Stat(f); err == nil {
+			args = append(args, "--ro-bind", f, f)
+		}
+	}
 
 	// Additional read-only bind mounts.
 	for _, m := range s.extraMounts {

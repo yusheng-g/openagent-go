@@ -292,9 +292,9 @@ func (s *Session) LoadSession(ctx context.Context, req LoadSessionRequest) (*Loa
 	}
 
 	_, err := s.conn.ResumeSession(ctx, acpsdk.ResumeSessionRequest{
-		SessionId:            acpsdk.SessionId(req.SessionID),
-		Cwd:                  req.Cwd,
-		McpServers:           mcpServers,
+		SessionId:             acpsdk.SessionId(req.SessionID),
+		Cwd:                   req.Cwd,
+		McpServers:            mcpServers,
 		AdditionalDirectories: req.AdditionalDirectories,
 	})
 	if err != nil {
@@ -503,6 +503,11 @@ func (b *sessionBridge) SessionUpdate(ctx context.Context, params acpsdk.Session
 				Size: update.UsageUpdate.Size,
 			})
 		}
+
+	case update.ConfigOptionUpdate != nil:
+		if coh, ok := h.(ConfigOptionHandler); ok {
+			coh.OnConfigOptionUpdate(fromSDKConfigOptions(update.ConfigOptionUpdate.ConfigOptions))
+		}
 	}
 
 	return nil
@@ -510,11 +515,50 @@ func (b *sessionBridge) SessionUpdate(ctx context.Context, params acpsdk.Session
 
 // Other Client methods — return "not supported".
 func (b *sessionBridge) RequestPermission(ctx context.Context, params acpsdk.RequestPermissionRequest) (acpsdk.RequestPermissionResponse, error) {
+	h := b.getHandler()
+	if h == nil {
+		return cancelledPermissionResponse(), nil
+	}
+	ph, ok := h.(PermissionHandler)
+	if !ok {
+		return cancelledPermissionResponse(), nil
+	}
+
+	options := make([]PermissionOption, len(params.Options))
+	for i, o := range params.Options {
+		options[i] = PermissionOption{
+			Kind:     string(o.Kind),
+			Name:     o.Name,
+			OptionID: string(o.OptionId),
+		}
+	}
+
+	tc := ToolCallEvent{ID: string(params.ToolCall.ToolCallId)}
+	if params.ToolCall.Title != nil {
+		tc.Title = *params.ToolCall.Title
+	}
+	tc.RawInput = params.ToolCall.RawInput
+
+	outcome := ph.OnRequestPermission(options, tc)
+	if outcome.Cancelled {
+		return cancelledPermissionResponse(), nil
+	}
+	return acpsdk.RequestPermissionResponse{
+		Outcome: acpsdk.RequestPermissionOutcome{
+			Selected: &acpsdk.RequestPermissionOutcomeSelected{
+				Outcome:  "selected",
+				OptionId: acpsdk.PermissionOptionId(outcome.OptionID),
+			},
+		},
+	}, nil
+}
+
+func cancelledPermissionResponse() acpsdk.RequestPermissionResponse {
 	return acpsdk.RequestPermissionResponse{
 		Outcome: acpsdk.RequestPermissionOutcome{
 			Cancelled: &acpsdk.RequestPermissionOutcomeCancelled{Outcome: "cancelled"},
 		},
-	}, nil
+	}
 }
 
 func (b *sessionBridge) ReadTextFile(ctx context.Context, params acpsdk.ReadTextFileRequest) (acpsdk.ReadTextFileResponse, error) {
