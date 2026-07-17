@@ -142,9 +142,8 @@ func (s *Server) SetLogger(l *slog.Logger) { s.logger = l }
 //
 // For custom transports, use [Server.RunTransport].
 func (s *Server) Run(ctx context.Context) error {
-	// For a subprocess agent: we read ACP requests from stdin,
-	// and write ACP responses/notifications to stdout.
-	return s.RunTransport(ctx, os.Stdout, os.Stdin)
+	compatReader := newACPCompatReader(os.Stdin, os.Stdout)
+	return s.RunTransport(ctx, os.Stdout, compatReader)
 }
 
 // RunTransport starts the ACP server on custom I/O streams.

@@ -188,6 +188,7 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			acp, _ := cmd.Flags().GetBool("acp")
 			acpWS, _ := cmd.Flags().GetBool("acp-ws")
+			acpDB, _ := cmd.Flags().GetString("acp-db")
 			p, _ := cmd.Flags().GetInt("port")
 			if p > 0 {
 				cfg.Server.Port = p
@@ -197,11 +198,12 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 			if acpWS {
 				return server.RunACPWS(ctx, &cfg, cfg.Server.Port)
 			}
-			return server.Run(ctx, server.Options{Config: &cfg, ACP: acp})
+			return server.Run(ctx, server.Options{Config: &cfg, ACP: acp, ACPDBPath: acpDB})
 		},
 	}
 	cmd.Flags().Bool("acp", false, "ACP mode over stdio")
 	cmd.Flags().Bool("acp-ws", false, "ACP mode over WebSocket")
+	cmd.Flags().String("acp-db", "", "External SQLite file for shared ACP session persistence")
 	cmd.Flags().Int("port", 0, "REST port (overrides settings)")
 	return cmd
 }

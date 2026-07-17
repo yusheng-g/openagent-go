@@ -32,8 +32,9 @@ import (
 )
 
 type Options struct {
-	Config *config.Config
-	ACP    bool
+	Config    *config.Config
+	ACP       bool
+	ACPDBPath string
 }
 
 type agentContext struct {
@@ -122,7 +123,7 @@ func Run(ctx context.Context, opts Options) error {
 	}
 
 	if opts.ACP {
-		return runACP(ctx, ac)
+		return runACP(ctx, ac, opts.ACPDBPath)
 	}
 	return runREST(ctx, opts.Config, ac.Agent, ac.ModelInfos, ac.Mem, ac.SessionStore)
 }
@@ -410,7 +411,8 @@ func (s *memoryACPStore) Close() error { return nil }
 // ── sqlite store ──
 
 type sqliteACPStore struct {
-	db *sql.DB
+	db      *sql.DB
+	ownedDB bool
 }
 
 func newSQLiteACPStore(db *sql.DB) (*sqliteACPStore, error) {
@@ -547,12 +549,51 @@ func (s *sqliteACPStore) EnsureSession(ctx context.Context, id, cwd string) erro
 	return err
 }
 
-func (s *sqliteACPStore) Close() error { return nil }
+func (s *sqliteACPStore) Close() error {
+	if s.ownedDB {
+		return s.db.Close()
+	}
+	return nil
+}
+
+func newExternalACPStore(dbPath string) (ACPSessionStore, error) {
+	dsn := dbPath + "?_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)"
+	db, err := sql.Open("sqlite", dsn)
+	if err != nil {
+		return nil, fmt.Errorf("acp external db: open: %w", err)
+	}
+	if err := migrateACPStore(db); err != nil {
+		db.Close()
+		return nil, err
+	}
+	if _, err := db.Exec(`
+		CREATE TABLE IF NOT EXISTS messages (
+			id         INTEGER PRIMARY KEY AUTOINCREMENT,
+			session_id TEXT NOT NULL,
+			role       TEXT NOT NULL,
+			content    TEXT NOT NULL DEFAULT ''
+		);
+		CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, id);
+	`); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("acp external db: migrate messages: %w", err)
+	}
+	return &sqliteACPStore{db: db, ownedDB: true}, nil
+}
 
 // ── handler ──
 
-func runACP(ctx context.Context, ac *agentContext) error {
-	store := newACPStore(ac.Mem)
+func runACP(ctx context.Context, ac *agentContext, externalDBPath string) error {
+	var store ACPSessionStore
+	if externalDBPath != "" {
+		var err error
+		store, err = newExternalACPStore(externalDBPath)
+		if err != nil {
+			return err
+		}
+	} else {
+		store = newACPStore(ac.Mem)
+	}
 	srv := &acpHandler{
 		agent:          ac.Agent,
 		approver:       ac.Approver,
