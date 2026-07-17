@@ -122,7 +122,7 @@ func Run(ctx context.Context, opts Options) error {
 	}
 
 	if opts.ACP {
-		return runACP(ac)
+		return runACP(ctx, ac)
 	}
 	return runREST(ctx, opts.Config, ac.Agent, ac.ModelInfos, ac.Mem, ac.SessionStore)
 }
@@ -551,7 +551,7 @@ func (s *sqliteACPStore) Close() error { return nil }
 
 // ── handler ──
 
-func runACP(ac *agentContext) error {
+func runACP(ctx context.Context, ac *agentContext) error {
 	store := newACPStore(ac.Mem)
 	srv := &acpHandler{
 		agent:          ac.Agent,
@@ -562,7 +562,10 @@ func runACP(ac *agentContext) error {
 	}
 	server := openacp.NewServer("openagent-acp", "1.0.0", srv)
 	log.Println("ACP server starting on stdio")
-	return server.Run(context.Background())
+	if err := server.Run(ctx); err != nil && err != context.Canceled {
+		return err
+	}
+	return nil
 }
 
 func newACPStore(mem openagent.Memory) ACPSessionStore {
