@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -106,7 +107,8 @@ func (s *Sandbox) bwrapArgs(cmd openagent.Command) ([]string, bool) {
 	}
 
 	args := []string{
-		"--unshare-all",            // new namespaces for everything (incl. network)
+		"--unshare-all",            // new namespaces for everything
+		"--share-net",              // but keep host network access
 		"--new-session",            // new session, no controlling tty
 		"--die-with-parent",        // kill container when parent dies
 		"--proc", "/proc",          // mount proc
@@ -120,6 +122,13 @@ func (s *Sandbox) bwrapArgs(cmd openagent.Command) ([]string, bool) {
 	// Bind workspace as writable /workspace.
 	args = append(args, "--bind", s.workDir, "/workspace")
 	args = append(args, "--chdir", "/workspace")
+
+	// Additional read-only bind mounts.
+	for _, m := range s.extraMounts {
+		if _, err := os.Stat(m.src); err == nil {
+			args = append(args, "--ro-bind", m.src, m.dst)
+		}
+	}
 
 	// Pass environment variables.
 	for _, e := range cmd.Env {

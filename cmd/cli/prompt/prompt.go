@@ -92,10 +92,6 @@ func (b *Builder) assemble(ctx context.Context, input openagent.PromptInput) []o
 		msgs = append(msgs, b.buildCompressedMsg(input.Compressed))
 	}
 
-	if len(input.AvailableSkills) > 0 {
-		msgs = append(msgs, b.buildSkillsMsg(input.AvailableSkills))
-	}
-
 	for name, body := range input.LoadedSkills {
 		msgs = append(msgs, openagent.Message{
 			Role:    openagent.RoleSystem,
@@ -155,20 +151,6 @@ func (b *Builder) buildCompressedMsg(cc *openagent.CompressedContext) openagent.
 	return openagent.Message{Role: openagent.RoleSystem, Content: content}
 }
 
-func (b *Builder) buildSkillsMsg(skills []openagent.SkillInfo) openagent.Message {
-	var catalog string
-	for _, s := range skills {
-		catalog += "\n### " + s.Name + "\n"
-		for k, v := range s.Frontmatter {
-			catalog += fmt.Sprintf("%s: %v\n", k, v)
-		}
-	}
-	return openagent.Message{
-		Role:    openagent.RoleSystem,
-		Content: "## Available Skills\n" + catalog,
-	}
-}
-
 func (b *Builder) applyBudget(msgs []openagent.Message) []openagent.Message {
 	if b.contextWindow <= 0 || len(msgs) == 0 {
 		return msgs
@@ -180,7 +162,7 @@ func (b *Builder) applyBudget(msgs []openagent.Message) []openagent.Message {
 
 	var result []openagent.Message
 	var workingMsgs []openagent.Message
-	var staticIdx, dynamicIdx, compressedIdx, loadedSkillStart int = -1, -1, -1, -1
+	var staticIdx, dynamicIdx, compressedIdx int = -1, -1, -1
 
 	for i, m := range msgs {
 		if m.Role != openagent.RoleSystem {
@@ -195,11 +177,8 @@ func (b *Builder) applyBudget(msgs []openagent.Message) []openagent.Message {
 			continue
 		}
 
-		if strings.HasPrefix(m.Content, "## Available Skills") ||
-			strings.HasPrefix(m.Content, "## Loaded Skill:") {
-			if loadedSkillStart < 0 {
-				loadedSkillStart = i
-			}
+		if strings.HasPrefix(m.Content, "## Loaded Skill:") {
+			result = append(result, m)
 			continue
 		}
 
@@ -221,19 +200,6 @@ func (b *Builder) applyBudget(msgs []openagent.Message) []openagent.Message {
 	if compressedIdx >= 0 {
 		content := b.trimContent(msgs[compressedIdx].Content, summaryBudget)
 		result = append(result, openagent.Message{Role: openagent.RoleSystem, Content: content})
-	}
-
-	if loadedSkillStart >= 0 {
-		for i := loadedSkillStart; i < len(msgs); i++ {
-			m := msgs[i]
-			if m.Role != openagent.RoleSystem {
-				break
-			}
-			if strings.HasPrefix(m.Content, "## Conversation Summary") {
-				continue
-			}
-			result = append(result, m)
-		}
 	}
 
 	result = append(result, workingMsgs...)

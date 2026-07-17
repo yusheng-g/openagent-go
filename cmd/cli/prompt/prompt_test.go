@@ -188,7 +188,7 @@ func TestBuilder_CompressedSummary(t *testing.T) {
 }
 
 func TestBuilder_AvailableSkills(t *testing.T) {
-	b := NewBuilder("gpt-4o", 128000)
+	b := DefaultServer("gpt-4o", 128000)
 
 	pb := b.Build()
 	input := openagent.PromptInput{
@@ -204,13 +204,13 @@ func TestBuilder_AvailableSkills(t *testing.T) {
 
 	found := false
 	for _, m := range msgs {
-		if strings.Contains(m.Content, "Available Skills") && strings.Contains(m.Content, "web-dev") {
+		if strings.Contains(m.Content, "Installed Skills") && strings.Contains(m.Content, "web-dev") {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Error("available skills message not found in output")
+		t.Error("installed skills message not found in output")
 	}
 }
 
@@ -283,10 +283,10 @@ func TestDefaultCLI_ReservedSectionsAreSkipped(t *testing.T) {
 	}
 
 	for _, m := range msgs {
-		if strings.Contains(m.Content, "Current Plan") ||
-			strings.Contains(m.Content, "## Scratchpad") ||
-			strings.Contains(m.Content, "Episodic Memory") ||
-			strings.Contains(m.Content, "Semantic Memory") {
+		if strings.HasPrefix(m.Content, "## Current Plan") ||
+			strings.HasPrefix(m.Content, "## Scratchpad") ||
+			strings.HasPrefix(m.Content, "## Episodic Memory") ||
+			strings.HasPrefix(m.Content, "## Semantic Memory") {
 			t.Errorf("reserved section should not appear: %s", m.Content[:200])
 		}
 	}

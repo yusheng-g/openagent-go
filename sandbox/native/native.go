@@ -25,7 +25,17 @@ import (
 // Sandbox confines command execution using OS-native security mechanisms.
 // Commands can only read/write within the workspace directory.
 type Sandbox struct {
-	workDir string // host path, the only writable directory
+	workDir     string
+	extraMounts []bindMount
+}
+
+type bindMount struct{ src, dst string }
+
+// AddMount adds an additional read-only bind mount inside the sandbox.
+// src is the host path, dst is the path visible inside the sandbox.
+func (s *Sandbox) AddMount(src, dst string) *Sandbox {
+	s.extraMounts = append(s.extraMounts, bindMount{src: src, dst: dst})
+	return s
 }
 
 // New creates a native sandbox rooted at workDir.

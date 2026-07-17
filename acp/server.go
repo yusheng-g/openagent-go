@@ -481,7 +481,8 @@ func (s *agentSender) SendAgentMessage(text string) error {
 	}
 	content := acpsdk.ContentBlock{Text: &acpsdk.ContentBlockText{Text: text}}
 	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
-		Update: acpsdk.UpdateAgentMessage(content),
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    acpsdk.UpdateAgentMessage(content),
 	})
 }
 
@@ -491,7 +492,8 @@ func (s *agentSender) SendAgentThought(text string) error {
 	}
 	content := acpsdk.ContentBlock{Text: &acpsdk.ContentBlockText{Text: text}}
 	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
-		Update: acpsdk.UpdateAgentThought(content),
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    acpsdk.UpdateAgentThought(content),
 	})
 }
 
@@ -515,7 +517,8 @@ func (s *agentSender) SendToolCall(tc ToolCallEvent) error {
 			acpsdk.WithStartRawInput(tc.RawInput))
 	}
 	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
-		Update: update,
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    update,
 	})
 }
 

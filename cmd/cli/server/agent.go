@@ -27,6 +27,7 @@ import (
 
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
 	"github.com/yusheng-g/openagent-go/cmd/cli/prompt"
+	skillfs "github.com/yusheng-g/openagent-go/skill/fs"
 )
 
 type Options struct {
@@ -73,9 +74,14 @@ func buildAgentContext(cfg *config.Config) (*agentContext, error) {
 	}
 
 	workDir, _ := os.Getwd()
+
+	homeDir, _ := os.UserHomeDir()
+	skillRoot := filepath.Join(homeDir, ".agents", "skills")
+
 	sandbox, err := native.New(workDir)
 	var agentTools []openagent.Tool
 	if err == nil {
+		sandbox.AddMount(skillRoot, "/skills")
 		agentTools = buildTools(sandbox, workDir, []string{"shell", "read", "write", "ls", "grep"})
 	} else {
 		log.Printf("WARNING: sandbox unavailable: %v", err)
@@ -83,12 +89,15 @@ func buildAgentContext(cfg *config.Config) (*agentContext, error) {
 
 	promptBuilder := prompt.DefaultServer(modelID, cw).Build()
 
+	skillLoader := skillfs.New(skillRoot)
+
 	agent := openagent.NewAgent("assistant",
 		openagent.WithModel(primaryModel),
 		openagent.WithMemory(mem),
 		openagent.WithPrompt(promptBuilder),
+		openagent.WithSkillLoader(skillLoader),
 		openagent.WithTools(agentTools...),
-		openagent.WithMaxTurns(10),
+		openagent.WithMaxTurns(100),
 	)
 
 	return &agentContext{
@@ -272,6 +281,9 @@ type ACPSessionStore interface {
 	AppendMessage(ctx context.Context, sessionID, role, content string) error
 	LoadMessages(ctx context.Context, sessionID string) ([]acpMessage, error)
 	SetTitle(ctx context.Context, sessionID, title string) error
+	SetModel(ctx context.Context, sessionID, modelID string) error
+	GetModel(ctx context.Context, sessionID string) (string, bool)
+	EnsureSession(ctx context.Context, id, cwd string) error
 	Close() error
 }
 
@@ -293,6 +305,7 @@ type memoryACPStore struct {
 	mu       sync.Mutex
 	sessions map[string]*acpSessionInfo
 	messages map[string][]acpMessage // sessionID -> messages
+	models   map[string]string       // sessionID -> modelID
 	nextID   int
 }
 
@@ -300,6 +313,7 @@ func newMemoryACPStore() *memoryACPStore {
 	return &memoryACPStore{
 		sessions: make(map[string]*acpSessionInfo),
 		messages: make(map[string][]acpMessage),
+		models:   make(map[string]string),
 		nextID:   1,
 	}
 }
@@ -364,6 +378,30 @@ func (s *memoryACPStore) SetTitle(ctx context.Context, sessionID, title string) 
 	return nil
 }
 
+func (s *memoryACPStore) SetModel(ctx context.Context, sessionID, modelID string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.models[sessionID] = modelID
+	return nil
+}
+
+func (s *memoryACPStore) GetModel(ctx context.Context, sessionID string) (string, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	m, ok := s.models[sessionID]
+	return m, ok
+}
+
+func (s *memoryACPStore) EnsureSession(ctx context.Context, id, cwd string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, ok := s.sessions[id]; !ok {
+		now := time.Now().UTC().Format(time.RFC3339)
+		s.sessions[id] = &acpSessionInfo{ID: id, Cwd: cwd, UpdatedAt: now}
+	}
+	return nil
+}
+
 func (s *memoryACPStore) Close() error { return nil }
 
 // ── sqlite store ──
@@ -380,7 +418,7 @@ func newSQLiteACPStore(db *sql.DB) (*sqliteACPStore, error) {
 }
 
 func migrateACPStore(db *sql.DB) error {
-	_, err := db.Exec(`
+	if _, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS acp_sessions (
 			id         TEXT PRIMARY KEY,
 			cwd        TEXT NOT NULL DEFAULT '',
@@ -393,8 +431,12 @@ func migrateACPStore(db *sql.DB) error {
 			value INTEGER NOT NULL DEFAULT 0
 		);
 		INSERT OR IGNORE INTO acp_seq (name, value) VALUES ('session_id', 0);
-	`)
-	return err
+	`); err != nil {
+		return err
+	}
+	// Best-effort migration for existing databases.
+	db.Exec(`ALTER TABLE acp_sessions ADD COLUMN model_id TEXT NOT NULL DEFAULT ''`)
+	return nil
 }
 
 func (s *sqliteACPStore) nextID() string {
@@ -477,13 +519,43 @@ func (s *sqliteACPStore) SetTitle(ctx context.Context, sessionID, title string) 
 	return err
 }
 
+func (s *sqliteACPStore) SetModel(ctx context.Context, sessionID, modelID string) error {
+	_, err := s.db.ExecContext(ctx,
+		`UPDATE acp_sessions SET model_id = ?, updated_at = ? WHERE id = ?`,
+		modelID, time.Now().UTC().Format(time.RFC3339), sessionID)
+	return err
+}
+
+func (s *sqliteACPStore) GetModel(ctx context.Context, sessionID string) (string, bool) {
+	var m string
+	err := s.db.QueryRowContext(ctx,
+		`SELECT model_id FROM acp_sessions WHERE id = ?`, sessionID).Scan(&m)
+	if err != nil || m == "" {
+		return "", false
+	}
+	return m, true
+}
+
+func (s *sqliteACPStore) EnsureSession(ctx context.Context, id, cwd string) error {
+	now := time.Now().UTC().Format(time.RFC3339)
+	_, err := s.db.ExecContext(ctx,
+		`INSERT OR IGNORE INTO acp_sessions (id, cwd, title, created_at, updated_at) VALUES (?, ?, '', ?, ?)`,
+		id, cwd, now, now)
+	return err
+}
+
 func (s *sqliteACPStore) Close() error { return nil }
 
 // ── handler ──
 
 func runACP(ac *agentContext) error {
 	store := newACPStore(ac.Mem)
-	srv := &acpHandler{agent: ac.Agent, store: store}
+	srv := &acpHandler{
+		agent:      ac.Agent,
+		store:      store,
+		modelInfos: ac.ModelInfos,
+		defaultModelID: firstModelID(ac.ModelInfos),
+	}
 	server := openacp.NewServer("openagent-acp", "1.0.0", srv)
 	log.Println("ACP server starting on stdio")
 	return server.Run(context.Background())
@@ -500,8 +572,23 @@ func newACPStore(mem openagent.Memory) ACPSessionStore {
 }
 
 type acpHandler struct {
-	agent *openagent.Agent
-	store ACPSessionStore
+	agent          *openagent.Agent
+	store          ACPSessionStore
+	modelInfos     []modelReg
+	defaultModelID string
+}
+
+func (h *acpHandler) findModel(modelID string) openagent.Model {
+	for _, mi := range h.modelInfos {
+		id := mi.ID
+		if mi.Provider != "" {
+			id = mi.Provider + "/" + mi.ID
+		}
+		if id == modelID {
+			return mi.Model
+		}
+	}
+	return nil
 }
 
 func (h *acpHandler) OnInitialize(ctx context.Context, req openacp.InitializeRequest) (*openacp.InitializeResponse, error) {
@@ -526,13 +613,15 @@ func (h *acpHandler) OnNewSession(ctx context.Context, req openacp.NewSessionReq
 	if err != nil {
 		return nil, fmt.Errorf("acp create session: %w", err)
 	}
+	h.store.SetModel(ctx, id, h.defaultModelID)
 	return &openacp.NewSessionResponse{SessionID: id}, nil
 }
 
 func (h *acpHandler) OnLoadSession(ctx context.Context, req openacp.LoadSessionRequest, sender openacp.SessionEventSender) (*openacp.LoadSessionResponse, error) {
 	si, err := h.store.GetSession(ctx, req.SessionID)
 	if err != nil {
-		return nil, err
+		h.store.EnsureSession(ctx, req.SessionID, req.Cwd)
+		return &openacp.LoadSessionResponse{}, nil
 	}
 	msgs, err := h.store.LoadMessages(ctx, req.SessionID)
 	if err != nil {
@@ -585,6 +674,11 @@ func (h *acpHandler) OnPrompt(ctx context.Context, req openacp.PromptRequest, se
 
 	var responseText strings.Builder
 	session := openagent.Session{ID: req.SessionID}
+	if mID, ok := h.store.GetModel(ctx, req.SessionID); ok {
+		if m := h.findModel(mID); m != nil {
+			session.Model = m
+		}
+	}
 	ch := h.agent.RunStream(ctx, session, openagent.UserMessage(input))
 	for evt := range ch {
 		switch evt.Type {
@@ -625,6 +719,24 @@ func (h *acpHandler) OnDeleteSession(ctx context.Context, sid string) error {
 
 func (h *acpHandler) OnCloseSession(ctx context.Context, sid string) error { return nil }
 
+func (h *acpHandler) OnSetSessionConfigOption(ctx context.Context, sessionID string, opt openacp.SetConfigOption) error {
+	modelID, ok := opt.Value.(string)
+	if !ok {
+		return nil
+	}
+	if m := h.findModel(modelID); m == nil {
+		return nil
+	}
+	return h.store.SetModel(ctx, sessionID, modelID)
+}
+
+func (h *acpHandler) OnSetSessionMode(ctx context.Context, sessionID string, modeID string) error {
+	return nil
+}
+
+// Compile-time check: acpHandler implements ConfigHandler.
+var _ openacp.ConfigHandler = (*acpHandler)(nil)
+
 // ── ACP over WebSocket ──
 
 var wsUpgrader = websocket.Upgrader{
@@ -651,7 +763,7 @@ func RunACPWS(ctx context.Context, cfg *config.Config, port int) error {
 		}
 		defer ws.Close()
 
-		handler := &acpHandler{agent: ac.Agent, store: store}
+		handler := &acpHandler{agent: ac.Agent, store: store, modelInfos: ac.ModelInfos, defaultModelID: firstModelID(ac.ModelInfos)}
 		br := &wsBridge{conn: ws}
 		server := openacp.NewServer("openagent-acp", "1.0.0", handler)
 		log.Printf("acp-ws: client connected")
