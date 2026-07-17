@@ -51,9 +51,6 @@ func buildAgentContext(cfg *config.Config) (*agentContext, error) {
 	if err != nil {
 		return nil, err
 	}
-	if memCleanup != nil {
-		defer memCleanup()
-	}
 
 	models, modelInfos := buildModels(cfg.Provider)
 

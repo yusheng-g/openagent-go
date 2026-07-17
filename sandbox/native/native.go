@@ -25,8 +25,10 @@ import (
 // Sandbox confines command execution using OS-native security mechanisms.
 // Commands can only read/write within the workspace directory.
 type Sandbox struct {
-	workDir     string
-	extraMounts []bindMount
+	workDir      string
+	extraMounts  []bindMount
+	bwrapFailed  bool
+	selfTested   bool
 }
 
 type bindMount struct{ src, dst string }

@@ -17,6 +17,10 @@ import (
 //
 // Falls back to unsandboxed execution with a warning if bwrap is not found.
 func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (openagent.Result, error) {
+	if s.bwrapFailed {
+		return s.unconfinedRun(ctx, cmd)
+	}
+
 	args, ok := s.bwrapArgs(cmd)
 	if !ok {
 		log.Printf("WARNING: bwrap not found — sandbox disabled, running unconfined")
@@ -44,9 +48,17 @@ func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (ope
 	}
 	if err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
+			stderrStr := stderr.String()
+			if isBwrapSetupFailure(stderrStr) {
+				log.Printf("WARNING: bwrap setup failed, falling back to unconfined: %s", stderrStr)
+				s.bwrapFailed = true
+				return s.unconfinedRun(ctx, cmd)
+			}
+			log.Printf("bwrap command exited with code %d, stderr: %s", exitErr.ExitCode(), stderrStr)
 			result.ExitCode = exitErr.ExitCode()
 			return result, nil
 		}
+		log.Printf("bwrap execution error: %v", err)
 		return result, fmt.Errorf("native sandbox (linux): %w", err)
 	}
 	return result, nil
@@ -57,9 +69,16 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 	go func() {
 		defer close(ch)
 
+		if s.bwrapFailed {
+			for chunk := range s.unconfinedRunStream(ctx, cmd) {
+				ch <- chunk
+			}
+			return
+		}
+
 		args, ok := s.bwrapArgs(cmd)
 		if !ok {
-			// Fallback: run unconfined.
+			log.Printf("WARNING: bwrap not found — sandbox disabled, running unconfined")
 			for chunk := range s.unconfinedRunStream(ctx, cmd) {
 				ch <- chunk
 			}
@@ -78,7 +97,11 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 		stdout, _ := c.StdoutPipe()
 		stderr, _ := c.StderrPipe()
 		if err := c.Start(); err != nil {
-			ch <- openagent.ToolStreamChunk{Error: fmt.Errorf("native sandbox (linux): %w", err)}
+			log.Printf("WARNING: bwrap start failed, falling back to unconfined: %v", err)
+			s.bwrapFailed = true
+			for chunk := range s.unconfinedRunStream(ctx, cmd) {
+				ch <- chunk
+			}
 			return
 		}
 
@@ -92,6 +115,13 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 	return ch
 }
 
+// isBwrapSetupFailure reports whether stderr indicates a bwrap sandbox
+// setup failure (as opposed to a command execution failure inside the
+// sandbox). bwrap errors are prefixed with "bwrap:".
+func isBwrapSetupFailure(stderr string) bool {
+	return strings.Contains(stderr, "bwrap:")
+}
+
 // bwrapArgs builds Bubblewrap arguments for namespace isolation.
 // Returns false if bwrap is not installed.
 //
@@ -102,8 +132,21 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 //   - New PID namespace
 //   - New UTS namespace
 func (s *Sandbox) bwrapArgs(cmd openagent.Command) ([]string, bool) {
-	if _, err := exec.LookPath("bwrap"); err != nil {
+	if s.bwrapFailed {
 		return nil, false
+	}
+	if _, err := exec.LookPath("bwrap"); err != nil {
+		s.bwrapFailed = true
+		return nil, false
+	}
+	if !s.selfTested {
+		s.selfTested = true
+		test := exec.Command("bwrap", "--ro-bind", "/usr", "/usr", "--", "true")
+		if err := test.Run(); err != nil {
+			log.Printf("WARNING: bwrap self-test failed, sandbox disabled: %v", err)
+			s.bwrapFailed = true
+			return nil, false
+		}
 	}
 
 	args := []string{
