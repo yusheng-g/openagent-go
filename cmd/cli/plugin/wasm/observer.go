@@ -3,14 +3,20 @@ package wasm
 import (
 	"context"
 	"log"
+	"sync"
 )
 
 // ObserverHub dispatches lifecycle events to observer plugins.
 type ObserverHub struct {
+	mu      sync.Mutex
 	modules []*Module
 }
 
-func (h *ObserverHub) Add(m *Module) { h.modules = append(h.modules, m) }
+func (h *ObserverHub) Add(m *Module) {
+	h.mu.Lock()
+	h.modules = append(h.modules, m)
+	h.mu.Unlock()
+}
 
 func (h *ObserverHub) OnStartup(ctx context.Context) {
 	h.broadcast(ctx, "on_startup")
@@ -36,7 +42,11 @@ func (h *ObserverHub) OnCommandEnd(ctx context.Context, cmdName string, cmdErr e
 }
 
 func (h *ObserverHub) broadcast(ctx context.Context, name string) {
-	for _, m := range h.modules {
+	h.mu.Lock()
+	mods := make([]*Module, len(h.modules))
+	copy(mods, h.modules)
+	h.mu.Unlock()
+	for _, m := range mods {
 		fn := m.Mod.ExportedFunction(name)
 		if fn == nil { continue }
 		if _, err := fn.Call(ctx); err != nil {
@@ -46,7 +56,11 @@ func (h *ObserverHub) broadcast(ctx context.Context, name string) {
 }
 
 func (h *ObserverHub) broadcastStr(ctx context.Context, name string, arg string) {
-	for _, m := range h.modules {
+	h.mu.Lock()
+	mods := make([]*Module, len(h.modules))
+	copy(mods, h.modules)
+	h.mu.Unlock()
+	for _, m := range mods {
 		fn := m.Mod.ExportedFunction(name)
 		if fn == nil { continue }
 		allocFn := m.Mod.ExportedFunction("alloc")

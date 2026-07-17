@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/yusheng-g/openagent-go/rest"
@@ -108,8 +109,14 @@ func scanInfo(row rowScanner) (*rest.SessionInfo, error) {
 		}
 		return nil, err
 	}
-	created, _ := time.Parse(time.RFC3339, createdRaw)
-	updated, _ := time.Parse(time.RFC3339, updatedRaw)
+	created, err := time.Parse(time.RFC3339, createdRaw)
+	if err != nil {
+		log.Printf("sqlite sessionstore: parse created_at %q: %v", createdRaw, err)
+	}
+	updated, err := time.Parse(time.RFC3339, updatedRaw)
+	if err != nil {
+		log.Printf("sqlite sessionstore: parse updated_at %q: %v", updatedRaw, err)
+	}
 	return &rest.SessionInfo{
 		ID:        id,
 		Kind:      kind,
@@ -129,8 +136,14 @@ func scanRows(rows *sql.Rows) (*rest.SessionInfo, error) {
 	if err := rows.Scan(&id, &kind, &title, &modelID, &provider, &createdRaw, &updatedRaw); err != nil {
 		return nil, err
 	}
-	created, _ := time.Parse(time.RFC3339, createdRaw)
-	updated, _ := time.Parse(time.RFC3339, updatedRaw)
+	created, err := time.Parse(time.RFC3339, createdRaw)
+	if err != nil {
+		log.Printf("sqlite sessionstore: parse created_at %q: %v", createdRaw, err)
+	}
+	updated, err := time.Parse(time.RFC3339, updatedRaw)
+	if err != nil {
+		log.Printf("sqlite sessionstore: parse updated_at %q: %v", updatedRaw, err)
+	}
 	return &rest.SessionInfo{
 		ID:        id,
 		Kind:      kind,

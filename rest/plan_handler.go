@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -206,6 +207,11 @@ func (h *PlanHandler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.mu.Lock()
+	if s.running {
+		s.mu.Unlock()
+		http.Error(w, `{"error":"cannot modify plan while it is executing"}`, http.StatusConflict)
+		return
+	}
 	s.currentDef = &def
 	s.mu.Unlock()
 
@@ -679,6 +685,7 @@ func planEventToSSE(evt plan.PlanEvent) SSEEvent {
 		return SSEEvent{Type: "plan_error", Error: evt.ErrText}
 
 	default:
-		return SSEEvent{}
+		log.Printf("rest: unknown plan event type %q", evt.Type)
+		return SSEEvent{Type: "unknown"}
 	}
 }

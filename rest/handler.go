@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -451,7 +452,8 @@ func streamToSSE(evt openagent.StreamEvent) SSEEvent {
 		return SSEEvent{Type: "error", Text: msg}
 
 	default:
-		return SSEEvent{}
+		log.Printf("rest: unknown stream event type %q", evt.Type)
+		return SSEEvent{Type: "unknown"}
 	}
 }
 

@@ -46,10 +46,7 @@ func main() {
 	}
 
 	// 3. Keyring + runtime.
-	kr, err := keyring.Open()
-	if err != nil {
-		log.Fatalf("keyring: %v", err)
-	}
+	kr := openKeyring()
 	httpClient := &defaultHTTPClient{client: http.DefaultClient}
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
@@ -201,19 +198,32 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 
 // ── keyring ──
 
+// openKeyring returns the system keyring, falling back to an in-memory
+// store with a warning when the system keychain is unavailable.
+func openKeyring() plugin.Keyring {
+	sysKr, err := keyring.Open()
+	if err != nil {
+		log.Printf("WARNING: keyring unavailable, using in-memory fallback (secrets will not persist): %v", err)
+		return keyring.NewMemStore()
+	}
+	return sysKr
+}
+
 var keyringCmd = &cobra.Command{Use: "keyring", Short: "Manage credentials in the system keyring"}
 var keyringSetCmd = &cobra.Command{
 	Use: "set <key> <value>", Short: "Store a credential", Args: cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		kr, _ := keyring.Open()
-		return kr.Set("openagent", args[0], args[1])
+		return openKeyring().Set("openagent", args[0], args[1])
 	},
 }
 var keyringGetCmd = &cobra.Command{
 	Use: "get <key>", Short: "Read a credential", Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		kr, _ := keyring.Open()
-		v, _ := kr.Get("openagent", args[0])
+		kr := openKeyring()
+		v, err := kr.Get("openagent", args[0])
+		if err != nil {
+			return fmt.Errorf("keyring get: %w", err)
+		}
 		if v == "" { fmt.Println("(not found)") } else { fmt.Println(v) }
 		return nil
 	},
@@ -221,8 +231,7 @@ var keyringGetCmd = &cobra.Command{
 var keyringDeleteCmd = &cobra.Command{
 	Use: "delete <key>", Short: "Remove a credential", Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		kr, _ := keyring.Open()
-		kr.Delete("openagent", args[0])
+		openKeyring().Delete("openagent", args[0])
 		return nil
 	},
 }
