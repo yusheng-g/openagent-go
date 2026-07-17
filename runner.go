@@ -29,10 +29,11 @@ type runner struct {
 
 // compactionInfo carries compaction outcome from prepareMemory back to run().
 type compactionInfo struct {
-	err   error
-	count int // new messages compacted this run (0 = none)
-	from  int // global index of first new compacted message
-	to    int // global index after compaction (ThroughIndex)
+	err         error
+	count       int  // new messages compacted this run (0 = none)
+	from        int  // global index of first new compacted message
+	to          int  // global index after compaction (ThroughIndex)
+	hadOverflow bool // messages were trimmed from working set
 }
 
 // observe emits a stage event to the agent's RunObserver if configured.
@@ -157,6 +158,31 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 					r.compressed = cc
 				} else {
 					compressedErr = err
+				}
+			}
+
+			// Proactive retrieval: when messages were trimmed from the
+			// working set, search the archive for relevant past context.
+			if ci.hadOverflow && r.agent.Memory != nil && input.Content != "" {
+				results, err := r.agent.Memory.Search(ctx, session.ID, input.Content, 5)
+				if err == nil && len(results) > 0 {
+					existing := make(map[string]bool, len(history))
+					for _, m := range history {
+						existing[m.Content] = true
+					}
+					var buf strings.Builder
+					buf.WriteString("## Relevant Past Messages\n")
+					count := 0
+					for _, res := range results {
+						if existing[res.Message.Content] {
+							continue
+						}
+						count++
+						buf.WriteString(fmt.Sprintf("%d. [%s] %s\n", count, res.Message.Role, res.Message.Content))
+					}
+					if count > 0 {
+						history = append([]Message{{Role: RoleSystem, Content: buf.String()}}, history...)
+					}
 				}
 			}
 
@@ -415,13 +441,16 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 // model's context window. Falls back to 20000 if the model doesn't report
 // its context window.
 func (r *runner) workingTokenBudget() int {
+	var budget int
 	if r.agent.MaxWorkingTokens > 0 {
-		return r.agent.MaxWorkingTokens
+		budget = r.agent.MaxWorkingTokens
+	} else if cw := r.runModel.ContextWindow(); cw > 0 {
+		budget = cw * 7 / 10 // 70%
+	} else {
+		budget = 20000
 	}
-	if cw := r.runModel.ContextWindow(); cw > 0 {
-		return cw * 7 / 10 // 70%
-	}
-	return 20000
+	const retrievalReserve = 1000
+	return budget - retrievalReserve
 }
 
 // prepareMemory fetches the working message set, triggers token-based
@@ -475,6 +504,7 @@ func (r *runner) prepareMemory(ctx context.Context, session Session) ([]Message,
 	}
 	if overflow < len(msgs) {
 		overflow = SafeCompressionBoundary(msgs, overflow)
+		ci.hadOverflow = true
 		// Record pre-compaction ThroughIndex so we can detect whether
 		// Compact() actually covered new messages.
 		oldTI := 0
