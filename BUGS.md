@@ -1,12 +1,22 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-16.
+> Last updated 2026-07-17.
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
 ---
 
 ## 🐛 Bugs
+
+### [P1] `memory/sqlite` FTS search returns nothing for CJK and crashes on sentence punctuation
+
+[memory/sqlite/memory.go](memory/sqlite/memory.go) — `ftsSearch` + `migrate`:
+
+1. **CJK search always returns 0** — `messages_fts` uses the default `unicode61` tokenizer, which treats a run of CJK characters as one token, so CJK queries (e.g. `天蓝色`) match nothing.
+
+2. **Punctuation crashes the query** — `ftsSearch` strips only `* ( ) - ^ ~ @ : " \x00` before `MATCH`, so sentence punctuation `? ! . , ; / #` raises `fts5: syntax error` and `recall_memory` returns `search failed`.
+
+---
 
 ### [P2] Team/Plan: no model selection, no ContextWindow, stale ModelID
 
