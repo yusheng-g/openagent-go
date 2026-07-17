@@ -308,6 +308,50 @@ func (s *Session) LoadSession(ctx context.Context, req LoadSessionRequest) (*Loa
 	return &LoadSessionResponse{}, nil
 }
 
+// SetSessionConfigOption sends a config option change to the agent.
+func (s *Session) SetSessionConfigOption(ctx context.Context, sessionID string, opt SetConfigOption) error {
+	var req acpsdk.SetSessionConfigOptionRequest
+	switch opt.Value.(type) {
+	case bool:
+		v := opt.Value.(bool)
+		req.Boolean = &acpsdk.SetSessionConfigOptionBoolean{
+			SessionId: acpsdk.SessionId(sessionID),
+			ConfigId:  acpsdk.SessionConfigId(opt.ID),
+			Value:     v,
+			Type:      "boolean",
+		}
+	default:
+		v, _ := opt.Value.(string)
+		req.ValueId = &acpsdk.SetSessionConfigOptionValueId{
+			SessionId: acpsdk.SessionId(sessionID),
+			ConfigId:  acpsdk.SessionConfigId(opt.ID),
+			Value:     acpsdk.SessionConfigValueId(v),
+		}
+	}
+	_, err := s.conn.SetSessionConfigOption(ctx, req)
+	return err
+}
+
+// SetSessionMode changes the session mode on the agent.
+func (s *Session) SetSessionMode(ctx context.Context, sessionID string, modeID string) error {
+	_, err := s.conn.SetSessionMode(ctx, acpsdk.SetSessionModeRequest{
+		SessionId: acpsdk.SessionId(sessionID),
+		ModeId:    acpsdk.SessionModeId(modeID),
+	})
+	return err
+}
+
+// ForkSession creates a new session by forking an existing one on the agent.
+func (s *Session) ForkSession(ctx context.Context, sessionID string) (*ForkSessionResponse, error) {
+	resp, err := s.conn.UnstableForkSession(ctx, acpsdk.UnstableForkSessionRequest{
+		SessionId: acpsdk.SessionId(sessionID),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("acp fork session: %w", err)
+	}
+	return &ForkSessionResponse{SessionID: string(resp.SessionId)}, nil
+}
+
 // Close terminates the ACP connection and cleans up the subprocess.
 //
 // It first closes stdin to signal EOF to the process, allowing it to exit
@@ -419,6 +463,46 @@ func (b *sessionBridge) SessionUpdate(ctx context.Context, params acpsdk.Session
 			Status:    status,
 			RawOutput: tu.RawOutput,
 		})
+
+	case update.Plan != nil:
+		if ph, ok := h.(PlanHandler); ok {
+			entries := make([]PlanEntry, len(update.Plan.Entries))
+			for i, e := range update.Plan.Entries {
+				entries[i] = PlanEntry{
+					Title:    e.Content,
+					Priority: string(e.Priority),
+					Status:   string(e.Status),
+				}
+			}
+			ph.OnPlan(entries)
+		}
+
+	case update.AvailableCommandsUpdate != nil:
+		if ch, ok := h.(CommandHandler); ok {
+			cmds := make([]AvailableCommand, len(update.AvailableCommandsUpdate.AvailableCommands))
+			for i, c := range update.AvailableCommandsUpdate.AvailableCommands {
+				cmds[i] = AvailableCommand{Name: c.Name, Description: c.Description}
+			}
+			ch.OnAvailableCommands(cmds)
+		}
+
+	case update.CurrentModeUpdate != nil:
+		if mh, ok := h.(ModeHandler); ok {
+			mh.OnCurrentMode(string(update.CurrentModeUpdate.CurrentModeId))
+		}
+
+	case update.UserMessageChunk != nil:
+		if mh, ok := h.(ModeHandler); ok {
+			mh.OnUserMessage(contentBlockTextSDK(update.UserMessageChunk.Content))
+		}
+
+	case update.UsageUpdate != nil:
+		if uh, ok := h.(UsageHandler); ok {
+			uh.OnUsage(UsageInfo{
+				Used: update.UsageUpdate.Used,
+				Size: update.UsageUpdate.Size,
+			})
+		}
 	}
 
 	return nil

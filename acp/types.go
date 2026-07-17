@@ -176,6 +176,27 @@ type InitializeResponse struct {
 	Capabilities    AgentCapabilities
 }
 
+// ── Plan / Usage / Commands ──
+
+// PlanEntry represents a single task in the agent's execution plan.
+type PlanEntry struct {
+	Title    string // human-readable task description
+	Priority string // "high", "medium", "low"
+	Status   string // "pending", "in_progress", "completed", "cancelled"
+}
+
+// UsageInfo reports token and context window usage for a session.
+type UsageInfo struct {
+	Used int // tokens currently in context
+	Size int // total context window size in tokens
+}
+
+// AvailableCommand describes a command the agent can execute (e.g. /help, /clear).
+type AvailableCommand struct {
+	Name        string
+	Description string
+}
+
 // ── Event handler ──
 
 // EventHandler receives streaming events from the agent during Prompt.
@@ -187,6 +208,31 @@ type EventHandler interface {
 	OnToolCall(tc ToolCallEvent)
 }
 
+// PlanHandler is an optional extension of [EventHandler]. Implement it
+// to receive plan updates from the agent.
+type PlanHandler interface {
+	OnPlan(entries []PlanEntry)
+}
+
+// UsageHandler is an optional extension of [EventHandler]. Implement it
+// to receive token usage information.
+type UsageHandler interface {
+	OnUsage(info UsageInfo)
+}
+
+// CommandHandler is an optional extension of [EventHandler]. Implement it
+// to receive available command listings from the agent.
+type CommandHandler interface {
+	OnAvailableCommands(commands []AvailableCommand)
+}
+
+// ModeHandler is an optional extension of [EventHandler]. Implement it
+// to receive mode changes and user message echoes.
+type ModeHandler interface {
+	OnCurrentMode(modeID string)
+	OnUserMessage(text string)
+}
+
 // ToolCallEvent represents a tool invocation by the agent.
 type ToolCallEvent struct {
 	ID        string
@@ -194,4 +240,22 @@ type ToolCallEvent struct {
 	RawInput  any    // parameters sent to the tool
 	Status    string // "in_progress", "completed", "failed"
 	RawOutput any    // tool result (when Status == "completed")
+}
+
+// ── Config / Fork ──
+
+// SetConfigOption describes a session configuration option change.
+type SetConfigOption struct {
+	ID    string // config option ID
+	Value any    // bool for boolean options, string for select valueID
+}
+
+// ForkSessionRequest requests forking an existing session.
+type ForkSessionRequest struct {
+	SessionID string
+}
+
+// ForkSessionResponse is the result of forking a session.
+type ForkSessionResponse struct {
+	SessionID string
 }

@@ -83,7 +83,7 @@ func (s *calcServer) OnNewSession(ctx context.Context, req openacp.NewSessionReq
 	return &openacp.NewSessionResponse{SessionID: id}, nil
 }
 
-func (s *calcServer) OnLoadSession(ctx context.Context, req openacp.LoadSessionRequest) (*openacp.LoadSessionResponse, error) {
+func (s *calcServer) OnLoadSession(ctx context.Context, req openacp.LoadSessionRequest, sender openacp.SessionEventSender) (*openacp.LoadSessionResponse, error) {
 	s.mu.RLock()
 	st, ok := s.sessions[req.SessionID]
 	s.mu.RUnlock()

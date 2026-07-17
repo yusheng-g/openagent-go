@@ -42,7 +42,10 @@ fn cli_init(settings: &str) -> String {
     let end = if trimmed.ends_with('}') { trimmed.len() - 1 } else { trimmed.len() };
 
     let mut out = String::from(&settings[..end]);
-    out.push_str(",\"provider\":{\"my_provider\":{\"api_key\":\"");
+    if settings[..end].trim_end() != "{" {
+        out.push(',');
+    }
+    out.push_str("\"provider\":{\"my_provider\":{\"api_key\":\"");
     out.push_str(ak);
     out.push_str("\",\"base_url\":\"");
     out.push_str(bu);

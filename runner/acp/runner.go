@@ -633,6 +633,15 @@ func (h *runnerHandler) OnToolCall(tc openacp.ToolCallEvent) {
 	}
 }
 
+func (h *runnerHandler) OnPlan(entries []openacp.PlanEntry) {
+	// Future: emit StreamPlan events. For now, plan entries are silently
+	// tracked by the collector if needed.
+}
+
+func (h *runnerHandler) OnUsage(info openacp.UsageInfo) {
+	// Future: emit StreamUsage events. For now, usage is silently absorbed.
+}
+
 // ── resultCollector ──
 
 type resultCollector struct {
@@ -677,3 +686,7 @@ var _ openagent.TeamPreparable = (*Runner)(nil)
 var _ openagent.MembershipNotifiable = (*Runner)(nil)
 var _ openagent.Closer = (*Runner)(nil)
 var _ io.Closer = (*Runner)(nil)
+
+var _ openacp.EventHandler = (*runnerHandler)(nil)
+var _ openacp.PlanHandler = (*runnerHandler)(nil)
+var _ openacp.UsageHandler = (*runnerHandler)(nil)

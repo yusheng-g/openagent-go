@@ -24,10 +24,10 @@ unsafe impl GlobalAlloc for BumpAlloc {
     unsafe fn alloc(&self, layout: core::alloc::Layout) -> *mut u8 {
         let size = layout.size();
         let align = layout.align();
-        let ptr = HEAP.as_ptr() as *mut u8;
+        let ptr = core::ptr::addr_of_mut!(HEAP).cast::<u8>();
         let offset = OFF;
         let aligned = (offset + align - 1) & !(align - 1);
-        if aligned + size <= HEAP.len() {
+        if aligned + size <= HEAP_SIZE {
             OFF = aligned + size;
             ptr.add(aligned)
         } else {
@@ -40,7 +40,8 @@ unsafe impl GlobalAlloc for BumpAlloc {
 #[global_allocator]
 static ALLOC: BumpAlloc = BumpAlloc;
 
-const HEAP: [u8; 131072] = [0; 131072]; // 128 KB
+const HEAP_SIZE: usize = 131072; // 128 KB
+static mut HEAP: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
 static mut OFF: usize = 0;
 
 // ── panic ──

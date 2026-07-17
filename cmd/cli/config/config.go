@@ -71,3 +71,10 @@ func applyDefaults(cfg *Config) {
 		cfg.Server.Port = 8080
 	}
 }
+
+// ApplyDefaults fills in default values for a Config that was parsed
+// directly (not via Load). Sets default provider map, plugins dir, and
+// server port (8080).
+func ApplyDefaults(cfg *Config) {
+	applyDefaults(cfg)
+}

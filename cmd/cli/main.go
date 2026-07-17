@@ -23,7 +23,6 @@ import (
 	"github.com/yusheng-g/openagent-go/cmd/cli/server"
 )
 
-
 func main() {
 	log.SetFlags(0)
 
@@ -38,6 +37,9 @@ func main() {
 	raw, err := os.ReadFile(cfgPath)
 	if err != nil && !os.IsNotExist(err) {
 		log.Fatalf("read settings: %v", err)
+	}
+	if len(raw) == 0 {
+		raw = []byte("{}")
 	}
 	var preCfg config.Config
 	json.Unmarshal(raw, &preCfg)
@@ -65,6 +67,7 @@ func main() {
 	for _, p := range pluginPaths {
 		files, _ := mgr.ResolveWasmFiles(p)
 		for _, f := range files {
+			println("plugin: " + f)
 			wasmBytes, err := os.ReadFile(f)
 			if err != nil {
 				log.Printf("plugin: read %s: %v", f, err)
@@ -122,7 +125,9 @@ func main() {
 	if err := json.Unmarshal(settings, &cfg); err != nil {
 		log.Fatalf("parse merged settings: %v", err)
 	}
+	config.ApplyDefaults(&cfg)
 	for k, v := range cfg.Env {
+		log.Printf("[DEBUG] k = %s, v = %s\n", k, v)
 		os.Setenv(k, v)
 	}
 	pretty, _ := json.MarshalIndent(&cfg, "", "  ")
@@ -182,16 +187,21 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 		Short: "Start the server (REST by default, or --acp for ACP)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			acp, _ := cmd.Flags().GetBool("acp")
+			acpWS, _ := cmd.Flags().GetBool("acp-ws")
 			p, _ := cmd.Flags().GetInt("port")
 			if p > 0 {
 				cfg.Server.Port = p
 			}
 			ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 			defer cancel()
+			if acpWS {
+				return server.RunACPWS(ctx, &cfg, cfg.Server.Port)
+			}
 			return server.Run(ctx, server.Options{Config: &cfg, ACP: acp})
 		},
 	}
 	cmd.Flags().Bool("acp", false, "ACP mode over stdio")
+	cmd.Flags().Bool("acp-ws", false, "ACP mode over WebSocket")
 	cmd.Flags().Int("port", 0, "REST port (overrides settings)")
 	return cmd
 }
@@ -244,9 +254,13 @@ type defaultHTTPClient struct{ client *http.Client }
 
 func (c *defaultHTTPClient) Do(method, url string, headers map[string]string, body []byte) (int, []byte, error) {
 	req, _ := http.NewRequest(method, url, bytes.NewReader(body))
-	for k, v := range headers { req.Header.Set(k, v) }
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
 	resp, err := c.client.Do(req)
-	if err != nil { return 0, nil, err }
+	if err != nil {
+		return 0, nil, err
+	}
 	defer resp.Body.Close()
 	respBody, _ := io.ReadAll(resp.Body)
 	return resp.StatusCode, respBody, nil

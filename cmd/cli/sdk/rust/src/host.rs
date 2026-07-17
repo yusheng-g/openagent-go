@@ -13,6 +13,8 @@ mod ffi {
         pub fn log_info(mp: u32, ml: u32);
         pub fn log_warn(mp: u32, ml: u32);
         pub fn log_error(mp: u32, ml: u32);
+        pub fn get_env(kp: u32, kl: u32) -> u64;
+        pub fn get_time_utc() -> u64;
     }
 }
 
@@ -69,6 +71,16 @@ fn find_u32(d: &[u8], k: &[u8]) -> u32 {
 pub fn log_info(msg: &str) { unsafe { ffi::log_info(msg.as_ptr() as u32, msg.len() as u32) } }
 pub fn log_warn(msg: &str) { unsafe { ffi::log_warn(msg.as_ptr() as u32, msg.len() as u32) } }
 pub fn log_error(msg: &str) { unsafe { ffi::log_error(msg.as_ptr() as u32, msg.len() as u32) } }
+
+pub fn get_env(key: &str) -> Option<&'static str> {
+    let (p, l) = up(unsafe { ffi::get_env(key.as_ptr() as u32, key.len() as u32) });
+    if p == 0 && l == 0 { None } else { Some(unsafe { wasm_str(p, l) }) }
+}
+
+pub fn get_time_utc() -> Option<&'static str> {
+    let (p, l) = up(unsafe { ffi::get_time_utc() });
+    if p == 0 && l == 0 { None } else { Some(unsafe { wasm_str(p, l) }) }
+}
 
 fn find_body(d: &[u8]) -> usize {
     let pat = b"\"body\":\"";

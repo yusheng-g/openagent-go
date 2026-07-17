@@ -34,9 +34,9 @@ type AgentHandler interface {
 	OnCancel(ctx context.Context, sessionID string) error
 
 	// OnLoadSession is called when the client requests to resume an existing
-	// session. The handler should restore the session state and return the
-	// session ID if successful.
-	OnLoadSession(ctx context.Context, req LoadSessionRequest) (*LoadSessionResponse, error)
+	// session. The handler should restore the session state and use sender
+	// to replay conversation history to the client.
+	OnLoadSession(ctx context.Context, req LoadSessionRequest, sender SessionEventSender) (*LoadSessionResponse, error)
 
 	// OnListSessions returns the sessions available for loading via OnLoadSession.
 	OnListSessions(ctx context.Context, req ListSessionsRequest) (*ListSessionsResponse, error)
@@ -47,6 +47,19 @@ type AgentHandler interface {
 
 	// OnCloseSession is called when the client closes a session.
 	OnCloseSession(ctx context.Context, sessionID string) error
+}
+
+// ConfigHandler is an optional extension of [AgentHandler]. Implement it
+// to support session/config_set and session/mode changes.
+type ConfigHandler interface {
+	OnSetSessionConfigOption(ctx context.Context, sessionID string, opt SetConfigOption) error
+	OnSetSessionMode(ctx context.Context, sessionID string, modeID string) error
+}
+
+// SessionAdminHandler is an optional extension of [AgentHandler]. Implement
+// it to support session/fork.
+type SessionAdminHandler interface {
+	OnForkSession(ctx context.Context, req ForkSessionRequest) (*ForkSessionResponse, error)
 }
 
 // SessionEventSender sends streaming events from the agent back to the
@@ -63,6 +76,24 @@ type SessionEventSender interface {
 
 	// SendSessionInfo updates session metadata (title, timestamps).
 	SendSessionInfo(title string, metadata map[string]any) error
+
+	// SendUserMessage sends a chunk of the user's message (e.g. textified
+	// image descriptions). Use this to echo back interpreted user input.
+	SendUserMessage(text string) error
+
+	// SendPlan sends or updates the agent's execution plan. Pass nil or
+	// empty slice to clear the plan.
+	SendPlan(entries []PlanEntry) error
+
+	// SendAvailableCommands declares the commands the agent supports
+	// (e.g. /help, /clear). Clients may render these as slash-commands.
+	SendAvailableCommands(commands []AvailableCommand) error
+
+	// SendCurrentMode notifies the client about the current session mode.
+	SendCurrentMode(modeID string) error
+
+	// SendUsage reports token counts and context window size.
+	SendUsage(info UsageInfo) error
 }
 
 // ── Server ──
@@ -333,22 +364,76 @@ func (b *agentBridge) ResumeSession(ctx context.Context, params acpsdk.ResumeSes
 		mcpServers = append(mcpServers, fromSDKMcpServer(m))
 	}
 
+	sessionID := string(params.SessionId)
+	sender := &agentSender{sessionID: sessionID, bridge: b, conn: b.conn}
 	_, err := b.handler.OnLoadSession(ctx, LoadSessionRequest{
-		SessionID:            string(params.SessionId),
+		SessionID:            sessionID,
 		Cwd:                  params.Cwd,
 		McpServers:           mcpServers,
 		AdditionalDirectories: params.AdditionalDirectories,
-	})
+	}, sender)
 	if err != nil {
 		return acpsdk.ResumeSessionResponse{}, err
 	}
 
 	return acpsdk.ResumeSessionResponse{}, nil
 }
+
+// LoadSession implements acpsdk.AgentLoader so clients can restore a
+// previously saved session via session/load.
+func (b *agentBridge) LoadSession(ctx context.Context, params acpsdk.LoadSessionRequest) (acpsdk.LoadSessionResponse, error) {
+	mcpServers := make([]McpServer, 0, len(params.McpServers))
+	for _, m := range params.McpServers {
+		mcpServers = append(mcpServers, fromSDKMcpServer(m))
+	}
+
+	sessionID := string(params.SessionId)
+	sender := &agentSender{sessionID: sessionID, bridge: b, conn: b.conn}
+	_, err := b.handler.OnLoadSession(ctx, LoadSessionRequest{
+		SessionID:            sessionID,
+		Cwd:                  params.Cwd,
+		McpServers:           mcpServers,
+		AdditionalDirectories: params.AdditionalDirectories,
+	}, sender)
+	if err != nil {
+		return acpsdk.LoadSessionResponse{}, err
+	}
+
+	return acpsdk.LoadSessionResponse{}, nil
+}
+
 func (b *agentBridge) SetSessionConfigOption(ctx context.Context, params acpsdk.SetSessionConfigOptionRequest) (acpsdk.SetSessionConfigOptionResponse, error) {
+	ch, ok := b.handler.(ConfigHandler)
+	if !ok {
+		return acpsdk.SetSessionConfigOptionResponse{}, nil
+	}
+
+	var sessionID string
+	var opt SetConfigOption
+
+	if params.Boolean != nil {
+		sessionID = string(params.Boolean.SessionId)
+		opt.ID = string(params.Boolean.ConfigId)
+		opt.Value = params.Boolean.Value
+	} else if params.ValueId != nil {
+		sessionID = string(params.ValueId.SessionId)
+		opt.ID = string(params.ValueId.ConfigId)
+		opt.Value = string(params.ValueId.Value)
+	}
+
+	if err := ch.OnSetSessionConfigOption(ctx, sessionID, opt); err != nil {
+		return acpsdk.SetSessionConfigOptionResponse{}, err
+	}
 	return acpsdk.SetSessionConfigOptionResponse{}, nil
 }
 func (b *agentBridge) SetSessionMode(ctx context.Context, params acpsdk.SetSessionModeRequest) (acpsdk.SetSessionModeResponse, error) {
+	ch, ok := b.handler.(ConfigHandler)
+	if !ok {
+		return acpsdk.SetSessionModeResponse{}, nil
+	}
+	if err := ch.OnSetSessionMode(ctx, string(params.SessionId), string(params.ModeId)); err != nil {
+		return acpsdk.SetSessionModeResponse{}, err
+	}
 	return acpsdk.SetSessionModeResponse{}, nil
 }
 
@@ -361,6 +446,23 @@ func (b *agentBridge) UnstableDeleteSession(ctx context.Context, params acpsdk.U
 		return acpsdk.UnstableDeleteSessionResponse{}, err
 	}
 	return acpsdk.UnstableDeleteSessionResponse{}, nil
+}
+
+// UnstableForkSession implements the SDK's optional session/fork interface.
+func (b *agentBridge) UnstableForkSession(ctx context.Context, params acpsdk.UnstableForkSessionRequest) (acpsdk.UnstableForkSessionResponse, error) {
+	sh, ok := b.handler.(SessionAdminHandler)
+	if !ok {
+		return acpsdk.UnstableForkSessionResponse{}, fmt.Errorf("not supported")
+	}
+	resp, err := sh.OnForkSession(ctx, ForkSessionRequest{
+		SessionID: string(params.SessionId),
+	})
+	if err != nil {
+		return acpsdk.UnstableForkSessionResponse{}, err
+	}
+	return acpsdk.UnstableForkSessionResponse{
+		SessionId: acpsdk.SessionId(resp.SessionID),
+	}, nil
 }
 
 // ── agentSender ──
@@ -432,6 +534,87 @@ func (s *agentSender) SendSessionInfo(title string, metadata map[string]any) err
 				SessionUpdate: "sessionInfoUpdate",
 				Title:         titlePtr,
 				Meta:          metadata,
+			},
+		},
+	})
+}
+
+func (s *agentSender) SendUserMessage(text string) error {
+	if s.conn == nil {
+		return nil
+	}
+	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    acpsdk.UpdateUserMessageText(text),
+	})
+}
+
+func (s *agentSender) SendPlan(entries []PlanEntry) error {
+	if s.conn == nil {
+		return nil
+	}
+	sdkEntries := make([]acpsdk.PlanEntry, len(entries))
+	for i, e := range entries {
+		sdkEntries[i] = acpsdk.PlanEntry{
+			Content:  e.Title,
+			Priority: stringToPlanPriority(e.Priority),
+			Status:   stringToPlanStatus(e.Status),
+		}
+	}
+	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update:    acpsdk.UpdatePlan(sdkEntries...),
+	})
+}
+
+func (s *agentSender) SendAvailableCommands(commands []AvailableCommand) error {
+	if s.conn == nil {
+		return nil
+	}
+	sdkCmds := make([]acpsdk.AvailableCommand, len(commands))
+	for i, c := range commands {
+		sdkCmds[i] = acpsdk.AvailableCommand{
+			Name:        c.Name,
+			Description: c.Description,
+		}
+	}
+	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update: acpsdk.SessionUpdate{
+			AvailableCommandsUpdate: &acpsdk.SessionAvailableCommandsUpdate{
+				AvailableCommands: sdkCmds,
+				SessionUpdate:     "availableCommandsUpdate",
+			},
+		},
+	})
+}
+
+func (s *agentSender) SendCurrentMode(modeID string) error {
+	if s.conn == nil {
+		return nil
+	}
+	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update: acpsdk.SessionUpdate{
+			CurrentModeUpdate: &acpsdk.SessionCurrentModeUpdate{
+				CurrentModeId: acpsdk.SessionModeId(modeID),
+				SessionUpdate: "currentModeUpdate",
+			},
+		},
+	})
+}
+
+func (s *agentSender) SendUsage(info UsageInfo) error {
+	if s.conn == nil {
+		return nil
+	}
+	return s.conn.SessionUpdate(context.Background(), acpsdk.SessionNotification{
+		SessionId: acpsdk.SessionId(s.sessionID),
+		Update: acpsdk.SessionUpdate{
+			UsageUpdate: &acpsdk.SessionUsageUpdate{
+				Used:          info.Used,
+				Size:          info.Size,
+				SessionUpdate: "usageUpdate",
 			},
 		},
 	})
@@ -516,3 +699,30 @@ func clientInfoVersion(info *acpsdk.Implementation) string {
 
 // Compile-time interface checks.
 var _ acpsdk.Agent = (*agentBridge)(nil)
+var _ acpsdk.AgentLoader = (*agentBridge)(nil)
+
+func stringToPlanPriority(p string) acpsdk.PlanEntryPriority {
+	switch p {
+	case "high":
+		return acpsdk.PlanEntryPriorityHigh
+	case "medium":
+		return acpsdk.PlanEntryPriorityMedium
+	case "low":
+		return acpsdk.PlanEntryPriorityLow
+	default:
+		return acpsdk.PlanEntryPriorityMedium
+	}
+}
+
+func stringToPlanStatus(s string) acpsdk.PlanEntryStatus {
+	switch s {
+	case "pending":
+		return acpsdk.PlanEntryStatusPending
+	case "in_progress":
+		return acpsdk.PlanEntryStatusInProgress
+	case "completed":
+		return acpsdk.PlanEntryStatusCompleted
+	default:
+		return acpsdk.PlanEntryStatusPending
+	}
+}
