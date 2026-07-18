@@ -187,7 +187,7 @@ func NewTeam(opts ...TeamOption) *Team {
 // agent with the same name already exists.
 //
 // For in-process agents, pass *Agent directly (it implements AgentRunner).
-// For external agents, pass an ACPRunner or any AgentRunner implementation.
+// name must be unique. Pass any AgentRunner implementation.
 //
 // Safe to call concurrently with Run / RunStream. The new agent becomes
 // visible to handoffs on the next agent transition.

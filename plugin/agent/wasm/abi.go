@@ -24,17 +24,17 @@ import "encoding/json"
 
 // PluginMeta is the JSON metadata blob every .wasm module exports via metadata().
 type PluginMeta struct {
-	Type        string          `json:"type"`        // "tool" or "stage"
-	Name        string          `json:"name"`        // unique name
-	Description string          `json:"description"` // human-readable
-	Parameters  json.RawMessage `json:"parameters,omitempty"`  // tool: JSON Schema
-	Stage       string          `json:"stage,omitempty"`       // stage: which stage
-	Phase       string          `json:"phase,omitempty"`       // stage: "enter" | "leave" | "*"
+	Type        string          `json:"type"`                 // "agent:tools" or "agent:observers"
+	Name        string          `json:"name"`                 // unique name
+	Description string          `json:"description"`          // human-readable
+	Parameters  json.RawMessage `json:"parameters,omitempty"` // tools: JSON Schema
+	Stage       string          `json:"stage,omitempty"`      // observers: which stage
+	Phase       string          `json:"phase,omitempty"`      // observers: "enter" | "leave" | "*"
 }
 
 // ── Stage input/output ──
 
-// StageInput is passed to stage plugins' run().
+// StageInput is passed to observers plugins' run().
 type StageInput struct {
 	Name   string         `json:"name"`             // stage constant e.g. "model.call"
 	Phase  string         `json:"phase"`            // "enter" or "leave"
@@ -63,9 +63,13 @@ type ToolOutput struct {
 
 // ── Plugin type constants ──
 
+// PluginAgentPrefix is the type prefix for agent-level plugins ("agent:tools", "agent:observers").
+// CLI plugins use "cli:" prefix. See [PluginTypeTools] and [PluginTypeObservers].
+const PluginAgentPrefix = "agent:"
+
 const (
-	PluginTypeTool  = "tool"
-	PluginTypeStage = "stage"
+	PluginTypeTools     = PluginAgentPrefix + "tools"
+	PluginTypeObservers = PluginAgentPrefix + "observers"
 )
 
 // ── Stage name constants (match openagent.StageXxx) ──

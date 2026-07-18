@@ -222,7 +222,7 @@ cmd/cli/
       observer.go              ObserverHub: OnStartup/OnShutdown/OnCommandStart/OnCommandEnd
       abi.go                   PluginMeta, Is() matcher, CommandDef
   server/agent.go              Build openagent.Agent from Config, REST + ACP server
-  sdk/rust/                    Rust SDK crate (openagent-cli-sdk)
+  plugin/sdk/rust/                    Rust SDK crate (openagent-cli-sdk)
   examples/plugin/
     extended-settings.rs       cli:settings  — reads keyring, merges provider+env
     stats-cmd.rs               cli:commands  — adds "stats" command

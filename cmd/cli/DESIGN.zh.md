@@ -207,7 +207,7 @@ cmd/cli/
       observer.go             ObserverHub: OnStartup/OnShutdown/OnCommandStart/OnCommandEnd
       abi.go                  PluginMeta、Is() 匹配器、CommandDef
   server/agent.go             从 Config 构建 openagent.Agent、REST + ACP 服务
-  sdk/rust/                   Rust SDK crate (openagent-cli-sdk)
+  plugin/sdk/rust/                   Rust SDK crate (openagent-cli-sdk)
   examples/plugin/
     extended-settings.rs      cli:settings  — 读 keyring、合并 provider+env
     stats-cmd.rs              cli:commands  — 添加 "stats" 命令

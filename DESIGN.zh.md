@@ -247,7 +247,7 @@ type Tool interface {
 }
 ```
 
-对标 OpenAI Function Calling。内置 skill 工具（`use_skill`、`reload_skills`）由 Runner 自动注入。支持编译时注入（`WithTools`）和运行时 WASM 插件加载（`plugin/wasm`）。
+对标 OpenAI Function Calling。内置 skill 工具（`use_skill`、`reload_skills`）由 Runner 自动注入。支持编译时注入（`WithTools`）和运行时 WASM 插件加载（`plugin/agent/wasm`）。
 
 ### ⑥ Approver
 

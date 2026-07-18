@@ -1,0 +1,11 @@
+[package]
+name = "example-agent-observer"
+version = "0.1.0"
+edition = "2021"
+description = "Example agent:observers WASM plugin"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+openagent-cli-sdk = { path = "../../../plugin/sdk/rust" }

@@ -1,0 +1,11 @@
+[package]
+name = "example-agent-tool"
+version = "0.1.0"
+edition = "2021"
+description = "Example agent:tools WASM plugin"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+openagent-cli-sdk = { path = "../../../plugin/sdk/rust" }

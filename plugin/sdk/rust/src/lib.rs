@@ -2,7 +2,7 @@
 //
 // Add to Cargo.toml:
 //   [dependencies]
-//   openagent-cli-sdk = { path = "../../cmd/cli/sdk/rust" }
+//   openagent-cli-sdk = { git = "https://github.com/yusheng-g/openagent-go", path = "plugin/sdk/rust" }
 //
 // Get started:
 //   #![no_std]
@@ -18,18 +18,27 @@ pub mod host;
 // ── allocator ──
 
 use core::alloc::{GlobalAlloc, Layout};
+use core::ptr::addr_of_mut;
 
-struct BumpAlloc;
+pub struct BumpAlloc;
+
+// Heap and offset as static mut — safe because single-threaded WASM.
+// Access is via raw pointers through addr_of_mut! to stay compatible
+// with Rust 2024's static_mut_refs lint.
+static mut HEAP: [u8; 131072] = [0; 131072]; // 128 KB
+static mut OFF: usize = 0;
+
 unsafe impl GlobalAlloc for BumpAlloc {
     unsafe fn alloc(&self, layout: core::alloc::Layout) -> *mut u8 {
         let size = layout.size();
         let align = layout.align();
-        let ptr = HEAP.as_ptr() as *mut u8;
+        let heap_ptr = addr_of_mut!(HEAP) as *mut u8;
+        let heap_len = 131072;
         let offset = OFF;
         let aligned = (offset + align - 1) & !(align - 1);
-        if aligned + size <= HEAP.len() {
+        if aligned + size <= heap_len {
             OFF = aligned + size;
-            ptr.add(aligned)
+            heap_ptr.add(aligned)
         } else {
             core::ptr::null_mut()
         }
@@ -38,10 +47,7 @@ unsafe impl GlobalAlloc for BumpAlloc {
 }
 
 #[global_allocator]
-static ALLOC: BumpAlloc = BumpAlloc;
-
-const HEAP: [u8; 131072] = [0; 131072]; // 128 KB
-static mut OFF: usize = 0;
+pub static ALLOC: BumpAlloc = BumpAlloc;
 
 // ── panic ──
 
@@ -77,5 +83,5 @@ pub fn sdk_return(data: &[u8]) -> u64 {
 pub mod prelude {
     pub use alloc::string::String;
     pub use crate::host;
-    pub use crate::{pk, up, sdk_alloc, sdk_meta, sdk_return, wasm_str};
+    pub use crate::{BumpAlloc, pk, up, sdk_alloc, sdk_meta, sdk_return, wasm_str};
 }

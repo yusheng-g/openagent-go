@@ -85,7 +85,7 @@ cd examples/frontend/vue-app && npm install && npm run dev
 | `tokenizer/` | tiktoken 模型感知 token 计数 |
 | `sandbox/native/` | OS 级进程隔离 |
 | `eventbus/` | 会话级发布订阅（SSE） |
-| `plugin/wasm/` | WASM 插件宿主 |
+| `plugin/agent/wasm/` | WASM 插件宿主 |
 | `skill/fs/` | 文件系统技能加载器 |
 | `mcp/` | Model Context Protocol |
 | `acp/` | Agent Communication Protocol |

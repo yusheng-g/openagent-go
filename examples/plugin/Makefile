@@ -1,16 +1,18 @@
-.PHONY: all tool stage clean
+.PHONY: all tool observer clean
 
 PLUGINS_DIR := ./plugins
-RUSTC := $(HOME)/.cargo/bin/rustc
-RFLAGS := --target wasm32-unknown-unknown -C opt-level=z --edition 2021 --crate-type cdylib -C link-arg=--no-entry -C link-arg=--export=alloc -C link-arg=--export=metadata
 
-all: tool stage
+all: tool observer
 
 tool:
-	$(RUSTC) $(RFLAGS) -C link-arg=--export=execute -o $(PLUGINS_DIR)/echo.wasm ./tool/echo.rs
+	cd tool && cargo +stable build --release --target wasm32-unknown-unknown
+	cp tool/target/wasm32-unknown-unknown/release/example_agent_tool.wasm $(PLUGINS_DIR)/echo.wasm
 
-stage:
-	$(RUSTC) $(RFLAGS) -C link-arg=--export=run -o $(PLUGINS_DIR)/logger.wasm ./stage/logger.rs
+observer:
+	cd observer && cargo +stable build --release --target wasm32-unknown-unknown
+	cp observer/target/wasm32-unknown-unknown/release/example_agent_observer.wasm $(PLUGINS_DIR)/logger.wasm
 
 clean:
 	rm -f $(PLUGINS_DIR)/*.wasm
+	cd tool && cargo clean
+	cd observer && cargo clean

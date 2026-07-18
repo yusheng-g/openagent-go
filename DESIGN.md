@@ -236,7 +236,7 @@ type StreamExecutor interface {
 }
 ```
 
-Built-in tools: `shell`, `read`, `write`, `ls`, `grep` (in `tool/` package). Auto-injected tools: `use_skill`, `reload_skills`, `recall_memory`, `subagent`. WASM tool plugins via `plugin/wasm`.
+Built-in tools: `shell`, `read`, `write`, `ls`, `grep` (in `tool/` package). Auto-injected tools: `use_skill`, `reload_skills`, `recall_memory`, `subagent`. WASM tool plugins via `plugin/agent/wasm`.
 
 **Subagent tool:** The `subagent` built-in tool lets the model dynamically spawn temporary sub-agents at runtime — `subagent(name, description, prompt, task)`. The sub-agent runs with the caller's tools (minus subagent itself), no Approver, no Memory, limited turns. Results stream back as `StreamToolProgress` events. Safe by construction: noSpawn prevents recursion.
 
@@ -365,7 +365,7 @@ openagent-go/
 ├── hooks/slog/           slog logger hooks
 ├── hooks/otel/           OpenTelemetry tracing hooks
 ├── skill/fs/             Filesystem skill loader
-├── plugin/wasm/          WASM plugin runtime (wazero)
+├── plugin/agent/wasm/          WASM plugin runtime (wazero)
 ├── acp/                  ACP protocol (Agent ↔ IDE)
 ├── mcp/                  MCP protocol (tool interoperability)
 ├── plan/                 Goal → DAG → parallel execution + replan

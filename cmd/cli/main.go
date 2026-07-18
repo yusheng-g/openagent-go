@@ -18,8 +18,8 @@ import (
 
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
 	"github.com/yusheng-g/openagent-go/cmd/cli/keyring"
-	"github.com/yusheng-g/openagent-go/cmd/cli/plugin"
-	cliwasm "github.com/yusheng-g/openagent-go/cmd/cli/plugin/wasm"
+	"github.com/yusheng-g/openagent-go/plugin/cli"
+	cliwasm "github.com/yusheng-g/openagent-go/plugin/cli/wasm"
 	"github.com/yusheng-g/openagent-go/cmd/cli/server"
 )
 

@@ -85,7 +85,7 @@ Open `http://localhost:5173` — three modes available:
 | `tokenizer/` | tiktoken model-aware token counting |
 | `sandbox/native/` | OS-level process confinement |
 | `eventbus/` | Session-scoped pub/sub for SSE |
-| `plugin/wasm/` | WASM plugin host |
+| `plugin/agent/wasm/` | WASM plugin host |
 | `skill/fs/` | Filesystem skill loader |
 | `mcp/` | Model Context Protocol |
 | `acp/` | Agent Communication Protocol |

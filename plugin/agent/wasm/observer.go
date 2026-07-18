@@ -8,16 +8,16 @@ import (
 	openagent "github.com/yusheng-g/openagent-go"
 )
 
-// wasmStage wraps a WASM stage plugin. It stores the filter (stage name + phase)
+// wasmObserver wraps a WASM observer plugin. It stores the filter (stage name + phase)
 // and calls the guest's run() when events match.
-type wasmStage struct {
+type wasmObserver struct {
 	mod  *module
 	meta PluginMeta
 	name string // human label for logging
 }
 
 // matches returns true if this plugin should fire for the given event.
-func (s *wasmStage) matches(event openagent.StageEvent) bool {
+func (s *wasmObserver) matches(event openagent.StageEvent) bool {
 	if s.meta.Stage != "" && s.meta.Stage != PhaseAll && s.meta.Stage != event.Name {
 		return false
 	}
@@ -28,7 +28,7 @@ func (s *wasmStage) matches(event openagent.StageEvent) bool {
 }
 
 // invoke calls the guest's run() and returns the parsed stage output.
-func (s *wasmStage) invoke(ctx context.Context, event openagent.StageEvent) (*StageOutput, error) {
+func (s *wasmObserver) invoke(ctx context.Context, event openagent.StageEvent) (*StageOutput, error) {
 	errStr := ""
 	if event.Err != nil {
 		errStr = event.Err.Error()

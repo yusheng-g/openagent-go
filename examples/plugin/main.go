@@ -19,8 +19,15 @@ import (
 
 	openagent "github.com/yusheng-g/openagent-go"
 	"github.com/yusheng-g/openagent-go/model/openai"
-	"github.com/yusheng-g/openagent-go/plugin/wasm"
+	"github.com/yusheng-g/openagent-go/plugin/agent/wasm"
+	"github.com/yusheng-g/openagent-go/plugin/wasmhost"
 )
+
+type stdLogger struct{}
+
+func (l *stdLogger) Info(msg string)  { fmt.Println("[plugin]", msg) }
+func (l *stdLogger) Warn(msg string)  { fmt.Println("[plugin] WARN:", msg) }
+func (l *stdLogger) Error(msg string) { fmt.Println("[plugin] ERROR:", msg) }
 
 func main() {
 	apiKey := os.Getenv("OPENAGENT_API_KEY")
@@ -30,8 +37,9 @@ func main() {
 	model := openai.New(apiKey, modelID, baseURL).
 		WithContextWindow(128_000)
 
-	// Plugin manager
-	mgr := wasm.NewManager("./examples/plugin/plugins")
+	// Plugin manager with host API so plugins can use log_* and keyring_*.
+	hostAPI := &wasmhost.HostAPI{Logger: &stdLogger{}}
+	mgr := wasm.NewManager("./examples/plugin/plugins").WithHostAPI(hostAPI)
 	if err := mgr.Discover(context.Background()); err != nil {
 		fmt.Fprintf(os.Stderr, "Plugin discover error: %v\n", err)
 		os.Exit(1)
