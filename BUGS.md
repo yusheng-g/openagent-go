@@ -8,6 +8,23 @@
 
 ## 🐛 Bugs
 
+### [P1] `cli serve` fails to start with "unexpected end of JSON input" when settings.json missing/empty and no plugins
+
+[cmd/cli/main.go:62,122-123](cmd/cli/main.go): `settings = raw` ends up as a nil or empty byte slice in three scenarios, so `json.Unmarshal(settings, &cfg)` fails and `log.Fatalf("parse merged settings: %v", err)` aborts startup:
+
+1. `settings.json` not created — `os.ReadFile` (line 38-41) tolerates `IsNotExist`, but `settings` stays `nil`.
+2. `settings.json` exists but is empty.
+3. No settings plugin loaded — `pluginPaths` defaults to `DefaultPluginsDir()`, no `.wasm` inside → `settings` never reassigned at line 87, stays at the raw (possibly empty) value.
+
+Repro: `./openagent-cli serve --acp` (no plugins + missing/empty settings.json)
+Error: `parse merged settings: unexpected end of JSON input`
+
+Note: line 43 `json.Unmarshal(raw, &preCfg)` silently swallows the same empty-input error — non-fatal there. Same root pattern; consider patching both sites together.
+
+Suggested fix: when `len(settings) == 0`, treat as `[]byte("{}")` (or skip unmarshal and use zero-value `Config{}`). Covers both ACP and REST startup paths.
+
+---
+
 ### [P1] `memory/sqlite` FTS — CJK search returns nothing
 
 [memory/sqlite/memory.go](memory/sqlite/memory.go) — `migrate()` creates `messages_fts` with default `unicode61` tokenizer, which treats a run of CJK characters as one token. CJK queries match nothing.
