@@ -301,8 +301,8 @@ func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRe
 			EmbeddedContext: true,
 		},
 		McpCapabilities: openacp.McpCapabilities{
-			HTTP: false,
-			SSE:  false,
+			HTTP: true,
+			SSE:  true,
 		},
 		SessionCapabilities: openacp.SessionCapabilities{
 			Close:  &openacp.SessionCloseCapabilities{},
@@ -343,6 +343,14 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 	}
 	s.putSession(id, ss)
 	s.saveMeta(string(id), req.Cwd, "acp")
+
+	// Send available commands so the client can show them immediately.
+	if s.updateSender != nil {
+		s.updateSender.SendSessionUpdate(id, openacp.SessionUpdate{
+			SessionUpdate: "available_commands_update",
+			AvailableCommands: s.availableCommands(),
+		})
+	}
 
 	return &openacp.NewSessionResponse{
 		SessionID:     id,
