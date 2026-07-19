@@ -60,6 +60,9 @@ func main() {
 
 	// 4. Load every .wasm and route capabilities.
 	settings := raw
+	if len(settings) == 0 {
+		settings = []byte("{}")
+	}
 	mgr := plugin.NewManager(pluginPaths)
 	hub := &cliwasm.ObserverHub{}
 	for _, p := range pluginPaths {

@@ -8,20 +8,13 @@
 
 ## 🐛 Bugs
 
-### [P1] `cli serve` fails to start with "unexpected end of JSON input" when settings.json missing/empty and no plugins
+### [P1] ~~`cli serve` fails to start with "unexpected end of JSON input" when settings.json missing/empty and no plugins~~ ✅ FIXED
 
-[cmd/cli/main.go:62,122-123](cmd/cli/main.go): `settings = raw` ends up as a nil or empty byte slice in three scenarios, so `json.Unmarshal(settings, &cfg)` fails and `log.Fatalf("parse merged settings: %v", err)` aborts startup:
+[cmd/cli/main.go:62,65-67](cmd/cli/main.go): **Fixed in this commit** — `settings` is normalized to `[]byte("{}")` when empty before the plugin loop, so both `CallInit` and the final `Unmarshal` always receive valid JSON.
 
-1. `settings.json` not created — `os.ReadFile` (line 38-41) tolerates `IsNotExist`, but `settings` stays `nil`.
-2. `settings.json` exists but is empty.
-3. No settings plugin loaded — `pluginPaths` defaults to `DefaultPluginsDir()`, no `.wasm` inside → `settings` never reassigned at line 87, stays at the raw (possibly empty) value.
+Original issue: `settings = raw` (line 62) ended up as a nil or empty byte slice in three scenarios — (1) `settings.json` not created, (2) file exists but empty, (3) no settings plugin loaded → `json.Unmarshal(settings, &cfg)` (line 122) failed with `unexpected end of JSON input` and aborted startup. Repro: `./openagent-cli serve --acp` with no plugins + missing/empty settings.json.
 
-Repro: `./openagent-cli serve --acp` (no plugins + missing/empty settings.json)
-Error: `parse merged settings: unexpected end of JSON input`
-
-Note: line 43 `json.Unmarshal(raw, &preCfg)` silently swallows the same empty-input error — non-fatal there. Same root pattern; consider patching both sites together.
-
-Suggested fix: when `len(settings) == 0`, treat as `[]byte("{}")` (or skip unmarshal and use zero-value `Config{}`). Covers both ACP and REST startup paths.
+Note: line 43 `json.Unmarshal(raw, &preCfg)` silently swallows the same empty-input error — non-fatal there (defaults to empty `Config{}`, falls back to `DefaultPluginsDir()`). Left untouched as this is the expected graceful-degradation behavior.
 
 ---
 
