@@ -18,6 +18,40 @@ Note: line 43 `json.Unmarshal(raw, &preCfg)` silently swallows the same empty-in
 
 ---
 
+### [P1] extended-settings plugin emits invalid JSON / overwrites existing `provider` map
+
+[cmd/cli/examples/plugin/extended-settings/src/lib.rs:41-66](cmd/cli/examples/plugin/extended-settings/src/lib.rs): `cli_init` unconditionally prefixes the injected block with `,` and unconditionally creates a fresh `"provider"` object:
+
+```rust
+let end = if trimmed.ends_with('}') { trimmed.len() - 1 } else { trimmed.len() };
+let mut out = String::from(&settings[..end]);
+out.push_str(",\"provider\":{\"my_provider\":{...");   // always leading ","
+```
+
+Three failure modes:
+
+1. **Empty settings (`{}`)**: `end == 1` → `out = "{"`; appending `,"provider":...` yields `{,"provider":...` — invalid JSON. (Empty-string input yields `,"provider":...` directly.) Fails with `invalid character ',' looking for beginning of object key string`.
+2. **Non-empty, no `provider` key**: the same code path as case 1; the comma-prefix only happens to be syntactically valid here because the object body is non-empty. The lack of an explicit empty-object guard is the root issue.
+3. **Non-empty, has existing `provider`** (e.g. `{"provider":{"some_other":{...}}}`): the unconditional fresh `"provider":{...}` **overwrites** the existing provider map instead of merging `my_provider` into it → silent data loss of user-configured providers.
+
+Repro for case 1: keyring has `my_provider_api_key` + `my_provider_base_url`; settings.json missing/empty (`{}`) — now normalized upstream by the empty-settings fix.
+Symptom: plugin log `plugin: loaded extended-settings (Injects provider credentials from keyring into settings) type=cli:settings` followed by `parse merged settings: invalid character ',' looking for beginning of object key string`.
+
+Repro for case 3: settings.json contains `{"provider":{"some_other":{...}}}`; after plugin runs, `some_other` is gone.
+
+Root cause: append-based JSON composition with naive string slicing — no handling of empty object body (no comma needed) and no handling of existing key (must merge into existing object).
+
+Suggested fix (handles all three cases): parse settings into a JSON object (or the typed `config.Config`), inject `my_provider` into the `provider` map (creating the map if absent), inject env vars into the `env` map likewise, then re-serialize. This eliminates all three cases uniformly.
+
+If string-splicing must be retained (footprint), the minimum-safe logic per injected key (`provider`, `env`):
+1. Search for existing `"<key>":{` in `out`.
+2. If found → insert the new member right after the opening brace, prefixed with `,` iff the object body is non-empty (next char is not `}`).
+3. If not found → append `"<key>":<value>` to the root, prefixed with `,` iff the root body is non-empty (`out` does not end with `{`).
+
+Same guard needed for the `env` injection (line 64) and for the case where the provider branch was skipped due to missing keyring keys.
+
+---
+
 ### [P1] `memory/sqlite` FTS — CJK search returns nothing
 
 [memory/sqlite/memory.go](memory/sqlite/memory.go) — `migrate()` creates `messages_fts` with default `unicode61` tokenizer, which treats a run of CJK characters as one token. CJK queries match nothing.
