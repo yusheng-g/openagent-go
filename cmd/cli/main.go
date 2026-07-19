@@ -132,10 +132,15 @@ func main() {
 	rootCmd.AddCommand(buildServeCmd(cfg))
 	rootCmd.AddCommand(keyringCmd)
 
-	// 7. Wrap every command's RunE to notify observers on entry/exit with error.
+	// 7. Wrap every command's RunE to notify observers on entry/exit.
+	// Treat context cancellation as normal shutdown — do not report
+	// it as an error to observers.
 	wrapCmd(rootCmd, func(cmd *cobra.Command) {
 		hub.OnCommandStart(ctx, cmd.CommandPath())
 	}, func(cmd *cobra.Command, err error) {
+		if err == context.Canceled {
+			err = nil
+		}
 		hub.OnCommandEnd(ctx, cmd.CommandPath(), err)
 	})
 
@@ -178,8 +183,9 @@ var rootCmd = &cobra.Command{
 
 func buildServeCmd(cfg config.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "serve",
-		Short: "Start the server (REST by default, or --acp for ACP)",
+		Use:          "serve",
+		Short:        "Start the server (REST by default, or --acp for ACP)",
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			isACP, _ := cmd.Flags().GetBool("acp")
 			p, _ := cmd.Flags().GetInt("port")

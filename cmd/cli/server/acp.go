@@ -34,11 +34,18 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 	}
 	defer cleanup()
 
-	models, _ := buildModels(cfg.Provider)
-
-	m := firstModel(models)
-	if m == nil {
+	_, modelInfos := buildModels(cfg.Provider)
+	if len(modelInfos) == 0 {
 		log.Println("WARNING: no models configured — ACP server will start but prompt turns will fail")
+	}
+
+	modelMap := make(map[string]openagent.Model, len(modelInfos))
+	for _, mi := range modelInfos {
+		key := mi.ID
+		if mi.Provider != "" {
+			key = mi.Provider + "/" + mi.ID
+		}
+		modelMap[key] = mi.Model
 	}
 
 	workDir, _ := os.Getwd()
@@ -49,19 +56,20 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 		log.Printf("WARNING: sandbox unavailable, tools disabled: %v", err)
 	}
 
-	if m != nil {
+	// Enable summarizer with the first model as summarization backend.
+	if len(modelInfos) > 0 {
+		m := modelInfos[0].Model
 		mem.WithSummarizer(summarizer.New(m))
 	}
 
 	agent := openagent.NewAgent("openagent",
-		openagent.WithModel(m),
 		openagent.WithMemory(mem),
 		openagent.WithSystemPrompts("You are a helpful AI assistant. Use tools to read, write, and execute code when needed."),
 		openagent.WithTools(tools...),
 		openagent.WithMaxTurns(10),
 	)
 
-	srv := acp.NewAgentServer(agent, mem, sessionStore)
+	srv := acp.NewAgentServer(agent, mem, sessionStore, modelMap)
 	server := openacpsdk.NewServer("openagent-acp", "1.0.0", srv)
 	log.Println("ACP server starting on stdio")
 	return server.Run(ctx)

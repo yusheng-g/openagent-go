@@ -33,6 +33,7 @@ type AgentServer struct {
 	Agent        *openagent.Agent
 	Mem          openagent.Memory
 	SessionStore session.Store
+	Models       map[string]openagent.Model // model id → Model
 
 	mu       sync.Mutex
 	sessions map[openacp.SessionId]*agentSession
@@ -42,6 +43,9 @@ type AgentServer struct {
 	clientRPC    openacp.ClientRequester
 	updateSender openacp.SessionUpdateSender
 	cmdRegistry   *slash.Registry // slash command dispatch
+
+	// defaultModelID is used when the session config hasn't selected one.
+	defaultModelID string
 }
 
 // agentSession holds per-session runtime state.
@@ -79,14 +83,25 @@ type agentSession struct {
 }
 
 // NewAgentServer creates an AgentServer wrapping the given agent.
-func NewAgentServer(agent *openagent.Agent, mem openagent.Memory, store session.Store) *AgentServer {
+// models maps model IDs to Model implementations; it is the single source
+// of truth for model selection. The agent template's Model field is ignored.
+func NewAgentServer(agent *openagent.Agent, mem openagent.Memory, store session.Store, models map[string]openagent.Model) *AgentServer {
 	s := &AgentServer{
 		Agent:        agent,
 		Mem:          mem,
 		SessionStore: store,
+		Models:       models,
 		sessions:     make(map[openacp.SessionId]*agentSession),
 	}
 	s.cmdRegistry = s.buildCommandRegistry()
+	if s.Models == nil {
+		s.Models = make(map[string]openagent.Model)
+	}
+	// Pick the first model as the default.
+	for id := range s.Models {
+		s.defaultModelID = id
+		break
+	}
 	return s
 }
 
@@ -315,7 +330,7 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 		cwd:                   req.Cwd,
 		createdAt:             time.Now(),
 		mode:                  "chat",
-		config:                map[openacp.SessionConfigId]any{"thought_level": "medium"},
+		config:                map[openacp.SessionConfigId]any{"thought_level": "medium", "model": s.defaultModelID},
 		firstPrompt:           true,
 		additionalDirectories: req.AdditionalDirectories,
 		mcpServers:            req.McpServers,
@@ -344,7 +359,7 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 			cwd:                   req.Cwd,
 			createdAt:             time.Now(),
 			mode:                  mode,
-			config:                map[openacp.SessionConfigId]any{"thought_level": "medium"},
+			config:                map[openacp.SessionConfigId]any{"thought_level": "medium", "model": s.defaultModelID},
 			firstPrompt:           false,
 			additionalDirectories: req.AdditionalDirectories,
 			mcpServers:            req.McpServers,
@@ -460,7 +475,7 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 			cwd:                   req.Cwd,
 			createdAt:             time.Now(),
 			mode:                  mode,
-			config:                map[openacp.SessionConfigId]any{"thought_level": "medium"},
+			config:                map[openacp.SessionConfigId]any{"thought_level": "medium", "model": s.defaultModelID},
 			firstPrompt:           false,
 			additionalDirectories: req.AdditionalDirectories,
 			mcpServers:            req.McpServers,
@@ -540,6 +555,7 @@ func (s *AgentServer) buildConfigOptions(sid openacp.SessionId) []openacp.Sessio
 	ss := s.getSession(sid)
 	mode := "chat"
 	thoughtLevel := "medium"
+	modelID := s.defaultModelID
 	if ss != nil {
 		mode = ss.mode
 		if v, ok := ss.config["thought_level"]; ok {
@@ -547,8 +563,14 @@ func (s *AgentServer) buildConfigOptions(sid openacp.SessionId) []openacp.Sessio
 				thoughtLevel = val
 			}
 		}
+		if v, ok := ss.config["model"]; ok {
+			if val, ok := v.(string); ok {
+				modelID = val
+			}
+		}
 	}
-	return []openacp.SessionConfigOption{
+
+	opts := []openacp.SessionConfigOption{
 		{
 			ID:           "mode",
 			Name:         "Session Mode",
@@ -575,6 +597,25 @@ func (s *AgentServer) buildConfigOptions(sid openacp.SessionId) []openacp.Sessio
 			},
 		},
 	}
+
+	// Model selector — only surfaced when multiple models are registered.
+	if len(s.Models) > 1 {
+		modelOpts := make([]openacp.SessionConfigOptValue, 0, len(s.Models))
+		for id := range s.Models {
+			modelOpts = append(modelOpts, openacp.SessionConfigOptValue{Value: id, Name: id})
+		}
+		opts = append(opts, openacp.SessionConfigOption{
+			ID:           "model",
+			Name:         "Model",
+			Description:  "Select the LLM model to use",
+			Category:     "model",
+			Type:         "select",
+			CurrentValue: modelID,
+			Options:      modelOpts,
+		})
+	}
+
+	return opts
 }
 
 func (s *AgentServer) buildModeState(sid openacp.SessionId) *openacp.SessionModeState {
@@ -965,6 +1006,17 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 
 	// Apply session-level config to the clone.
 	if ss := s.getSession(sid); ss != nil {
+		// Resolve model from the registry.
+		modelID := s.defaultModelID
+		if v, ok := ss.config["model"]; ok {
+			if val, ok := v.(string); ok {
+				modelID = val
+			}
+		}
+		if m, ok := s.Models[modelID]; ok {
+			clone.Model = m
+		}
+
 		if v, ok := ss.config["thought_level"]; ok {
 			if val, ok := v.(string); ok && val != "" {
 				clone.ReasoningEffort = val

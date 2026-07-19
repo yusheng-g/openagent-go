@@ -1,0 +1,10 @@
+[package]
+name = "openagent-cli-plugin-extended-settings"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+openagent-cli-sdk = { path = "../../../../../plugin/sdk/rust" }

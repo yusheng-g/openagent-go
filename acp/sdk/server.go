@@ -177,39 +177,56 @@ func (m *mux) logf(format string, args ...any) {
 }
 
 // serve reads newline-delimited JSON-RPC 2.0 messages from r until EOF
-// or ctx cancellation.
+// or ctx cancellation. bufio.Scanner blocks on Read; by running the
+// scanner in a goroutine and selecting on ctx.Done(), Ctrl+C exits
+// immediately.
 func (m *mux) serve(ctx context.Context, r io.Reader) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, 0, 64*1024), 10*1024*1024)
 
-	for scanner.Scan() {
+	lines := make(chan []byte, 8)
+	errCh := make(chan error, 1)
+
+	go func() {
+		for scanner.Scan() {
+			b := scanner.Bytes()
+			if len(b) == 0 {
+				continue
+			}
+			// Copy — scanner reuses buffer.
+			line := make([]byte, len(b))
+			copy(line, b)
+			select {
+			case lines <- line:
+			case <-ctx.Done():
+				return
+			}
+		}
+		errCh <- scanner.Err()
+	}()
+
+	for {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
-		default:
-		}
-
-		line := scanner.Bytes()
-		if len(line) == 0 {
-			continue
-		}
-
-		var msg jsonrpcMessage
-		if err := json.Unmarshal(line, &msg); err != nil {
-			m.logf("parse error: %v", err)
-			continue
-		}
-
-		switch {
-		case msg.Method != "":
-			m.route(msg)
-		case len(msg.ID) > 0:
-			m.deliverResponse(msg)
-		default:
-			m.logf("unrecognised message (no method, no id)")
+		case err := <-errCh:
+			return err
+		case line := <-lines:
+			var msg jsonrpcMessage
+			if err := json.Unmarshal(line, &msg); err != nil {
+				m.logf("parse error: %v", err)
+				continue
+			}
+			switch {
+			case msg.Method != "":
+				m.route(msg)
+			case len(msg.ID) > 0:
+				m.deliverResponse(msg)
+			default:
+				m.logf("unrecognised message (no method, no id)")
+			}
 		}
 	}
-	return scanner.Err()
 }
 
 // route dispatches a JSON-RPC 2.0 request or notification by method name.
