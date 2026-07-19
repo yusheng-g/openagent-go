@@ -375,7 +375,16 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 // notifications: user_message_chunk, agent_message_chunk, and tool call
 // events so the client can reconstruct the full conversation.
 func (s *AgentServer) replayHistory(ctx context.Context, sid openacp.SessionId, sender openacp.SessionEventSender) {
-	msgs, err := s.Mem.Recent(ctx, string(sid), 200, 0)
+	n := 200
+	if s.Mem != nil {
+		if total, err := s.Mem.Count(ctx, string(sid)); err == nil && total > 0 {
+			n = total
+			if n > 2000 {
+				n = 2000
+			}
+		}
+	}
+	msgs, err := s.Mem.Recent(ctx, string(sid), n, 0)
 	if err != nil {
 		return
 	}

@@ -439,6 +439,21 @@ func (r *runner) prepareMemory(ctx context.Context, session Session) ([]Message,
 	}
 
 	budget := r.workingTokenBudget()
+
+	// ── Subtract fixed overhead that buildPrompt adds ──
+	// System instructions, compressed summary, project context, and
+	// skills all consume tokens outside the working message set.
+	// If we don't account for them, the model sees more tokens than
+	// the budget expects and trimToContextWindow becomes the only
+	// defence — which it was designed as a last-resort, not the
+	// primary mechanism.
+	modelID := tokenizerModelID(r.runModel)
+	overhead := r.estimatePromptOverhead(ctx, session, modelID)
+	budget -= overhead
+	if budget < 500 {
+		budget = 500 // keep a minimal working window
+	}
+
 	var ci compactionInfo
 
 	// Fetch total count and recent messages — one Recent() call for both
@@ -501,6 +516,68 @@ func (r *runner) prepareMemory(ctx context.Context, session Session) ([]Message,
 	}
 	return msgs[keep:], ci
 }
+
+// estimatePromptOverhead returns the estimated token count of everything
+// defaultBuildPrompt adds BEFORE the working messages: system instructions,
+// compressed summary, skills catalog, etc.  This is subtracted from the
+// working token budget so that the total prompt (overhead + working) fits
+// within the model's context window.
+//
+// When a custom PromptBuilder is configured we cannot predict what it will
+// produce, so we return 0 — the caller's budget becomes best-effort.
+func (r *runner) estimatePromptOverhead(ctx context.Context, session Session, modelID string) int {
+	if r.agent.Prompt != nil {
+		return 0 // custom PromptBuilder — can't know
+	}
+
+	var n int
+
+	// System instructions (Agent.Description + Agent.Instructions).
+	sys := r.agent.Instructions
+	if r.agent.Description != "" {
+		sys = r.agent.Description + "\n\n" + sys
+	}
+	if sys != "" {
+		n += tokenizer.Count(modelID, sys) + 4
+	}
+
+	// Project context.
+	if session.ProjectContext != "" {
+		n += tokenizer.Count(modelID, session.ProjectContext) + 4
+	}
+
+	// Compressed summary + hints.
+	if cc, err := r.agent.Memory.Compressed(ctx, session.ID); err == nil && cc != nil && cc.Summary != "" {
+		content := "## Conversation Summary\n" + cc.Summary
+		if len(cc.Hints) > 0 {
+			content += "\n\n### Retrieval Hints\n"
+			for i, h := range cc.Hints {
+				content += fmt.Sprintf("%d. %s (query: %s)\n", i+1, h.Description, h.Query)
+			}
+		}
+		n += tokenizer.Count(modelID, content) + 4
+	}
+
+	// Skills catalog.
+	if len(r.skills) > 0 {
+		var catalog string
+		for _, s := range r.skills {
+			catalog += "\n### " + s.Name + "\n"
+			for k, v := range s.Frontmatter {
+				catalog += fmt.Sprintf("%s: %v\n", k, v)
+			}
+		}
+		n += tokenizer.Count(modelID, "## Available Skills\n"+catalog) + 4
+	}
+
+	// Loaded skill bodies.
+	for name, body := range r.loadedSkills {
+		n += tokenizer.Count(modelID, "## Loaded Skill: "+name+"\n\n"+body) + 4
+	}
+
+	return n
+}
+
 func (r *runner) buildPrompt(ctx context.Context, session Session, working []Message) []Message {
 	input := PromptInput{
 		AgentDescription: r.agent.Description,

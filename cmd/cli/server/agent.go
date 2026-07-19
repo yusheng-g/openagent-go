@@ -16,9 +16,10 @@ import (
 	"github.com/yusheng-g/openagent-go/memory/sqlite"
 	"github.com/yusheng-g/openagent-go/model/openai"
 	"github.com/yusheng-g/openagent-go/rest"
+	"github.com/yusheng-g/openagent-go/sandbox/native"
 	"github.com/yusheng-g/openagent-go/session"
 	sessionsqlite "github.com/yusheng-g/openagent-go/session/sqlite"
-	"github.com/yusheng-g/openagent-go/sandbox/native"
+	"github.com/yusheng-g/openagent-go/summarizer"
 	opentool "github.com/yusheng-g/openagent-go/tool"
 
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
@@ -62,6 +63,9 @@ func Run(ctx context.Context, opts Options) error {
 		openagent.WithTools(agentTools...),
 		openagent.WithMaxTurns(10),
 	)
+	if primaryModel != nil {
+		mem.WithSummarizer(summarizer.New(primaryModel))
+	}
 
 	if opts.ACP {
 		return runACP(ctx, agent, mem, sessionStore)
@@ -95,7 +99,7 @@ func firstModel(models []openagent.Model) openagent.Model {
 	return nil
 }
 
-func buildMemory(path string) (openagent.Memory, session.Store, func(), error) {
+func buildMemory(path string) (*sqlite.Memory, session.Store, func(), error) {
 	_ = os.MkdirAll(filepath.Dir(path), 0755)
 	mem, err := sqlite.New(path)
 	if err != nil {

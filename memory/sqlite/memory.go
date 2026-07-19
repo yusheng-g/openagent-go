@@ -154,9 +154,9 @@ func (m *Memory) Append(ctx context.Context, sessionID string, msg openagent.Mes
 	defer tx.Rollback()
 
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO messages (session_id, role, content, content_parts, tool_calls, tool_call_id, reasoning_content)
-		 VALUES (?, ?, ?, ?, ?, ?, ?)`,
-		sessionID, msg.Role, msg.Content, string(contentPartsJSON), string(toolCallsJSON), msg.ToolCallID, msg.ReasoningContent,
+		`INSERT INTO messages (session_id, role, name, content, content_parts, tool_calls, tool_call_id, reasoning_content)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		sessionID, msg.Role, msg.Name, msg.Content, string(contentPartsJSON), string(toolCallsJSON), msg.ToolCallID, msg.ReasoningContent,
 	)
 	if err != nil {
 		return fmt.Errorf("sqlite append: %w", err)
@@ -199,7 +199,7 @@ func (m *Memory) Recent(ctx context.Context, sessionID string, n int, offset int
 		fetchN = 20
 	}
 	rows, err := m.db.QueryContext(ctx,
-		`SELECT id, role, content, content_parts, tool_calls, tool_call_id, reasoning_content
+		`SELECT id, role, name, content, content_parts, tool_calls, tool_call_id, reasoning_content
 		 FROM messages WHERE session_id = ?
 		 ORDER BY id DESC LIMIT ?`,
 		sessionID, fetchN,
@@ -278,7 +278,7 @@ func (m *Memory) Compact(ctx context.Context, sessionID string, throughIndex int
 			fetchCount = count
 		}
 		rows, err := m.db.QueryContext(ctx,
-			`SELECT id, role, content, content_parts, tool_calls, tool_call_id, reasoning_content
+			`SELECT id, role, name, content, content_parts, tool_calls, tool_call_id, reasoning_content
 			 FROM messages WHERE session_id = ?
 			 ORDER BY id ASC LIMIT ?`,
 			sessionID, fetchCount,
@@ -381,7 +381,7 @@ func (m *Memory) vectorSearch(ctx context.Context, sessionID, query string, limi
 	}
 
 	rows, err := m.db.QueryContext(ctx,
-		`SELECT v.embedding, m.id, m.role, m.content, m.content_parts, m.tool_calls, m.tool_call_id, reasoning_content
+		`SELECT v.embedding, m.id, m.role, m.name, m.content, m.content_parts, m.tool_calls, m.tool_call_id, reasoning_content
 		 FROM vectors v
 		 JOIN messages m ON v.message_id = m.id
 		 WHERE m.session_id = ?
@@ -403,13 +403,13 @@ func (m *Memory) vectorSearch(ctx context.Context, sessionID, query string, limi
 	for rows.Next() {
 		var raw []byte
 		var id int64
-		var role, content, contentParts, toolCalls, toolCallID, reasoningContent string
-		if err := rows.Scan(&raw, &id, &role, &content, &contentParts, &toolCalls, &toolCallID, &reasoningContent); err != nil {
+		var role, name, content, contentParts, toolCalls, toolCallID, reasoningContent string
+		if err := rows.Scan(&raw, &id, &role, &name, &content, &contentParts, &toolCalls, &toolCallID, &reasoningContent); err != nil {
 			continue
 		}
 		vec := bytesToFloats(raw)
 		score := cosineSimilarity(qVec, vec)
-		msg := rowToMessage(role, content, contentParts, toolCalls, toolCallID, reasoningContent)
+		msg := rowToMessage(role, name, content, contentParts, toolCalls, toolCallID, reasoningContent)
 		msg.Index = id
 		candidates = append(candidates, scored{msg: msg, score: score})
 	}
@@ -455,7 +455,7 @@ func (m *Memory) ftsSearch(ctx context.Context, sessionID, query string, limit i
 	}
 
 	rows, err := m.db.QueryContext(ctx,
-		`SELECT m.id, m.role, m.content, m.content_parts, m.tool_calls, m.tool_call_id, reasoning_content
+		`SELECT m.id, m.role, m.name, m.content, m.content_parts, m.tool_calls, m.tool_call_id, reasoning_content
 		 FROM messages_fts f
 		 JOIN messages m ON f.rowid = m.id
 		 WHERE m.session_id = ? AND messages_fts MATCH ?
@@ -488,6 +488,7 @@ func (m *Memory) migrate() error {
 			id               INTEGER PRIMARY KEY AUTOINCREMENT,
 			session_id       TEXT    NOT NULL,
 			role             TEXT    NOT NULL,
+			name             TEXT    NOT NULL DEFAULT '',
 			content          TEXT    NOT NULL DEFAULT '',
 			content_parts    TEXT    NOT NULL DEFAULT '',
 			tool_calls       TEXT    NOT NULL DEFAULT '[]',
@@ -524,20 +525,21 @@ func scanMessages(rows *sql.Rows) ([]openagent.Message, error) {
 	var msgs []openagent.Message
 	for rows.Next() {
 		var id int64
-		var role, content, contentParts, toolCalls, toolCallID, reasoningContent string
-		if err := rows.Scan(&id, &role, &content, &contentParts, &toolCalls, &toolCallID, &reasoningContent); err != nil {
+		var role, name, content, contentParts, toolCalls, toolCallID, reasoningContent string
+		if err := rows.Scan(&id, &role, &name, &content, &contentParts, &toolCalls, &toolCallID, &reasoningContent); err != nil {
 			return nil, err
 		}
-		msg := rowToMessage(role, content, contentParts, toolCalls, toolCallID, reasoningContent)
+		msg := rowToMessage(role, name, content, contentParts, toolCalls, toolCallID, reasoningContent)
 		msg.Index = id
 		msgs = append(msgs, msg)
 	}
 	return msgs, rows.Err()
 }
 
-func rowToMessage(role, content, contentParts, toolCalls, toolCallID, reasoningContent string) openagent.Message {
+func rowToMessage(role, name, content, contentParts, toolCalls, toolCallID, reasoningContent string) openagent.Message {
 	msg := openagent.Message{
 		Role:             openagent.Role(role),
+		Name:             name,
 		Content:          content,
 		ReasoningContent: reasoningContent,
 		ToolCallID:       toolCallID,

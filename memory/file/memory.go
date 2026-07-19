@@ -56,9 +56,12 @@ func (m *Memory) Close() error { return nil }
 // DeleteSession removes the session's JSONL file and compressed file.
 // It is safe to call on a session that doesn't exist (no error).
 func (m *Memory) DeleteSession(ctx context.Context, sessionID string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	ctxErr := ctx.Err() // capture before I/O — ctx state after removal is irrelevant
 	_ = os.Remove(m.sessionPath(sessionID))
 	_ = os.Remove(m.compressedPath(sessionID))
+	delete(m.nextIdx, sessionID)
 	return ctxErr
 }
 
@@ -69,11 +72,8 @@ func (m *Memory) Count(ctx context.Context, sessionID string) (int, error) {
 	}
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	all, err := m.readAllLocked(ctx, sessionID)
-	if err != nil {
-		return 0, err
-	}
-	return len(all), nil
+	n, err := m.countLinesLocked(sessionID)
+	return int(n), err
 }
 
 // Append writes a message to the session's JSONL file.
