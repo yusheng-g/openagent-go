@@ -341,6 +341,7 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 				r.observe(ctx, StageGuardOut, "leave", nil, guardOutStart, nil)
 			}
 			if choice.FinishReason != "" && choice.FinishReason != "stop" {
+				result.StopReason = choice.FinishReason
 				result.Messages = append(result.Messages, Message{
 					Role:    RoleSystem,
 					Content: fmt.Sprintf("[run ended: finish_reason=%s]", choice.FinishReason),

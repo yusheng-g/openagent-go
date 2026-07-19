@@ -936,6 +936,13 @@ type ClientRequestHandler interface {
 	HandleReleaseTerminal(ctx context.Context, req ReleaseTerminalRequest) (*ReleaseTerminalResponse, error)
 }
 
+// SessionUpdateSender writes a session/update notification to the transport.
+// The mux implements this so handlers can send notifications outside of
+// prompt turns (e.g. current_mode_update after set_mode).
+type SessionUpdateSender interface {
+	SendSessionUpdate(sid SessionId, update SessionUpdate) error
+}
+
 // ClientRPCUser is an optional interface that AgentHandler implementations
 // may satisfy. The Server detects it at construction time and calls
 // SetClientRequester before any other handler method.

@@ -542,7 +542,26 @@ func (m *mux) ReleaseTerminal(ctx context.Context, req ReleaseTerminalRequest) (
 	return doCall[ReleaseTerminalRequest, ReleaseTerminalResponse](m, ctx, "terminal/release", req)
 }
 
+// SendSessionUpdate writes a session/update notification directly to stdout.
+// Used by handlers that need to send notifications outside of a prompt turn
+// (e.g. current_mode_update after session/set_mode).
+func (m *mux) SendSessionUpdate(sid SessionId, update SessionUpdate) error {
+	notif := jsonrpcMessage{
+		JSONRPC: "2.0",
+		Method:  "session/update",
+	}
+	params, _ := json.Marshal(SessionNotification{SessionID: sid, Update: update})
+	notif.Params = params
+
+	data, _ := json.Marshal(notif)
+	m.mu.Lock()
+	_, err := m.w.Write(append(data, '\n'))
+	m.mu.Unlock()
+	return err
+}
+
 var _ ClientRequester = (*mux)(nil)
+var _ SessionUpdateSender = (*mux)(nil)
 
 // ── promptSender ──
 

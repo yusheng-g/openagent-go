@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	openacp "github.com/yusheng-g/openagent-go/acp/sdk"
 	openagent "github.com/yusheng-g/openagent-go"
+	openacp "github.com/yusheng-g/openagent-go/acp/sdk"
 	"github.com/yusheng-g/openagent-go/plan"
 	"github.com/yusheng-g/openagent-go/session"
 )
@@ -35,7 +35,8 @@ type AgentServer struct {
 	nextID   int64
 
 	// clientRPC is set by the SDK mux via ClientRPCUser.
-	clientRPC openacp.ClientRequester
+	clientRPC     openacp.ClientRequester
+	updateSender openacp.SessionUpdateSender // nil = no out-of-turn notification support
 }
 
 // agentSession holds per-session runtime state.
@@ -43,7 +44,7 @@ type agentSession struct {
 	id        openacp.SessionId
 	cwd       string
 	createdAt time.Time
-	mode      string // "chat" or "plan"
+	mode      string                          // "chat" or "plan"
 	config    map[openacp.SessionConfigId]any // config option values
 	cancel    context.CancelFunc
 
@@ -56,6 +57,9 @@ type agentSession struct {
 
 	// Additional directories from session creation/resume.
 	additionalDirectories []string
+
+	// MCP server configs from session creation.
+	mcpServers []openacp.McpServer
 
 	// Cached plan entries (mirrors SessionStore._meta["plan"]).
 	planEntries []plan.Entry
@@ -74,6 +78,9 @@ func NewAgentServer(agent *openagent.Agent, mem openagent.Memory, store session.
 // SetClientRequester implements [openacp.ClientRPCUser].
 func (s *AgentServer) SetClientRequester(r openacp.ClientRequester) {
 	s.clientRPC = r
+	if sender, ok := r.(openacp.SessionUpdateSender); ok {
+		s.updateSender = sender
+	}
 }
 
 var _ openacp.ClientRPCUser = (*AgentServer)(nil)
@@ -203,7 +210,8 @@ func (s *AgentServer) removeSession(id openacp.SessionId) {
 
 // ── openacp.AgentHandler ──
 
-func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRequest) (*openacp.InitializeResponse, error) {	caps := openacp.AgentCapabilities{
+func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRequest) (*openacp.InitializeResponse, error) {
+	caps := openacp.AgentCapabilities{
 		LoadSession: true,
 		PromptCapabilities: openacp.PromptCapabilities{
 			Image:           true,
@@ -246,6 +254,7 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 		config:                map[openacp.SessionConfigId]any{"thought_level": "medium"},
 		firstPrompt:           true,
 		additionalDirectories: req.AdditionalDirectories,
+		mcpServers:            req.McpServers,
 	}
 	s.putSession(id, ss)
 	s.saveMeta(string(id), req.Cwd, "acp")
@@ -272,6 +281,7 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 			config:                map[openacp.SessionConfigId]any{"thought_level": "medium"},
 			firstPrompt:           false,
 			additionalDirectories: req.AdditionalDirectories,
+			mcpServers:            req.McpServers,
 		}
 		s.putSession(req.SessionID, ss)
 	}
@@ -376,6 +386,7 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 			config:                map[openacp.SessionConfigId]any{"thought_level": "medium"},
 			firstPrompt:           false,
 			additionalDirectories: req.AdditionalDirectories,
+			mcpServers:            req.McpServers,
 		}
 		s.putSession(req.SessionID, ss)
 	}
@@ -523,8 +534,15 @@ func (s *AgentServer) OnSetSessionMode(ctx context.Context, req openacp.SetSessi
 		return nil, fmt.Errorf("session %s not found", req.SessionID)
 	}
 	ss.mode = string(req.ModeID)
-	// Persist so mode survives close/load cycles.
 	s.saveMode(ctx, string(req.SessionID), ss.mode)
+
+	// Notify the client of the mode change.
+	if s.updateSender != nil {
+		s.updateSender.SendSessionUpdate(req.SessionID, openacp.SessionUpdate{
+			SessionUpdate: "current_mode_update",
+			CurrentModeID: openacp.SessionModeId(ss.mode),
+		})
+	}
 	return &openacp.SetSessionModeResponse{}, nil
 }
 
@@ -595,12 +613,13 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	oaSession := openagent.Session{
 		ID:        string(req.SessionID),
 		CreatedAt: ss.createdAt,
+		Metadata: map[string]any{
+			"cwd":                   ss.cwd,
+			"additionalDirectories": ss.additionalDirectories,
+			"mcpServers":            ss.mcpServers,
+		},
 	}
 
-	// ── Register plan_create tool ──
-	// The agent autonomously decides when a task warrants explicit
-	// planning. We provide the tool on every turn. When it fires, the
-	// plan is sent to the client and persisted to SessionStore.
 	// ── Register plan_create tool ──
 	// The LLM outputs structured plan entries directly via function-calling
 	// arguments. The tool validates, persists, and notifies — no internal
@@ -642,6 +661,7 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	// instructions) and config options (thought_level).
 	ch := agent.RunStream(ctx, oaSession, input)
 	var usage openagent.Usage
+	var stopReason openacp.StopReason
 
 	for evt := range ch {
 		switch evt.Type {
@@ -693,6 +713,7 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		case openagent.StreamDone:
 			if evt.Result != nil {
 				usage = evt.Result.Usage
+				stopReason = finishReasonToACP(evt.Result.StopReason)
 			}
 
 		case openagent.StreamError:
@@ -719,7 +740,10 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	if ctx.Err() != nil {
 		return &openacp.PromptResponse{StopReason: openacp.StopReasonCancelled}, nil
 	}
-	return &openacp.PromptResponse{StopReason: openacp.StopReasonEndTurn}, nil
+	if stopReason == "" {
+		stopReason = openacp.StopReasonEndTurn
+	}
+	return &openacp.PromptResponse{StopReason: stopReason}, nil
 }
 
 // ── Content block conversion ──
@@ -924,4 +948,23 @@ func firstLine(s string, maxLen int) string {
 		return s[:maxLen] + "..."
 	}
 	return s
+}
+
+// finishReasonToACP maps model finish reasons to ACP stop reasons.
+func finishReasonToACP(finishReason string) openacp.StopReason {
+	switch finishReason {
+	case "length":
+		return openacp.StopReasonMaxTokens
+	case "content_filter", "safety":
+		return openacp.StopReasonRefusal
+	case "handoff":
+		// Agent handed off to another agent — effectively end_turn for
+		// this session (the handoff target continues elsewhere).
+		return openacp.StopReasonEndTurn
+	case "":
+		return openacp.StopReasonEndTurn
+	default:
+		// Unknown finish reason — log but don't block.
+		return openacp.StopReasonEndTurn
+	}
 }
