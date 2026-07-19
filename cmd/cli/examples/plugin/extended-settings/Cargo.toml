@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 openagent-cli-sdk = { path = "../../../../../plugin/sdk/rust" }
+serde_json = { version = "1", default-features = false, features = ["alloc"] }
