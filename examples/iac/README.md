@@ -103,5 +103,5 @@ examples/iac/
 - **Dry-run by default** — `terraform plan` is safe; `terraform apply` requires opt-in
 - **Self-approving read operations** — `terraform_init`, `terraform_plan`, `terraform_output` auto-approve
 - **Approval gates on write operations** — `terraform_apply` and `terraform_destroy` require explicit approval
-- **Uses `rest.PlanHandler`** — same SSE-streaming API as the core framework's plan endpoint
+- **Uses `rest.OrchestrateHandler`** — same SSE-streaming API as the core framework's plan endpoint
 - **LLMPlanner generates DAG** — the model decomposes user goals into ordered steps based on agent descriptions

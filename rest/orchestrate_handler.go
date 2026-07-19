@@ -15,18 +15,18 @@ import (
 	"github.com/yusheng-g/openagent-go/orchestrate"
 )
 
-// PlanAgentTemplate describes an agent available for plan steps.
-type PlanAgentTemplate struct {
+// OrchestrateAgentTemplate describes an agent available for plan steps.
+type OrchestrateAgentTemplate struct {
 	Name        string
 	Description string
 	Runner      openagent.AgentRunner // *Agent, Team, or external ACP runner
 }
 
-// ── PlanHandler ──
+// ── OrchestrateHandler ──
 
-// PlanHandler serves a REST API for goal → DAG → execution workflows.
-type PlanHandler struct {
-	agents []PlanAgentTemplate
+// OrchestrateHandler serves a REST API for goal → DAG → execution workflows.
+type OrchestrateHandler struct {
+	agents []OrchestrateAgentTemplate
 	model  openagent.Model
 
 	sm *sessionManager[*planSessionState] // session CRUD, store, bus
@@ -58,11 +58,11 @@ func (s *planSessionState) isActive() bool {
 	return s.running || s.pendingApproval != nil
 }
 
-// NewPlanHandler creates a PlanHandler.
+// NewPlanHandler creates a OrchestrateHandler.
 // model is used for both the Planner and step output summarisation.
 // At least one agent template is required.
-func NewPlanHandler(mem openagent.Memory, model openagent.Model, agents ...PlanAgentTemplate) *PlanHandler {
-	h := &PlanHandler{agents: agents, model: model}
+func NewOrchestrateHandler(mem openagent.Memory, model openagent.Model, agents ...OrchestrateAgentTemplate) *OrchestrateHandler {
+	h := &OrchestrateHandler{agents: agents, model: model}
 
 	bus := eventbus.New[SSEEvent](1000)
 	h.sm = newSessionManager[*planSessionState](nil, mem, bus, sessionHooks[*planSessionState]{
@@ -74,7 +74,7 @@ func NewPlanHandler(mem openagent.Memory, model openagent.Model, agents ...PlanA
 }
 
 // Register adds the plan handler's routes to mux using Go 1.22+ patterns.
-func (h *PlanHandler) Register(mux *http.ServeMux) {
+func (h *OrchestrateHandler) Register(mux *http.ServeMux) {
 	mux.HandleFunc("POST /plan/sessions", h.handleCreateSession)
 	mux.HandleFunc("GET /plan/sessions", h.handleListSessions)
 	mux.HandleFunc("GET /plan/sessions/{id}", h.handleGetSession)
@@ -93,35 +93,35 @@ func (h *PlanHandler) Register(mux *http.ServeMux) {
 }
 
 // WithSessionStore attaches a persistent session metadata store.
-func (h *PlanHandler) WithSessionStore(s session.Store) *PlanHandler {
+func (h *OrchestrateHandler) WithSessionStore(s session.Store) *OrchestrateHandler {
 	h.sm.SetStore(s)
 	return h
 }
 
 // StartJanitor starts a background goroutine that evicts idle plan session entries.
-func (h *PlanHandler) StartJanitor(ctx context.Context, interval, maxIdle time.Duration) {
+func (h *OrchestrateHandler) StartJanitor(ctx context.Context, interval, maxIdle time.Duration) {
 	h.sm.StartJanitor(ctx, interval, maxIdle)
 }
 
 // WithCleanupDir registers a callback invoked when a plan session is deleted.
-func (h *PlanHandler) WithCleanupDir(fn func(sessionID string)) *PlanHandler {
+func (h *OrchestrateHandler) WithCleanupDir(fn func(sessionID string)) *OrchestrateHandler {
 	h.sm.SetCleanupDir(fn)
 	return h
 }
 
 // ── Session CRUD ──
 
-func (h *PlanHandler) handleCreateSession(w http.ResponseWriter, r *http.Request) { h.sm.create(w, r) }
-func (h *PlanHandler) handleListSessions(w http.ResponseWriter, r *http.Request)  { h.sm.list(w, r) }
-func (h *PlanHandler) handleGetSession(w http.ResponseWriter, r *http.Request)    { h.sm.get(w, r) }
-func (h *PlanHandler) handleUpdateSession(w http.ResponseWriter, r *http.Request) { h.sm.update(w, r) }
-func (h *PlanHandler) handleDeleteSession(w http.ResponseWriter, r *http.Request) { h.sm.del(w, r) }
+func (h *OrchestrateHandler) handleCreateSession(w http.ResponseWriter, r *http.Request) { h.sm.create(w, r) }
+func (h *OrchestrateHandler) handleListSessions(w http.ResponseWriter, r *http.Request)  { h.sm.list(w, r) }
+func (h *OrchestrateHandler) handleGetSession(w http.ResponseWriter, r *http.Request)    { h.sm.get(w, r) }
+func (h *OrchestrateHandler) handleUpdateSession(w http.ResponseWriter, r *http.Request) { h.sm.update(w, r) }
+func (h *OrchestrateHandler) handleDeleteSession(w http.ResponseWriter, r *http.Request) { h.sm.del(w, r) }
 
-func (h *PlanHandler) handlePlanMessages(w http.ResponseWriter, r *http.Request) { h.sm.messages(w, r) }
+func (h *OrchestrateHandler) handlePlanMessages(w http.ResponseWriter, r *http.Request) { h.sm.messages(w, r) }
 
 // ── Plan generation ──
 
-func (h *PlanHandler) handleGenerate(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleGenerate(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	var body struct {
@@ -175,7 +175,7 @@ func (h *PlanHandler) handleGenerate(w http.ResponseWriter, r *http.Request) {
 
 // ── Get current plan ──
 
-func (h *PlanHandler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	s := h.sm.getOrCreate(id)
@@ -195,7 +195,7 @@ func (h *PlanHandler) handleGetPlan(w http.ResponseWriter, r *http.Request) {
 
 // ── Update plan (user edits) ──
 
-func (h *PlanHandler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	s := h.sm.getOrCreate(id)
@@ -241,7 +241,7 @@ func (h *PlanHandler) handleUpdatePlan(w http.ResponseWriter, r *http.Request) {
 
 // ── Execute plan (trigger only, returns 202) ──
 
-func (h *PlanHandler) handleExecute(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleExecute(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	s := h.sm.getOrCreate(id)
@@ -357,7 +357,7 @@ func (h *PlanHandler) handleExecute(w http.ResponseWriter, r *http.Request) {
 
 // ── Events (SSE stream, EventSource-compatible GET) ──
 
-func (h *PlanHandler) handleEvents(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleEvents(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	if !h.sm.Exists(id) {
@@ -396,7 +396,7 @@ func (h *PlanHandler) handleEvents(w http.ResponseWriter, r *http.Request) {
 
 // ── Cancel execution ──
 
-func (h *PlanHandler) handleCancel(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleCancel(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	s := h.sm.getOrCreate(id)
@@ -420,7 +420,7 @@ func (h *PlanHandler) handleCancel(w http.ResponseWriter, r *http.Request) {
 // ── Manual retry / replan (when AutoReplan is false) ──
 
 // handleStepRetry resumes a paused plan by retrying a failed step.
-func (h *PlanHandler) handleStepRetry(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleStepRetry(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	stepID := r.PathValue("stepID")
 
@@ -465,7 +465,7 @@ func (h *PlanHandler) handleStepRetry(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleReplan regenerates the affected subtree of a failed plan incorporating user feedback.
-func (h *PlanHandler) handleReplan(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleReplan(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	var body struct {
@@ -536,7 +536,7 @@ func (h *PlanHandler) handleReplan(w http.ResponseWriter, r *http.Request) {
 
 // ── Tool approval during plan execution ──
 
-func (h *PlanHandler) handleApprove(w http.ResponseWriter, r *http.Request) {
+func (h *OrchestrateHandler) handleApprove(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
 	var body ApproveRequest
@@ -572,7 +572,7 @@ func (h *PlanHandler) handleApprove(w http.ResponseWriter, r *http.Request) {
 
 // ── Factory ──
 
-func (h *PlanHandler) newEntry(info session.SessionInfo) *planSessionState {
+func (h *OrchestrateHandler) newEntry(info session.SessionInfo) *planSessionState {
 	s := &planSessionState{
 		info: info,
 	}
@@ -602,7 +602,7 @@ func (h *PlanHandler) newEntry(info session.SessionInfo) *planSessionState {
 
 // ── Approval bridge ──
 
-func (h *PlanHandler) submitApproval(s *planSessionState, call openagent.ToolCall, resp chan approveResponse) {
+func (h *OrchestrateHandler) submitApproval(s *planSessionState, call openagent.ToolCall, resp chan approveResponse) {
 	tcj := &SSEToolCall{
 		ID: call.ID,
 		Function: SSEToolCallFunction{

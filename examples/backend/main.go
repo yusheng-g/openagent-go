@@ -179,12 +179,12 @@ func main() {
 		openagent.WithMaxTurns(1),
 		openagent.WithTools(sandboxTools...),
 	)
-	planHandler := rest.NewPlanHandler(nil, llm,
-		rest.PlanAgentTemplate{Name: "researcher", Description: "Researches technical topics — provides comprehensive analysis with pros/cons, alternatives, and data-driven recommendations", Runner: planResearcher},
-		rest.PlanAgentTemplate{Name: "architect", Description: "Designs software architecture — produces structured design documents with components, interfaces, and data flow", Runner: planArchitect},
-		rest.PlanAgentTemplate{Name: "coder", Description: "Writes production-quality code with error handling and comments", Runner: planCoder},
-		rest.PlanAgentTemplate{Name: "reviewer", Description: "Reviews code for correctness, style, and potential bugs — produces a list of issues and suggestions", Runner: planReviewer},
-		rest.PlanAgentTemplate{Name: "writer", Description: "Writes clear, professional documentation: README, API docs, reports. Uses markdown formatting", Runner: planWriter},
+	orchHandler := rest.NewOrchestrateHandler(nil, llm,
+		rest.OrchestrateAgentTemplate{Name: "researcher", Description: "Researches technical topics — provides comprehensive analysis with pros/cons, alternatives, and data-driven recommendations", Runner: planResearcher},
+		rest.OrchestrateAgentTemplate{Name: "architect", Description: "Designs software architecture — produces structured design documents with components, interfaces, and data flow", Runner: planArchitect},
+		rest.OrchestrateAgentTemplate{Name: "coder", Description: "Writes production-quality code with error handling and comments", Runner: planCoder},
+		rest.OrchestrateAgentTemplate{Name: "reviewer", Description: "Reviews code for correctness, style, and potential bugs — produces a list of issues and suggestions", Runner: planReviewer},
+		rest.OrchestrateAgentTemplate{Name: "writer", Description: "Writes clear, professional documentation: README, API docs, reports. Uses markdown formatting", Runner: planWriter},
 	).WithSessionStore(sessionStore)
 
 	// ── Routes ──
@@ -198,7 +198,7 @@ func main() {
 
 	handler.Register(mux)
 	teamHandler.Register(mux)
-	planHandler.Register(mux)
+	orchHandler.Register(mux)
 
 	// Frontend static files (optional, env FRONTEND_DIR)
 	if frontendDir := os.Getenv("FRONTEND_DIR"); frontendDir != "" {

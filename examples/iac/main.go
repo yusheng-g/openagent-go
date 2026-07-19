@@ -101,14 +101,14 @@ func main() {
 	// ── Agents ──
 	agentDefs := buildIACAgents(model, mem, tfTool, fileTools, skillDir)
 
-	var planTemplates []rest.PlanAgentTemplate
+	var planTemplates []rest.OrchestrateAgentTemplate
 	for _, def := range agentDefs {
-		planTemplates = append(planTemplates, rest.PlanAgentTemplate{
+		planTemplates = append(planTemplates, rest.OrchestrateAgentTemplate{
 			Name: def.Name, Description: def.Description, Runner: def.Runner,
 		})
 	}
 
-	ph := rest.NewPlanHandler(mem, model, planTemplates...)
+	ph := rest.NewOrchestrateHandler(mem, model, planTemplates...)
 
 	// ── Routes ──
 	mux := http.NewServeMux()

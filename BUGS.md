@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-17.
+> Last updated 2026-07-19.
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -8,27 +8,21 @@
 
 ## 🐛 Bugs
 
-### [P1] `memory/sqlite` FTS search returns nothing for CJK and crashes on sentence punctuation
+### [P1] `memory/sqlite` FTS — CJK search returns nothing
 
-[memory/sqlite/memory.go](memory/sqlite/memory.go) — `ftsSearch` + `migrate`:
+[memory/sqlite/memory.go](memory/sqlite/memory.go) — `migrate()` creates `messages_fts` with default `unicode61` tokenizer, which treats a run of CJK characters as one token. CJK queries match nothing.
 
-1. **CJK search always returns 0** — `messages_fts` uses the default `unicode61` tokenizer, which treats a run of CJK characters as one token, so CJK queries (e.g. `天蓝色`) match nothing.
-
-2. **Punctuation crashes the query** — `ftsSearch` strips only `* ( ) - ^ ~ @ : " \x00` before `MATCH`, so sentence punctuation `? ! . , ; / #` raises `fts5: syntax error` and `recall_memory` returns `search failed`.
+Punctuation (`! ? . , ; / #`) crash was partially mitigated in `ftsSearch`: characters are now stripped before calling `MATCH`, and empty queries return `nil` instead of crashing. Still, FTS5 only works for whitespace-separated languages (English, European).
 
 ---
 
-### [P2] Team/Plan: no model selection, no ContextWindow, stale ModelID
+### [P2] Team: no model selection, no ContextWindow, stale ModelID
 
-Three related gaps — team and plan handlers never got the model-registry treatment:
+[rest/team.go](rest/team.go):
 
-1. **Team `handleChat` ignores `ChatRequest.ModelID`** — [rest/team.go](rest/team.go): `oaSession` constructed without `Model` or `ModelID`. Frontend model selector has no effect in team mode.
-
-2. **`s.info.ModelID` never synced** — Team and Plan handlers don't sync model preference. `GET /team/sessions/{id}` and `GET /plan/sessions/{id}` return creation-time `ModelID` forever.
-
-3. **Team/Plan `handleGetSession` missing `ContextWindow`** — Frontend shows `contextWindow: 0` for team/plan sessions.
-
-**Fix:** Wire `ChatRequest.ModelID` into team session; sync `s.info.ModelID`; set `ContextWindow` in all three `handleGetSession` variants.
+1. `handleChat` ignores `ChatRequest.ModelID` — `oaSession` constructed without `Model` or `ModelID`. Frontend model selector has no effect in team mode.
+2. `s.info.ModelID` never synced to team handler. `GET /team/sessions/{id}` returns creation-time `ModelID` forever.
+3. `handleGetSession` missing `ContextWindow` — Frontend shows `contextWindow: 0` for team sessions.
 
 ---
 
@@ -36,19 +30,11 @@ Three related gaps — team and plan handlers never got the model-registry treat
 
 [examples/frontend/vue-app/src/stores/chat.ts](examples/frontend/vue-app/src/stores/chat.ts): `watchEffect` → `clearChat()` → `fetchMessages()` (async). Between `clearChat()` and `fetchMessages` completing, a live SSE stream can push messages. When `fetchMessages` resolves, `messages.value = converted` unconditionally overwrites live messages.
 
-**Fix:** Skip overwriting `messages.value` when `streaming.value` is true.
-
----
-
-### [P2] `sandbox/native/native_linux.go` — Silent fallback to unconfined when bwrap missing
-
-[sandbox/native/native_linux.go](sandbox/native/native_linux.go): If `bwrap` is not installed, `confineAndRun` falls through to `unconfinedRun` with **no warning**. Comment says "falls back with a warning" but no log is emitted.
-
 ---
 
 ### [P2] `guard/llm/guard.go` — Parse failure defaults to block (fail-closed)
 
-[guard/llm/guard.go](guard/llm/guard.go): JSON parse fails → substring match on `"allowed": true/false`. If substring match also fails, defaults to `Allowed: false`. The `failOpen` option only covers network/API errors and empty choices, not parse errors.
+[guard/llm/guard.go](guard/llm/guard.go): `parseResult` does substring match on `"allowed": true/false`. If substring match also fails, defaults to `Allowed: false`. The `failOpen` option only covers network/API errors and empty choices, not parse errors (`parseResult` ignores `failOpen` when it can't extract a boolean).
 
 ---
 
@@ -56,21 +42,11 @@ Three related gaps — team and plan handlers never got the model-registry treat
 
 [rest/team.go](rest/team.go): `handleAddAgent` creates agents at runtime. `SessionStore` only persists `SessionInfo` — agent list not stored. After restart, `getOrCreate` → `newEntry` rebuilds from templates only.
 
-**Fix:** Needs schema design.
-
----
-
-### [P2] Plan mode `handlePlanMessages` always empty
-
-[rest/plan_handler.go](rest/plan_handler.go): Plan steps run in isolated sub-sessions (`sessionID/steps/stepID`). Messages stored under step sub-sessions, never under parent session. `Recent(ctx, parentSessionID, ...)` always returns empty.
-
 ---
 
 ### [P3] API credit leak on client SSE disconnect
 
-[rest/handler.go](rest/handler.go), [rest/team.go](rest/team.go), [rest/plan_handler.go](rest/plan_handler.go): All three use `context.Background()` (with timeout) for agent goroutines. SSE client disconnects → goroutine continues running for up to 5 minutes (30 for plan), consuming credits with no consumer.
-
-**Fix:** Derive agent context from `r.Context()` with `context.WithCancel()`.
+[rest/handler.go:272](rest/handler.go#L272), [rest/team.go:222](rest/team.go#L222), [rest/orchestrate_handler.go:264](rest/orchestrate_handler.go#L264): All three use `context.Background()` (with long timeout) for agent goroutines. SSE client disconnects → goroutine continues running with no consumer.
 
 ---
 
@@ -78,31 +54,25 @@ Three related gaps — team and plan handlers never got the model-registry treat
 
 ### `runner.go` — Emergency context window trimming
 
-[runner.go](runner.go): "last-resort truncation" triggers when system prompts + compressed context + large tool results push past the hard limit. If compaction were reliable, this emergency path would never exist.
+[runner.go:222-253](runner.go): "last-resort truncation" triggers when system prompts + compressed context + large tool results push past the model's hard limit. The new `estimatePromptOverhead` in `prepareMemory` accounts for fixed overhead tokens, so this path should now only fire when tool results are unexpectedly large. Still a valid safety net.
 
 ---
 
 ### `team.go` — Handoff hint retry for forgetful models
 
-[team.go](team.go): Agent has handoff tools but doesn't use them → retry with hardcoded prompt. Root cause in the model, not the framework. Works well with DeepSeek.
+[team.go](team.go): Agent has handoff tools but doesn't use them → retry with hardcoded prompt. Root cause in the model, not the framework.
 
 ---
 
 ### `runner.go` — Fragile history dedup
 
-[runner.go](runner.go): `appendMemory(input)` → `Recent()` → strip last `RoleUser` message. If concurrent access inserts another user message between Append and Recent, wrong message is removed.
-
----
-
-### `acp/client.go` + `acp/server.go` — JSON round-trip for type conversion
-
-[acp/client.go](acp/client.go): SDK types ↔ project types via `json.Marshal` → `json.Unmarshal`. Mismatched JSON tags = silent data loss.
+[runner.go:148-149](runner.go): `appendMemory(input)` → `Recent()` → strip last `RoleUser` message. If concurrent access inserts another user message between Append and Recent, wrong message is removed.
 
 ---
 
 ### `guard/llm/guard.go` — Substring matching for safety verdict
 
-[guard/llm/guard.go](guard/llm/guard.go): Looking for `"allowed": false` and `"allowed": true` as substrings in a lowercased string. Can produce false positives.
+[guard/llm/guard.go](guard/llm/guard.go): Looking for `"allowed": false` and `"allowed": true` as substrings in a lowercased string. Can produce false positives on edge cases.
 
 ---
 
@@ -110,25 +80,19 @@ Three related gaps — team and plan handlers never got the model-registry treat
 
 ### [DEBT] `runner.go:58-403` — Monolithic `run()` loop
 
-[runner.go](runner.go): The entire 8-node mainline loop is one function (~400 lines). Unit testing individual stages impossible without mocking the entire loop. File ~1380 lines total (grew from 1230 after subagent + two-phase executeTools).
+[runner.go](runner.go): The entire 8-node mainline loop is one function (~400 lines). Unit testing individual stages impossible without mocking the entire loop. File ~1383 lines total (grew with subagent + two-phase executeTools + estimatePromptOverhead).
 
 ---
 
-### [DEBT] `prompt.go:35` — `PromptBuilder` is a function type, not an interface
+### [DEBT] `prompt.go:34` — `PromptBuilder` is a function type, not an interface
 
 [prompt.go](prompt.go): `type PromptBuilder func(context.Context, PromptInput) ([]Message, error)`. Cannot add methods. Zero value panics.
 
 ---
 
-### [DEBT] `memory.go:66-68` — `ThroughIndex` zero value semantically overloaded
+### [DEBT] `memory.go:62-66` — `ThroughIndex` zero value semantically overloaded
 
-[memory.go](memory.go): `ThroughIndex = 0` means either "never compressed" or "first compaction covered 0 messages."
-
----
-
-### [DEBT] `model.go:112` — `Summarizer.ThroughIndex` contract unenforceable
-
-[model.go](model.go): Comment says ThroughIndex "should be set by the caller (memory backend), not the implementation." Nothing prevents a buggy Summarizer from setting it arbitrarily.
+[memory.go](memory.go): `ThroughIndex = 0` means either "never compressed" or "first compaction covered 0 messages." With the summarizer now implemented (summarizer/llm.go), the distinction matters more.
 
 ---
 
@@ -182,21 +146,11 @@ Errors discarded without logging:
 
 ---
 
-### [DEBT] `plan/planner.go` — Markdown fence stripping is fragile
-
-[plan/planner.go](plan/planner.go): `strings.TrimPrefix` only matches exact prefixes.
-
----
-
-### [DEBT] `plan/plan.go` — `ReplanWithFeedback` passes `nil` onChunk ambiguously
-
-[plan/plan.go](plan/plan.go): Relies on planner to check function parameter for nil.
-
----
-
 ### [DEBT] `memory/file/memory.go` — Scanner buffer initialized with length 0
 
-[memory/file/memory.go](memory/file/memory.go): `scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)` — `bufio.Scanner` ignores 0-length buffer and allocates its own.
+[memory/file/memory.go:292](memory/file/memory.go#L292): `scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)` — `bufio.Scanner` ignores 0-length buffer and allocates its own.
+
+---
 
 ## Legend
 

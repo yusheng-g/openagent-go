@@ -470,7 +470,7 @@ openagent-go/
 ├── rest/                     REST API（HTTP 访问层）
 │   ├── handler.go            Handler：单 Agent 会话 CRUD + SSE 对话 + 审批
 │   ├── team.go               TeamHandler：多 Agent Team 编排 + 动态 agent 管理
-│   ├── plan_handler.go       PlanHandler：Orchestrate 会话 CRUD + 生成/编辑/执行 + SSE
+│   ├── orchestrate_handler.go OrchestrateHandler：Orchestrate 会话 CRUD + 生成/编辑/执行 + SSE
 │   ├── types.go              请求/响应类型 + SSEEvent + SessionDetail
 │   ├── session.go             Web session 状态管理 + idle 驱逐
 │   └── sse.go                SSE 工具（writeSSE, setSSEHeaders）
@@ -993,8 +993,8 @@ Pre-execution 按钮：`[Execute] [Replan] [Clear]`
 - **Replan**: 输入自然语言 feedback → Planner 基于当前 plan + feedback 重新规划受影响子树 → 合并回 DAG 继续执行
 - `plan_waiting_retry` 事件暂停执行，用户在对话框中输入反馈后点击 Replan 恢复
 ```go
-ph := rest.NewPlanHandler(mem, model,
-    rest.PlanAgentTemplate{Name: "coder", Description: "...", Runner: coder},
+ph := rest.NewOrchestrateHandler(mem, model,
+    rest.OrchestrateAgentTemplate{Name: "coder", Description: "...", Runner: coder},
 )
 ph.Register(mux)
 // POST   /orchestrate/sessions                         — 创建 session
