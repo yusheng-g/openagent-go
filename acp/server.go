@@ -8,14 +8,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"time"
 
 	openagent "github.com/yusheng-g/openagent-go"
 	openacp "github.com/yusheng-g/openagent-go/acp/sdk"
+	"github.com/yusheng-g/openagent-go/mcp"
 	"github.com/yusheng-g/openagent-go/plan"
 	"github.com/yusheng-g/openagent-go/session"
+	"github.com/yusheng-g/openagent-go/slash"
 )
 
 // AgentServer wraps an [openagent.Agent] as an [openacp.AgentHandler].
@@ -35,8 +38,9 @@ type AgentServer struct {
 	nextID   int64
 
 	// clientRPC is set by the SDK mux via ClientRPCUser.
-	clientRPC     openacp.ClientRequester
-	updateSender openacp.SessionUpdateSender // nil = no out-of-turn notification support
+	clientRPC    openacp.ClientRequester
+	updateSender openacp.SessionUpdateSender
+	cmdRegistry   *slash.Registry // slash command dispatch
 }
 
 // agentSession holds per-session runtime state.
@@ -61,18 +65,28 @@ type agentSession struct {
 	// MCP server configs from session creation.
 	mcpServers []openacp.McpServer
 
+	// Connected MCP sessions. Populated on session create/load/resume;
+	// closed on session close/delete.
+	mcpSessions []*mcp.Session
+
+	// MCP tools imported from all connected servers. Populated once at
+	// connect time; injected into every agentForTurn clone.
+	mcpTools []openagent.Tool
+
 	// Cached plan entries (mirrors SessionStore._meta["plan"]).
 	planEntries []plan.Entry
 }
 
 // NewAgentServer creates an AgentServer wrapping the given agent.
 func NewAgentServer(agent *openagent.Agent, mem openagent.Memory, store session.Store) *AgentServer {
-	return &AgentServer{
+	s := &AgentServer{
 		Agent:        agent,
 		Mem:          mem,
 		SessionStore: store,
 		sessions:     make(map[openacp.SessionId]*agentSession),
 	}
+	s.cmdRegistry = s.buildCommandRegistry()
+	return s
 }
 
 // SetClientRequester implements [openacp.ClientRPCUser].
@@ -186,6 +200,54 @@ func (s *AgentServer) loadMode(ctx context.Context, sessionID string) string {
 	return mode
 }
 
+// connectMCP connects to all configured MCP servers and returns the sessions.
+// Tools are listed once at connect time and cached — the connection is
+// long-lived (one connection per session lifetime).
+// Failed connections are logged but not fatal — MCP is an optional enhancement.
+func (s *AgentServer) connectMCP(ctx context.Context, servers []openacp.McpServer) ([]*mcp.Session, []openagent.Tool) {
+	client := mcp.NewClient("openagent-acp", "1.0.0")
+	var sessions []*mcp.Session
+	var tools []openagent.Tool
+	for _, cfg := range servers {
+		sess, err := s.connectOneMCP(ctx, client, cfg)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "acp: MCP connect %q failed: %v\n", cfg.Name, err)
+			continue
+		}
+		sessions = append(sessions, sess)
+		st, err := sess.Tools(ctx)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "acp: MCP list tools %q failed: %v\n", cfg.Name, err)
+			continue
+		}
+		tools = append(tools, st...)
+	}
+	return sessions, tools
+}
+
+func (s *AgentServer) connectOneMCP(ctx context.Context, client *mcp.Client, cfg openacp.McpServer) (*mcp.Session, error) {
+	switch cfg.Type {
+	case "http":
+		return client.ConnectHTTP(ctx, cfg.URL)
+	case "sse":
+		return client.ConnectHTTP(ctx, cfg.URL) // SSE deprecated by MCP spec; treat as HTTP
+	default:
+		// stdio (default when Type is empty).
+		envVars := make([]string, len(cfg.Env))
+		for i, ev := range cfg.Env {
+			envVars[i] = ev.Name + "=" + ev.Value
+		}
+		return client.ConnectStdioWithEnv(ctx, cfg.Command, cfg.Args, envVars)
+	}
+}
+
+// disconnectMCP closes all MCP connections.
+func (s *AgentServer) disconnectMCP(sessions []*mcp.Session) {
+	for _, sess := range sessions {
+		_ = sess.Close()
+	}
+}
+
 func (s *AgentServer) putSession(id openacp.SessionId, ss *agentSession) {
 	s.mu.Lock()
 	s.sessions[id] = ss
@@ -246,6 +308,7 @@ func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRe
 
 func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRequest) (*openacp.NewSessionResponse, error) {
 	id := s.newSessionID()
+	mcpSessions, mcpTools := s.connectMCP(ctx, req.McpServers)
 	ss := &agentSession{
 		id:                    id,
 		cwd:                   req.Cwd,
@@ -255,6 +318,8 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 		firstPrompt:           true,
 		additionalDirectories: req.AdditionalDirectories,
 		mcpServers:            req.McpServers,
+		mcpSessions:           mcpSessions,
+		mcpTools:              mcpTools,
 	}
 	s.putSession(id, ss)
 	s.saveMeta(string(id), req.Cwd, "acp")
@@ -283,6 +348,8 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 			additionalDirectories: req.AdditionalDirectories,
 			mcpServers:            req.McpServers,
 		}
+		// Reconnect MCP servers and inject tools for this session.
+		ss.mcpSessions, ss.mcpTools = s.connectMCP(ctx, req.McpServers)
 		s.putSession(req.SessionID, ss)
 	}
 
@@ -388,6 +455,8 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 			additionalDirectories: req.AdditionalDirectories,
 			mcpServers:            req.McpServers,
 		}
+		// Reconnect MCP servers and inject tools for this session.
+		ss.mcpSessions, ss.mcpTools = s.connectMCP(ctx, req.McpServers)
 		s.putSession(req.SessionID, ss)
 	}
 	// Load persisted plan into memory (no replay per ACP spec:
@@ -402,6 +471,10 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 }
 
 func (s *AgentServer) OnCloseSession(ctx context.Context, req openacp.CloseSessionRequest) (*openacp.CloseSessionResponse, error) {
+	ss := s.getSession(req.SessionID)
+	if ss != nil {
+		s.disconnectMCP(ss.mcpSessions)
+	}
 	s.removeSession(req.SessionID)
 	if s.SessionStore != nil {
 		_ = s.SessionStore.Delete(ctx, string(req.SessionID))
@@ -413,6 +486,10 @@ func (s *AgentServer) OnCloseSession(ctx context.Context, req openacp.CloseSessi
 }
 
 func (s *AgentServer) OnDeleteSession(ctx context.Context, req openacp.DeleteSessionRequest) (*openacp.DeleteSessionResponse, error) {
+	ss := s.getSession(req.SessionID)
+	if ss != nil {
+		s.disconnectMCP(ss.mcpSessions)
+	}
 	s.removeSession(req.SessionID)
 	if s.SessionStore != nil {
 		_ = s.SessionStore.Delete(ctx, string(req.SessionID))
@@ -507,25 +584,19 @@ func (s *AgentServer) buildModeState(sid openacp.SessionId) *openacp.SessionMode
 
 // availableCommands returns the slash commands this agent advertises.
 func (s *AgentServer) availableCommands() []openacp.AvailableCommand {
-	cmds := []openacp.AvailableCommand{
-		{
-			Name:        "help",
-			Description: "Show available commands and capabilities",
-		},
-	}
-	// Advertise tools as slash commands when they have descriptions.
-	for _, t := range s.Agent.Tools {
-		def := t.Definition()
-		if def.Description == "" {
-			continue
+	cmds := s.cmdRegistry.Available()
+	out := make([]openacp.AvailableCommand, len(cmds))
+	for i, c := range cmds {
+		ac := openacp.AvailableCommand{
+			Name:        c.Name,
+			Description: c.Description,
 		}
-		cmds = append(cmds, openacp.AvailableCommand{
-			Name:        def.Name,
-			Description: def.Description,
-			Input:       &openacp.AvailableCommandInput{Hint: "arguments for " + def.Name},
-		})
+		if c.Input != nil {
+			ac.Input = &openacp.AvailableCommandInput{Hint: c.Input.Hint}
+		}
+		out[i] = ac
 	}
-	return cmds
+	return out
 }
 
 func (s *AgentServer) OnSetSessionMode(ctx context.Context, req openacp.SetSessionModeRequest) (*openacp.SetSessionModeResponse, error) {
@@ -565,6 +636,15 @@ func (s *AgentServer) OnSetSessionConfigOption(ctx context.Context, req openacp.
 		}
 	}
 
+	// Notify clients of the config change.
+	opts := s.buildConfigOptions(req.SessionID)
+	if s.updateSender != nil {
+		s.updateSender.SendSessionUpdate(req.SessionID, openacp.SessionUpdate{
+			SessionUpdate: "config_option_update",
+			ConfigOptions: opts,
+		})
+	}
+
 	return &openacp.SetSessionConfigOptionResponse{
 		ConfigOptions: s.buildConfigOptions(req.SessionID),
 	}, nil
@@ -583,9 +663,10 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	if err != nil {
 		return nil, fmt.Errorf("prompt: %w", err)
 	}
-	if input.IsMultimodal() {
-		// Use content parts path.
-	} else if input.Content == "" {
+	// ContentParts are populated by contentBlocksToMessage for image/resource
+	// blocks. The model backend handles multimodal natively.  Fall through
+	// to normal text path when ContentParts is empty.
+	if input.Content == "" && !input.IsMultimodal() {
 		return nil, fmt.Errorf("empty prompt")
 	}
 
@@ -597,13 +678,21 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		cancel()
 	}()
 
+	// ── Intercept server-side slash commands ──
+	// Must run BEFORE auto-title so slash commands don't get used as
+	// the session title (e.g. "/mode plan" would become the title).
+	if resp, handled := s.cmdRegistry.Handle(s.buildSlashContext(ctx, req.SessionID, ss), input.Content); handled {
+		sender.SendAgentMessage(resp)
+		return &openacp.PromptResponse{StopReason: openacp.StopReasonEndTurn}, nil
+	}
+
 	// ── Auto-title from first user message ──
 	if ss.firstPrompt {
 		ss.firstPrompt = false
 		title := firstLine(input.Content, 80)
 		s.updateTitle(ctx, req.SessionID, title)
 
-		// Send available commands so the client can display slash commands.
+		sender.SendSessionInfo(title, nil)
 		sender.SendAvailableCommands(s.availableCommands())
 	}
 
@@ -878,6 +967,9 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 		if ss.mode == "plan" {
 			clone.Instructions += "\n\n" + planModeOverlay
 		}
+
+		// Inject MCP tools from all connected servers.
+		clone.Tools = append(clone.Tools, ss.mcpTools...)
 	}
 
 	return clone
@@ -893,6 +985,85 @@ proceed to execute each step in order.
 
 For simple one-step tasks (reading a file, answering a question, a single edit),
 you do not need to create a plan — just do the work directly.`
+
+// buildSlashContext constructs the slash.Context for command dispatch.
+func (s *AgentServer) buildSlashContext(ctx context.Context, sid openacp.SessionId, ss *agentSession) slash.Context {
+	return slash.Context{
+		SessionID:   string(sid),
+		Cwd:         ss.cwd,
+		Mode:        ss.mode,
+		TotalTokens: ss.totalTokens,
+		CreatedAt:   ss.createdAt,
+		SetMode: func(mode string) error {
+			ss.mode = mode
+			s.saveMode(ctx, string(sid), mode)
+			if s.updateSender != nil {
+				s.updateSender.SendSessionUpdate(sid, openacp.SessionUpdate{
+					SessionUpdate: "current_mode_update",
+					CurrentModeID: openacp.SessionModeId(mode),
+				})
+			}
+			return nil
+		},
+		Rename: func(title string) error {
+			return s.renameSession(ctx, sid, title)
+		},
+		Clear: func() error {
+			if s.Mem != nil {
+				if err := s.Mem.DeleteSession(ctx, string(sid)); err != nil {
+					return err
+				}
+			}
+			ss.totalTokens = 0
+			ss.planEntries = nil
+			s.savePlan(ctx, string(sid), nil)
+			return nil
+		},
+		ListSess: func() ([]slash.SessionInfo, error) {
+			if s.SessionStore == nil {
+				return nil, nil
+			}
+			list, err := s.SessionStore.List(ctx)
+			if err != nil {
+				return nil, err
+			}
+			out := make([]slash.SessionInfo, len(list))
+			for i, si := range list {
+				out[i] = slash.SessionInfo{
+					ID:        si.ID,
+					Cwd:       si.Cwd,
+					Title:     si.Title,
+					UpdatedAt: si.UpdatedAt.Format(time.RFC3339),
+				}
+			}
+			return out, nil
+		},
+	}
+}
+
+// renameSession persists a new title and sends a session_info_update.
+func (s *AgentServer) renameSession(ctx context.Context, sid openacp.SessionId, title string) error {
+	if s.SessionStore == nil {
+		return fmt.Errorf("session store not available")
+	}
+	info, err := s.SessionStore.Get(ctx, string(sid))
+	if err != nil || info == nil {
+		return fmt.Errorf("session not found")
+	}
+	info.Title = title
+	info.UpdatedAt = time.Now()
+	if err := s.SessionStore.Save(ctx, *info); err != nil {
+		return err
+	}
+	// Notify the client of the title change.
+	if s.updateSender != nil {
+		s.updateSender.SendSessionUpdate(sid, openacp.SessionUpdate{
+			SessionUpdate: "session_info_update",
+			Title:         &title,
+		})
+	}
+	return nil
+}
 
 // ── acpApprover ──
 

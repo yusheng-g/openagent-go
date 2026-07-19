@@ -35,13 +35,26 @@ func NewClient(name, version string) *Client {
 }
 
 // ConnectStdio connects to an MCP server by spawning it as a subprocess and
-// communicating over stdin/stdout with newline-delimited JSON.
-// command is the executable; args are its arguments.
+// communicating over stdin/stdout. command is the executable; args are its
+// arguments. The process inherits the parent environment.
 //
 // The context is used to start the process. Call [Session.Close] to terminate
 // the process and clean up.
 func (c *Client) ConnectStdio(ctx context.Context, command string, args ...string) (*Session, error) {
+	return c.connectStdioInternal(ctx, command, args, nil)
+}
+
+// ConnectStdioWithEnv is like ConnectStdio but appends additional
+// environment variables (name=value pairs) to the spawned process.
+func (c *Client) ConnectStdioWithEnv(ctx context.Context, command string, args []string, env []string) (*Session, error) {
+	return c.connectStdioInternal(ctx, command, args, env)
+}
+
+func (c *Client) connectStdioInternal(ctx context.Context, command string, args []string, env []string) (*Session, error) {
 	cmd := exec.CommandContext(ctx, command, args...)
+	if len(env) > 0 {
+		cmd.Env = append(cmd.Environ(), env...)
+	}
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, fmt.Errorf("mcp stdin pipe: %w", err)
@@ -57,18 +70,11 @@ func (c *Client) ConnectStdio(ctx context.Context, command string, args ...strin
 		return nil, fmt.Errorf("mcp start %q: %w", command, err)
 	}
 
-	// Wrap process pipes as an IOTransport.
-	// Writer = stdin (we write to the process), Reader = stdout (we read from the process).
-	transport := &mcpsdk.IOTransport{
-		Reader: stdout,
-		Writer: stdin,
-	}
-
+	transport := &mcpsdk.IOTransport{Reader: stdout, Writer: stdin}
 	sess, err := c.inner.Connect(ctx, transport, nil)
 	if err != nil {
 		cmd.Process.Kill()
 		cmd.Wait()
-		// Include stderr output in the error for diagnostics.
 		if stderr := stderrBuf.String(); stderr != "" {
 			return nil, fmt.Errorf("mcp connect stdio: %w\nstderr:\n%s", err, stderr)
 		}
