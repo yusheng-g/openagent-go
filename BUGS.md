@@ -68,6 +68,82 @@ Punctuation (`! ? . , ; / #`) crash was partially mitigated in `ftsSearch`: char
 
 ---
 
+### [P2] `cmd/cli/keyring` silently falls back to `MemStore` in D-Bus-less environments, losing persisted secrets
+
+[cmd/cli/keyring/keyring.go:19-25](cmd/cli/keyring/keyring.go#L19),
+[cmd/cli/main.go:215-222](cmd/cli/main.go#L215),
+[cmd/cli/main.go:225-230](cmd/cli/main.go#L225),
+[go.mod:16](go.mod#L16):
+
+`Open()` probes the system keychain with `gkr.Get("openagent", "__probe__")`.
+On Linux, `zalando/go-keyring v0.2.8` routes through the Secret Service API
+(`github.com/godbus/dbus/v5`). When `DBUS_SESSION_BUS_ADDRESS` is unset and no
+`dbus-launch` exists on `PATH`, `godbus` attempts to exec `dbus-launch` and
+returns `exec: "dbus-launch": executable file not found in $PATH`. This error
+propagates up to `openKeyring()`, which substitutes `MemStore` with a WARNING.
+Repro: Huawei Cloud EulerOS 2 container (aarch64, no `dbus-x11` installed).
+
+Derived issues:
+
+1. Silent data loss: `cli keyring set key value` succeeds with exit code 0 in
+   the fallback path, but secrets are written to a per-process `MemStore` and
+   evaporate on process exit — no ERROR is surfaced.
+2. Double WARNING: `main()` calls `openKeyring()` once at startup, then each
+   `keyring{set,get,delete}` subcommand calls it again, printing the same
+   warning twice per invocation.
+3. Brittle probe strategy: `Open()` distinguishes "backend unavailable" from
+   "key does not exist" solely by the error of a single `Get`. Backend
+   initialization failures are indistinguishable from missing-key states.
+
+Implementation plan (Plan A, keeping `zalando/go-keyring`, modeled on
+`~/projects/hdspace-models/credential`):
+
+1. Promote existing indirect deps to direct: `github.com/godbus/dbus/v5`,
+   `golang.org/x/sys` (both already in `go.mod` as `// indirect`).
+2. In `cmd/cli/keyring/keyring.go`, replace the `gkr.Get("__probe__")` probe
+   with an explicit availability check:
+   - Linux: `dbus.SessionBus()` (catching the autolaunch error instead of
+     triggering `dbus-launch`), then `NameHasOwner("org.freedesktop.secrets")`
+     via `org.freedesktop.DBus` → `/org/freedesktop/DBus`. Mirrors
+     `isSecretServiceAvailable()` in `credential_linux.go`.
+   - macOS / Windows: probe via `zalando` as today (keychain backends there do
+     not depend on D-Bus).
+3. Add a Linux kernel-keyring fallback (`KeyCtlBackend` equivalent) implemented
+   directly on `golang.org/x/sys/unix`:
+   - `KeyctlLink(KEYCTL_LINK, KEY_SPEC_USER_KEYRING, KEY_SPEC_SESSION_KEYRING, 0, 0)`
+     to attach the user keyring to the session keyring (matches
+     `ensureKeyringLinked()`).
+   - Store secrets under `user:openagent:<service>:<key>` key descriptors;
+     values are base64-encoded (parity with `hdspace-models` secret blob
+     encoding) to survive binary payloads safely.
+   - `Get` uses `KeyctlSearch(KEY_SPEC_USER_KEYRING, "user", keyDesc, 0)` then
+     `KeyctlRead`; `Set` uses `KeyctlSet`; `Delete` uses `KeyctlUnlink`.
+4. Introduce `func HasSupport() bool` on `Store` (or package-level) so callers
+   can explicitly detect loss of persistence instead of inheriting `MemStore`
+   silently. Modeled on `HasCredentialSupport()` in `credential.go:46-48`.
+5. `cmd/cli/main.go`:
+   - `openKeyring()` returns a sentinel `ErrKeyringUnavailable` when neither
+     Secret Service nor KeyCtl is usable; `main()` initializes a single
+     global `Store` (or `MemStore`) once and shares it with all subcommands.
+   - `cli keyring set` / `cli keyring delete` in the `MemStore` fallback path
+     `log.Fatalf` with a clear message ("no keyring backend available: install
+     `dbus-x11` or run with `--cap-add=keyutils`") rather than silently
+     succeeding. `cli keyring get` may still return "" for read-only callers
+     like `serve`.
+6. macOS / Windows code paths unchanged: `zalando`'s `keychain`/`wincred`
+   backends do not invoke D-Bus.
+
+SCOPE NOTES (per user direction):
+- keyring library is NOT swapped to `99designs/keyring`; `zalando/go-keyring`
+  stays.
+- The double-WARNING issue (item 2 above) is recorded for context only and is
+  NOT being fixed in this change.
+- File-based fallback (Plan B) is rejected; kernel keyring is the last
+  non-volatile tier, and a missing kernel-keyring capability surfaces as an
+  explicit error.
+
+---
+
 ## 🔧 Workarounds
 
 ### `runner.go` — Emergency context window trimming
