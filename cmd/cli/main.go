@@ -211,7 +211,9 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 // ── keyring ──
 
 // openKeyring returns the system keyring, falling back to an in-memory
-// store with a warning when the system keychain is unavailable.
+// store with a warning when the system keychain is unavailable. Intended
+// for read-only / fall-through callers (e.g. `serve`) that can still
+// operate without persisted secrets.
 func openKeyring() plugin.Keyring {
 	sysKr, err := keyring.Open()
 	if err != nil {
@@ -221,11 +223,25 @@ func openKeyring() plugin.Keyring {
 	return sysKr
 }
 
+// keyringOrFail returns the system keyring or exits with a clear message
+// when no persistent backend is available. Used by `keyring set` /
+// `keyring delete` — silently storing in MemStore would be data loss
+// (user sees exit 0 but secrets evaporate on process exit).
+func keyringOrFail() plugin.Keyring {
+	sysKr, err := keyring.Open()
+	if err != nil {
+		log.Fatalf("no keyring backend available: install `dbus-x11` (Linux desktop) "+
+			"or run the container with `--cap-add=keyutils` for kernel-keyring "+
+			"fallback; original error: %v", err)
+	}
+	return sysKr
+}
+
 var keyringCmd = &cobra.Command{Use: "keyring", Short: "Manage credentials in the system keyring"}
 var keyringSetCmd = &cobra.Command{
 	Use: "set <key> <value>", Short: "Store a credential", Args: cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return openKeyring().Set("openagent", args[0], args[1])
+		return keyringOrFail().Set("openagent", args[0], args[1])
 	},
 }
 var keyringGetCmd = &cobra.Command{
@@ -243,8 +259,7 @@ var keyringGetCmd = &cobra.Command{
 var keyringDeleteCmd = &cobra.Command{
 	Use: "delete <key>", Short: "Remove a credential", Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		openKeyring().Delete("openagent", args[0])
-		return nil
+		return keyringOrFail().Delete("openagent", args[0])
 	},
 }
 
