@@ -949,14 +949,14 @@ func (s *AgentServer) updateTitle(ctx context.Context, sessionID openacp.Session
 }
 
 // agentForTurn prepares an Agent clone for a single prompt turn.
-// Clone is required because s.Agent is shared across all sessions —
-// without Clone, concurrent sessions would race on Approver, Memory,
-// and ReasoningEffort assignments.
+//
+// Clone is necessary because s.Agent is a shared template — per-turn
+// overrides (Approver sessionID binding, plan-mode instruction overlay,
+// per-session MCP tools, ReasoningEffort from config) must mutate an
+// isolated copy.  Agent.Clone() creates an independent Tools backing
+// array so append() doesn't grow the template's slice.
 func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 	clone := s.Agent.Clone()
-
-	// Inject Memory so conversation history is persisted across turns.
-	clone.Memory = s.Mem
 
 	// Inject ACP-based permission bridge for tool calls.
 	if s.clientRPC != nil {
@@ -975,7 +975,7 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 		// The agent still decides when to call plan_create — the overlay
 		// just makes it more likely to do so for complex tasks.
 		if ss.mode == "plan" {
-			clone.Instructions += "\n\n" + planModeOverlay
+			clone.SystemPrompts = append(clone.SystemPrompts, planModeOverlay)
 		}
 
 		// Inject MCP tools from all connected servers.

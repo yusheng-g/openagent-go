@@ -40,7 +40,7 @@ type Handler struct {
 	modelsMu     sync.RWMutex
 
 	tools        []openagent.Tool
-	instructions string
+	systemPrompts []string
 	name         string
 	maxTurns     int
 
@@ -56,7 +56,7 @@ func NewHandler(agent *openagent.Agent) *Handler {
 		models:       make(map[string]openagent.Model),
 		modelList:    nil,
 		tools:        agent.Tools,
-		instructions: agent.Instructions,
+		systemPrompts: agent.SystemPrompts,
 		name:         agent.Name,
 		maxTurns:     agent.MaxTurns,
 	}
@@ -369,7 +369,7 @@ func (h *Handler) newEntry(info session.SessionInfo) *sessionState {
 		openagent.WithModel(h.defaultModel),
 		openagent.WithMemory(h.sm.Memory()),
 		openagent.WithTools(h.tools...),
-		openagent.WithInstructions(h.instructions),
+		openagent.WithSystemPrompts(h.systemPrompts...),
 		openagent.WithMaxTurns(h.maxTurns),
 		openagent.WithRunObserver(&stageObserver{bus: h.sm.Bus(), sid: info.ID}),
 		openagent.WithApprover(&restApprover{

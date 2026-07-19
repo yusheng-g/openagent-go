@@ -200,7 +200,7 @@ func main() {
 
 	agent := openagent.NewAgent("log-analyzer",
 		openagent.WithModel(model),
-		openagent.WithInstructions("You are a log analyzer. When tool output is large and saved to disk, use read and grep to inspect it."),
+		openagent.WithSystemPrompts("You are a log analyzer. When tool output is large and saved to disk, use read and grep to inspect it."),
 		openagent.WithTools(
 			&FakeLogGenerator{},
 			opentool.NewReadFile("."),

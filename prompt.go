@@ -7,7 +7,7 @@ import "context"
 // Agent, Session, and Memory before each turn.
 type PromptInput struct {
 	AgentDescription string
-	Instructions     string
+	Instructions string // joined form of Agent.SystemPrompts, set by runner
 
 	// From Memory
 	WorkingMessages []Message

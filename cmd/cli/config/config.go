@@ -8,12 +8,12 @@ import (
 )
 
 type Config struct {
-	Model        string                    `json:"model,omitempty"`
-	FastModel    string                    `json:"fast_model,omitempty"`
-	Provider     map[string]ProviderConfig `json:"provider,omitempty"`
-	Server       ServerConfig              `json:"server,omitempty"`
-	Plugins      []string                  `json:"plugins,omitempty"`
-	Env        map[string]string         `json:"env,omitempty"`
+	Model     string                    `json:"model,omitempty"`
+	FastModel string                    `json:"fast_model,omitempty"`
+	Provider  map[string]ProviderConfig `json:"provider,omitempty"`
+	Server    ServerConfig              `json:"server,omitempty"`
+	Plugins   []string                  `json:"plugins,omitempty"`
+	Env       map[string]string         `json:"env,omitempty"`
 }
 
 type ProviderConfig struct {

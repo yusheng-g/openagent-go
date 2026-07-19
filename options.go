@@ -13,9 +13,9 @@ func WithDescription(desc string) AgentOption {
 	return func(a *Agent) { a.Description = desc }
 }
 
-// WithInstructions sets the system instructions for the agent.
-func WithInstructions(instr string) AgentOption {
-	return func(a *Agent) { a.Instructions = instr }
+// WithSystemPrompts replaces all system prompts.
+func WithSystemPrompts(prompts ...string) AgentOption {
+	return func(a *Agent) { a.SystemPrompts = prompts }
 }
 
 // WithTools adds tools to the agent.

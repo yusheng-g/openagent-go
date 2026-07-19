@@ -38,7 +38,7 @@ func main() {
 
 	agent := openagent.NewAgent("assistant",
 		openagent.WithModel(llm),
-		openagent.WithInstructions("You are a capable assistant. Use tools when needed. Be concise and action-oriented."),
+		openagent.WithSystemPrompts("You are a capable assistant. Use tools when needed. Be concise and action-oriented."),
 		openagent.WithTools(&calculatorTool{}, &echoTool{}),
 		openagent.WithApprover(&TUIApprover{requests: approveCh}),
 		openagent.WithMaxTurns(20),

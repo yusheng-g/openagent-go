@@ -9,7 +9,7 @@
 //
 //	agent := openagent.NewAgent("assistant",
 //	    openagent.WithModel(openai.New("gpt-4o")),
-//	    openagent.WithInstructions("You are a helpful assistant."),
+//	    openagent.WithSystemPrompts("You are a helpful assistant."),
 //	    openagent.WithTools(myTool1, myTool2),
 //	)
 //	result, err := agent.Run(ctx, session, openagent.UserMessage("hello"))

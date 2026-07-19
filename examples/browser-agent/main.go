@@ -71,7 +71,7 @@ func main() {
 	agent := openagent.NewAgent("browser-agent",
 		openagent.WithModel(model),
 		openagent.WithTools(tools...),
-		openagent.WithInstructions(`You control a web browser using Playwright tools. Use the available browser tools to complete tasks.
+		openagent.WithSystemPrompts(`You control a web browser using Playwright tools. Use the available browser tools to complete tasks.
 
 ## How to fill in forms
 1. browser_navigate(url) — go to the login page

@@ -89,7 +89,7 @@ func buildIACAgents(
 		openagent.WithModel(model),
 		openagent.WithMemory(mem),
 		openagent.WithDescription("Analyzes user input (GitHub URL or natural language) to infer application runtime, database, cache, storage, CDN, HTTPS needs. Outputs a structured ApplicationProfile JSON."),
-		openagent.WithInstructions(`You are an Application Intent Parser. Analyze the user's deployment request and produce a JSON ApplicationProfile.
+		openagent.WithSystemPrompts(`You are an Application Intent Parser. Analyze the user's deployment request and produce a JSON ApplicationProfile.
 
 ## Inference Rules
 - GitHub URL with package.json → runtime=nodejs
@@ -121,7 +121,7 @@ Output ONLY the JSON object. No markdown, no explanation.
 		openagent.WithMemory(mem),
 		openagent.WithDescription("Designs cloud architecture from an ApplicationProfile. Uses pricing and deployment pattern skills. Produces 3 architecture options (A/B/C) with resource lists and monthly cost estimates. Requires human approval to select which option to implement."),
 		openagent.WithSkillLoader(skillLoader),
-		openagent.WithInstructions(`You are a Cloud Architect. Design infrastructure for the given ApplicationProfile.
+		openagent.WithSystemPrompts(`You are a Cloud Architect. Design infrastructure for the given ApplicationProfile.
 
 ## Process
 1. Load skills: use_skill("deployment-patterns") for pricing and patterns.
@@ -160,7 +160,7 @@ Return ONLY a JSON array. No markdown fences.
 		openagent.WithDescription("Translates a selected architecture plan into Terraform configuration files. Reads module templates from disk, fills variables, and writes .tf files."),
 		openagent.WithSkillLoader(skillLoader),
 		openagent.WithTools(moduleTools...),
-		openagent.WithInstructions(`You are a Terraform Module Planner. Generate .tf files from templates for the chosen architecture plan.
+		openagent.WithSystemPrompts(`You are a Terraform Module Planner. Generate .tf files from templates for the chosen architecture plan.
 
 ## Process
 1. Use read_file to read templates/templates/*.tf.tmpl to see what variables each module needs.
@@ -188,7 +188,7 @@ Return ONLY a JSON array. No markdown fences.
 		openagent.WithMemory(mem),
 		openagent.WithDescription("Reviews Terraform configurations: runs terraform init + plan, parses plan output, produces human-readable summary of changes, costs, and risks."),
 		openagent.WithTools(tfRO...),
-		openagent.WithInstructions(`You are a Terraform Plan Reviewer. Review configurations before they are applied.
+		openagent.WithSystemPrompts(`You are a Terraform Plan Reviewer. Review configurations before they are applied.
 
 ## Process
 1. Run terraform_init
@@ -211,7 +211,7 @@ Be concise. This is an approval gate.`),
 		openagent.WithMemory(mem),
 		openagent.WithDescription("Applies approved Terraform plans. Runs terraform apply and reports results."),
 		openagent.WithTools(tfApply...),
-		openagent.WithInstructions(`You are the Terraform Applier. Apply an approved plan.
+		openagent.WithSystemPrompts(`You are the Terraform Applier. Apply an approved plan.
 
 ## Process
 1. Confirm the plan has been reviewed and approved
@@ -230,7 +230,7 @@ Be concise. This is an approval gate.`),
 		openagent.WithMemory(mem),
 		openagent.WithDescription("Post-deployment health checks and optimization recommendations."),
 		openagent.WithTools(tfT[3]), // terraform_output
-		openagent.WithInstructions(`You are a Post-Deployment Monitor.
+		openagent.WithSystemPrompts(`You are a Post-Deployment Monitor.
 
 ## Process
 1. Run terraform_output to get resource endpoints

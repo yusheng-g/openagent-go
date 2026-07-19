@@ -35,7 +35,7 @@ func main() {
 
 	agent := openagent.NewAgent("skill-demo",
 		openagent.WithModel(model),
-		openagent.WithInstructions("You are a helpful assistant. Skills are available for loading — use use_skill to load one when you need detailed instructions."),
+		openagent.WithSystemPrompts("You are a helpful assistant. Skills are available for loading — use use_skill to load one when you need detailed instructions."),
 		openagent.WithSkillLoader(loader),
 	)
 

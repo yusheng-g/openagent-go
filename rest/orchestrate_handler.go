@@ -633,7 +633,7 @@ func cloneAgentForPlan(tmpl *openagent.Agent, mem openagent.Memory, s *planSessi
 		openagent.WithModel(tmpl.Model),
 		openagent.WithMemory(mem),
 		openagent.WithTools(tmpl.Tools...),
-		openagent.WithInstructions(tmpl.Instructions),
+		openagent.WithSystemPrompts(tmpl.SystemPrompts...),
 		openagent.WithMaxTurns(tmpl.MaxTurns),
 		openagent.WithApprover(&restApprover{
 			submit: func(call openagent.ToolCall, resp chan approveResponse) {

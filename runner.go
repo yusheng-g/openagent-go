@@ -532,8 +532,8 @@ func (r *runner) estimatePromptOverhead(ctx context.Context, session Session, mo
 
 	var n int
 
-	// System instructions (Agent.Description + Agent.Instructions).
-	sys := r.agent.Instructions
+	// System prompts (Agent.SystemPrompts).
+	sys := strings.Join(r.agent.SystemPrompts, "\n\n")
 	if r.agent.Description != "" {
 		sys = r.agent.Description + "\n\n" + sys
 	}
@@ -581,7 +581,7 @@ func (r *runner) estimatePromptOverhead(ctx context.Context, session Session, mo
 func (r *runner) buildPrompt(ctx context.Context, session Session, working []Message) []Message {
 	input := PromptInput{
 		AgentDescription: r.agent.Description,
-		Instructions:     r.agent.Instructions,
+		Instructions:     strings.Join(r.agent.SystemPrompts, "\n\n"),
 		WorkingMessages:  working,
 		Tools:            toolDefinitions(r.agent.Tools),
 		UserProfile:      session.UserProfile,
@@ -1382,7 +1382,7 @@ func (r *runner) executeSubAgent(ctx context.Context, session Session, call Tool
 	sub := Agent{
 		Name:         args.Name,
 		Description:  args.Description,
-		Instructions: args.Prompt,
+		SystemPrompts: []string{args.Prompt},
 		Model:        r.runModel,
 		Tools:        stripAgentTools(r.agent.Tools),
 		MaxTurns:     3,

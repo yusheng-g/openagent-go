@@ -179,7 +179,7 @@ func buildIACAgents(
 	intentParser := openagent.NewAgent("iac_intent_parse",
 		openagent.WithModel(model),
 		openagent.WithDescription("Analyze a deployment goal (natural language or GitHub URL) to infer application runtime, database, cache, storage, CDN, and HTTPS requirements. Takes a goal string; returns a JSON ApplicationProfile with fields: runtime, database, cache, storage, cdn (bool), https (bool), gpu (bool), container, traffic."),
-		openagent.WithInstructions(`You are an Application Intent Parser. Analyze the deployment request and output a JSON ApplicationProfile.
+		openagent.WithSystemPrompts(`You are an Application Intent Parser. Analyze the deployment request and output a JSON ApplicationProfile.
 
 ## Inference Rules
 - WordPress / blog → runtime=php, database=mysql, cache=redis, storage=obs, cdn=true, https=true
@@ -196,7 +196,7 @@ Output ONLY the JSON object. No markdown, no explanation.`),
 		openagent.WithModel(model),
 		openagent.WithDescription("Design cloud architecture from an ApplicationProfile JSON. Uses pricing and deployment pattern skills. Produces 3 options (A/B/C) with resource lists and monthly cost estimates in RMB. The caller should present all 3 to the user."),
 		openagent.WithSkillLoader(skillLoader),
-		openagent.WithInstructions(`You are a Cloud Architect. Given an ApplicationProfile JSON, design 3 options:
+		openagent.WithSystemPrompts(`You are a Cloud Architect. Given an ApplicationProfile JSON, design 3 options:
 - 方案A (最低成本): Minimum. Smallest flavors, no HA.
 - 方案B (推荐): Balanced cost/reliability. Standard production.
 - 方案C (高可用): Multi-AZ HA for high traffic.
@@ -215,7 +215,7 @@ Load use_skill("deployment-patterns") for pricing and patterns. Output ONLY a JS
 		openagent.WithDescription("Generate Terraform .tf files from a chosen architecture plan. Reads module templates from disk, fills template variables with concrete values, and writes the resulting .tf files to the terraform/ directory. Takes the selected architecture option description as input. After writing, runs terraform_init to verify."),
 		openagent.WithSkillLoader(skillLoader),
 		openagent.WithTools(moduleTools...),
-		openagent.WithInstructions(`Read templates/*.tf.tmpl with read_file. Replace all {{ .Name }}, {{ .Flavor }}, etc. placeholders with concrete values from the architecture plan. Write results to terraform/<name>.tf. Run terraform_init to verify.`),
+		openagent.WithSystemPrompts(`Read templates/*.tf.tmpl with read_file. Replace all {{ .Name }}, {{ .Flavor }}, etc. placeholders with concrete values from the architecture plan. Write results to terraform/<name>.tf. Run terraform_init to verify.`),
 		openagent.WithMaxTurns(5),
 	)
 
@@ -223,7 +223,7 @@ Load use_skill("deployment-patterns") for pricing and patterns. Output ONLY a JS
 		openagent.WithModel(model),
 		openagent.WithDescription("Review Terraform configurations: run terraform init and plan, then produce a human-readable summary of what resources will be created, estimated monthly cost, risk assessment, and approve/reject recommendation. Safe — no changes are applied."),
 		openagent.WithTools(tfT[0], tfT[1]),
-		openagent.WithInstructions(`Run terraform_init then terraform_plan. Produce: Resources to Create (list), Estimated Monthly Cost, Risk Assessment, Recommendation (Approve/Reject).`),
+		openagent.WithSystemPrompts(`Run terraform_init then terraform_plan. Produce: Resources to Create (list), Estimated Monthly Cost, Risk Assessment, Recommendation (Approve/Reject).`),
 		openagent.WithMaxTurns(3),
 	)
 
@@ -231,7 +231,7 @@ Load use_skill("deployment-patterns") for pricing and patterns. Output ONLY a JS
 		openagent.WithModel(model),
 		openagent.WithDescription("Apply an approved Terraform plan. Creates real cloud resources — this is DESTRUCTIVE. Only call after the user has reviewed the plan output and explicitly approved."),
 		openagent.WithTools(tfT[2]),
-		openagent.WithInstructions(`Run terraform_apply. Report results: what was created, endpoints, next steps. NEVER apply without explicit approval.`),
+		openagent.WithSystemPrompts(`Run terraform_apply. Report results: what was created, endpoints, next steps. NEVER apply without explicit approval.`),
 		openagent.WithMaxTurns(2),
 	)
 
@@ -239,7 +239,7 @@ Load use_skill("deployment-patterns") for pricing and patterns. Output ONLY a JS
 		openagent.WithModel(model),
 		openagent.WithDescription("Post-deployment monitoring. Run terraform output to get connection endpoints, report health status for each resource, and suggest cost/security/performance optimizations."),
 		openagent.WithTools(tfT[3]),
-		openagent.WithInstructions(`Run terraform_output. Report endpoints and health status: ✅ operational, ⚠️ degraded, ❌ failed. Suggest optimizations with estimated savings.`),
+		openagent.WithSystemPrompts(`Run terraform_output. Report endpoints and health status: ✅ operational, ⚠️ degraded, ❌ failed. Suggest optimizations with estimated savings.`),
 		openagent.WithMaxTurns(2),
 	)
 

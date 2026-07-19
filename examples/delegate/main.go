@@ -30,7 +30,7 @@ func main() {
 	researcher := openagent.NewAgent("researcher",
 		openagent.WithModel(sharedModel),
 		openagent.WithDescription("Analyzes data and finds key insights."),
-		openagent.WithInstructions(`You are a researcher. Analyze the given task and provide:
+		openagent.WithSystemPrompts(`You are a researcher. Analyze the given task and provide:
 1. Key facts and data points
 2. Important trends or patterns
 3. A concise 2-3 sentence summary
@@ -43,7 +43,7 @@ Be thorough but concise. Only respond with your analysis — do not ask follow-u
 	writer := openagent.NewAgent("writer",
 		openagent.WithModel(sharedModel),
 		openagent.WithDescription("Writes clear, well-structured reports."),
-		openagent.WithInstructions(`You are a technical writer. Based on the task you receive, write:
+		openagent.WithSystemPrompts(`You are a technical writer. Based on the task you receive, write:
 1. A clear title
 2. 2-3 paragraphs of well-structured content
 3. A brief conclusion
@@ -55,7 +55,7 @@ Write in a professional but accessible tone. Only respond with your writing — 
 	// ── Coordinator: delegates to researcher + writer in parallel ──
 	coordinator := openagent.NewAgent("coordinator",
 		openagent.WithModel(sharedModel),
-		openagent.WithInstructions(`You are a coordinator. When given a topic to report on:
+		openagent.WithSystemPrompts(`You are a coordinator. When given a topic to report on:
 1. Call BOTH researcher and writer tools IN THE SAME TURN
    - researcher: ask it to analyze the topic
    - writer: ask it to write a brief report on the topic

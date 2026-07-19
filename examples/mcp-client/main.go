@@ -89,7 +89,7 @@ func main() {
 		openagent.WithModel(model),
 		openagent.WithTools(tools...),
 		openagent.WithRunObserver(prog),
-		openagent.WithInstructions(`You are an IaC orchestrator controlling a 6-step deployment pipeline. You MUST call each tool IN ORDER — one at a time — and use the actual output of each step as input to the next. Never simulate or invent results.
+		openagent.WithSystemPrompts(`You are an IaC orchestrator controlling a 6-step deployment pipeline. You MUST call each tool IN ORDER — one at a time — and use the actual output of each step as input to the next. Never simulate or invent results.
 
 Step 1: Call iac_intent_parse with the user's goal as the task. WAIT for the JSON result.
 Step 2: Call iac_architecture_design. The task MUST include the full JSON from step 1: "Based on this ApplicationProfile: <paste the JSON output from step 1>, design 3 architecture options."

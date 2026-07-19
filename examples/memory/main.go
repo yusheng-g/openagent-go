@@ -96,7 +96,7 @@ func main() {
 
 	agent := openagent.NewAgent("memory-demo",
 		openagent.WithModel(model),
-		openagent.WithInstructions(`You are a helpful coding assistant. You can read, write, and list files.
+		openagent.WithSystemPrompts(`You are a helpful coding assistant. You can read, write, and list files.
 
 When the user asks you to write code, do it — use write_file to save it to disk.
 When asked to review or refactor, use read_file first to see what's on disk.

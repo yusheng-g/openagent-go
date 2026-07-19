@@ -23,7 +23,7 @@ import (
 type Agent struct {
 	Name         string
 	Description  string
-	Instructions string
+	SystemPrompts []string
 
 	Model Model
 	Tools []Tool
@@ -154,7 +154,7 @@ func (a *Agent) PrepareForTeam(tc TeamContext) AgentRunner {
 	if !tc.ForceFinal {
 		clone.Tools = append(clone.Tools, tc.HandoffTools...)
 	}
-	clone.Instructions = tc.TeamPrompt + "\n\n" + a.Instructions
+	clone.SystemPrompts = append([]string{tc.TeamPrompt}, a.SystemPrompts...)
 	return clone
 }
 
@@ -200,12 +200,13 @@ func (a *Agent) RunGoalStream(ctx context.Context, session Session, goal string)
 // withGoalInstructions returns a clone with goal-oriented instructions.
 func (a *Agent) withGoalInstructions(goal string) *Agent {
 	clone := a.Clone()
-	clone.Instructions = buildGoalInstructions(a.Instructions, goal, a.MaxTurns)
+	clone.SystemPrompts = buildGoalPrompts(a.SystemPrompts, goal, a.MaxTurns)
 	return clone
 }
 
-// buildGoalInstructions wraps the agent's instructions with goal-mode framing.
-func buildGoalInstructions(original, goal string, maxTurns int) string {
+// buildGoalPrompts wraps the agent's system prompts with goal-mode framing.
+// The goal prompt goes first; the original prompts follow.
+func buildGoalPrompts(prompts []string, goal string, maxTurns int) []string {
 	var b strings.Builder
 	b.WriteString("## Goal\n\n")
 	b.WriteString(goal)
@@ -220,10 +221,7 @@ func buildGoalInstructions(original, goal string, maxTurns int) string {
 	}
 	b.WriteString("- When the goal is fully achieved, respond with a summary of what was done\n")
 	b.WriteString("- If you determine the goal is impossible, explain why and stop\n")
-	b.WriteString("\n---\n\n")
-	b.WriteString("## Instructions\n\n")
-	b.WriteString(original)
-	return b.String()
+	return append([]string{b.String()}, prompts...)
 }
 
 // ── Run result ──

@@ -24,7 +24,7 @@ func main() {
 	// ── Analyst: understands requirements, produces a spec ──
 	analyst := openagent.NewAgent("analyst",
 		openagent.WithModel(sharedModel),
-		openagent.WithInstructions(`You are a requirements analyst. Your job:
+		openagent.WithSystemPrompts(`You are a requirements analyst. Your job:
 1. Understand the user's request
 2. Break it down into clear, testable requirements
 3. Hand off to the designer with a structured specification
@@ -35,7 +35,7 @@ Be specific — include constraints, edge cases, and acceptance criteria.`),
 	// ── Designer: architecture and component design ──
 	designer := openagent.NewAgent("designer",
 		openagent.WithModel(sharedModel),
-		openagent.WithInstructions(`You are a software designer. Your job:
+		openagent.WithSystemPrompts(`You are a software designer. Your job:
 1. Take the analyst's specification and design the architecture
 2. Define components, interfaces, and data flow
 3. Hand off to the coder with a clear design document
@@ -46,7 +46,7 @@ Be specific about types, function signatures, and module boundaries.`),
 	// ── Coder: writes production code ──
 	coder := openagent.NewAgent("coder",
 		openagent.WithModel(sharedModel),
-		openagent.WithInstructions(`You are a software developer. Your job:
+		openagent.WithSystemPrompts(`You are a software developer. Your job:
 1. Take the designer's spec and write clean, idiomatic Go code
 2. Include error handling, comments, and tests
 3. Hand off the complete implementation to the tester
@@ -57,7 +57,7 @@ Output ONLY code with brief inline comments.`),
 	// ── Tester: writes and runs tests ──
 	tester := openagent.NewAgent("tester",
 		openagent.WithModel(sharedModel),
-		openagent.WithInstructions(`You are a QA engineer. Your job:
+		openagent.WithSystemPrompts(`You are a QA engineer. Your job:
 1. Review the coder's implementation
 2. Identify edge cases and write tests for them
 3. If all tests pass, hand off to the reviewer with your test report
@@ -69,7 +69,7 @@ Be thorough. List what you tested and why.`),
 	// ── Reviewer: final quality gate ──
 	reviewer := openagent.NewAgent("reviewer",
 		openagent.WithModel(sharedModel),
-		openagent.WithInstructions(`You are a code reviewer. Your job:
+		openagent.WithSystemPrompts(`You are a code reviewer. Your job:
 1. Review the complete implementation and test results
 2. Check for correctness, style, performance, and security
 3. Produce a final review summary: approved, changes requested, or rejected

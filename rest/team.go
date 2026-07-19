@@ -335,7 +335,7 @@ func (h *TeamHandler) handleAddAgent(w http.ResponseWriter, r *http.Request) {
 	agent := openagent.NewAgent(body.Name,
 		openagent.WithModel(h.model),
 		openagent.WithMemory(agentMem),
-		openagent.WithInstructions(body.Instructions),
+		openagent.WithSystemPrompts(body.Instructions),
 		openagent.WithMaxTurns(3),
 		openagent.WithApprover(&restApprover{
 			submit: func(call openagent.ToolCall, resp chan approveResponse) {
@@ -448,7 +448,7 @@ func cloneAgentForSession(tmpl *openagent.Agent, mem openagent.Memory, s *teamSe
 		openagent.WithModel(tmpl.Model),
 		openagent.WithMemory(mem),
 		openagent.WithTools(tmpl.Tools...),
-		openagent.WithInstructions(tmpl.Instructions),
+		openagent.WithSystemPrompts(tmpl.SystemPrompts...),
 		openagent.WithMaxTurns(tmpl.MaxTurns),
 		openagent.WithApprover(&restApprover{
 			submit: func(call openagent.ToolCall, resp chan approveResponse) {

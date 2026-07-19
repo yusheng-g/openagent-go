@@ -181,14 +181,17 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 		Use:   "serve",
 		Short: "Start the server (REST by default, or --acp for ACP)",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			acp, _ := cmd.Flags().GetBool("acp")
+			isACP, _ := cmd.Flags().GetBool("acp")
 			p, _ := cmd.Flags().GetInt("port")
 			if p > 0 {
 				cfg.Server.Port = p
 			}
 			ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 			defer cancel()
-			return server.Run(ctx, server.Options{Config: &cfg, ACP: acp})
+			if isACP {
+				return server.RunACP(ctx, &cfg)
+			}
+			return server.RunREST(ctx, &cfg)
 		},
 	}
 	cmd.Flags().Bool("acp", false, "ACP mode over stdio")

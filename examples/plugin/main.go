@@ -63,7 +63,7 @@ func main() {
 
 	agent := openagent.NewAgent("assistant",
 		openagent.WithModel(model),
-		openagent.WithInstructions("You are a precise assistant. Use echo for testing tool calls, calculator for math. Be concise."),
+		openagent.WithSystemPrompts("You are a precise assistant. Use echo for testing tool calls, calculator for math. Be concise."),
 		openagent.WithTools(tools...),
 		openagent.WithRunObserver(observer),
 	)
