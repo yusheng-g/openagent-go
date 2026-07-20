@@ -21,6 +21,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"unicode"
 
 	_ "modernc.org/sqlite"
 
@@ -164,12 +165,10 @@ func (m *Memory) Append(ctx context.Context, sessionID string, msg openagent.Mes
 
 	id, _ := res.LastInsertId()
 
-	// FTS5 index — CJK content is space-separated so
-	// unicode61 treats each character as a token.
+	// FTS5 index
 	if msg.Content != "" {
-		ftsContent := ftsTokenizeCJK(msg.Content)
 		if _, err := tx.ExecContext(ctx,
-			`INSERT INTO messages_fts (rowid, content) VALUES (?, ?)`, id, ftsContent,
+			`INSERT INTO messages_fts (rowid, content) VALUES (?, ?)`, id, msg.Content,
 		); err != nil {
 			return fmt.Errorf("sqlite fts: %w", err)
 		}
@@ -438,51 +437,97 @@ func (m *Memory) vectorSearch(ctx context.Context, sessionID, query string, limi
 }
 
 func (m *Memory) ftsSearch(ctx context.Context, sessionID, query string, limit int) ([]openagent.SearchResult, error) {
-	// Pass query to FTS5, stripping characters with special meaning
-	// in FTS5 query syntax: * (prefix), () (grouping), - (NOT),
-	// ^ (column prefix), ~ (NEAR), @ (column prefix), : (column).
-	// Double quotes and null bytes also break queries.
-	ftsQuery := strings.Map(func(r rune) rune {
-		switch r {
-		case '*', '(', ')', '-', '^', '~', '@', ':', '"', '\x00':
-			return ' '
-		}
-		return r
-	}, query)
-
-	// After stripping special chars, the query may be empty or only
-	// whitespace. FTS5 rejects empty MATCH strings with a syntax error.
-	if strings.TrimSpace(ftsQuery) == "" {
+	if limit <= 0 || strings.TrimSpace(query) == "" {
 		return nil, nil
 	}
 
-	// Apply the same CJK tokenization as at insert time so queries match.
-	ftsQuery = ftsTokenizeCJK(ftsQuery)
+	// Build a keyword query: each whitespace-separated token has
+	// leading/trailing punctuation trimmed (so "colour?" matches "colour"),
+	// is quoted as an FTS5 phrase, and is OR-joined. Results are ranked by
+	// BM25 (ORDER BY rank), so messages sharing more — and rarer — tokens
+	// surface first. OR (not implicit AND) is used because the query is
+	// often natural language (the recall_memory tool passes the model's
+	// query); AND would require every token present and return nothing when
+	// the query has words not in any stored message.
+	//
+	// The trigram tokenizer (see migrate) only matches tokens of ≥3
+	// characters, so shorter tokens are dropped. When no usable token
+	// remains, fall back to a LIKE substring scan.
+	if q := buildFTSQuery(query); q != "" {
+		rows, err := m.db.QueryContext(ctx,
+			`SELECT m.id, m.role, m.name, m.content, m.content_parts, m.tool_calls, m.tool_call_id, reasoning_content
+			 FROM messages_fts f
+			 JOIN messages m ON f.rowid = m.id
+			 WHERE m.session_id = ? AND messages_fts MATCH ?
+			 ORDER BY rank
+			 LIMIT ?`,
+			sessionID, q, limit,
+		)
+		if err == nil {
+			msgs, scanErr := scanMessages(rows)
+			rows.Close()
+			if scanErr != nil {
+				return nil, scanErr
+			}
+			return toSearchResults(msgs), nil
+		}
+		// FTS5 errored (unexpected query shape) — fall back to LIKE.
+	}
+	return m.likeSearch(ctx, sessionID, query, limit)
+}
 
+// buildFTSQuery turns a free-text query into a safe FTS5 expression. Each
+// whitespace-separated token has leading/trailing punctuation trimmed, is
+// quoted as a phrase, and is OR-joined. Tokens shorter than 3 characters are
+// dropped (the trigram tokenizer cannot match them). Returns "" when no usable
+// token remains.
+func buildFTSQuery(query string) string {
+	var parts []string
+	for _, tok := range strings.Fields(query) {
+		tok = strings.TrimFunc(tok, func(r rune) bool {
+			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
+		})
+		if len([]rune(tok)) < 3 {
+			continue
+		}
+		// Escape embedded double-quotes per FTS5 phrase rules.
+		parts = append(parts, `"`+strings.ReplaceAll(tok, `"`, `""`)+`"`)
+	}
+	return strings.Join(parts, " OR ")
+}
+
+// likeSearch is the substring fallback used when the FTS query is empty (all
+// tokens too short) or errors out. It does a case-insensitive LIKE scan.
+func (m *Memory) likeSearch(ctx context.Context, sessionID, query string, limit int) ([]openagent.SearchResult, error) {
 	rows, err := m.db.QueryContext(ctx,
-		`SELECT m.id, m.role, m.name, m.content, m.content_parts, m.tool_calls, m.tool_call_id, reasoning_content
-		 FROM messages_fts f
-		 JOIN messages m ON f.rowid = m.id
-		 WHERE m.session_id = ? AND messages_fts MATCH ?
-		 ORDER BY rank
+		`SELECT id, role, name, content, content_parts, tool_calls, tool_call_id, reasoning_content
+		 FROM messages
+		 WHERE session_id = ? AND content LIKE ? ESCAPE '\'
+		 ORDER BY id DESC
 		 LIMIT ?`,
-		sessionID, ftsQuery, limit,
+		sessionID, "%"+likeEscape(query)+"%", limit,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite fts: %w", err)
 	}
 	defer rows.Close()
-
 	msgs, err := scanMessages(rows)
 	if err != nil {
 		return nil, err
 	}
+	return toSearchResults(msgs), nil
+}
 
+func likeEscape(s string) string {
+	return strings.NewReplacer(`\`, `\\`, `%`, `\%`, `_`, `\_`).Replace(s)
+}
+
+func toSearchResults(msgs []openagent.Message) []openagent.SearchResult {
 	results := make([]openagent.SearchResult, len(msgs))
-	for i, m := range msgs {
-		results[i] = openagent.SearchResult{Message: m, Score: 1.0}
+	for i, msg := range msgs {
+		results[i] = openagent.SearchResult{Message: msg, Score: 1.0}
 	}
-	return results, nil
+	return results
 }
 
 // ── Schema ──
@@ -503,8 +548,6 @@ func (m *Memory) migrate() error {
 		);
 		CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id, id);
 
-		CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5(content);
-
 		CREATE TABLE IF NOT EXISTS vectors (
 			message_id INTEGER PRIMARY KEY REFERENCES messages(id) ON DELETE CASCADE,
 			embedding  BLOB NOT NULL
@@ -521,32 +564,41 @@ func (m *Memory) migrate() error {
 		return fmt.Errorf("sqlite migrate: %w", err)
 	}
 
-	return nil
-}
-
-// ftsTokenizeCJK inserts spaces between CJK code points so the
-// unicode61 tokenizer (whitespace-based) can index each character as
-// a separate token.  Non-CJK runs pass through unchanged.  The same
-// transform is applied at insert time and search time so queries
-// match.
-func ftsTokenizeCJK(content string) string {
-	var b strings.Builder
-	b.Grow(len(content) + len(content)/3) // ~30% growth for spaces
-	for _, r := range content {
-		if (r >= 0x4E00 && r <= 0x9FFF) || // CJK Unified
-			(r >= 0x3400 && r <= 0x4DBF) || // CJK Ext-A
-			(r >= 0x20000 && r <= 0x2A6DF) || // CJK Ext-B
-			(r >= 0x3040 && r <= 0x309F) || // Hiragana
-			(r >= 0x30A0 && r <= 0x30FF) || // Katakana
-			(r >= 0xAC00 && r <= 0xD7AF) {  // Hangul
-			b.WriteByte(' ')
-			b.WriteRune(r)
-			b.WriteByte(' ')
-		} else {
-			b.WriteRune(r)
+	// FTS5 index with the trigram tokenizer so search matches arbitrary
+	// substrings — including CJK — instead of only whole tokens. The default
+	// unicode61 tokenizer treats a run of CJK characters as one token, so CJK
+	// queries match nothing. Legacy unicode61 tables are rebuilt in place;
+	// the messages table is the source of truth, so re-indexing is safe.
+	var createSQL string
+	switch err := m.db.QueryRow(
+		`SELECT sql FROM sqlite_master WHERE type='table' AND name='messages_fts'`,
+	).Scan(&createSQL); {
+	case err == sql.ErrNoRows:
+		// Table absent — created below.
+	case err != nil:
+		return fmt.Errorf("sqlite migrate fts: %w", err)
+	case !strings.Contains(createSQL, "trigram"):
+		if _, err := m.db.Exec(`DROP TABLE messages_fts`); err != nil {
+			return fmt.Errorf("sqlite migrate fts drop: %w", err)
 		}
 	}
-	return b.String()
+
+	if _, err := m.db.Exec(
+		`CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5(content, tokenize='trigram')`,
+	); err != nil {
+		return fmt.Errorf("sqlite migrate fts create: %w", err)
+	}
+
+	// Backfill any messages not yet indexed (fresh/rebuilt table, or rows
+	// from a pre-FTS schema). Idempotent via the NOT IN guard.
+	if _, err := m.db.Exec(
+		`INSERT INTO messages_fts (rowid, content)
+		 SELECT id, content FROM messages
+		 WHERE content != '' AND id NOT IN (SELECT rowid FROM messages_fts)`,
+	); err != nil {
+		return fmt.Errorf("sqlite migrate fts backfill: %w", err)
+	}
+	return nil
 }
 
 // ── Helpers ──

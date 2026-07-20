@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-19.
+> Last updated 2026-07-20.
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -26,11 +26,11 @@ Original issue: `cli_init` unconditionally prefixed the injected block with `,` 
 
 ---
 
-### [P1] `memory/sqlite` FTS — CJK search returns nothing
+### [P1] ~~`memory/sqlite` FTS — CJK search returns nothing~~ ✅ FIXED
 
-[memory/sqlite/memory.go](memory/sqlite/memory.go) — `migrate()` creates `messages_fts` with default `unicode61` tokenizer, which treats a run of CJK characters as one token. CJK queries match nothing.
+[memory/sqlite/memory.go](memory/sqlite/memory.go): **Fixed in this commit** — `migrate` now creates `messages_fts` with the `trigram` tokenizer (rebuilds legacy `unicode61` tables in place + backfills from `messages`). `ftsSearch` trims leading/trailing punctuation from each token, OR-joins them as phrases with BM25 ranking, and falls back to a `LIKE` substring scan for tokens too short (<3 chars) for trigram.
 
-Punctuation (`! ? . , ; / #`) crash was partially mitigated in `ftsSearch`: characters are now stripped before calling `MATCH`, and empty queries return `nil` instead of crashing. Still, FTS5 only works for whitespace-separated languages (English, European).
+Original issue: `migrate()` created `messages_fts` with the default `unicode61` tokenizer, which treats a run of CJK characters as one token, so CJK queries matched nothing. A punctuation (`! ? . , ; / #`) crash was partially mitigated by stripping those characters before `MATCH` and returning `nil` on empty queries, but FTS5 still only worked for whitespace-separated languages (English, European).
 
 ---
 
