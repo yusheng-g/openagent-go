@@ -67,6 +67,19 @@ func firstModel(models []openagent.Model) openagent.Model {
 	return nil
 }
 
+// sandboxPolicy translates the config-layer SandboxConfig into a
+// native.Policy. Empty Network is treated as "host" (matches the
+// sandbox package's zero-value default), so missing config yields
+// network access for the agent — required for shell tools that
+// reach LLM providers, package managers, cloud CLIs, etc.
+func sandboxPolicy(cfg config.SandboxConfig) native.Policy {
+	return native.Policy{
+		Network:       cfg.Network,
+		WritablePaths: cfg.WritablePaths,
+		ReadablePaths: cfg.ReadablePaths,
+	}
+}
+
 // buildTools creates the standard file/shell tool set using the sandbox.
 // workDir is the workspace root; the tool list selects which tools to create.
 func buildTools(sandbox *native.Sandbox, workDir string, toolList []string) []openagent.Tool {

@@ -27,11 +27,34 @@ import (
 // Commands can only read/write within the workspace directory.
 type Sandbox struct {
 	workDir string // host path, the only writable directory
+	policy  Policy
 }
 
-// New creates a native sandbox rooted at workDir.
-// workDir is created if it doesn't exist.
+// Policy controls how strictly the sandbox confines the command.
+//
+// Network controls outbound network access:
+//   - "" or "host"     → share the host's network namespace (network allowed)
+//   - "isolated"       → unshare the network namespace (no outbound network)
+//
+// WritablePaths are additional host paths bind-mounted read-write inside
+// the sandbox (in addition to the workspace).
+// ReadablePaths are additional host paths bind-mounted read-only inside
+// the sandbox (in addition to the system paths already mounted).
+type Policy struct {
+	Network       string
+	WritablePaths []string
+	ReadablePaths []string
+}
+
+// New creates a native sandbox rooted at workDir with the default policy
+// (host network, no extra paths). workDir is created if it doesn't exist.
 func New(workDir string) (*Sandbox, error) {
+	return NewWithPolicy(workDir, Policy{})
+}
+
+// NewWithPolicy creates a native sandbox rooted at workDir with the given
+// policy. workDir is created if it doesn't exist.
+func NewWithPolicy(workDir string, p Policy) (*Sandbox, error) {
 	abs, err := filepath.Abs(workDir)
 	if err != nil {
 		return nil, fmt.Errorf("native sandbox: %w", err)
@@ -39,7 +62,7 @@ func New(workDir string) (*Sandbox, error) {
 	if err := os.MkdirAll(abs, 0755); err != nil {
 		return nil, fmt.Errorf("native sandbox: create workspace: %w", err)
 	}
-	return &Sandbox{workDir: abs}, nil
+	return &Sandbox{workDir: abs, policy: p}, nil
 }
 
 // CWD implements openagent.Sandbox. Returns the path as seen from

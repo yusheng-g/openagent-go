@@ -64,8 +64,9 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 	)
 
 	srv := acp.NewAgentServer(agent, mem, sessionStore, modelMap)
+	policy := sandboxPolicy(cfg.Sandbox)
 	srv.ToolFactory = func(cwd string) []openagent.Tool {
-		if sb, err := native.New(cwd); err == nil {
+		if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
 			return buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
 		}
 		return nil

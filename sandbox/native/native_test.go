@@ -10,6 +10,27 @@ import (
 	openagent "github.com/yusheng-g/openagent-go"
 )
 
+// sandboxFunctional returns true if the sandbox can actually isolate
+// commands. When bwrap (Linux) or sandbox-exec (macOS) fails to start
+// — e.g. in containers that block user-namespace creation — the sandbox
+// falls back to unconfined execution, and isolation tests should skip
+// rather than fail.
+func sandboxFunctional(t *testing.T) bool {
+	t.Helper()
+	sb, err := New(t.TempDir())
+	if err != nil {
+		t.Fatalf("New sandbox: %v", err)
+	}
+	result, err := sb.Run(context.Background(), openagent.Command{
+		Program: "/bin/echo",
+		Args:    []string{"probe"},
+	})
+	if err != nil {
+		return false
+	}
+	return !strings.Contains(result.Stderr, "[warning: running without sandbox]")
+}
+
 func TestSandboxWorkspaceAccess(t *testing.T) {
 	dir := t.TempDir()
 	sb, err := New(dir)
@@ -38,6 +59,9 @@ func TestSandboxWorkspaceAccess(t *testing.T) {
 }
 
 func TestSandboxBlocksExternalAccess(t *testing.T) {
+	if !sandboxFunctional(t) {
+		t.Skip("sandbox not functional (bwrap/sandbox-exec unavailable or broken) — skipping filesystem isolation test")
+	}
 	dir := t.TempDir()
 	sb, err := New(dir)
 	if err != nil {
@@ -59,14 +83,17 @@ func TestSandboxBlocksExternalAccess(t *testing.T) {
 	}
 }
 
-func TestSandboxNoNetwork(t *testing.T) {
+func TestSandboxIsolatedPolicyBlocksNetwork(t *testing.T) {
+	if !sandboxFunctional(t) {
+		t.Skip("sandbox not functional (bwrap/sandbox-exec unavailable or broken) — skipping network isolation test")
+	}
 	dir := t.TempDir()
-	sb, err := New(dir)
+	sb, err := NewWithPolicy(dir, Policy{Network: "isolated"})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Network access should be denied.
+	// Network access should be denied under the isolated policy.
 	result, _ := sb.Run(context.Background(), openagent.Command{
 		Program: "/bin/bash",
 		Args:    []string{"-c", "curl -s --connect-timeout 2 https://example.com 2>&1 || ping -c 1 -W 2 8.8.8.8 2>&1 || true"},
