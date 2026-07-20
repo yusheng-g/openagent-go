@@ -25,6 +25,27 @@ func (s *AgentServer) buildCommandRegistry() *slash.Registry {
 			return out, nil
 		})
 
+	r.Register("model", "List or switch models", &slash.InputHint{Hint: "model-id"},
+		func(ctx slash.Context, args string) (string, error) {
+			models := ctx.ListModels()
+			if args == "" {
+				if len(models) == 0 {
+					return "No models configured.\n", nil
+				}
+				var out string
+				out += "Available models:\n\n"
+				for _, id := range models {
+					out += "  " + id + "\n"
+				}
+				out += "\nUse /model <id> to switch.\n"
+				return out, nil
+			}
+			if err := ctx.SetModel(args); err != nil {
+				return "", err
+			}
+			return "Switched to model: " + args + "\n", nil
+		})
+
 	r.Register("mode", "Switch session mode", &slash.InputHint{Hint: "chat|plan"},
 		func(ctx slash.Context, args string) (string, error) {
 			switch args {

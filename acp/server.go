@@ -610,8 +610,8 @@ func (s *AgentServer) buildConfigOptions(sid openacp.SessionId) []openacp.Sessio
 		},
 	}
 
-	// Model selector — only surfaced when multiple models are registered.
-	if len(s.Models) > 1 {
+	// Model selector.
+	if len(s.Models) > 0 {
 		modelOpts := make([]openacp.SessionConfigOptValue, 0, len(s.Models))
 		for id := range s.Models {
 			modelOpts = append(modelOpts, openacp.SessionConfigOptValue{Value: id, Name: id})
@@ -1153,6 +1153,27 @@ func (s *AgentServer) buildSlashContext(ctx context.Context, sid openacp.Session
 				}
 			}
 			return out, nil
+		},
+		SetModel: func(modelID string) error {
+			if _, ok := s.Models[modelID]; !ok {
+				return fmt.Errorf("unknown model: %s", modelID)
+			}
+			ss.config["model"] = modelID
+			if s.updateSender != nil {
+				opts := s.buildConfigOptions(sid)
+				s.updateSender.SendSessionUpdate(sid, openacp.SessionUpdate{
+					SessionUpdate: "config_option_update",
+					ConfigOptions: opts,
+				})
+			}
+			return nil
+		},
+		ListModels: func() []string {
+			ids := make([]string, 0, len(s.Models))
+			for id := range s.Models {
+				ids = append(ids, id)
+			}
+			return ids
 		},
 	}
 }

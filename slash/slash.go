@@ -69,6 +69,10 @@ type Context struct {
 	Rename   func(title string) error      // persists + sends session_info_update notification
 	Clear    func() error                  // deletes all messages for this session
 	ListSess func() ([]SessionInfo, error) // returns all sessions from the store
+
+	// Model selection.
+	SetModel   func(modelID string) error       // persists + sends config_option_update notification
+	ListModels func() []string // available model IDs
 }
 
 // SessionInfo is a summary returned by /sessions.
