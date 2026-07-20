@@ -5,9 +5,9 @@ import (
 	"log"
 	"path/filepath"
 
+	openagent "github.com/yusheng-g/openagent-go"
 	"github.com/yusheng-g/openagent-go/acp"
 	openacpsdk "github.com/yusheng-g/openagent-go/acp/sdk"
-	openagent "github.com/yusheng-g/openagent-go"
 	"github.com/yusheng-g/openagent-go/sandbox/native"
 	"github.com/yusheng-g/openagent-go/summarizer"
 
@@ -60,7 +60,7 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 	agent := openagent.NewAgent("openagent",
 		openagent.WithMemory(mem),
 		openagent.WithSystemPrompts(resolveProfiles(cfg.Profiles)...),
-		openagent.WithMaxTurns(10),
+		openagent.WithMaxTurns(100),
 	)
 
 	srv := acp.NewAgentServer(agent, mem, sessionStore, modelMap)
