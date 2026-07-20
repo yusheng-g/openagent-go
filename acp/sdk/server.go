@@ -364,13 +364,20 @@ func (m *mux) handlePrompt(msg jsonrpcMessage) {
 	sender := &promptSender{mu: &m.mu, w: m.w, sid: req.SessionID}
 	resp, err := m.handler.OnPrompt(ctx, req, sender)
 
+	// Check whether we were cancelled before the handler returned.
+	// If so, report cancellation even if the handler returned an error.
+	wasCancelled := ctx.Err() != nil
+	cancel()
+
 	m.mu.Lock()
 	delete(m.cancelPending, reqID)
 	m.mu.Unlock()
-	cancel()
 
 	if err != nil {
-		if ctx.Err() != nil {
+		// Only report cancellation if the handler was still running
+		// when cancel fired (OnCancel → ctx cancel → StreamAborted).
+		// Other errors must NOT be swallowed as cancelled.
+		if wasCancelled {
 			m.writeResult(msg.ID, PromptResponse{StopReason: StopReasonCancelled})
 			return
 		}

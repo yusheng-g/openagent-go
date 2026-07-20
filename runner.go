@@ -121,6 +121,50 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 	for turn = 1; turn <= maxTurns; turn++ {
 		select {
 		case <-ctx.Done():
+			// Persist tool results for every unresolved tool_call
+			// so the conversation stays valid for the next turn.
+			//
+			// Two paths reach this handler:
+			//
+			// A) Direct cancel during tool execution — the
+			//    assistant with tool_calls is the last message.
+			//    Inject "cancelled by user" results.
+			//
+			// B) Approval rejection — executeTools already
+			//    created rejection messages in workingMessages
+			//    but appendMemory silently failed because ctx is
+			//    cancelled.  Re-persist those results and do NOT
+			//    inject duplicates.
+			bg := context.Background()
+			covered := make(map[string]bool, 4)
+			for i := len(workingMessages) - 1; i >= 0; i-- {
+				wm := workingMessages[i]
+				if wm.Role == RoleTool {
+					covered[wm.ToolCallID] = true
+					r.appendMemory(bg, session, wm)
+					continue
+				}
+				if wm.Role == RoleAssistant && len(wm.ToolCalls) > 0 {
+					for _, tc := range wm.ToolCalls {
+						if covered[tc.ID] {
+							continue
+						}
+						cancelled := Message{
+							Role:       RoleTool,
+							ToolCallID: tc.ID,
+							Content:    "cancelled by user",
+						}
+						r.appendMemory(bg, session, cancelled)
+						if ch != nil {
+							ch <- StreamEvent{Type: StreamToolResult, Message: cancelled}
+						}
+						result.Messages = append(result.Messages, cancelled)
+					}
+					break
+				}
+				// user or system message — gone past this turn.
+				break
+			}
 			runErr = ctx.Err()
 			if ch != nil {
 				ch <- StreamEvent{Type: StreamAborted, Error: runErr}
@@ -146,6 +190,16 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 				// The input was just appended to memory — strip it
 				// from history since we add it back after prefix.
 				if len(history) > 0 && history[len(history)-1].Role == RoleUser {
+					history = history[:len(history)-1]
+				}
+
+				// Strip orphaned assistant tool_calls left by
+				// cancelled turns. When OnCancel fires during tool
+				// execution, the assistant message with tool_calls
+				// is already in Memory but the tool results never
+				// arrive. Without cleanup the model API rejects the
+				// assistant(tool_calls)→user sequence as invalid.
+				for len(history) > 0 && history[len(history)-1].Role == RoleAssistant && len(history[len(history)-1].ToolCalls) > 0 {
 					history = history[:len(history)-1]
 				}
 
