@@ -144,6 +144,57 @@ SCOPE NOTES (per user direction):
 
 ---
 
+### [P1] Sandbox environment has no outbound network connectivity
+
+[cmd/cli/main.go:128-130](cmd/cli/main.go),
+[cmd/cli/settings/settings.json:18-21](cmd/cli/settings/settings.json),
+[cmd/cli/server/http.go:25-54](cmd/cli/server/http.go):
+
+The containerized sandbox (observed in the local runtime log)
+has no outbound network at all. This is an environment-level
+limitation, but it breaks core `openagent-cli serve` runtime paths
+that assume network access.
+
+Evidence (log lines 205-227, 405-432):
+- `curl https://www.baidu.com` and `curl https://www.google.com` →
+  HTTP `000` (immediate failure)
+- `host google.com` / `nslookup` → DNS resolution failed
+- `ip route` → empty routing table; no visible network interfaces
+- `HTTP_PROXY`/`HTTPS_PROXY` configured in `settings.json:18-21` point
+  to `proxynj.huawei.com:8080` (Huawei internal proxy), which is
+  equally unreachable from inside the sandbox
+
+Impact on `openagent-cli serve`:
+- `server/http.go:38-53` `buildModels` constructs OpenAI clients for
+  every provider in `settings.json` (`api.deepseek.com`,
+  `open.bigmodel.cn`). Every agent turn that calls the model endpoint
+  fails — the agent cannot produce any response.
+- `main.go:128-130` injects `cfg.Env` (including the proxy vars) via
+  `os.Setenv`, but since the proxy host is itself unreachable from the
+  sandbox, the proxy configuration provides no relief.
+- Runtime package installation (`pip install`, `hcloud` download) is
+  impossible, so SDKs/CLIs cannot be added on the fly.
+
+Repro (log lines 84-99, 194-203): user asked to query cn-north-4 ECS
+list — with no network and no preinstalled cloud CLI/SDK, the agent
+could not reach any Huawei Cloud endpoint and the user had to supply
+data manually.
+
+Suggested mitigations (in priority order):
+1. Add `openagent-cli doctor` subcommand that probes network
+   reachability (proxy host, DNS, routing table) at startup and
+   reports the degraded mode explicitly. Today failures only surface
+   when an agent turn actually tries to call out, producing opaque
+   timeouts.
+2. Detect empty routing table / unreachable proxy during `serve`
+   startup and fail fast with an actionable message instead of letting
+   every LLM call hit a timeout.
+3. Document that in network-isolated sandboxes, the agent must delegate
+   network-bound operations to the host machine via `terminal_create`
+   / `read_client_file` rather than executing them in-sandbox.
+
+---
+
 ## 🔧 Workarounds
 
 ### `runner.go` — Emergency context window trimming
