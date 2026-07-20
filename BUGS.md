@@ -34,9 +34,11 @@ Original issue: `migrate()` created `messages_fts` with the default `unicode61` 
 
 ---
 
-### [P2] VSCode ACP plugin mode indicator not updated after /mode or exit_plan_mode
+### [P2] ~~VSCode ACP plugin mode indicator not updated after /mode or exit_plan_mode~~ ✅ FIXED
 
-[acp/server.go:671-691](acp/server.go), [acp/server.go:851-879](acp/server.go): `setSessionMode` only sends `current_mode_update` (line 684-688), not `config_option_update`. The VSCode ACP plugin renders the mode selector as a config option (ID: `"mode"`) and relies on `config_option_update` to refresh its value. When mode is changed via `/mode` slash command, `session/set_mode` RPC, or `exit_plan_mode` tool, the plugin's mode indicator is not updated — even though the agent's internal mode (and actual tool gating behavior) has correctly changed. `OnSetSessionConfigOption` is the only path that sends both notifications, so only mode changes via the plugin's own config UI work correctly.
+[acp/server.go:671-691](acp/server.go), [acp/server.go:851-879](acp/server.go): **Fixed in this commit** — `setSessionMode` now sends both `current_mode_update` and `config_option_update`; `exit_plan_mode` now calls `setSessionMode` instead of manually setting mode + sending only `current_mode_update`; `OnSetSessionConfigOption` skips duplicate `config_option_update` when mode was changed.
+
+`setSessionMode` only sends `current_mode_update` (line 684-688), not `config_option_update`. The VSCode ACP plugin renders the mode selector as a config option (ID: `"mode"`) and relies on `config_option_update` to refresh its value. When mode is changed via `/mode` slash command, `session/set_mode` RPC, or `exit_plan_mode` tool, the plugin's mode indicator is not updated — even though the agent's internal mode (and actual tool gating behavior) has correctly changed. `OnSetSessionConfigOption` is the only path that sends both notifications, so only mode changes via the plugin's own config UI work correctly.
 
 Additionally, `exit_plan_mode` (line 851-879) manually sets `ss.mode` and sends only `current_mode_update`, bypassing `setSessionMode` entirely. This has the same symptom: after the agent calls `exit_plan_mode`, the actual mode reverts to auto/manual, but the plugin indicator still shows "plan".
 
