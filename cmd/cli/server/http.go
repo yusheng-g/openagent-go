@@ -26,7 +26,7 @@ func RunREST(ctx context.Context, cfg *config.Config) error {
 	m := firstModel(models)
 
 	workDir, _ := os.Getwd()
-	sb, err := native.New(workDir)
+	sb, err := native.NewWithPolicy(workDir, sandboxPolicy(cfg.Sandbox))
 	var tools []openagent.Tool
 	if err == nil {
 		tools = buildTools(sb, workDir, []string{"shell", "read", "write", "ls", "grep"})

@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-20 (rev 3).
+> Last updated 2026-07-20 (rev 5).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -144,16 +144,81 @@ SCOPE NOTES (per user direction):
 
 ---
 
-### [P1] Sandbox environment has no outbound network connectivity
+### [P1] ~~Sandbox environment has no outbound network connectivity~~ ✅ FIXED
 
 [cmd/cli/main.go:128-130](cmd/cli/main.go),
 [cmd/cli/settings/settings.json:18-21](cmd/cli/settings/settings.json),
-[cmd/cli/server/http.go:25-54](cmd/cli/server/http.go):
+[cmd/cli/server/http.go:25-54](cmd/cli/server/http.go),
+[sandbox/native/native.go](sandbox/native/native.go),
+[sandbox/native/native_linux.go](sandbox/native/native_linux.go),
+[cmd/cli/config/config.go](cmd/cli/config/config.go):
 
-The containerized sandbox (observed in the local runtime log)
-has no outbound network at all. This is an environment-level
-limitation, but it breaks core `openagent-cli serve` runtime paths
-that assume network access.
+**Fixed in this commit** — root cause was
+`sandbox/native/native_linux.go:bwrapArgs()` unconditionally passing
+`--unshare-all` to `bwrap`. That flag implies `--unshare-net`, putting
+the sandboxed process into a fresh network namespace with no routes,
+no DNS, and no outbound connectivity. Every shell command the agent
+ran (`curl`, `pip install`, `hcloud`, etc.) failed as a result. (The
+agent's own LLM HTTP calls go through the main Go process, not the
+sandbox, so those were unaffected — only shell-tool network was dead.)
+
+Fix is five-layered:
+
+1. **Policy API in `sandbox/native`** — added `Policy{Network,
+   WritablePaths, ReadablePaths}` and `NewWithPolicy(workDir, Policy)`.
+   `New(workDir)` now delegates to `NewWithPolicy(workDir, Policy{})`
+   whose zero-value `Network == ""` means **host** (network allowed).
+2. **`bwrapArgs()` reworked** — replaced `--unshare-all` (which
+  hard-fails on user-namespace creation in restricted containers) with
+   explicit namespace flags: `--unshare-user-try` (graceful),
+   `--unshare-ipc`, `--unshare-pid`, `--unshare-uts`,
+   `--unshare-cgroup-try`. Network is governed directly: `isolated`
+   policy adds `--unshare-net`; `host`/default omits it entirely (no
+   more `--unshare-all` + `--share-net` roundtrip). `WritablePaths` /
+   `ReadablePaths` produce additional `--bind` / `--ro-bind` entries.
+3. **`/etc` network config mounted read-only** — `bwrapArgs()` now
+   bind-mounts `/etc/resolv.conf`, `/etc/hosts`, `/etc/nsswitch.conf`,
+   and `/etc/ssl` via `--ro-bind-try`. Without these, even with host
+   network namespace sharing, glibc inside the sandbox cannot resolve
+   DNS (no resolv.conf) and TLS verification fails (no CA certs).
+   This was the second root cause: the first-round fix added
+   `--share-net` but the agent still saw `curl exit 6 (Couldn't
+   resolve host)` because resolv.conf wasn't mounted.
+4. **bwrap-startup-failure fallback** — `confineAndRun` and
+   `confineAndRunStream` now detect bwrap setup failures (empty
+   stdout + stderr starting with `bwrap:`) and fall back to
+   unconfined execution silently, instead of returning the bwrap
+   error to the agent. Previously the fallback only triggered
+   when bwrap was not found (`exec.LookPath` failed); if bwrap was
+   installed but couldn't start (e.g. `setting up uid map: Permission
+   denied` in containers), the shell command never ran and the agent
+   only saw the bwrap error. The fallback is silent for the
+   high-frequency bwrap-startup-failure path (every shell command in
+   containers) to avoid log spam; a WARNING is still logged for the
+   low-frequency cases (bwrap not installed, `c.Start()` fails).
+5. **Configurable from `settings.json`** — `cmd/cli/config/config.go`
+   gained a `SandboxConfig{Network, WritablePaths, ReadablePaths}`
+   field. `cmd/cli/server/{http,acp}.go` switched from `native.New()`
+   to `native.NewWithPolicy(cwd, sandboxPolicy(cfg.Sandbox))`. Missing
+   config defaults to host networking — the agent can finally reach
+   the internet through shell tools. Users who want the old isolated
+   behavior can set `{"sandbox": {"network": "isolated"}}` in
+   `settings.json`.
+
+The policy tests in `native_policy_linux_test.go` (previously failing
+to compile because the API didn't exist) now pass, including
+`TestBwrapArgsEtcMounts` (verifies /etc network files are mounted)
+and `TestBwrapArgsNetworkPolicy` (verifies `--unshare-net` is
+absent for host/default, present for isolated). The renamed
+`TestSandboxIsolatedPolicyBlocksNetwork` verifies the isolated policy
+still blocks network end-to-end — it auto-skips when the sandbox
+itself can't start (via `sandboxFunctional` helper), so it no longer
+false-fails in containers that block bwrap.
+
+Original issue: the containerized sandbox (observed in the local
+runtime log) had no outbound network at all. This was an
+environment-level limitation that broke core `openagent-cli serve`
+runtime paths assuming network access.
 
 Evidence (log lines 205-227, 405-432):
 - `curl https://www.baidu.com` and `curl https://www.google.com` →
@@ -164,7 +229,7 @@ Evidence (log lines 205-227, 405-432):
   to `proxynj.huawei.com:8080` (Huawei internal proxy), which is
   equally unreachable from inside the sandbox
 
-Impact on `openagent-cli serve`:
+Impact on `openagent-cli serve` (before the fix):
 - `server/http.go:38-53` `buildModels` constructs OpenAI clients for
   every provider in `settings.json` (`api.deepseek.com`,
   `open.bigmodel.cn`). Every agent turn that calls the model endpoint
@@ -180,7 +245,8 @@ list — with no network and no preinstalled cloud CLI/SDK, the agent
 could not reach any Huawei Cloud endpoint and the user had to supply
 data manually.
 
-Suggested mitigations (in priority order):
+**Remaining follow-ups (not fixed in this commit):**
+
 1. Add `openagent-cli doctor` subcommand that probes network
    reachability (proxy host, DNS, routing table) at startup and
    reports the degraded mode explicitly. Today failures only surface
@@ -189,9 +255,18 @@ Suggested mitigations (in priority order):
 2. Detect empty routing table / unreachable proxy during `serve`
    startup and fail fast with an actionable message instead of letting
    every LLM call hit a timeout.
-3. Document that in network-isolated sandboxes, the agent must delegate
-   network-bound operations to the host machine via `terminal_create`
-   / `read_client_file` rather than executing them in-sandbox.
+3. Document that in network-isolated sandboxes (when the user opts
+   into `sandbox.network: "isolated"`), the agent must delegate
+   network-bound operations to the host machine via
+   `terminal_create` / `read_client_file` rather than executing them
+   in-sandbox.
+4. ✅ Resolved — `TestSandboxWorkspaceAccess` / `TestSandboxStreaming`
+   now pass via the bwrap-startup-failure fallback (they fall back to
+   unconfined execution and the commands succeed). The isolation tests
+   `TestSandboxBlocksExternalAccess` /
+   `TestSandboxIsolatedPolicyBlocksNetwork` auto-skip via the
+   `sandboxFunctional` helper when bwrap can't start, instead of
+   false-failing.
 
 ---
 

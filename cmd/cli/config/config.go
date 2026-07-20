@@ -13,6 +13,7 @@ type Config struct {
 	Provider  map[string]ProviderConfig `json:"provider,omitempty"`
 	Server    ServerConfig              `json:"server,omitempty"`
 	Channels  ChannelsConfig            `json:"channels,omitempty"`
+	Sandbox   SandboxConfig             `json:"sandbox,omitempty"`
 	Plugins   []string                  `json:"plugins,omitempty"`
 	Profiles  string                    `json:"profiles,omitempty"`
 	Env       map[string]string         `json:"env,omitempty"`
@@ -38,6 +39,21 @@ type ChannelsConfig struct {
 type FeishuConfig struct {
 	AppID     string `json:"app_id"`
 	AppSecret string `json:"app_secret"`
+}
+
+// SandboxConfig controls the native sandbox used by the CLI server modes.
+//
+// Network governs outbound network access from inside the sandbox:
+//   - "" or "host"     → share the host's network namespace (network allowed)
+//   - "isolated"       → unshare the network namespace (no outbound network)
+//
+// WritablePaths / ReadablePaths are additional host paths bind-mounted
+// into the sandbox (writable / read-only respectively), on top of the
+// workspace directory and the system paths already mounted.
+type SandboxConfig struct {
+	Network       string   `json:"network,omitempty"`
+	WritablePaths []string `json:"writable_paths,omitempty"`
+	ReadablePaths []string `json:"readable_paths,omitempty"`
 }
 
 // Path returns the config file path. Respects OPENAGENT_CLI_CONFIG env var.
