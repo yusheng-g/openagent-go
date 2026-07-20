@@ -114,17 +114,5 @@ func (s *AgentServer) buildCommandRegistry() *slash.Registry {
 			return out, nil
 		})
 
-	r.Register("new", "Instructions for creating a new session", &slash.InputHint{Hint: "cwd (optional)"},
-		func(slash.Context, string) (string, error) {
-			return "Create a new session via the client's session management UI or\n" +
-				"AOP RPC method session/new.\n", nil
-		})
-
-	r.Register("switch", "Instructions for switching sessions", &slash.InputHint{Hint: "session ID"},
-		func(slash.Context, string) (string, error) {
-			return "Use /sessions to list available sessions, then use your\n" +
-				"client's UI to switch or load a different session.\n", nil
-		})
-
 	return r
 }
