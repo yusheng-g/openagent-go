@@ -686,6 +686,12 @@ func (s *AgentServer) setSessionMode(ctx context.Context, sid openacp.SessionId,
 			SessionUpdate: "current_mode_update",
 			CurrentModeID: openacp.SessionModeId(mode),
 		})
+		// Also send config_option_update so the client's mode dropdown
+		// (which reads the "mode" config option) stays in sync.
+		s.updateSender.SendSessionUpdate(sid, openacp.SessionUpdate{
+			SessionUpdate: "config_option_update",
+			ConfigOptions: s.buildConfigOptions(sid),
+		})
 	}
 	return nil
 }
@@ -718,19 +724,25 @@ func (s *AgentServer) OnSetSessionConfigOption(ctx context.Context, req openacp.
 
 	// Sync session mode when the client sets the "mode" config option
 	// (most clients use set_config_option rather than set_mode).
+	// setSessionMode now sends both current_mode_update and
+	// config_option_update, so skip the duplicate notification below.
+	needsConfigUpdate := true
 	if req.ConfigID == "mode" {
 		if v, ok := ss.config["mode"].(string); ok {
 			_ = s.setSessionMode(ctx, req.SessionID, v)
+			needsConfigUpdate = false // already sent by setSessionMode
 		}
 	}
 
 	// Notify clients of the config change.
-	opts := s.buildConfigOptions(req.SessionID)
-	if s.updateSender != nil {
-		s.updateSender.SendSessionUpdate(req.SessionID, openacp.SessionUpdate{
-			SessionUpdate: "config_option_update",
-			ConfigOptions: opts,
-		})
+	if needsConfigUpdate {
+		opts := s.buildConfigOptions(req.SessionID)
+		if s.updateSender != nil {
+			s.updateSender.SendSessionUpdate(req.SessionID, openacp.SessionUpdate{
+				SessionUpdate: "config_option_update",
+				ConfigOptions: opts,
+			})
+		}
 	}
 
 	return &openacp.SetSessionConfigOptionResponse{
@@ -841,13 +853,16 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 			if target == "" || target == "plan" {
 				target = "auto"
 			}
-			ss.mode = target
-			s.saveMode(ctx, string(req.SessionID), target)
+
+			// Persist mode change and notify client (sends both
+			// current_mode_update and config_option_update).
+			if err := s.setSessionMode(ctx, req.SessionID, target); err != nil {
+				return err
+			}
 
 			// Inject execution tools into the running agent clone
-			// so they are available this same turn.
+			// for subsequent model calls this turn.
 			s.injectExecutionTools(agent, req.SessionID, ss)
-
 
 			// Set approver based on target mode.
 			if target == "manual" && s.clientRPC != nil {
@@ -856,13 +871,6 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 				agent.Approver = nil
 			}
 
-			// Notify client of mode change.
-			if s.updateSender != nil {
-				s.updateSender.SendSessionUpdate(req.SessionID, openacp.SessionUpdate{
-					SessionUpdate: "current_mode_update",
-					CurrentModeID: openacp.SessionModeId(target),
-				})
-			}
 			return nil
 		})
 		agent.Tools = append(agent.Tools, et)
