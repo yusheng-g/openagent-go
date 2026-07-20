@@ -34,6 +34,23 @@ Original issue: `migrate()` created `messages_fts` with the default `unicode61` 
 
 ---
 
+### [P2] VSCode ACP plugin mode indicator not updated after /mode or exit_plan_mode
+
+[acp/server.go:671-691](acp/server.go), [acp/server.go:851-879](acp/server.go): `setSessionMode` only sends `current_mode_update` (line 684-688), not `config_option_update`. The VSCode ACP plugin renders the mode selector as a config option (ID: `"mode"`) and relies on `config_option_update` to refresh its value. When mode is changed via `/mode` slash command, `session/set_mode` RPC, or `exit_plan_mode` tool, the plugin's mode indicator is not updated — even though the agent's internal mode (and actual tool gating behavior) has correctly changed. `OnSetSessionConfigOption` is the only path that sends both notifications, so only mode changes via the plugin's own config UI work correctly.
+
+Additionally, `exit_plan_mode` (line 851-879) manually sets `ss.mode` and sends only `current_mode_update`, bypassing `setSessionMode` entirely. This has the same symptom: after the agent calls `exit_plan_mode`, the actual mode reverts to auto/manual, but the plugin indicator still shows "plan".
+
+Repro:
+1. `/mode plan` → echo shows success, agent enters plan mode, but plugin indicator still shows previous mode
+2. In plan mode, agent calls `exit_plan_mode` → actual mode reverts, but plugin indicator still shows "plan"
+
+Fix:
+1. Add `config_option_update` notification to `setSessionMode` (alongside the existing `current_mode_update`).
+2. Replace the manual mode-setting + single notification in `exit_plan_mode`'s callback with a call to `setSessionMode`.
+3. In `OnSetSessionConfigOption`, skip the explicit `config_option_update` when mode was changed (to avoid double-sending since `setSessionMode` now sends it).
+
+---
+
 ### [P2] Team: no model selection, no ContextWindow, stale ModelID
 
 [rest/team.go](rest/team.go):
