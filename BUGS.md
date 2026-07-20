@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-20 (rev 2).
+> Last updated 2026-07-20 (rev 3).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -195,22 +195,23 @@ Suggested mitigations (in priority order):
 
 ---
 
-### [P1] `cmd/cli` server modes hardcode `MaxTurns=10` — complex tasks silently truncated
+### [P1] ~~`cmd/cli` server modes hardcode `MaxTurns=10` — complex tasks silently truncated~~ ✅ FIXED (partial)
 
 [cmd/cli/server/acp.go:63](cmd/cli/server/acp.go#L63),
-[cmd/cli/server/http.go:53](cmd/cli/server/http.go#L53),
+[cmd/cli/server/http.go:53](cmd/cli/server/http.go#L53): **Fixed in this commit** — both call sites bumped from `WithMaxTurns(10)` to `WithMaxTurns(100)`. 100 turns covers any realistic single-task workflow (read → search → edit → test → fix → rerun) without exhausting the budget mid-investigation, while still providing a safety cap against runaway loops.
+
 [runner.go:59-62](runner.go#L59),
 [runner.go:121](runner.go#L121),
 [runner.go:456-463](runner.go#L456),
 [agent.go:77](agent.go#L77),
 [cmd/tui/main.go:44](cmd/tui/main.go#L44):
 
-Both CLI server entry points hardcode `openagent.WithMaxTurns(10)` when
-constructing the agent, and the value is not exposed in `settings.json`
+Original issue: Both CLI server entry points hardcoded `openagent.WithMaxTurns(10)` when
+constructing the agent, and the value was not exposed in `settings.json`
 or any CLI flag. One "turn" in this framework equals one LLM call plus
 one round of tool execution (`runner.go:121`), so on any non-trivial
 task — read a few files, grep, edit, run tests, fix, rerun — the budget
-is exhausted before the agent finishes. The CLI server modes are in fact
+was exhausted before the agent finishes. The CLI server modes were in fact
 *more restrictive than the framework's own default* of 20
 (`runner.go:60-62`, `agent.go:77`, used by `cmd/tui/main.go:44`).
 
@@ -244,14 +245,9 @@ the last assistant turn are never executed and never reported.
 - No workaround available to end users without recompiling — the value
   is neither in `settings.json` nor a CLI flag.
 
-**Suggested fix (in priority order):**
+**Remaining follow-ups (not fixed in this commit):**
 
-1. Bump the CLI server default to at least 50 (or `math.MaxInt32` to
-   effectively disable the safety cap for trusted local use). The
-   default of 20 was chosen for cost protection in multi-tenant REST
-   deployments; the CLI is single-user, local, and already calls
-   `mem.WithSummarizer(...)` for context compression, so the turn cap
-   is no longer the right cost-control lever there.
+1. ✅ Bump the CLI server default — done (10 → 100).
 2. Surface hitting the cap explicitly. In `runner.go:456`, detect
    `turn > maxTurns` (i.e. the loop exited without `break` and the last
    `choice.Message.ToolCalls` was non-empty) and set

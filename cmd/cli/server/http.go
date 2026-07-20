@@ -50,7 +50,7 @@ func RunREST(ctx context.Context, cfg *config.Config) error {
 		openagent.WithMemory(mem),
 		openagent.WithSystemPrompts(resolveProfiles(cfg.Profiles)...),
 		openagent.WithTools(tools...),
-		openagent.WithMaxTurns(10),
+		openagent.WithMaxTurns(100),
 	)
 
 	handler := rest.NewHandler(agent).
