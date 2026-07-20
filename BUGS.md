@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-20.
+> Last updated 2026-07-20 (rev 2).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -192,6 +192,76 @@ Suggested mitigations (in priority order):
 3. Document that in network-isolated sandboxes, the agent must delegate
    network-bound operations to the host machine via `terminal_create`
    / `read_client_file` rather than executing them in-sandbox.
+
+---
+
+### [P1] `cmd/cli` server modes hardcode `MaxTurns=10` — complex tasks silently truncated
+
+[cmd/cli/server/acp.go:63](cmd/cli/server/acp.go#L63),
+[cmd/cli/server/http.go:53](cmd/cli/server/http.go#L53),
+[runner.go:59-62](runner.go#L59),
+[runner.go:121](runner.go#L121),
+[runner.go:456-463](runner.go#L456),
+[agent.go:77](agent.go#L77),
+[cmd/tui/main.go:44](cmd/tui/main.go#L44):
+
+Both CLI server entry points hardcode `openagent.WithMaxTurns(10)` when
+constructing the agent, and the value is not exposed in `settings.json`
+or any CLI flag. One "turn" in this framework equals one LLM call plus
+one round of tool execution (`runner.go:121`), so on any non-trivial
+task — read a few files, grep, edit, run tests, fix, rerun — the budget
+is exhausted before the agent finishes. The CLI server modes are in fact
+*more restrictive than the framework's own default* of 20
+(`runner.go:60-62`, `agent.go:77`, used by `cmd/tui/main.go:44`).
+
+**Silent truncation is the worst part.** When `turn > maxTurns`, the
+`for` loop at `runner.go:121` simply exits, falls through to
+`runner.go:456-463`:
+
+```go
+}  // end of for-loop
+result.TurnCount = turn
+result.ContextWindow = r.runModel.ContextWindow()
+if ch != nil {
+    ch <- StreamEvent{Type: StreamDone, Result: result}
+}
+return result, nil
+```
+
+`result.StopReason` is left empty, no error is returned, and a normal
+`StreamDone` event is emitted — indistinguishable from a graceful
+"model returned no tool_calls" stop (`runner.go:393-405`). The user sees
+a half-finished answer that looks complete; tool_calls left pending by
+the last assistant turn are never executed and never reported.
+
+**Impact:**
+- ACP mode (`cli serve --acp`): any task needing >10 turns returns a
+  truncated, "successful-looking" response. Observed during the
+  Huawei Cloud ECS diagnosis session — the agent ran out of turns
+  mid-investigation and returned partial findings as if finished.
+- REST mode (`cli serve`): same silent truncation over SSE; frontend
+  shows a normal `done` event with an incomplete answer.
+- No workaround available to end users without recompiling — the value
+  is neither in `settings.json` nor a CLI flag.
+
+**Suggested fix (in priority order):**
+
+1. Bump the CLI server default to at least 50 (or `math.MaxInt32` to
+   effectively disable the safety cap for trusted local use). The
+   default of 20 was chosen for cost protection in multi-tenant REST
+   deployments; the CLI is single-user, local, and already calls
+   `mem.WithSummarizer(...)` for context compression, so the turn cap
+   is no longer the right cost-control lever there.
+2. Surface hitting the cap explicitly. In `runner.go:456`, detect
+   `turn > maxTurns` (i.e. the loop exited without `break` and the last
+   `choice.Message.ToolCalls` was non-empty) and set
+   `result.StopReason = "max_turns"` plus emit a `StreamEvent{Type:
+   StreamWarning, ...}` (or at minimum log a WARNING). Frontends and
+   ACP clients can then prompt the user to continue.
+3. Make the value configurable: add `maxTurns` (or `agent.maxTurns`)
+   to `settings.json` schema in `cmd/cli/settings/`, and a
+   `--max-turns` flag on `cli serve`, defaulting to the bumped value.
+   Mirror the pattern already used for `cfg.Provider` / `cfg.Profiles`.
 
 ---
 
