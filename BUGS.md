@@ -574,6 +574,13 @@ Errors discarded without logging:
 
 ---
 
+### [DEBT] Sandbox disabled by default — credential mounting unresolved when enabled
+
+[sandbox/native/native_linux.go](sandbox/native/native_linux.go):
+`bwrapArgs()` does not mount `$HOME` or credential directories (`~/.hcloud`, `~/.aws`, `~/.kube`, `~/.config/gcloud`, `~/.docker`). When the sandbox is enabled via `--sandbox`, cloud CLIs inside bwrap cannot read auth configs. Workaround: use `readable_paths` in `settings.json`, or fix bwrap to mount credential dirs automatically. Additionally, bwrap requires setuid or `newuidmap` to function on this host — without them it silently falls back to unconfined execution.
+
+---
+
 ## Legend
 
 | Tag | Meaning |

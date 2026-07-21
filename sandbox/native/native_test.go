@@ -17,7 +17,7 @@ import (
 // rather than fail.
 func sandboxFunctional(t *testing.T) bool {
 	t.Helper()
-	sb, err := New(t.TempDir())
+	sb, err := NewWithPolicy(t.TempDir(), Policy{Enabled: true})
 	if err != nil {
 		t.Fatalf("New sandbox: %v", err)
 	}
@@ -63,7 +63,7 @@ func TestSandboxBlocksExternalAccess(t *testing.T) {
 		t.Skip("sandbox not functional (bwrap/sandbox-exec unavailable or broken) — skipping filesystem isolation test")
 	}
 	dir := t.TempDir()
-	sb, err := New(dir)
+	sb, err := NewWithPolicy(dir, Policy{Enabled: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +88,7 @@ func TestSandboxIsolatedPolicyBlocksNetwork(t *testing.T) {
 		t.Skip("sandbox not functional (bwrap/sandbox-exec unavailable or broken) — skipping network isolation test")
 	}
 	dir := t.TempDir()
-	sb, err := NewWithPolicy(dir, Policy{Network: "isolated"})
+	sb, err := NewWithPolicy(dir, Policy{Enabled: true, Network: "isolated"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -131,5 +131,38 @@ func TestSandboxStreaming(t *testing.T) {
 		t.Errorf("expected at least 2 lines from streaming, got %d: %v", len(lines), lines)
 	} else {
 		t.Logf("✅ streaming works: %d lines", len(lines))
+	}
+}
+
+func TestSandboxDisabled(t *testing.T) {
+	dir := t.TempDir()
+	sb, err := NewWithPolicy(dir, Policy{Enabled: false})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// CWD should be the host workDir, not /workspace.
+	if cwd := sb.CWD(); cwd != dir {
+		t.Errorf("expected CWD %s, got %s", dir, cwd)
+	} else {
+		t.Logf("✅ CWD is host path (no /workspace remapping)")
+	}
+
+	// Commands should execute and produce no sandbox warning.
+	result, err := sb.Run(context.Background(), openagent.Command{
+		Program: "/bin/echo",
+		Args:    []string{"unconfined"},
+		WorkDir: dir,
+	})
+	if err != nil {
+		t.Fatalf("run failed: %v", err)
+	}
+	if !strings.Contains(result.Stdout, "unconfined") {
+		t.Errorf("expected 'unconfined' in stdout, got: %s", result.Stdout)
+	}
+	if strings.Contains(result.Stderr, "[warning: running without sandbox]") {
+		t.Errorf("expected NO warning when sandbox is explicitly disabled, got stderr: %s", result.Stderr)
+	} else {
+		t.Logf("✅ no warning when sandbox disabled")
 	}
 }

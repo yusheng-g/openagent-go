@@ -221,6 +221,9 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 			if p > 0 {
 				cfg.Server.Port = p
 			}
+			if sandboxEnabled, _ := cmd.Flags().GetBool("sandbox"); sandboxEnabled {
+				cfg.Sandbox.Enabled = true
+			}
 
 			ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
@@ -254,6 +257,7 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 	cmd.Flags().Bool("acp", false, "ACP mode over stdio")
 	cmd.Flags().String("channel", "", "Enable IM channel (e.g. \"feishu\")")
 	cmd.Flags().Int("port", 0, "REST port (overrides settings)")
+	cmd.Flags().Bool("sandbox", false, "Enable OS-native sandbox (bwrap/seatbelt) for shell commands")
 	return cmd
 }
 

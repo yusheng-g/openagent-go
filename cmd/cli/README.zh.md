@@ -151,13 +151,15 @@ pub extern "C" fn run_my_cmd(p: u32, l: u32) -> u64 {
 
 ```
 openagent-cli
-├─ serve [--acp] [--port N]        REST 或 ACP 服务
-├─ keyring                          凭证管理
+├─ serve [--acp] [--port N] [--sandbox]   REST 或 ACP 服务
+├─ keyring                                 凭证管理
 │  ├─ set <key> <value>
 │  ├─ get <key>
 │  └─ delete <key>
-└─ <插件命令>                        启动时注入
+└─ <插件命令>                               启动时注入
 ```
+
+`--sandbox` 启用 OS 原生沙箱（Linux bwrap / macOS Seatbelt），默认关闭。关闭时命令直接在宿主机执行。启用后命令在隔离的命名空间中运行，仅工作区可写。
 
 ## 架构
 

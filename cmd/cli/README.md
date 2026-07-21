@@ -151,13 +151,15 @@ pub extern "C" fn run_my_cmd(p: u32, l: u32) -> u64 {
 
 ```
 openagent-cli
-├─ serve [--acp] [--port N]        REST or ACP server
-├─ keyring                          Credential management
+├─ serve [--acp] [--port N] [--sandbox]   REST or ACP server
+├─ keyring                                 Credential management
 │  ├─ set <key> <value>
 │  ├─ get <key>
 │  └─ delete <key>
-└─ <plugin commands>                 Injected at startup
+└─ <plugin commands>                       Injected at startup
 ```
+
+`--sandbox` enables the OS-native sandbox (Linux bwrap / macOS Seatbelt), disabled by default. When disabled, commands run directly on the host with full `$HOME` access. When enabled, commands run in an isolated namespace with only the workspace writable.
 
 ## Architecture
 

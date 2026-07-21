@@ -74,6 +74,7 @@ func firstModel(models []openagent.Model) openagent.Model {
 // reach LLM providers, package managers, cloud CLIs, etc.
 func sandboxPolicy(cfg config.SandboxConfig) native.Policy {
 	return native.Policy{
+		Enabled:       cfg.Enabled,
 		Network:       cfg.Network,
 		WritablePaths: cfg.WritablePaths,
 		ReadablePaths: cfg.ReadablePaths,

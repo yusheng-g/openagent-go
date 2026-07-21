@@ -87,7 +87,7 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 		}
 	}
 	cwd, _ := os.Getwd()
-	if sb, err := native.New(cwd); err == nil {
+	if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
 		channelAgent.Tools = buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
 	}
 
@@ -98,4 +98,3 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 	log.Println("ACP server starting on stdio")
 	return server.Run(ctx)
 }
-

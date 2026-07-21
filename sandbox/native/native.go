@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	openagent "github.com/yusheng-g/openagent-go"
 )
@@ -32,7 +33,11 @@ type Sandbox struct {
 
 // Policy controls how strictly the sandbox confines the command.
 //
-// Network controls outbound network access:
+// Enabled governs whether the sandbox is active at all:
+//   - false (zero value) → commands run unconfined (no bwrap/seatbelt)
+//   - true               → commands run inside the OS-native sandbox
+//
+// Network controls outbound network access (only effective when Enabled):
 //   - "" or "host"     → share the host's network namespace (network allowed)
 //   - "isolated"       → unshare the network namespace (no outbound network)
 //
@@ -41,6 +46,7 @@ type Sandbox struct {
 // ReadablePaths are additional host paths bind-mounted read-only inside
 // the sandbox (in addition to the system paths already mounted).
 type Policy struct {
+	Enabled       bool
 	Network       string
 	WritablePaths []string
 	ReadablePaths []string
@@ -66,29 +72,37 @@ func NewWithPolicy(workDir string, p Policy) (*Sandbox, error) {
 }
 
 // CWD implements openagent.Sandbox. Returns the path as seen from
-// inside the sandbox, not the host path. bwrap maps s.workDir to
-// /workspace; unconfined mode preserves the original path.
-// Callers should check for bwrap the same way confineAndRun does.
+// inside the sandbox, not the host path. When the sandbox is disabled
+// (or bwrap is unavailable), commands run directly in s.workDir.
 func (s *Sandbox) CWD() string {
+	if !s.policy.Enabled {
+		return s.workDir
+	}
 	if _, err := exec.LookPath("bwrap"); err == nil {
 		return "/workspace"
 	}
 	return s.workDir
 }
 
-// Run executes cmd in a sandboxed child process.
-// Calls the platform-specific confineAndRun (build-tagged per OS).
+// Run executes cmd in a sandboxed child process. When Policy.Enabled
+// is false, commands run unconfined (plain exec, no bwrap/seatbelt).
 func (s *Sandbox) Run(ctx context.Context, cmd openagent.Command) (openagent.Result, error) {
+	if !s.policy.Enabled {
+		return s.unconfinedRun(ctx, cmd)
+	}
 	return s.confineAndRun(ctx, cmd)
 }
 
 // RunStream is like Run but streams stdout/stderr line by line.
 func (s *Sandbox) RunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk {
+	if !s.policy.Enabled {
+		return s.unconfinedRunStream(ctx, cmd)
+	}
 	return s.confineAndRunStream(ctx, cmd)
 }
 
 // readLines reads lines from r and sends them as chunks to ch.
-// Used by both darwin and linux streaming implementations.
+// Used by streaming implementations on all platforms.
 func readLines(r io.Reader, ch chan<- openagent.ToolStreamChunk, done chan<- struct{}) {
 	defer func() { done <- struct{}{} }()
 	sc := bufio.NewScanner(r)
@@ -96,4 +110,73 @@ func readLines(r io.Reader, ch chan<- openagent.ToolStreamChunk, done chan<- str
 	for sc.Scan() {
 		ch <- openagent.ToolStreamChunk{Content: sc.Text() + "\n"}
 	}
+}
+
+// ── Unconfined execution (platform-agnostic) ──
+
+// unconfinedRun executes cmd directly on the host without any sandbox.
+// A stderr warning is appended only when Policy.Enabled is true (i.e.
+// the sandbox was requested but fell back to unconfined due to bwrap/
+// seatbelt failure). When Enabled is false the user explicitly opted
+// out, so no warning is added.
+func (s *Sandbox) unconfinedRun(ctx context.Context, cmd openagent.Command) (openagent.Result, error) {
+	c := exec.CommandContext(ctx, cmd.Program, cmd.Args...)
+	c.Dir = s.workDir
+	for _, e := range cmd.Env {
+		c.Env = append(c.Env, e)
+	}
+	if cmd.Stdin != "" {
+		c.Stdin = strings.NewReader(cmd.Stdin)
+	}
+
+	var stdout, stderr strings.Builder
+	c.Stdout = &stdout
+	c.Stderr = &stderr
+
+	err := c.Run()
+	result := openagent.Result{
+		Stdout:   stdout.String(),
+		Stderr:   stderr.String(),
+		ExitCode: 0,
+	}
+	if s.policy.Enabled {
+		result.Stderr += "\n[warning: running without sandbox]"
+	}
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			result.ExitCode = exitErr.ExitCode()
+			return result, nil
+		}
+		return result, fmt.Errorf("native sandbox (unconfined): %w", err)
+	}
+	return result, nil
+}
+
+func (s *Sandbox) unconfinedRunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk {
+	ch := make(chan openagent.ToolStreamChunk, 16)
+	go func() {
+		defer close(ch)
+		c := exec.CommandContext(ctx, cmd.Program, cmd.Args...)
+		c.Dir = s.workDir
+		for _, e := range cmd.Env {
+			c.Env = append(c.Env, e)
+		}
+		if cmd.Stdin != "" {
+			c.Stdin = strings.NewReader(cmd.Stdin)
+		}
+
+		stdout, _ := c.StdoutPipe()
+		stderr, _ := c.StderrPipe()
+		if err := c.Start(); err != nil {
+			ch <- openagent.ToolStreamChunk{Error: err}
+			return
+		}
+		done := make(chan struct{}, 2)
+		go readLines(stdout, ch, done)
+		go readLines(stderr, ch, done)
+		<-done
+		<-done
+		_ = c.Wait()
+	}()
+	return ch
 }

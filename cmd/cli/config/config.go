@@ -56,7 +56,12 @@ type FeishuConfig struct {
 
 // SandboxConfig controls the native sandbox used by the CLI server modes.
 //
-// Network governs outbound network access from inside the sandbox:
+// Enabled governs whether the sandbox is active:
+//   - false (default) → commands run unconfined (no bwrap/seatbelt)
+//   - true            → commands run inside the OS-native sandbox
+//
+// Network governs outbound network access from inside the sandbox
+// (only effective when Enabled is true):
 //   - "" or "host"     → share the host's network namespace (network allowed)
 //   - "isolated"       → unshare the network namespace (no outbound network)
 //
@@ -64,6 +69,7 @@ type FeishuConfig struct {
 // into the sandbox (writable / read-only respectively), on top of the
 // workspace directory and the system paths already mounted.
 type SandboxConfig struct {
+	Enabled       bool     `json:"enabled,omitempty"`
 	Network       string   `json:"network,omitempty"`
 	WritablePaths []string `json:"writable_paths,omitempty"`
 	ReadablePaths []string `json:"readable_paths,omitempty"`
