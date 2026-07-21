@@ -201,11 +201,15 @@ func openSkillLoader() openagent.SkillLoader {
 
 func skillDirs() []string {
 	var dirs []string
-	if cwd, err := os.Getwd(); err == nil {
-		dirs = append(dirs, filepath.Join(cwd, ".openagent", "skills"))
-	}
-	if home, err := os.UserHomeDir(); err == nil {
+	home, err := os.UserHomeDir()
+	if err == nil {
 		dirs = append(dirs, filepath.Join(home, ".openagent", "skills"))
+		dirs = append(dirs, filepath.Join(home, ".agents", "skills"))
+	}
+	cwd, err := os.Getwd()
+	if err == nil && home != cwd {
+		dirs = append(dirs, filepath.Join(cwd, ".agents", "skills"))
+		dirs = append(dirs, filepath.Join(cwd, ".openagent", "skills"))
 	}
 	return dirs
 }
