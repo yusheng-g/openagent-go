@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-21 (rev 6).
+> Last updated 2026-07-21 (rev 7).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -364,6 +364,83 @@ Original issue: `OnInitialize` receives `req.ClientCapabilities` (including `fs.
 When a client that does not implement `fs/read_text_file` (e.g., a browser-based or mobile ACP client) connects, the LLM is offered `read_client_file` and calls it, but the client rejects the `fs/read_text_file` RPC with JSON-RPC `-32601 Method not found`. The agent wraps this as `read_client_file: acp: fs/read_text_file call failed: ... not available on this client`. The same applies to `write_client_file` and all `terminal/*` tools.
 
 Per the ACP spec, capabilities are negotiated during `initialize` — presence signals support, absence signals the feature is unavailable. The agent must not offer tools whose Agent→Client RPCs the client cannot handle.
+
+---
+
+### [P1] Skills not recognized or usable in `cli serve` (ACP + REST modes)
+
+[cmd/cli/server/acp.go:62-66](cmd/cli/server/acp.go),
+[cmd/cli/server/http.go:53-59](cmd/cli/server/http.go),
+[runner.go:72-77](runner.go),
+[runner.go:706-725](runner.go),
+[runner.go:731-735](runner.go),
+[prompt.go:18-19](prompt.go),
+[cmd/cli/config/config.go:10-22](cmd/cli/config/config.go):
+
+Both CLI server entry points construct the agent **without**
+`openagent.WithSkillLoader(...)`, so `agent.SkillLoader` stays nil.
+The runner then short-circuits the entire skill subsystem:
+
+```go
+// runner.go:72-77
+if r.agent.SkillLoader != nil {           // ← false in cli serve
+    skills, _ := r.agent.SkillLoader.Discover(ctx)
+    r.skills = skills
+    r.loadedSkills = make(map[string]string)
+    r.builtinTools = builtinSkillToolDefs() // use_skill / reload_skills
+}
+```
+
+With the loader nil, three things vanish simultaneously:
+
+1. **No `use_skill` / `reload_skills` tools** — `r.builtinTools` never
+   receives them, so `buildModelRequest` (`runner.go:731-735`) never
+   offers them to the model. The agent has no mechanism to load a skill.
+2. **No "## Available Skills" catalog in the system prompt** —
+   `defaultBuildPrompt` (`runner.go:706-718`) emits the catalog only
+   when `len(input.AvailableSkills) > 0`; `r.skills` is nil so
+   `input.AvailableSkills` stays empty.
+3. **No "## Loaded Skill:" body** — same gate at `runner.go:720-725`,
+   `input.LoadedSkills` is empty.
+
+**This is NOT a prompt bug.** The prompt layer (`defaultBuildPrompt`)
+correctly reflects the (empty) skill state handed to it. The root cause
+is one level up: the CLI server never wires a `SkillLoader` into the
+agent, so the runner never discovers skills in the first place.
+
+Cross-confirmation: `WithSkillLoader` is called only in
+`cmd/iac-mcp/main.go:198`, `examples/skill/main.go:39`, and
+`examples/iac/agents.go:123` — never under `cmd/cli/server/`. The
+`Config` struct (`cmd/cli/config/config.go:10-22`) has no skills
+directory field at all, so users cannot configure one via
+`settings.json` even if they wanted to.
+
+Repro:
+1. `./openagent-cli serve --acp`
+2. Place a `SKILL.md` under `~/.openagent/skills/my-skill/`
+3. Prompt the agent with a task that the skill covers
+4. Observe: no `use_skill` tool call, no skill catalog in the system
+   prompt (visible via guard/observer logs), agent behaves as if the
+   skill does not exist.
+
+Notes:
+- `Agent.Clone()` (`agent.go:64-71`) is a shallow `*a` copy, so the
+  `SkillLoader` interface field propagates to the per-turn clone in
+  `acp/server.go:1120` (`agentForTurn`) and to the channel agent clone
+  in `acp.go:82`. Wiring the loader once on the template agent is
+  sufficient — no changes needed in `agentForTurn`.
+- The REST server (`http.go`) has the same gap; this is not ACP-specific.
+
+Proposed fix (not yet applied):
+1. `cmd/cli/config/config.go` — add `Skills string` field
+   (`json:"skills,omitempty"`), default `".openagent/skills"`.
+2. `cmd/cli/server/shared.go` — add `resolveSkillLoader(skills string)
+   openagent.SkillLoader` helper mirroring `resolveProfileFile`: probe
+   `$(pwd)/$(skills)/` then `~/$(skills)/`, return `fs.New(dir)` when
+   the directory exists, else nil.
+3. `cmd/cli/server/acp.go` and `cmd/cli/server/http.go` — add
+   `openagent.WithSkillLoader(resolveSkillLoader(cfg.Skills))` to both
+   `NewAgent` calls.
 
 ---
 
