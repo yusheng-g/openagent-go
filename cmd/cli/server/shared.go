@@ -1,17 +1,22 @@
 package server
 
 import (
+	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
 
 	openagent "github.com/yusheng-g/openagent-go"
+	"github.com/yusheng-g/openagent-go/guard/llm"
+	sloghooks "github.com/yusheng-g/openagent-go/hooks/slog"
 	"github.com/yusheng-g/openagent-go/memory/sqlite"
 	"github.com/yusheng-g/openagent-go/model/openai"
 	"github.com/yusheng-g/openagent-go/sandbox/native"
 	"github.com/yusheng-g/openagent-go/session"
 	sessionsqlite "github.com/yusheng-g/openagent-go/session/sqlite"
+	"github.com/yusheng-g/openagent-go/skill/fs"
 	opentool "github.com/yusheng-g/openagent-go/tool"
 
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
@@ -175,4 +180,82 @@ func resolveProfileFile(profiles, filename, defaultText string) string {
 
 	// 3.  Built-in default
 	return defaultText
+}
+
+// ── Optional capability builders ──
+
+// openSkillLoader creates a file-system skill loader. Directories are tried
+// in priority order:
+//  1. <workspace>/.openagent/skills  (project-level)
+//  2. ~/.openagent/skills            (user-level)
+//
+// Returns nil if no directory exists.
+func openSkillLoader() openagent.SkillLoader {
+	for _, dir := range skillDirs() {
+		if info, err := os.Stat(dir); err == nil && info.IsDir() {
+			return fs.New(dir)
+		}
+	}
+	return nil
+}
+
+func skillDirs() []string {
+	var dirs []string
+	if cwd, err := os.Getwd(); err == nil {
+		dirs = append(dirs, filepath.Join(cwd, ".openagent", "skills"))
+	}
+	if home, err := os.UserHomeDir(); err == nil {
+		dirs = append(dirs, filepath.Join(home, ".openagent", "skills"))
+	}
+	return dirs
+}
+
+// buildGuard creates an LLM guard using the given model as judge.
+func buildGuard(model openagent.Model) *llm.Guard {
+	return llm.New(model)
+}
+
+// buildSlogHooks creates slog-based RunHooks logging to stderr.
+func buildSlogHooks() openagent.RunHooks {
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	return sloghooks.New(logger)
+}
+
+// slogObserver logs stage events to a dedicated stderr logger.
+type slogObserver struct {
+	logger *slog.Logger
+}
+
+func (o slogObserver) ObserveStage(_ context.Context, event openagent.StageEvent) {
+	o.logger.Info("stage", "name", event.Name, "phase", event.Phase, "duration", event.Duration)
+}
+
+// buildSlogObserver creates a minimal stderr stage observer.
+func buildSlogObserver() openagent.RunObserver {
+	return slogObserver{
+		logger: slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug})),
+	}
+}
+
+// buildOpts appends capability-gated agent options (skills, guard, hooks,
+// observer) to opts. model is used by the guard; it may be nil if no models
+// are configured, in which case the guard is skipped regardless of caps.
+func buildOpts(opts []openagent.AgentOption, caps Capabilities, model openagent.Model) []openagent.AgentOption {
+	if caps.OnSkills() {
+		if sl := openSkillLoader(); sl != nil {
+			opts = append(opts, openagent.WithSkillLoader(sl))
+		}
+	}
+	if caps.OnGuard() && model != nil {
+		g := buildGuard(model)
+		opts = append(opts, openagent.WithInputGuard(g))
+		opts = append(opts, openagent.WithOutputGuard(g.Output()))
+	}
+	if caps.OnHooks() {
+		opts = append(opts, openagent.WithRunHooks(buildSlogHooks()))
+	}
+	if caps.OnObserver() {
+		opts = append(opts, openagent.WithRunObserver(buildSlogObserver()))
+	}
+	return opts
 }

@@ -27,6 +27,7 @@ import (
 //	mux := http.NewServeMux()
 //	handler.Register(mux)
 //	http.ListenAndServe(":8080", mux)
+//
 // ModelInfo describes a registered model for the frontend.
 type ModelInfo struct {
 	ID       string `json:"id"`
@@ -39,26 +40,41 @@ type Handler struct {
 	modelList    []ModelInfo                // ordered list for /models endpoint
 	modelsMu     sync.RWMutex
 
-	tools        []openagent.Tool
+	tools         []openagent.Tool
 	systemPrompts []string
-	name         string
-	maxTurns     int
+	name          string
+	maxTurns      int
+
+	// Optional capabilities from the template Agent.
+	hooks       openagent.RunHooks
+	observer    openagent.RunObserver
+	inGuard     openagent.InputGuard
+	outGuard    openagent.OutputGuard
+	skillLoader openagent.SkillLoader
+
+	// approverEnabled gates the per-session WithApprover. Default true (enabled)
+	// for backward compatibility; set false via --approver=off.
+	approverEnabled bool
 
 	sm *sessionManager[*sessionState] // session CRUD, store, bus
 }
 
 // NewHandler creates a Handler from a configured Agent.
-// The agent's Model, Memory, Tools, Instructions, Name, and MaxTurns
-// are captured as the template for per-session Agent instances.
 func NewHandler(agent *openagent.Agent) *Handler {
 	h := &Handler{
-		defaultModel: agent.Model,
-		models:       make(map[string]openagent.Model),
-		modelList:    nil,
-		tools:        agent.Tools,
-		systemPrompts: agent.SystemPrompts,
-		name:         agent.Name,
-		maxTurns:     agent.MaxTurns,
+		defaultModel:    agent.Model,
+		models:          make(map[string]openagent.Model),
+		modelList:       nil,
+		tools:           agent.Tools,
+		systemPrompts:   agent.SystemPrompts,
+		name:            agent.Name,
+		maxTurns:        agent.MaxTurns,
+		hooks:           agent.Hooks,
+		approverEnabled: true,
+		observer:        agent.Observer,
+		inGuard:         agent.InGuard,
+		outGuard:        agent.OutGuard,
+		skillLoader:     agent.SkillLoader,
 	}
 
 	bus := eventbus.New[SSEEvent](500)
@@ -145,17 +161,25 @@ func (h *Handler) WithCleanupDir(fn func(sessionID string)) *Handler {
 	return h
 }
 
+// WithApproverEnabled controls whether the human-in-the-loop approver is
+// active for per-session agents. Default is true (enabled). Set false to
+// auto-approve all tool calls without prompting.
+func (h *Handler) WithApproverEnabled(v bool) *Handler {
+	h.approverEnabled = v
+	return h
+}
+
 // ── sessionState ──
 
 // sessionState holds the per-session runtime state.
 // Events are published to the Handler-level bus via sm so that multiple
 // SSE connections (e.g. browser tabs) all receive the full stream.
 type sessionState struct {
-	info       session.SessionInfo // ModelID is the session's model preference; empty → handler default
-	agent      *openagent.Agent
+	info  session.SessionInfo // ModelID is the session's model preference; empty → handler default
+	agent *openagent.Agent
 
 	mu              sync.Mutex
-	running         bool             // true while agent goroutine is active
+	running         bool // true while agent goroutine is active
 	pendingApproval *pendingApproval
 }
 
@@ -365,19 +389,43 @@ func (h *Handler) handleListModels(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) newEntry(info session.SessionInfo) *sessionState {
 	s := &sessionState{info: info}
 
-	s.agent = openagent.NewAgent(h.name,
+	opts := []openagent.AgentOption{
 		openagent.WithModel(h.defaultModel),
 		openagent.WithMemory(h.sm.Memory()),
 		openagent.WithTools(h.tools...),
 		openagent.WithSystemPrompts(h.systemPrompts...),
 		openagent.WithMaxTurns(h.maxTurns),
-		openagent.WithRunObserver(&stageObserver{bus: h.sm.Bus(), sid: info.ID}),
-		openagent.WithApprover(&restApprover{
+	}
+	if h.approverEnabled {
+		opts = append(opts, openagent.WithApprover(&restApprover{
 			submit: func(call openagent.ToolCall, resp chan approveResponse) {
 				h.submitApproval(s, call, resp)
 			},
-		}),
-	)
+		}))
+	}
+	// Combine user observer with the stage observer (for SSE events).
+	if h.observer != nil {
+		opts = append(opts, openagent.WithRunObservers(
+			&stageObserver{bus: h.sm.Bus(), sid: info.ID},
+			h.observer,
+		))
+	} else {
+		opts = append(opts, openagent.WithRunObserver(&stageObserver{bus: h.sm.Bus(), sid: info.ID}))
+	}
+	if h.hooks != nil {
+		opts = append(opts, openagent.WithRunHooks(h.hooks))
+	}
+	if h.inGuard != nil {
+		opts = append(opts, openagent.WithInputGuard(h.inGuard))
+	}
+	if h.outGuard != nil {
+		opts = append(opts, openagent.WithOutputGuard(h.outGuard))
+	}
+	if h.skillLoader != nil {
+		opts = append(opts, openagent.WithSkillLoader(h.skillLoader))
+	}
+
+	s.agent = openagent.NewAgent(h.name, opts...)
 
 	return s
 }

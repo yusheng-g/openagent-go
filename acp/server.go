@@ -18,8 +18,8 @@ import (
 	"github.com/yusheng-g/openagent-go/mcp"
 	"github.com/yusheng-g/openagent-go/plan"
 	"github.com/yusheng-g/openagent-go/session"
-	opentool "github.com/yusheng-g/openagent-go/tool"
 	"github.com/yusheng-g/openagent-go/slash"
+	opentool "github.com/yusheng-g/openagent-go/tool"
 )
 
 // AgentServer wraps an [openagent.Agent] as an [openacp.AgentHandler].
@@ -42,7 +42,7 @@ type AgentServer struct {
 	// clientRPC is set by the SDK mux via ClientRPCUser.
 	clientRPC    openacp.ClientRequester
 	updateSender openacp.SessionUpdateSender
-	cmdRegistry   *slash.Registry // slash command dispatch
+	cmdRegistry  *slash.Registry // slash command dispatch
 
 	// clientCaps holds the capabilities advertised by the client during
 	// initialize. Guarded by mu. Used to gate Agent→Client RPC tool
@@ -56,17 +56,22 @@ type AgentServer struct {
 	// ToolFactory is called per-turn to create tools scoped to the
 	// session cwd. If nil, only plan + MCP + client-RPC tools are used.
 	ToolFactory func(cwd string) []openagent.Tool
+
+	// MCPEnabled controls whether client-advertised MCP servers are
+	// connected on session create/load/resume. Default true (enabled in
+	// NewAgentServer); set false to disable MCP tool integration.
+	MCPEnabled bool
 }
 
 // agentSession holds per-session runtime state.
 type agentSession struct {
-	id        openacp.SessionId
-	cwd       string
-	createdAt time.Time
+	id           openacp.SessionId
+	cwd          string
+	createdAt    time.Time
 	mode         string                          // "auto", "manual", or "plan"
 	previousMode string                          // mode before entering plan; used by exit_plan_mode
 	config       map[openacp.SessionConfigId]any // config option values
-	cancel    context.CancelFunc
+	cancel       context.CancelFunc
 
 	// Accumulated usage across turns.
 	totalTokens int
@@ -103,6 +108,7 @@ func NewAgentServer(agent *openagent.Agent, mem openagent.Memory, store session.
 		SessionStore: store,
 		Models:       models,
 		sessions:     make(map[openacp.SessionId]*agentSession),
+		MCPEnabled:   true,
 	}
 	s.cmdRegistry = s.buildCommandRegistry()
 	if s.Models == nil {
@@ -259,6 +265,9 @@ func (s *AgentServer) loadMode(ctx context.Context, sessionID string) string {
 // long-lived (one connection per session lifetime).
 // Failed connections are logged but not fatal — MCP is an optional enhancement.
 func (s *AgentServer) connectMCP(ctx context.Context, servers []openacp.McpServer) ([]*mcp.Session, []openagent.Tool) {
+	if !s.MCPEnabled {
+		return nil, nil
+	}
 	client := mcp.NewClient("openagent-acp", "1.0.0")
 	var sessions []*mcp.Session
 	var tools []openagent.Tool
@@ -390,7 +399,7 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 	// Send available commands so the client can show them immediately.
 	if s.updateSender != nil {
 		s.updateSender.SendSessionUpdate(id, openacp.SessionUpdate{
-			SessionUpdate: "available_commands_update",
+			SessionUpdate:     "available_commands_update",
 			AvailableCommands: s.availableCommands(),
 		})
 	}
@@ -869,80 +878,80 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		DynamicContext: s.buildDynamicContext(ss),
 	}
 
-		// ── Register mode-specific planning tools ──
-		if ss.mode == "plan" {
-			// plan_create: only available in plan mode.
-			pt := plan.NewCreateTool(func(entries []plan.Entry) {
-				ss.planEntries = entries
-				s.savePlan(ctx, string(req.SessionID), entries)
-				sender.SendPlanUpdate(s.entriesToACP(entries))
-			})
-			agent.Tools = append(agent.Tools, pt)
-
-			// exit_plan_mode: only available in plan mode.
-			// In plan mode the agent has no execution tools. exit_plan_mode
-			// restores the mode that was active before entering plan mode and
-			// unlocks the full tool set. If the session started in plan (no
-			// previous mode), defaults to auto.
-			et := plan.NewExitTool(func() error {
-				target := ss.previousMode
-				if target == "" || target == "plan" {
-					target = "auto"
-				}
-
-				// Persist mode change and notify client (sends both
-				// current_mode_update and config_option_update).
-				if err := s.setSessionMode(ctx, req.SessionID, target); err != nil {
-					return err
-				}
-
-				// Inject execution tools into the running agent clone
-				// for subsequent model calls this turn.
-				s.injectExecutionTools(agent, req.SessionID, ss)
-
-				// Set approver based on target mode.
-				if target == "manual" && s.clientRPC != nil {
-					agent.Approver = &acpApprover{client: s.clientRPC, sessionID: req.SessionID}
-				} else {
-					agent.Approver = nil
-				}
-
-				return nil
-			})
-			agent.Tools = append(agent.Tools, et)
-		} else {
-			// enter_plan_mode: available in auto and manual mode.
-			// Allows the agent to proactively switch to plan mode for complex
-			// tasks. The mode change takes effect on the NEXT OnPrompt turn,
-			// where plan_create + exit_plan_mode become available.
-			// Approval behavior: inherits the current mode's approver — auto
-			// runs without approval; manual triggers user confirmation.
-			enterTool := plan.NewEnterTool(func() error {
-				return s.enterPlanMode(ctx, req.SessionID, ss)
-			})
-			agent.Tools = append(agent.Tools, enterTool)
-		}
-
-		// ── Register plan_update tool (all modes) ──
-		// Always registered so it can track plan progress. At execution time
-		// the tool reads ss.planEntries to resolve IDs — no stale closures.
-		pu := plan.NewUpdateTool(func(updates []plan.Update) ([]plan.Entry, error) {
-			idxByID := make(map[string]int, len(ss.planEntries))
-			for i, e := range ss.planEntries {
-				idxByID[e.ID] = i
-			}
-			for _, u := range updates {
-				idx, ok := idxByID[u.ID]
-				if !ok {
-					return nil, fmt.Errorf("plan_update: unknown step id %q", u.ID)
-				}
-				ss.planEntries[idx].Status = plan.Status(u.Status)
-			}
-			s.savePlan(ctx, string(req.SessionID), ss.planEntries)
-			sender.SendPlanUpdate(s.entriesToACP(ss.planEntries))
-			return copyPlanEntries(ss.planEntries), nil
+	// ── Register mode-specific planning tools ──
+	if ss.mode == "plan" {
+		// plan_create: only available in plan mode.
+		pt := plan.NewCreateTool(func(entries []plan.Entry) {
+			ss.planEntries = entries
+			s.savePlan(ctx, string(req.SessionID), entries)
+			sender.SendPlanUpdate(s.entriesToACP(entries))
 		})
-		agent.Tools = append(agent.Tools, pu)
+		agent.Tools = append(agent.Tools, pt)
+
+		// exit_plan_mode: only available in plan mode.
+		// In plan mode the agent has no execution tools. exit_plan_mode
+		// restores the mode that was active before entering plan mode and
+		// unlocks the full tool set. If the session started in plan (no
+		// previous mode), defaults to auto.
+		et := plan.NewExitTool(func() error {
+			target := ss.previousMode
+			if target == "" || target == "plan" {
+				target = "auto"
+			}
+
+			// Persist mode change and notify client (sends both
+			// current_mode_update and config_option_update).
+			if err := s.setSessionMode(ctx, req.SessionID, target); err != nil {
+				return err
+			}
+
+			// Inject execution tools into the running agent clone
+			// for subsequent model calls this turn.
+			s.injectExecutionTools(agent, req.SessionID, ss)
+
+			// Set approver based on target mode.
+			if target == "manual" && s.clientRPC != nil {
+				agent.Approver = &acpApprover{client: s.clientRPC, sessionID: req.SessionID}
+			} else {
+				agent.Approver = nil
+			}
+
+			return nil
+		})
+		agent.Tools = append(agent.Tools, et)
+	} else {
+		// enter_plan_mode: available in auto and manual mode.
+		// Allows the agent to proactively switch to plan mode for complex
+		// tasks. The mode change takes effect on the NEXT OnPrompt turn,
+		// where plan_create + exit_plan_mode become available.
+		// Approval behavior: inherits the current mode's approver — auto
+		// runs without approval; manual triggers user confirmation.
+		enterTool := plan.NewEnterTool(func() error {
+			return s.enterPlanMode(ctx, req.SessionID, ss)
+		})
+		agent.Tools = append(agent.Tools, enterTool)
+	}
+
+	// ── Register plan_update tool (all modes) ──
+	// Always registered so it can track plan progress. At execution time
+	// the tool reads ss.planEntries to resolve IDs — no stale closures.
+	pu := plan.NewUpdateTool(func(updates []plan.Update) ([]plan.Entry, error) {
+		idxByID := make(map[string]int, len(ss.planEntries))
+		for i, e := range ss.planEntries {
+			idxByID[e.ID] = i
+		}
+		for _, u := range updates {
+			idx, ok := idxByID[u.ID]
+			if !ok {
+				return nil, fmt.Errorf("plan_update: unknown step id %q", u.ID)
+			}
+			ss.planEntries[idx].Status = plan.Status(u.Status)
+		}
+		s.savePlan(ctx, string(req.SessionID), ss.planEntries)
+		sender.SendPlanUpdate(s.entriesToACP(ss.planEntries))
+		return copyPlanEntries(ss.planEntries), nil
+	})
+	agent.Tools = append(agent.Tools, pu)
 
 	// ── Run the agent ──
 	ch := agent.RunStream(ctx, oaSession, input)

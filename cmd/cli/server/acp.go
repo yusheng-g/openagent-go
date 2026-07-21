@@ -25,7 +25,7 @@ import (
 //  4. Wire summarizer for long-conversation compression.
 //  5. Construct the agent.
 //  6. Wrap in AgentServer, launch ACP protocol mux on stdin/stdout.
-func RunACP(ctx context.Context, cfg *config.Config) error {
+func RunACP(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 	cfgPath, _ := config.Path()
 	dataDir := filepath.Join(filepath.Dir(cfgPath), "data")
 
@@ -49,29 +49,45 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 		modelMap[key] = mi.Model
 	}
 
-	// Enable summarizer with the first model as summarization backend.
+	// Summarizer and Memory are enabled by default; allow --summarizer=off
+	// and --memory=off to disable them.
+	var firstM openagent.Model
 	if len(modelInfos) > 0 {
-		m := modelInfos[0].Model
-		mem.WithSummarizer(summarizer.New(m))
+		firstM = modelInfos[0].Model
+		if caps.OnSummarizer() {
+			mem.WithSummarizer(summarizer.New(firstM))
+		}
 	}
 
 	// Tools and sandbox are created per-turn in agentForTurn so they
 	// use the session's cwd rather than the process working directory.
-	// This is essential when the agent runs in a container with a
-	// different mount path than the host.
-	agent := openagent.NewAgent("openagent",
-		openagent.WithMemory(mem),
+	opts := []openagent.AgentOption{
 		openagent.WithSystemPrompts(resolveProfiles(cfg.Profiles)...),
 		openagent.WithMaxTurns(100),
-	)
+	}
+	if caps.OnMemory() {
+		opts = append(opts, openagent.WithMemory(mem))
+	}
+	opts = buildOpts(opts, caps, firstM)
+	agent := openagent.NewAgent("openagent", opts...)
 
-	srv := acp.NewAgentServer(agent, mem, sessionStore, modelMap)
+	// Pass nil Mem when --memory=off so the AgentServer skips history
+	// replay and memory cleanup (all s.Mem uses are nil-guarded). The
+	// sessionStore (session metadata) is separate and unaffected.
+	var serverMem openagent.Memory = mem
+	if !caps.OnMemory() {
+		serverMem = nil
+	}
+	srv := acp.NewAgentServer(agent, serverMem, sessionStore, modelMap)
+	srv.MCPEnabled = caps.OnMCP()
 	policy := sandboxPolicy(cfg.Sandbox)
-	srv.ToolFactory = func(cwd string) []openagent.Tool {
-		if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
-			return buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
+	if caps.OnTools() {
+		srv.ToolFactory = func(cwd string) []openagent.Tool {
+			if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
+				return buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
+			}
+			return nil
 		}
-		return nil
 	}
 	server := openacpsdk.NewServer("openagent-acp", "1.0.0", srv)
 	server.SetLogger(slog.Default())
@@ -86,9 +102,11 @@ func RunACP(ctx context.Context, cfg *config.Config) error {
 			break
 		}
 	}
-	cwd, _ := os.Getwd()
-	if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
-		channelAgent.Tools = buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
+	if caps.OnTools() {
+		cwd, _ := os.Getwd()
+		if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
+			channelAgent.Tools = buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
+		}
 	}
 
 	if err := RunChannels(ctx, channelAgent, cfg.Channels); err != nil {

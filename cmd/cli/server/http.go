@@ -21,7 +21,7 @@ import (
 // ── REST server ──
 
 // RunREST starts the REST API server (HTTP + SSE).
-func RunREST(ctx context.Context, cfg *config.Config) error {
+func RunREST(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 	models, modelInfos := buildModels(cfg.Provider)
 	m := firstModel(models)
 
@@ -34,10 +34,12 @@ func RunREST(ctx context.Context, cfg *config.Config) error {
 		log.Printf("WARNING: sandbox unavailable, tools disabled: %v", err)
 	}
 
-	// MCP tools from config.
-	mcpTools, mcpCleanup := connectMcpFromConfig(ctx, cfg.McpServers)
-	tools = append(tools, mcpTools...)
-	defer mcpCleanup()
+	// MCP tools from config. Gated by --mcp (default on, --mcp=off disables).
+	if caps.OnMCP() {
+		mcpTools, mcpCleanup := connectMcpFromConfig(ctx, cfg.McpServers)
+		tools = append(tools, mcpTools...)
+		defer mcpCleanup()
+	}
 
 	cfgPath, _ := config.Path()
 	dataDir := filepath.Join(filepath.Dir(cfgPath), "data")
@@ -46,24 +48,31 @@ func RunREST(ctx context.Context, cfg *config.Config) error {
 		return err
 	}
 	defer cleanup()
-	if m != nil {
+	if caps.OnSummarizer() && m != nil {
 		mem.WithSummarizer(summarizer.New(m))
 	}
 
-	agent := openagent.NewAgent("openagent",
+	opts := []openagent.AgentOption{
 		openagent.WithModel(m),
-		openagent.WithMemory(mem),
 		openagent.WithSystemPrompts(resolveProfiles(cfg.Profiles)...),
-		openagent.WithTools(tools...),
 		openagent.WithMaxTurns(100),
-	)
+	}
+	if caps.OnMemory() {
+		opts = append(opts, openagent.WithMemory(mem))
+	}
+	if caps.OnTools() {
+		opts = append(opts, openagent.WithTools(tools...))
+	}
+	opts = buildOpts(opts, caps, m)
+	agent := openagent.NewAgent("openagent", opts...)
 
 	handler := rest.NewHandler(agent).
 		WithSessionStore(store).
 		WithCleanupDir(func(sessionID string) {
 			dir := filepath.Join(opentool.ArtifactRoot(), sessionID)
 			_ = os.RemoveAll(dir)
-		})
+		}).
+		WithApproverEnabled(caps.OnApprover())
 	handler.StartJanitor(ctx, 1*time.Hour, 24*time.Hour)
 	for _, mi := range modelInfos {
 		handler.RegisterModel(mi.ID, mi.Model, mi.Provider)

@@ -13,17 +13,17 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 
 	"github.com/spf13/cobra"
 
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
 	"github.com/yusheng-g/openagent-go/cmd/cli/keyring"
+	"github.com/yusheng-g/openagent-go/cmd/cli/server"
 	"github.com/yusheng-g/openagent-go/plugin/cli"
 	cliwasm "github.com/yusheng-g/openagent-go/plugin/cli/wasm"
-	"github.com/yusheng-g/openagent-go/cmd/cli/server"
 )
-
 
 func main() {
 	log.SetFlags(0)
@@ -210,11 +210,13 @@ var rootCmd = &cobra.Command{
 // ── serve ──
 
 func buildServeCmd(cfg config.Config) *cobra.Command {
+	var caps server.Capabilities
 	cmd := &cobra.Command{
 		Use:          "serve",
 		Short:        "Start the server (REST by default, or --acp for ACP)",
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			parseCapabilities(cmd, &caps)
 			isACP, _ := cmd.Flags().GetBool("acp")
 			channelFlag, _ := cmd.Flags().GetString("channel")
 			p, _ := cmd.Flags().GetInt("port")
@@ -227,38 +229,83 @@ func buildServeCmd(cfg config.Config) *cobra.Command {
 
 			ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
-		// Channels are only enabled when --channel is explicitly set.
-		// settings.json credentials alone do NOT auto-start a channel.
-		if channelFlag != "feishu" {
-			cfg.Channels = config.ChannelsConfig{}
-		} else {
-			creds, err := server.ResolveFeishuCredentials(ctx)
-			if err != nil {
-				cancel()
-				return fmt.Errorf("feishu: %w", err)
+			// Channels are only enabled when --channel is explicitly set.
+			// settings.json credentials alone do NOT auto-start a channel.
+			if channelFlag != "feishu" {
+				cfg.Channels = config.ChannelsConfig{}
+			} else {
+				creds, err := server.ResolveFeishuCredentials(ctx)
+				if err != nil {
+					cancel()
+					return fmt.Errorf("feishu: %w", err)
+				}
+				if cfg.Channels.Feishu == nil {
+					cfg.Channels.Feishu = &config.FeishuConfig{}
+				}
+				if cfg.Channels.Feishu.AppID == "" {
+					cfg.Channels.Feishu.AppID = creds.AppID
+				}
+				if cfg.Channels.Feishu.AppSecret == "" {
+					cfg.Channels.Feishu.AppSecret = creds.AppSecret
+				}
 			}
-			if cfg.Channels.Feishu == nil {
-				cfg.Channels.Feishu = &config.FeishuConfig{}
-			}
-			if cfg.Channels.Feishu.AppID == "" {
-				cfg.Channels.Feishu.AppID = creds.AppID
-			}
-			if cfg.Channels.Feishu.AppSecret == "" {
-				cfg.Channels.Feishu.AppSecret = creds.AppSecret
-			}
-		}
 			defer cancel()
 			if isACP {
-				return server.RunACP(ctx, &cfg)
+				return server.RunACP(ctx, &cfg, caps)
 			}
-			return server.RunREST(ctx, &cfg)
+			return server.RunREST(ctx, &cfg, caps)
 		},
 	}
 	cmd.Flags().Bool("acp", false, "ACP mode over stdio")
 	cmd.Flags().String("channel", "", "Enable IM channel (e.g. \"feishu\")")
 	cmd.Flags().Int("port", 0, "REST port (overrides settings)")
 	cmd.Flags().Bool("sandbox", false, "Enable OS-native sandbox (bwrap/seatbelt) for shell commands")
+	addCapabilityFlags(cmd)
 	return cmd
+}
+
+func addCapabilityFlags(cmd *cobra.Command) {
+	for _, f := range []struct{ name, def, desc string }{
+		{"memory", "on", "Memory backend"},
+		{"summarizer", "on", "Conversation summarizer"},
+		{"tools", "on", "Built-in tools (shell, file, grep, etc.)"},
+		{"skills", "on", "Skill loader"},
+		{"mcp", "on", "MCP tool servers"},
+		{"guard", "off", "LLM content guard"},
+		{"approver", "off", "Human-in-the-Loop tool approval"},
+		{"hooks", "off", "Lifecycle hooks (slog)"},
+		{"observer", "off", "Stage observer"},
+	} {
+		cmd.Flags().String(f.name, f.def, f.desc+` ("on" or "off")`)
+	}
+}
+
+func parseCapabilities(cmd *cobra.Command, caps *server.Capabilities) {
+	set := func(name string, field **bool) {
+		if !cmd.Flags().Changed(name) {
+			return // not explicitly set — Capabilities.on() uses the default
+		}
+		v, _ := cmd.Flags().GetString(name)
+		switch strings.ToLower(v) {
+		case "on":
+			b := true
+			*field = &b
+		case "off":
+			b := false
+			*field = &b
+		default:
+			log.Printf("WARNING: --%s=%q is invalid (expected on/off), using default", name, v)
+		}
+	}
+	set("memory", &caps.Memory)
+	set("summarizer", &caps.Summarizer)
+	set("tools", &caps.Tools)
+	set("skills", &caps.Skills)
+	set("mcp", &caps.MCP)
+	set("guard", &caps.Guard)
+	set("approver", &caps.Approver)
+	set("hooks", &caps.Hooks)
+	set("observer", &caps.Observer)
 }
 
 // ── keyring ──
@@ -305,7 +352,11 @@ var keyringGetCmd = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("keyring get: %w", err)
 		}
-		if v == "" { fmt.Println("(not found)") } else { fmt.Println(v) }
+		if v == "" {
+			fmt.Println("(not found)")
+		} else {
+			fmt.Println(v)
+		}
 		return nil
 	},
 }
@@ -324,9 +375,13 @@ type defaultHTTPClient struct{ client *http.Client }
 
 func (c *defaultHTTPClient) Do(method, url string, headers map[string]string, body []byte) (int, []byte, error) {
 	req, _ := http.NewRequest(method, url, bytes.NewReader(body))
-	for k, v := range headers { req.Header.Set(k, v) }
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
 	resp, err := c.client.Do(req)
-	if err != nil { return 0, nil, err }
+	if err != nil {
+		return 0, nil, err
+	}
 	defer resp.Body.Close()
 	respBody, _ := io.ReadAll(resp.Body)
 	return resp.StatusCode, respBody, nil
