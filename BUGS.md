@@ -355,9 +355,11 @@ the last assistant turn are never executed and never reported.
 
 ---
 
-### [P1] ACP Agent→Client RPC tools registered without checking client capabilities
+### [P1] ~~ACP Agent→Client RPC tools registered without checking client capabilities~~ ✅ FIXED
 
-[acp/server.go](acp/server.go): `OnInitialize` receives `req.ClientCapabilities` (including `fs.readTextFile`, `fs.writeTextFile`, `terminal`) from the client during the `initialize` handshake, but discards it entirely — only hardcoded `AgentCapabilities` are returned. `agentForTurn` and `injectExecutionTools` then register `read_client_file`, `write_client_file`, and all `terminal/*` tools based solely on `s.clientRPC != nil`, without checking whether the client actually advertised support for these RPCs.
+[acp/server.go](acp/server.go): **Fixed in this commit** — `OnInitialize` now persists `req.ClientCapabilities` (guarded by `s.mu`). Three capability helpers (`clientCanReadFile`, `clientCanWriteFile`, `clientCanTerminal`) gate tool registration in `agentForTurn` (all three modes: plan, auto, manual) and `injectExecutionTools`. The plan-mode system prompt in `buildDynamicContext` conditionally advertises `read_client_file` only when the client supports it.
+
+Original issue: `OnInitialize` receives `req.ClientCapabilities` (including `fs.readTextFile`, `fs.writeTextFile`, `terminal`) from the client during the `initialize` handshake, but discards it entirely — only hardcoded `AgentCapabilities` are returned. `agentForTurn` and `injectExecutionTools` then register `read_client_file`, `write_client_file`, and all `terminal/*` tools based solely on `s.clientRPC != nil`, without checking whether the client actually advertised support for these RPCs.
 
 When a client that does not implement `fs/read_text_file` (e.g., a browser-based or mobile ACP client) connects, the LLM is offered `read_client_file` and calls it, but the client rejects the `fs/read_text_file` RPC with JSON-RPC `-32601 Method not found`. The agent wraps this as `read_client_file: acp: fs/read_text_file call failed: ... not available on this client`. The same applies to `write_client_file` and all `terminal/*` tools.
 

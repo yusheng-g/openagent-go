@@ -44,6 +44,12 @@ type AgentServer struct {
 	updateSender openacp.SessionUpdateSender
 	cmdRegistry   *slash.Registry // slash command dispatch
 
+	// clientCaps holds the capabilities advertised by the client during
+	// initialize. Guarded by mu. Used to gate Agent→Client RPC tool
+	// registration (fs/read_text_file, fs/write_text_file, terminal/*)
+	// so the LLM is never offered a tool the client cannot handle.
+	clientCaps openacp.ClientCapabilities
+
 	// defaultModelID is used when the session config hasn't selected one.
 	defaultModelID string
 
@@ -120,6 +126,33 @@ func (s *AgentServer) SetClientRequester(r openacp.ClientRequester) {
 
 var _ openacp.ClientRPCUser = (*AgentServer)(nil)
 var _ openacp.AgentHandler = (*AgentServer)(nil)
+
+// ── Client capability helpers ──
+//
+// These read the capabilities advertised by the client during OnInitialize.
+// Each helper acquires s.mu internally — safe to call from any goroutine
+// (agentForTurn, injectExecutionTools, buildDynamicContext, etc.).
+
+// clientCanReadFile reports whether the client advertised fs.readTextFile.
+func (s *AgentServer) clientCanReadFile() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.clientCaps.FS.ReadTextFile
+}
+
+// clientCanWriteFile reports whether the client advertised fs.writeTextFile.
+func (s *AgentServer) clientCanWriteFile() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.clientCaps.FS.WriteTextFile
+}
+
+// clientCanTerminal reports whether the client advertised terminal support.
+func (s *AgentServer) clientCanTerminal() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.clientCaps.Terminal
+}
 
 // ── Session helpers ──
 
@@ -294,6 +327,15 @@ func (s *AgentServer) removeSession(id openacp.SessionId) {
 // ── openacp.AgentHandler ──
 
 func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRequest) (*openacp.InitializeResponse, error) {
+	// Persist the client's advertised capabilities so that agentForTurn
+	// can gate Agent→Client RPC tool registration (fs/read_text_file,
+	// fs/write_text_file, terminal/*) on what the client actually
+	// supports. Without this, the LLM may be offered a tool whose RPC
+	// the client will reject with -32601.
+	s.mu.Lock()
+	s.clientCaps = req.ClientCapabilities
+	s.mu.Unlock()
+
 	caps := openacp.AgentCapabilities{
 		LoadSession: true,
 		PromptCapabilities: openacp.PromptCapabilities{
@@ -1104,8 +1146,9 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 			clone.NoSpawn = true
 			clone.Approver = nil
 
-			// ACP read_file is safe (reads from client filesystem).
-			if s.clientRPC != nil {
+			// ACP read_file is safe (reads from client filesystem), but
+			// only register it if the client advertised fs.readTextFile.
+			if s.clientRPC != nil && s.clientCanReadFile() {
 				clone.Tools = append(clone.Tools,
 					opentool.NewACPReadFile(s.clientRPC, sid),
 				)
@@ -1119,7 +1162,7 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 			// Auto mode: full tool set, no approval prompts.
 			// Safety is handled by Guard.in/Guard.out (if configured).
 			clone.Approver = nil
-			if s.clientRPC != nil {
+			if s.clientRPC != nil && s.clientCanReadFile() {
 				clone.Tools = append(clone.Tools,
 					opentool.NewACPReadFile(s.clientRPC, sid),
 				)
@@ -1130,9 +1173,11 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 			// Manual mode: full tool set, per-tool user approval via ACP.
 			if s.clientRPC != nil {
 				clone.Approver = &acpApprover{client: s.clientRPC, sessionID: sid}
-				clone.Tools = append(clone.Tools,
-					opentool.NewACPReadFile(s.clientRPC, sid),
-				)
+				if s.clientCanReadFile() {
+					clone.Tools = append(clone.Tools,
+						opentool.NewACPReadFile(s.clientRPC, sid),
+					)
+				}
 			}
 			s.injectExecutionTools(clone, sid, ss)
 		}
@@ -1158,15 +1203,23 @@ func (s *AgentServer) injectExecutionTools(clone *openagent.Agent, sid openacp.S
 
 	// Agent→Client RPC tools (write/terminal only — read_client_file is
 	// added by agentForTurn to avoid duplicate registration across modes).
+	// Each tool is gated on the corresponding client capability so the
+	// LLM is never offered a tool whose RPC the client will reject.
 	if s.clientRPC != nil {
-		clone.Tools = append(clone.Tools,
-			opentool.NewACPWriteFile(s.clientRPC, sid),
-			opentool.NewACPTerminalCreate(s.clientRPC, sid),
-			opentool.NewACPTerminalOutput(s.clientRPC, sid),
-			opentool.NewACPTerminalWait(s.clientRPC, sid),
-			opentool.NewACPTerminalKill(s.clientRPC, sid),
-			opentool.NewACPTerminalRelease(s.clientRPC, sid),
-		)
+		if s.clientCanWriteFile() {
+			clone.Tools = append(clone.Tools,
+				opentool.NewACPWriteFile(s.clientRPC, sid),
+			)
+		}
+		if s.clientCanTerminal() {
+			clone.Tools = append(clone.Tools,
+				opentool.NewACPTerminalCreate(s.clientRPC, sid),
+				opentool.NewACPTerminalOutput(s.clientRPC, sid),
+				opentool.NewACPTerminalWait(s.clientRPC, sid),
+				opentool.NewACPTerminalKill(s.clientRPC, sid),
+				opentool.NewACPTerminalRelease(s.clientRPC, sid),
+			)
+		}
 	}
 }
 
@@ -1189,9 +1242,16 @@ func (s *AgentServer) buildDynamicContext(ss *agentSession) string {
 	// ── Mode instruction ──
 	if ss.mode == "plan" {
 		b.WriteString("## Session Mode\n")
-		b.WriteString("You are in **plan mode**. You have NO execution tools — you cannot modify files, run shell commands, or create terminals. Your only tools are read-only inspection (read_client_file) and planning (plan_create, plan_update, exit_plan_mode).\n\n")
-		b.WriteString("**Workflow:**\n")
-		b.WriteString("1. Read and analyze relevant files to understand the task\n")
+		b.WriteString("You are in **plan mode**. You have NO execution tools — you cannot modify files, run shell commands, or create terminals. ")
+		if s.clientCanReadFile() {
+			b.WriteString("Your only tools are read-only inspection (read_client_file) and planning (plan_create, plan_update, exit_plan_mode).\n\n")
+			b.WriteString("**Workflow:**\n")
+			b.WriteString("1. Read and analyze relevant files to understand the task\n")
+		} else {
+			b.WriteString("Your only tools are planning (plan_create, plan_update, exit_plan_mode). You have no file-reading tools in this mode — base your plan on the user's description and any context already provided.\n\n")
+			b.WriteString("**Workflow:**\n")
+			b.WriteString("1. Analyze the task from the user's description and available context\n")
+		}
 		b.WriteString("2. Call plan_create with concrete, actionable steps\n")
 		b.WriteString("3. Wait for the user to review the plan\n")
 		b.WriteString("4. Call exit_plan_mode to leave plan mode and begin execution\n\n")
