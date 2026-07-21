@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-20 (rev 5).
+> Last updated 2026-07-21 (rev 6).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -352,6 +352,16 @@ the last assistant turn are never executed and never reported.
    to `settings.json` schema in `cmd/cli/settings/`, and a
    `--max-turns` flag on `cli serve`, defaulting to the bumped value.
    Mirror the pattern already used for `cfg.Provider` / `cfg.Profiles`.
+
+---
+
+### [P1] ACP Agent→Client RPC tools registered without checking client capabilities
+
+[acp/server.go](acp/server.go): `OnInitialize` receives `req.ClientCapabilities` (including `fs.readTextFile`, `fs.writeTextFile`, `terminal`) from the client during the `initialize` handshake, but discards it entirely — only hardcoded `AgentCapabilities` are returned. `agentForTurn` and `injectExecutionTools` then register `read_client_file`, `write_client_file`, and all `terminal/*` tools based solely on `s.clientRPC != nil`, without checking whether the client actually advertised support for these RPCs.
+
+When a client that does not implement `fs/read_text_file` (e.g., a browser-based or mobile ACP client) connects, the LLM is offered `read_client_file` and calls it, but the client rejects the `fs/read_text_file` RPC with JSON-RPC `-32601 Method not found`. The agent wraps this as `read_client_file: acp: fs/read_text_file call failed: ... not available on this client`. The same applies to `write_client_file` and all `terminal/*` tools.
+
+Per the ACP spec, capabilities are negotiated during `initialize` — presence signals support, absence signals the feature is unavailable. The agent must not offer tools whose Agent→Client RPCs the client cannot handle.
 
 ---
 
