@@ -1,12 +1,30 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-21 (rev 7).
+> Last updated 2026-07-21 (rev 8).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
 ---
 
 ## 🐛 Bugs
+
+### [P1] ACP approval: "Allow Always" does not persist — asks again on next tool call
+
+[acp/server.go:1383-1386](acp/server.go), [acp/server.go:1417](acp/server.go): The `acpApprover` struct is stateless — selecting "Allow Always" in the approval dialog behaves identically to "Allow" (one-shot). The `case "allow", "always"` branch at line 1417 returns `true` but does not record the decision. Additionally, `agentForTurn()` (line 1196) creates a new `acpApprover` for each turn, so any state added to the struct would not survive across turns.
+
+**Root cause**: Two compounding issues:
+1. `acpApprover.Approve()` handles `"allow"` and `"always"` identically — no decision caching
+2. `agentForTurn()` creates a fresh `acpApprover` per turn, so per-struct cache would still not persist
+
+**Fix plan**: Store "allow_always" decisions in a session-scoped cache on `agentSession` (via `sync.Map`), shared with each turn's `acpApprover` through a pointer. When the cache has an entry for the current tool name, skip the `RequestPermission` round-trip entirely. Only the "always" option updates the cache; "allow" (one-shot) remains uncached.
+
+Repro:
+1. Set mode to "manual" in VS Code ACP plugin
+2. Trigger a tool (e.g., `bash_execute "echo hello"`)
+3. Select "Allow Always" in the approval dialog
+4. Trigger the same tool again — dialog reappears (should be skipped)
+
+---
 
 ### [P1] ~~`cli serve` fails to start with "unexpected end of JSON input" when settings.json missing/empty and no plugins~~ ✅ FIXED
 
