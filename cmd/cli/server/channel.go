@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
 	"time"
 
 	openagent "github.com/yusheng-g/openagent-go"
@@ -52,17 +53,89 @@ func RunChannels(ctx context.Context, agent *openagent.Agent, cfg config.Channel
 	return nil
 }
 
+// patchQueue decouples card rendering from Feishu API calls.
+// Updates to the same card within 500ms are collapsed — only the
+// latest version is sent. Card creation (which returns a message ID)
+// is synchronous; patches are debounced via time.AfterFunc.
+//
+// No background goroutine — the timer is started on first mark and
+// fires once, sending all dirty cards in batch.
+type patchQueue struct {
+	reply   channel.ReplyFunc
+	mu      sync.Mutex
+	dirty   map[string]*channel.Card
+	timer   *time.Timer
+	stopped bool
+}
+
+func newPatchQueue(reply channel.ReplyFunc) *patchQueue {
+	return &patchQueue{
+		reply: reply,
+		dirty: make(map[string]*channel.Card),
+	}
+}
+
+func (pq *patchQueue) mark(msgID string, card *channel.Card) {
+	pq.mu.Lock()
+	defer pq.mu.Unlock()
+	if pq.stopped {
+		return
+	}
+	pq.dirty[msgID] = card
+	if pq.timer == nil {
+		pq.timer = time.AfterFunc(500*time.Millisecond, pq.flush)
+	}
+}
+
+func (pq *patchQueue) create(msg channel.ReplyMessage) string {
+	id, _ := pq.reply(context.Background(), msg)
+	return id
+}
+
+func (pq *patchQueue) flush() {
+	pq.mu.Lock()
+	if pq.stopped {
+		pq.mu.Unlock()
+		return
+	}
+	if len(pq.dirty) == 0 {
+		pq.timer = nil
+		pq.mu.Unlock()
+		return
+	}
+	batch := pq.dirty
+	pq.dirty = make(map[string]*channel.Card)
+	pq.timer = nil
+	pq.mu.Unlock()
+
+	for msgID, card := range batch {
+		msg := channel.ReplyMessage{UpdateID: msgID, Card: card}
+		_, _ = pq.reply(context.Background(), msg)
+	}
+}
+
+func (pq *patchQueue) stop() {
+	pq.mu.Lock()
+	pq.stopped = true
+	if pq.timer != nil {
+		pq.timer.Stop()
+		pq.timer = nil
+	}
+	batch := pq.dirty
+	pq.dirty = nil
+	pq.mu.Unlock()
+
+	for msgID, card := range batch {
+		msg := channel.ReplyMessage{UpdateID: msgID, Card: card}
+		_, _ = pq.reply(context.Background(), msg)
+	}
+}
+
 // streamReply drains the agent stream and sends every message as a card.
 //
-// Text streaming: creates a "🧠 openagent" card on the first text chunk,
-// patches it every ~1s/300 chars until a tool call or stream end finalises
-// it.
-//
-// Tool calls: creates a tool card showing the command/input, then patches
-// the same card as StreamToolProgress chunks arrive. On StreamToolResult
-// the card receives a final update with the result.
-//
-// plan_create gets its own dedicated plan card.
+// Card patches are debounced — updates to the same card within 500ms
+// are collapsed so the Feishu API sees at most 2 PATCH/s per card.
+// This prevents the event loop from blocking on HTTP latency.
 func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 	type tpend struct {
 		name string
@@ -70,56 +143,31 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 	}
 
 	var (
-		textCardID       string          // response card, patched as text streams
-		textBuf          strings.Builder // accumulated text since last card patch
-		textLast         = time.Now()    // last patch time
+		pq = newPatchQueue(reply)
+		// Make sure final flush happens.
+		_ = pq.stop // used via defer-like pattern below
+	)
 
-		thoughtCardID string          // reasoning card, patched during thinking phase
+	var (
+		textCardID string          // response card ID
+		textBuf    strings.Builder // accumulated text since last patch
+		textLast   = time.Now()    // last patch time
+
+		thoughtCardID string          // reasoning card ID
 		thoughtBuf    strings.Builder // accumulated reasoning text
 
 		pendingTool = map[string]*tpend{} // toolCallID → {name, args}
 		toolCardID  = map[string]string{} // toolCallID → card message ID
-		toolBuf     = map[string]string{} // toolCallID → accumulated progress output
+		toolBuf     = map[string]string{} // toolCallID → accumulated output
 	)
-
-	// ── Card send helpers ──
 
 	mkCard := func(title, body string, color channel.CardColor) *channel.Card {
 		return &channel.Card{Header: channel.CardHeader{Title: title}, Content: body, Color: color}
 	}
 
-	newCard := func(msg channel.ReplyMessage) string {
-		id, _ := reply(context.Background(), msg)
-		return id
-	}
-
-	patchCard := func(msgID, title, body string, color channel.CardColor) {
-		msg := channel.ReplyMessage{
-			UpdateID: msgID,
-			Card:     &channel.Card{Header: channel.CardHeader{Title: title}, Content: body, Color: color},
-		}
-		_, _ = reply(context.Background(), msg)
-	}
-
-	// ── Finalize helpers ──
-
-	finalizeThoughtCard := func() {
-		if thoughtCardID == "" {
-			return
-		}
-		patchCard(thoughtCardID, "🤔 thinking — done", thoughtBuf.String(), channel.CardColorYellow)
-		thoughtCardID = ""
-		thoughtBuf.Reset()
-	}
-
-	finalizeTextCard := func() {
-		if textCardID == "" {
-			return
-		}
-		patchCard(textCardID, "🧠 openagent", textBuf.String(), channel.CardColorGrey)
-		textCardID = ""
-		textBuf.Reset()
-	}
+	// ── Periodic flush (ad-hoc, not tick-based) ──
+	// Called after each event. If enough time/content has passed,
+	// marks the text card dirty for the next queue tick.
 
 	flushText := func() {
 		if textBuf.Len() == 0 {
@@ -127,11 +175,33 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 		}
 		body := textBuf.String()
 		if textCardID == "" {
-			textCardID = newCard(channel.ReplyMessage{Card: mkCard("🧠 openagent", body, channel.CardColorGrey)})
+			textCardID = pq.create(channel.ReplyMessage{Card: mkCard("🧠 openagent", body, channel.CardColorGrey)})
 		} else {
-			patchCard(textCardID, "🧠 openagent", body, channel.CardColorGrey)
+			pq.mark(textCardID, mkCard("🧠 openagent", body, channel.CardColorGrey))
+			
 		}
 		textLast = time.Now()
+	}
+
+	finalizeThoughtCard := func() {
+		if thoughtCardID == "" {
+			return
+		}
+		pq.mark(thoughtCardID, mkCard("🤔 thinking — done", thoughtBuf.String(), channel.CardColorYellow))
+		pq.flush()
+		thoughtCardID = ""
+		thoughtBuf.Reset()
+		
+	}
+
+	finalizeTextCard := func() {
+		if textCardID == "" {
+			return
+		}
+		pq.mark(textCardID, mkCard("🧠 openagent", textBuf.String(), channel.CardColorGrey))
+		pq.flush()
+		textCardID = ""
+		textBuf.Reset()
 	}
 
 	for evt := range stream {
@@ -140,9 +210,10 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 			thoughtBuf.WriteString(evt.Text)
 			body := thoughtBuf.String()
 			if thoughtCardID == "" {
-				thoughtCardID = newCard(channel.ReplyMessage{Card: mkCard("🤔 thinking", body, channel.CardColorYellow)})
+				thoughtCardID = pq.create(channel.ReplyMessage{Card: mkCard("🤔 thinking", body, channel.CardColorYellow)})
 			} else {
-				patchCard(thoughtCardID, "🤔 thinking", body, channel.CardColorYellow)
+				pq.mark(thoughtCardID, mkCard("🤔 thinking", body, channel.CardColorYellow))
+				
 			}
 
 		case openagent.StreamTextDelta:
@@ -154,13 +225,12 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 
 		case openagent.StreamToolCall:
 			finalizeThoughtCard()
-			finalizeThoughtCard()
-	finalizeTextCard()
+			finalizeTextCard()
 			for _, tc := range evt.Message.ToolCalls {
 				if tc.Function.Name == "plan_create" {
 					goal, steps := parsePlanCreate(tc.Function.Arguments)
 					if goal != "" {
-						newCard(channel.ReplyMessage{Card: mkCard("📋 " + goal, steps, channel.CardColorBlue)})
+						pq.create(channel.ReplyMessage{Card: mkCard("📋 "+goal, steps, channel.CardColorBlue)})
 					}
 					continue
 				}
@@ -177,9 +247,9 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 
 			card := toolCard(t.name, t.args, "in_progress", toolBuf[evt.ToolCallID])
 			if msgID, exists := toolCardID[evt.ToolCallID]; exists {
-				patchCard(msgID, card.Header.Title, card.Content, card.Color)
+				pq.mark(msgID, card)
 			} else {
-				id := newCard(channel.ReplyMessage{Card: card})
+				id := pq.create(channel.ReplyMessage{Card: card})
 				if id != "" {
 					toolCardID[evt.ToolCallID] = id
 				}
@@ -206,45 +276,45 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent) {
 			card := toolCard(t.name, t.args, status, output)
 			if msgID := toolCardID[evt.Message.ToolCallID]; msgID != "" {
 				delete(toolCardID, evt.Message.ToolCallID)
-				patchCard(msgID, card.Header.Title, card.Content, card.Color)
+				pq.mark(msgID, card)
+				pq.flush()
 			} else {
-				newCard(channel.ReplyMessage{Card: card})
+				pq.create(channel.ReplyMessage{Card: card})
 			}
 
 		case openagent.StreamRetrying:
 			finalizeThoughtCard()
-			finalizeThoughtCard()
-	finalizeTextCard()
+			finalizeTextCard()
 			errMsg := "retrying..."
 			if evt.Error != nil {
 				errMsg = fmt.Sprintf("retrying: %v", evt.Error)
 			}
-			newCard(channel.ReplyMessage{Card: mkCard("⚠️ retrying", errMsg, channel.CardColorYellow)})
+			pq.create(channel.ReplyMessage{Card: mkCard("⚠️ retrying", errMsg, channel.CardColorYellow)})
 
 		case openagent.StreamDone:
 			finalizeThoughtCard()
-			finalizeThoughtCard()
-	finalizeTextCard()
+			finalizeTextCard()
 
 		case openagent.StreamError:
 			finalizeThoughtCard()
-			finalizeThoughtCard()
-	finalizeTextCard()
+			finalizeTextCard()
 			if evt.Error != nil {
-				newCard(channel.ReplyMessage{Card: mkCard("❌ error", fmt.Sprintf("%v", evt.Error), channel.CardColorRed)})
+				pq.create(channel.ReplyMessage{Card: mkCard("❌ error", fmt.Sprintf("%v", evt.Error), channel.CardColorRed)})
 			}
+			pq.stop()
 			return
 
 		case openagent.StreamAborted:
 			finalizeThoughtCard()
-			finalizeThoughtCard()
-	finalizeTextCard()
+			finalizeTextCard()
+			pq.stop()
 			return
 		}
 	}
 
 	finalizeThoughtCard()
 	finalizeTextCard()
+	pq.stop()
 }
 
 // ── Tool card ──
