@@ -96,6 +96,20 @@ type agentSession struct {
 
 	// Cached plan entries (mirrors SessionStore._meta["plan"]).
 	planEntries []plan.Entry
+
+	// planMu guards plan notification sends so that exit_plan_mode's
+	// mode change + empty-plan notification is atomic with respect to
+	// plan_create / plan_update notification sends. Without this, when
+	// tools execute concurrently (runner.go executeTools goroutines),
+	// plan entries can arrive at the client after the mode change,
+	// causing the VS Code plugin to keep showing plan mode.
+	planMu sync.Mutex
+
+	// injectedPlanTools is set to true after enter_plan_mode injects
+	// plan_create + exit_plan_mode into the agent clone. Prevents
+	// duplicate injection on repeated enter_plan_mode calls within
+	// the same turn.
+	injectedPlanTools bool
 }
 
 // NewAgentServer creates an AgentServer wrapping the given agent.
@@ -447,7 +461,7 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 	// Send available commands (same as session/new).
 	if s.updateSender != nil {
 		s.updateSender.SendSessionUpdate(req.SessionID, openacp.SessionUpdate{
-			SessionUpdate: "available_commands_update",
+			SessionUpdate:     "available_commands_update",
 			AvailableCommands: s.availableCommands(),
 		})
 	}
@@ -847,6 +861,14 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	}
 
 	// ── Per-prompt cancellable context ──
+	// Track whether non-plan tools are used during this turn.
+	// If mode is still "plan" at the end and execution tools
+	// were used (meaning the system exited plan mode without
+	// calling openagent-go's exit_plan_mode), auto-exit.
+	var usedNonPlanTool bool
+	// Reset per-turn injectedPlanTools flag so enter_plan_mode
+	// can inject plan_create + exit_plan_mode again this turn.
+	ss.injectedPlanTools = false
 	ctx, cancel := context.WithCancel(ctx)
 	ss.cancel = cancel
 	defer func() {
@@ -892,7 +914,13 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		pt := plan.NewCreateTool(func(entries []plan.Entry) {
 			ss.planEntries = entries
 			s.savePlan(ctx, string(req.SessionID), entries)
-			sender.SendPlanUpdate(s.entriesToACP(entries))
+			// planMu + mode check prevents a race with concurrent
+			// exit_plan_mode (runner.go executes tools in goroutines).
+			ss.planMu.Lock()
+			if ss.mode == "plan" {
+				sender.SendPlanUpdate(s.entriesToACP(entries))
+			}
+			ss.planMu.Unlock()
 		})
 		agent.Tools = append(agent.Tools, pt)
 
@@ -913,6 +941,16 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 				return err
 			}
 
+			// Clear the client's plan panel. planMu ensures
+			// atomicity with concurrent plan_create / plan_update
+			// goroutines: either this empty-plan notification
+			// arrives after the entries (correct order), or the
+			// mode check in those callbacks skips the entries
+			// (client never sees stale plan data after exit).
+			ss.planMu.Lock()
+			sender.SendPlanUpdate(nil)
+			ss.planMu.Unlock()
+
 			// Inject execution tools into the running agent clone
 			// for subsequent model calls this turn.
 			s.injectExecutionTools(agent, req.SessionID, ss)
@@ -929,13 +967,51 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		agent.Tools = append(agent.Tools, et)
 	} else {
 		// enter_plan_mode: available in auto and manual mode.
-		// Allows the agent to proactively switch to plan mode for complex
-		// tasks. The mode change takes effect on the NEXT OnPrompt turn,
-		// where plan_create + exit_plan_mode become available.
-		// Approval behavior: inherits the current mode's approver — auto
-		// runs without approval; manual triggers user confirmation.
+		// Changes session mode to "plan" AND immediately injects
+		// plan_create + exit_plan_mode into the agent clone so they
+		// are available this same turn. Without immediate injection,
+		// the model would use system-provided plan tools that don't
+		// sync the ACP session mode.
 		enterTool := plan.NewEnterTool(func() error {
-			return s.enterPlanMode(ctx, req.SessionID, ss)
+			wasPlan := ss.mode == "plan"
+			if err := s.enterPlanMode(ctx, req.SessionID, ss); err != nil {
+				return err
+			}
+
+			// Inject plan_create + exit_plan_mode on the FIRST
+			// transition into plan mode within this turn. Use
+			// wasPlan to guard against re-injection on
+			// subsequent enter_plan_mode calls (enter→exit→enter).
+			if !wasPlan && !ss.injectedPlanTools {
+				ss.injectedPlanTools = true
+				pt := plan.NewCreateTool(func(entries []plan.Entry) {
+					ss.planEntries = entries
+					s.savePlan(ctx, string(req.SessionID), entries)
+					ss.planMu.Lock()
+					if ss.mode == "plan" {
+						sender.SendPlanUpdate(s.entriesToACP(entries))
+					}
+					ss.planMu.Unlock()
+				})
+				agent.Tools = append(agent.Tools, pt)
+
+				et := plan.NewExitTool(func() error {
+					target := ss.previousMode
+					if target == "" || target == "plan" {
+						target = "auto"
+					}
+					if err := s.setSessionMode(ctx, req.SessionID, target); err != nil {
+						return err
+					}
+					ss.planMu.Lock()
+					sender.SendPlanUpdate(nil)
+					ss.planMu.Unlock()
+					return nil
+				})
+				agent.Tools = append(agent.Tools, et)
+			}
+
+			return nil
 		})
 		agent.Tools = append(agent.Tools, enterTool)
 	}
@@ -956,7 +1032,9 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 			ss.planEntries[idx].Status = plan.Status(u.Status)
 		}
 		s.savePlan(ctx, string(req.SessionID), ss.planEntries)
+		ss.planMu.Lock()
 		sender.SendPlanUpdate(s.entriesToACP(ss.planEntries))
+		ss.planMu.Unlock()
 		return copyPlanEntries(ss.planEntries), nil
 	})
 	agent.Tools = append(agent.Tools, pu)
@@ -979,6 +1057,11 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		case openagent.StreamToolCall:
 			if len(evt.Message.ToolCalls) > 0 {
 				for _, tc := range evt.Message.ToolCalls {
+					// Detect execution tool usage in plan mode
+					// for auto-exit fallback.
+					if !isPlanTool(tc.Function.Name) {
+						usedNonPlanTool = true
+					}
 					sender.SendToolCall(openacp.ToolCallUpdate{
 						ToolCallID: tc.ID,
 						Title:      toolTitle(tc.Function.Name, tc.Function.Arguments),
@@ -1023,7 +1106,7 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 			return nil, evt.Error
 
 		case openagent.StreamAborted:
-			return &openacp.PromptResponse{StopReason: openacp.StopReasonCancelled}, nil
+			return &openacp.PromptResponse{StopReason: openacp.StopReasonCancelled, Meta: map[string]any{"mode": ss.mode}}, nil
 		}
 	}
 
@@ -1041,12 +1124,19 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	}
 
 	if ctx.Err() != nil {
-		return &openacp.PromptResponse{StopReason: openacp.StopReasonCancelled}, nil
+		return &openacp.PromptResponse{StopReason: openacp.StopReasonCancelled, Meta: map[string]any{"mode": ss.mode}}, nil
 	}
 	if stopReason == "" {
 		stopReason = openacp.StopReasonEndTurn
 	}
-	return &openacp.PromptResponse{StopReason: stopReason}, nil
+	// Auto-exit plan mode if the turn started in plan mode,
+	// execution tools were used (meaning the system already
+	// exited plan mode), but openagent-go's exit_plan_mode
+	// was not called (mode is still "plan").
+	if ss.mode == "plan" && usedNonPlanTool {
+		_ = s.setSessionMode(ctx, req.SessionID, "auto")
+	}
+	return &openacp.PromptResponse{StopReason: stopReason, Meta: map[string]any{"mode": ss.mode}}, nil
 }
 
 // ── Content block conversion ──
@@ -1443,6 +1533,17 @@ func (a *acpApprover) Approve(ctx context.Context, call openagent.ToolCall, def 
 	default:
 		return false, fmt.Sprintf("unknown option: %s", *resp.Outcome.OptionID)
 	}
+}
+
+// isPlanTool reports whether the given tool name is a plan-mode-only tool
+// (plan_create, plan_update, exit_plan_mode) or a read-only inspection tool
+// (read_client_file). These tools are allowed in plan mode.
+func isPlanTool(name string) bool {
+	switch name {
+	case "plan_create", "plan_update", "exit_plan_mode", "read_client_file":
+		return true
+	}
+	return false
 }
 
 // firstLine truncates s to the first line, up to maxLen characters.

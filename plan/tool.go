@@ -160,7 +160,7 @@ func NewUpdateTool(onUpdate OnUpdate) *UpdateTool {
 // Definition implements openagent.Tool.
 func (t *UpdateTool) Definition() openagent.FunctionDefinition {
 	return openagent.FunctionDefinition{
-		Name: "plan_update",
+		Name:        "plan_update",
 		Description: `Update the status of one or more plan entries. Call this as you start working on a step (in_progress) or after completing it (completed). Reference each step by its id (shown after the status in the plan).`,
 		Parameters: json.RawMessage(`{
   "type": "object",
