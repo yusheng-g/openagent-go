@@ -1,6 +1,6 @@
 # BUGS.md — Known Issues & Technical Debt
 
-> Last updated 2026-07-22 (rev 10).
+> Last updated 2026-07-22 (rev 11).
 > Format: `[P0]` = critical, `[P1]` = high, `[P2]` = medium, `[P3]` = low.
 > `[DEBT]` = technical debt (no immediate breakage, will compound).
 
@@ -87,9 +87,11 @@ Fix:
 
 ---
 
-### [P2] `guard/llm/guard.go` — Parse failure defaults to block (fail-closed)
+### [P2] ~~`guard/llm/guard.go` — Parse failure defaults to block (fail-closed)~~ ✅ FIXED
 
-[guard/llm/guard.go](guard/llm/guard.go): `parseResult` does substring match on `"allowed": true/false`. If substring match also fails, defaults to `Allowed: false`. The `failOpen` option only covers network/API errors and empty choices, not parse errors (`parseResult` ignores `failOpen` when it can't extract a boolean).
+[guard/llm/guard.go](guard/llm/guard.go): **Fixed in this commit** — `parseResult` accepts a `failOpen bool` parameter (signature `func parseResult(content string, failOpen bool) openagent.GuardResult`) and honors it on the parse-failure path: when `json.Unmarshal` fails and both `"allowed": true/false` substring matches miss, it returns `Allowed: true` if `failOpen` is set, `Allowed: false` otherwise. The `judge` method forwards `g.failOpen` into `parseResult`, so `failOpen` now covers network/API errors, empty choices, **and** parse errors — all three failure modes. The default (`WithFailOpen` unset → `failOpen=false`) remains fail-closed, the documented safety posture.
+
+Original issue (stale — described a version before `995bbb8`): `parseResult` did substring match on `"allowed": true/false`. If substring match also failed, defaulted to `Allowed: false`. The `failOpen` option only covered network/API errors and empty choices, not parse errors (`parseResult` ignored `failOpen` when it couldn't extract a boolean). This was already addressed in commit `995bbb8` (refactor that threaded `failOpen` into `parseResult`), predating this entry.
 
 ---
 
@@ -105,79 +107,21 @@ Fix:
 
 ---
 
-### [P2] `cmd/cli/keyring` silently falls back to `MemStore` in D-Bus-less environments, losing persisted secrets
+### [P2] ~~`cmd/cli/keyring` silently falls back to `MemStore` in D-Bus-less environments, losing persisted secrets~~ ✅ FIXED
 
-[cmd/cli/keyring/keyring.go:19-25](cmd/cli/keyring/keyring.go#L19),
-[cmd/cli/main.go:215-222](cmd/cli/main.go#L215),
-[cmd/cli/main.go:225-230](cmd/cli/main.go#L225),
-[go.mod:16](go.mod#L16):
+[cmd/cli/keyring/keyring.go:46-58](cmd/cli/keyring/keyring.go),
+[cmd/cli/keyring/keyring_linux.go:29-138](cmd/cli/keyring/keyring_linux.go),
+[cmd/cli/main.go:317-338](cmd/cli/main.go),
+[go.mod:9,23](go.mod): **Fixed in this commit** — `Open()` delegates to a platform-dispatched `openBackend()`. On Linux, `isSecretServiceAvailable()` explicitly checks `dbus.SessionBus()` + `NameHasOwner("org.freedesktop.secrets")` (no more `gkr.Get("__probe__")` autolaunch), then falls back to a kernel-keyring backend (`keyctlBackend`) implemented on `golang.org/x/sys/unix` (`KeyctlLink`/`KeyctlSearch`/`KeyctlRead`/`AddKey`/`KeyctlInt(KEYCTL_UNLINK)`). `ErrKeyringUnavailable` sentinel and `HasSupport()` added. `cli keyring set`/`delete` use a new `keyringOrFail()` helper that `log.Fatalf`s with an actionable message ("install `dbus-x11` or run with `--cap-add=keyutils`") instead of silently writing to `MemStore` — eliminating the silent-data-loss derived issue. `github.com/godbus/dbus/v5` and `golang.org/x/sys` promoted to direct deps. macOS/Windows paths unchanged (still use `zalando` `__probe__`, correct for non-D-Bus backends).
 
-`Open()` probes the system keychain with `gkr.Get("openagent", "__probe__")`.
-On Linux, `zalando/go-keyring v0.2.8` routes through the Secret Service API
-(`github.com/godbus/dbus/v5`). When `DBUS_SESSION_BUS_ADDRESS` is unset and no
-`dbus-launch` exists on `PATH`, `godbus` attempts to exec `dbus-launch` and
-returns `exec: "dbus-launch": executable file not found in $PATH`. This error
-propagates up to `openKeyring()`, which substitutes `MemStore` with a WARNING.
-Repro: Huawei Cloud EulerOS 2 container (aarch64, no `dbus-x11` installed).
+Original issue: `Open()` probed the system keychain with `gkr.Get("openagent", "__probe__")`. On Linux, `zalando/go-keyring v0.2.8` routes through the Secret Service API (`github.com/godbus/dbus/v5`). When `DBUS_SESSION_BUS_ADDRESS` was unset and no `dbus-launch` existed on `PATH`, `godbus` attempted to exec `dbus-launch` and returned `exec: "dbus-launch": executable file not found in $PATH`. This error propagated up to `openKeyring()`, which substituted `MemStore` with a WARNING. Repro: Huawei Cloud EulerOS 2 container (aarch64, no `dbus-x11` installed).
 
-Derived issues:
+**Remaining follow-up (not fixed, explicitly out of scope per scope notes):**
+- Double WARNING: `main()` calls `openKeyring()` once at startup, then `keyring get` calls it again, printing the same warning twice. `set`/`delete` no longer double-warn (they use `keyringOrFail()`). Scope notes (below) record this as not being fixed in this change.
 
-1. Silent data loss: `cli keyring set key value` succeeds with exit code 0 in
-   the fallback path, but secrets are written to a per-process `MemStore` and
-   evaporate on process exit — no ERROR is surfaced.
-2. Double WARNING: `main()` calls `openKeyring()` once at startup, then each
-   `keyring{set,get,delete}` subcommand calls it again, printing the same
-   warning twice per invocation.
-3. Brittle probe strategy: `Open()` distinguishes "backend unavailable" from
-   "key does not exist" solely by the error of a single `Get`. Backend
-   initialization failures are indistinguishable from missing-key states.
-
-Implementation plan (Plan A, keeping `zalando/go-keyring`, modeled on
-`~/projects/hdspace-models/credential`):
-
-1. Promote existing indirect deps to direct: `github.com/godbus/dbus/v5`,
-   `golang.org/x/sys` (both already in `go.mod` as `// indirect`).
-2. In `cmd/cli/keyring/keyring.go`, replace the `gkr.Get("__probe__")` probe
-   with an explicit availability check:
-   - Linux: `dbus.SessionBus()` (catching the autolaunch error instead of
-     triggering `dbus-launch`), then `NameHasOwner("org.freedesktop.secrets")`
-     via `org.freedesktop.DBus` → `/org/freedesktop/DBus`. Mirrors
-     `isSecretServiceAvailable()` in `credential_linux.go`.
-   - macOS / Windows: probe via `zalando` as today (keychain backends there do
-     not depend on D-Bus).
-3. Add a Linux kernel-keyring fallback (`KeyCtlBackend` equivalent) implemented
-   directly on `golang.org/x/sys/unix`:
-   - `KeyctlLink(KEYCTL_LINK, KEY_SPEC_USER_KEYRING, KEY_SPEC_SESSION_KEYRING, 0, 0)`
-     to attach the user keyring to the session keyring (matches
-     `ensureKeyringLinked()`).
-   - Store secrets under `user:openagent:<service>:<key>` key descriptors;
-     values are base64-encoded (parity with `hdspace-models` secret blob
-     encoding) to survive binary payloads safely.
-   - `Get` uses `KeyctlSearch(KEY_SPEC_USER_KEYRING, "user", keyDesc, 0)` then
-     `KeyctlRead`; `Set` uses `KeyctlSet`; `Delete` uses `KeyctlUnlink`.
-4. Introduce `func HasSupport() bool` on `Store` (or package-level) so callers
-   can explicitly detect loss of persistence instead of inheriting `MemStore`
-   silently. Modeled on `HasCredentialSupport()` in `credential.go:46-48`.
-5. `cmd/cli/main.go`:
-   - `openKeyring()` returns a sentinel `ErrKeyringUnavailable` when neither
-     Secret Service nor KeyCtl is usable; `main()` initializes a single
-     global `Store` (or `MemStore`) once and shares it with all subcommands.
-   - `cli keyring set` / `cli keyring delete` in the `MemStore` fallback path
-     `log.Fatalf` with a clear message ("no keyring backend available: install
-     `dbus-x11` or run with `--cap-add=keyutils`") rather than silently
-     succeeding. `cli keyring get` may still return "" for read-only callers
-     like `serve`.
-6. macOS / Windows code paths unchanged: `zalando`'s `keychain`/`wincred`
-   backends do not invoke D-Bus.
-
-SCOPE NOTES (per user direction):
-- keyring library is NOT swapped to `99designs/keyring`; `zalando/go-keyring`
-  stays.
-- The double-WARNING issue (item 2 above) is recorded for context only and is
-  NOT being fixed in this change.
-- File-based fallback (Plan B) is rejected; kernel keyring is the last
-  non-volatile tier, and a missing kernel-keyring capability surfaces as an
-  explicit error.
+SCOPE NOTES (per user direction, honored):
+- keyring library was NOT swapped to `99designs/keyring`; `zalando/go-keyring` stays.
+- File-based fallback (Plan B) was rejected; kernel keyring is the last non-volatile tier, and a missing kernel-keyring capability surfaces as an explicit error.
 
 ---
 
@@ -385,80 +329,13 @@ Per the ACP spec, capabilities are negotiated during `initialize` — presence s
 
 ---
 
-### [P1] Skills not recognized or usable in `cli serve` (ACP + REST modes)
+### [P1] ~~Skills not recognized or usable in `cli serve` (ACP + REST modes)~~ ✅ FIXED
 
-[cmd/cli/server/acp.go:62-66](cmd/cli/server/acp.go),
-[cmd/cli/server/http.go:53-59](cmd/cli/server/http.go),
-[runner.go:72-77](runner.go),
-[runner.go:706-725](runner.go),
-[runner.go:731-735](runner.go),
-[prompt.go:18-19](prompt.go),
-[cmd/cli/config/config.go:10-22](cmd/cli/config/config.go):
+[cmd/cli/server/acp.go:65](cmd/cli/server/acp.go), [cmd/cli/server/http.go:62](cmd/cli/server/http.go), [cmd/cli/server/shared.go:270-288](cmd/cli/server/shared.go): **Fixed in this commit** — both CLI server entry points call `buildOpts(opts, caps, model)`, which wires `openagent.WithSkillLoader(openSkillLoader())` when `caps.OnSkills()` is true (default on) and a skill directory exists. `openSkillLoader()` (`shared.go:216-223`) auto-discovers skill directories via `skillDirs()` (`shared.go:225-238`), probing four locations: `~/.openagent/skills`, `~/.agents/skills`, `$cwd/.agents/skills`, `$cwd/.openagent/skills`. The runner's nil-gate at `runner.go:74-79` now gets a non-nil loader when any directory exists, enabling `use_skill`/`reload_skills` tools and the skill catalog in the dynamic prompt.
 
-Both CLI server entry points construct the agent **without**
-`openagent.WithSkillLoader(...)`, so `agent.SkillLoader` stays nil.
-The runner then short-circuits the entire skill subsystem:
+Original issue: Both CLI server entry points constructed the agent **without** `openagent.WithSkillLoader(...)`, so `agent.SkillLoader` stayed nil and the runner short-circuited the entire skill subsystem (no `use_skill`/`reload_skills` tools, no "## Available Skills" catalog, no "## Loaded Skill:" body). The `Config` struct had no skills directory field. Cross-confirmation: `WithSkillLoader` was called only in `cmd/iac-mcp/main.go`, `examples/skill/main.go`, and `examples/iac/agents.go` — never under `cmd/cli/server/`.
 
-```go
-// runner.go:72-77
-if r.agent.SkillLoader != nil {           // ← false in cli serve
-    skills, _ := r.agent.SkillLoader.Discover(ctx)
-    r.skills = skills
-    r.loadedSkills = make(map[string]string)
-    r.builtinTools = builtinSkillToolDefs() // use_skill / reload_skills
-}
-```
-
-With the loader nil, three things vanish simultaneously:
-
-1. **No `use_skill` / `reload_skills` tools** — `r.builtinTools` never
-   receives them, so `buildModelRequest` (`runner.go:731-735`) never
-   offers them to the model. The agent has no mechanism to load a skill.
-2. **No "## Available Skills" catalog in the system prompt** —
-   `defaultBuildPrompt` (`runner.go:706-718`) emits the catalog only
-   when `len(input.AvailableSkills) > 0`; `r.skills` is nil so
-   `input.AvailableSkills` stays empty.
-3. **No "## Loaded Skill:" body** — same gate at `runner.go:720-725`,
-   `input.LoadedSkills` is empty.
-
-**This is NOT a prompt bug.** The prompt layer (`defaultBuildPrompt`)
-correctly reflects the (empty) skill state handed to it. The root cause
-is one level up: the CLI server never wires a `SkillLoader` into the
-agent, so the runner never discovers skills in the first place.
-
-Cross-confirmation: `WithSkillLoader` is called only in
-`cmd/iac-mcp/main.go:198`, `examples/skill/main.go:39`, and
-`examples/iac/agents.go:123` — never under `cmd/cli/server/`. The
-`Config` struct (`cmd/cli/config/config.go:10-22`) has no skills
-directory field at all, so users cannot configure one via
-`settings.json` even if they wanted to.
-
-Repro:
-1. `./openagent-cli serve --acp`
-2. Place a `SKILL.md` under `~/.openagent/skills/my-skill/`
-3. Prompt the agent with a task that the skill covers
-4. Observe: no `use_skill` tool call, no skill catalog in the system
-   prompt (visible via guard/observer logs), agent behaves as if the
-   skill does not exist.
-
-Notes:
-- `Agent.Clone()` (`agent.go:64-71`) is a shallow `*a` copy, so the
-  `SkillLoader` interface field propagates to the per-turn clone in
-  `acp/server.go:1120` (`agentForTurn`) and to the channel agent clone
-  in `acp.go:82`. Wiring the loader once on the template agent is
-  sufficient — no changes needed in `agentForTurn`.
-- The REST server (`http.go`) has the same gap; this is not ACP-specific.
-
-Proposed fix (not yet applied):
-1. `cmd/cli/config/config.go` — add `Skills string` field
-   (`json:"skills,omitempty"`), default `".openagent/skills"`.
-2. `cmd/cli/server/shared.go` — add `resolveSkillLoader(skills string)
-   openagent.SkillLoader` helper mirroring `resolveProfileFile`: probe
-   `$(pwd)/$(skills)/` then `~/$(skills)/`, return `fs.New(dir)` when
-   the directory exists, else nil.
-3. `cmd/cli/server/acp.go` and `cmd/cli/server/http.go` — add
-   `openagent.WithSkillLoader(resolveSkillLoader(cfg.Skills))` to both
-   `NewAgent` calls.
+Implementation note: the fix used auto-discovery of four well-known directories rather than the `Config.Skills string` field proposed in the original fix plan, and named the helper `openSkillLoader` rather than `resolveSkillLoader`. Same effect; no `settings.json` field needed.
 
 ---
 
