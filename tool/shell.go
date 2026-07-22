@@ -4,6 +4,7 @@ package tool
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -30,7 +31,7 @@ func (t *Shell) WithLanguage(lang string) *Shell {
 }
 
 func (t *Shell) Definition() openagent.FunctionDefinition {
-	desc := "Execute a shell command. The shell starts in the workspace root — use relative paths."
+	desc := "Execute a shell command. The shell blocks until the command exits. For servers, watchers, or long-lived processes, append & to run in the background. The shell starts in the workspace root — use relative paths."
 	if t.language != "" {
 		desc = fmt.Sprintf("Execute a shell command in a %s sandbox. CWD is the workspace root.", t.language)
 	}
@@ -78,17 +79,21 @@ func (t *Shell) Execute(ctx context.Context, args json.RawMessage) (string, erro
 	if t.sandbox == nil {
 		return "", fmt.Errorf("shell: no sandbox configured")
 	}
-	if params.Timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, time.Duration(params.Timeout)*time.Millisecond)
-		defer cancel()
+	timeout := params.Timeout
+	if timeout <= 0 {
+		timeout = 180000 // 3 minutes
 	}
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeout)*time.Millisecond)
+	defer cancel()
 
 	result, err := t.sandbox.Run(ctx, openagent.Command{
 		Program: "/bin/bash",
 		Args:    []string{"-c", params.Command},
 		WorkDir: t.sandbox.CWD(),
 	})
+	if errors.Is(err, context.DeadlineExceeded) {
+		return "", fmt.Errorf("shell: command timed out after %v", time.Duration(timeout)*time.Millisecond)
+	}
 	if err != nil {
 		return "", err
 	}
@@ -114,20 +119,33 @@ func (t *Shell) ExecuteStream(ctx context.Context, args json.RawMessage) <-chan 
 		return ch
 	}
 
-	// timeout is applied in Execute (sync path); streaming paths receive
-	// the caller's ctx directly — the sandbox owns its lifecycle.
+	timeout := params.Timeout
+	if timeout <= 0 {
+		timeout = 180000
+	}
 
 	type streamRunner interface {
 		RunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk
 	}
 	if sr, ok := t.sandbox.(streamRunner); ok {
-		return sr.RunStream(ctx, openagent.Command{
+		streamCtx, cancel := context.WithTimeout(ctx, time.Duration(timeout)*time.Millisecond)
+		src := sr.RunStream(streamCtx, openagent.Command{
 			Program: "/bin/bash",
 			Args:    []string{"-c", params.Command},
 			WorkDir: t.sandbox.CWD(),
 		})
+		wrapped := make(chan openagent.ToolStreamChunk, cap(src))
+		go func() {
+			defer cancel()
+			defer close(wrapped)
+			for chunk := range src {
+				wrapped <- chunk
+			}
+		}()
+		return wrapped
 	}
 
+	// Fallback: Execute handles its own timeout internally.
 	ch := make(chan openagent.ToolStreamChunk, 1)
 	go func() {
 		defer close(ch)
