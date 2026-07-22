@@ -1422,7 +1422,6 @@ func (a *acpApprover) Approve(ctx context.Context, call openagent.ToolCall, def 
 		},
 		Options: []openacp.PermissionOption{
 			{OptionID: "allow", Name: "Allow", Kind: openacp.PermissionAllowOnce},
-			{OptionID: "always", Name: "Allow Always", Kind: openacp.PermissionAllowAlways},
 			{OptionID: "reject", Name: "Reject", Kind: openacp.PermissionRejectOnce},
 		},
 	})
@@ -1436,10 +1435,14 @@ func (a *acpApprover) Approve(ctx context.Context, call openagent.ToolCall, def 
 		return false, "no option selected"
 	}
 	switch *resp.Outcome.OptionID {
-	case "allow", "always":
+	case "allow":
 		return true, ""
 	case "reject":
-		return false, "rejected by user"
+		reason := "rejected by user"
+		if fb, ok := resp.Outcome.Meta["feedback"].(string); ok && fb != "" {
+			reason = fb
+		}
+		return false, reason
 	default:
 		return false, fmt.Sprintf("unknown option: %s", *resp.Outcome.OptionID)
 	}
