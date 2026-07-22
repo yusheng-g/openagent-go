@@ -16,6 +16,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -313,6 +314,14 @@ func (m *Memory) readAllLocked(ctx context.Context, sessionID string) ([]openage
 
 // countLinesLocked returns the number of lines in the session's JSONL file.
 // Caller must hold m.mu.
+//
+// We count by newline, not via bufio.Scanner: a Scanner without an explicit
+// Buffer inherits the 64KB default token cap, so a single JSONL line larger
+// than that (e.g. an assistant message embedding a large artifact) would
+// trip bufio.ErrTooLong. Since Append always writes a trailing '\n', a line is
+// one record regardless of size; ReadString chunks oversized lines safely and
+// only counts a complete line on the '\n' terminator. A trailing partial line
+// with no '\n' (a crashed/corrupt append) is not counted.
 func (m *Memory) countLinesLocked(sessionID string) (int64, error) {
 	f, err := os.Open(m.sessionPath(sessionID))
 	if err != nil {
@@ -324,11 +333,19 @@ func (m *Memory) countLinesLocked(sessionID string) (int64, error) {
 	defer f.Close()
 
 	var count int64
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		count++
+	reader := bufio.NewReader(f)
+	for {
+		line, err := reader.ReadString('\n')
+		if len(line) > 0 && line[len(line)-1] == '\n' {
+			count++
+		}
+		if err != nil {
+			if err == io.EOF {
+				return count, nil
+			}
+			return count, err
+		}
 	}
-	return count, scanner.Err()
 }
 
 func (m *Memory) writeCompressed(sessionID string, cc *openagent.CompressedContext) error {
