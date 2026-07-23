@@ -15,7 +15,8 @@ import "strings"
 //   commands() → uint64(ptr, len) — []CommandDef JSON
 //   run_<name>(args_ptr, args_len) → uint64(ptr, len) — output text
 //
-// Plugin may import from host: keyring_get, keyring_set, http_request.
+// Plugin may import from host: keyring_get/set/delete, http_request,
+// fs_read, fs_write, fs_readdir, log_info/warn/error, utc_now.
 
 const PluginCLIPrefix = "cli:"
 

@@ -85,18 +85,18 @@ ACP（Agent 通信协议）模式：
 
 ### 编译插件
 
-插件用 Rust + `openagent-cli-sdk` crate 编译：
+插件用 Rust + `openagent-pdk` crate 编译：
 
 ```bash
 # 构建 SDK
 cd cmd/cli
-cargo build --release --target wasm32-unknown-unknown -p openagent-cli-sdk
+cargo build --release --target wasm32-unknown-unknown -p openagent-pdk
 
 # 构建插件
 rustc --target wasm32-unknown-unknown -C opt-level=z --edition 2021 \
   --crate-type cdylib -C link-arg=--no-entry \
   -L target/wasm32-unknown-unknown/release \
-  --extern openagent_cli_sdk \
+  --extern openagent_pdk \
   -o build/plugins/my-plugin.wasm examples/plugin/my-plugin.rs
 ```
 
@@ -106,7 +106,7 @@ rustc --target wasm32-unknown-unknown -C opt-level=z --edition 2021 \
 
 ```rust
 #![no_std]
-extern crate openagent_cli_sdk as sdk;
+extern crate openagent_pdk as sdk;
 use sdk::prelude::*;
 
 static META: &str = r#"{"type":"cli:settings","name":"my-plugin","description":"添加我的 provider"}"#;
@@ -129,7 +129,7 @@ pub extern "C" fn init(p: u32, l: u32) -> u64 {
 
 ```rust
 #![no_std]
-extern crate openagent_cli_sdk as sdk;
+extern crate openagent_pdk as sdk;
 use sdk::prelude::*;
 
 static META: &str = r#"{"type":"cli:commands","name":"my-cmd","description":"我的命令"}"#;

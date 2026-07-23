@@ -1,28 +1,26 @@
+// Observer logger plugin — agent:observers using the high-level Plugin trait.
+
 #![no_std]
 #![no_main]
 
 extern crate alloc;
-extern crate openagent_cli_sdk as sdk;
+use openagent_pdk::prelude::*;
+use openagent_pdk::export::Plugin;
 
-use sdk::prelude::*;
+struct LoggerPlugin;
+impl Plugin for LoggerPlugin {
+    fn plugin_type() -> &'static str { "agent:observers" }
+    fn name() -> &'static str { "observer_logger" }
 
-#[no_mangle]
-pub extern "C" fn alloc(size: u32) -> u32 {
-    sdk_alloc(size + 8)
+    fn stage_filter() -> (&'static str, &'static str) { ("*", "*") }
+
+    fn observe_stage(event: &StageInput) -> StageOutput {
+        host::log_info(&alloc::format!(
+            "observer: stage={} phase={} error={}",
+            event.name, event.phase, event.error
+        ));
+        StageOutput { action: String::from("continue"), reason: String::new() }
+    }
 }
 
-#[no_mangle]
-pub extern "C" fn metadata() -> u64 {
-    sdk_meta(r#"{
-        "type":"agent:observers",
-        "name":"observer_logger",
-        "stage":"*",
-        "phase":"*"
-    }"#)
-}
-
-#[no_mangle]
-pub extern "C" fn run(_ptr: u32, _len: u32) -> u64 {
-    host::log_info("observer run called");
-    sdk_return(b"{\"action\":\"continue\"}")
-}
+openagent_pdk::export!(LoggerPlugin);

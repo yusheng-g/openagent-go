@@ -7,5 +7,4 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-openagent-cli-sdk = { path = "../../../../../plugin/sdk/rust" }
-serde_json = { version = "1", default-features = false, features = ["alloc"] }
+openagent-pdk = { path = "../../../../../plugin/pdk/rust" }

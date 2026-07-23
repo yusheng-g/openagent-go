@@ -152,7 +152,7 @@ on_shutdown()
 
 ## Rust SDK
 
-插件使用 `openagent-cli-sdk` crate 构建：
+插件使用 `openagent-pdk` crate 构建：
 
 | 模块 | 功能 |
 |------|------|
@@ -169,7 +169,7 @@ on_shutdown()
 
 ```rust
 #![no_std]
-extern crate openagent_cli_sdk as sdk;
+extern crate openagent_pdk as sdk;
 use sdk::prelude::*;
 
 static META: &str = r#"{"type":"cli:settings","name":"my-plugin","description":"..."}"#;
@@ -186,7 +186,7 @@ pub extern "C" fn init(p: u32, l: u32) -> u64 {
 }
 ```
 
-编译：`cargo build --release --target wasm32-unknown-unknown -p openagent-cli-sdk && rustc ... --extern openagent_cli_sdk`
+编译：`cargo build --release --target wasm32-unknown-unknown -p openagent-pdk && rustc ... --extern openagent_pdk`
 
 ---
 
@@ -207,7 +207,7 @@ cmd/cli/
       observer.go             ObserverHub: OnStartup/OnShutdown/OnCommandStart/OnCommandEnd
       abi.go                  PluginMeta、Is() 匹配器、CommandDef
   server/agent.go             从 Config 构建 openagent.Agent、REST + ACP 服务
-  plugin/sdk/rust/                   Rust SDK crate (openagent-cli-sdk)
+  plugin/pdk/rust/                   Rust SDK crate (openagent-pdk)
   examples/plugin/
     extended-settings.rs      cli:settings  — 读 keyring、合并 provider+env
     stats-cmd.rs              cli:commands  — 添加 "stats" 命令

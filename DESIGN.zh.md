@@ -396,7 +396,7 @@ openagent-go/
 ├── plugin/agent/wasm/    Agent WASM 插件运行时
 ├── plugin/cli/           CLI 插件宿主
 ├── plugin/cli/wasm/      CLI WASM 加载器、observer hub
-├── plugin/sdk/rust/      插件 SDK（Rust crate）
+├── plugin/pdk/rust/      插件 SDK（Rust crate）
 ├── mcp/                  MCP 协议客户端
 ├── eventbus/             发布订阅事件总线
 ├── session/              会话元数据类型 + 存储接口

@@ -39,7 +39,7 @@ func main() {
 
 	// Plugin manager with host API so plugins can use log_* and keyring_*.
 	hostAPI := &wasmhost.HostAPI{Logger: &stdLogger{}}
-	mgr := wasm.NewManager("./examples/plugin/plugins").WithHostAPI(hostAPI)
+	mgr := wasm.NewManager("./plugins").WithHostAPI(hostAPI)
 	if err := mgr.Discover(context.Background()); err != nil {
 		fmt.Fprintf(os.Stderr, "Plugin discover error: %v\n", err)
 		os.Exit(1)
@@ -70,8 +70,8 @@ func main() {
 
 	ctx := context.Background()
 	session := openagent.Session{
-		ID:        "plugin-session-1",
-		UserID:    "user-1",
+		ID:     "plugin-session-1",
+		UserID: "user-1",
 
 		ModelID:   modelID,
 		CreatedAt: time.Now(),

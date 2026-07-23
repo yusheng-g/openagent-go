@@ -167,7 +167,7 @@ All commands (built-in and plugin) trigger `on_command_start`/`on_command_end` v
 
 ## Rust SDK
 
-Plugins are built with the `openagent-cli-sdk` crate. The SDK provides:
+Plugins are built with the `openagent-pdk` crate. The SDK provides:
 
 | Module | What |
 |--------|------|
@@ -184,7 +184,7 @@ Example (settings plugin):
 
 ```rust
 #![no_std]
-extern crate openagent_cli_sdk as sdk;
+extern crate openagent_pdk as sdk;
 use sdk::prelude::*;
 
 static META: &str = r#"{"type":"cli:settings","name":"my-plugin","description":"..."}"#;
@@ -201,7 +201,7 @@ pub extern "C" fn init(p: u32, l: u32) -> u64 {
 }
 ```
 
-Build: `cargo build --release --target wasm32-unknown-unknown -p openagent-cli-sdk && rustc ... --extern openagent_cli_sdk`
+Build: `cargo build --release --target wasm32-unknown-unknown -p openagent-pdk && rustc ... --extern openagent_pdk`
 
 ---
 
@@ -222,7 +222,7 @@ cmd/cli/
       observer.go              ObserverHub: OnStartup/OnShutdown/OnCommandStart/OnCommandEnd
       abi.go                   PluginMeta, Is() matcher, CommandDef
   server/agent.go              Build openagent.Agent from Config, REST + ACP server
-  plugin/sdk/rust/                    Rust SDK crate (openagent-cli-sdk)
+  plugin/pdk/rust/                    Rust SDK crate (openagent-pdk)
   examples/plugin/
     extended-settings.rs       cli:settings  — reads keyring, merges provider+env
     stats-cmd.rs               cli:commands  — adds "stats" command

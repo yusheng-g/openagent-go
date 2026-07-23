@@ -1,60 +1,30 @@
-// Echo tool plugin — agent:tools example using the plugin SDK.
-//
-// Build:
-//   cargo +stable build --release --target wasm32-unknown-unknown
-//   cp target/wasm32-unknown-unknown/release/*.wasm ../plugins/echo.wasm
+// Echo tool plugin — agent:tools example using the high-level Plugin trait.
 
 #![no_std]
 #![no_main]
 
 extern crate alloc;
-extern crate openagent_cli_sdk as sdk;
+use openagent_pdk::prelude::*;
+use openagent_pdk::export::Plugin;
 
-use sdk::prelude::*;
-
-// SDK provides #[global_allocator] and #[panic_handler].
-
-#[no_mangle]
-pub extern "C" fn alloc(size: u32) -> u32 {
-    sdk_alloc(size + 8)
-}
-
-#[no_mangle]
-pub extern "C" fn metadata() -> u64 {
-    host::log_info("echo plugin: metadata() called");
-    sdk_meta(r#"{
-        "type":"agent:tools",
-        "name":"echo",
-        "description":"Echoes back the input message. Uses host API for logging.",
-        "parameters":{
-            "type":"object",
-            "properties":{
-                "message":{"type":"string","description":"The message to echo"}
-            },
-            "required":["message"]
-        }
-    }"#)
-}
-
-#[no_mangle]
-pub extern "C" fn execute(ptr: u32, len: u32) -> u64 {
-    host::log_info("echo plugin: executing...");
-
-    let input = unsafe { wasm_str(ptr, len) };
-
-    if let Some(_secret) = host::keyring_get("openagent", "echo-test") {
-        host::log_info("echo plugin: keyring entry found");
+struct EchoPlugin;
+impl Plugin for EchoPlugin {
+    fn plugin_type() -> &'static str { "agent:tools" }
+    fn name() -> &'static str { "echo" }
+    fn description() -> &'static str {
+        "Echoes back the input message. Uses host API for logging."
+    }
+    fn tool_parameters() -> Option<&'static str> {
+        Some(r#"{"type":"object","properties":{"message":{"type":"string","description":"The message to echo"}},"required":["message"]}"#)
     }
 
-    let msg = find_message(input).unwrap_or("(empty)");
-    let mut out = String::from("{\"result\":\"you said: ");
-    out.push_str(msg);
-    out.push_str("\"}");
-    sdk_return(out.as_bytes())
+    fn execute(args: &serde_json::Value) -> Result<String, String> {
+        host::log_info("echo plugin: executing...");
+        let msg = args.get("message")
+            .and_then(|v| v.as_str())
+            .unwrap_or("(empty)");
+        Ok(alloc::format!("you said: {}", msg))
+    }
 }
 
-fn find_message(input: &str) -> Option<&str> {
-    let start = input.find("\"message\":\"")? + 11;
-    let end = input[start..].find('"')?;
-    Some(&input[start..start + end])
-}
+openagent_pdk::export!(EchoPlugin);

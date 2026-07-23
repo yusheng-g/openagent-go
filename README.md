@@ -163,7 +163,7 @@ Each `max_size` unit is megabytes. Logs go to both stderr *and* the file. Set `l
 
 Plugins are **WASM modules** (.wasm files). Any language that compiles to WASM works — Rust, Go, TypeScript, Zig, etc. The host runtime (wazero) loads and executes them in a sandboxed environment.
 
-A plugin declares its type via metadata. Currently we provide a Rust SDK (`plugin/sdk/rust/`) that wraps the FFI contract, but the ABI is simple enough to implement from any language.
+A plugin declares its type via metadata. Currently we provide a Rust SDK (`plugin/pdk/rust/`) that wraps the FFI contract, but the ABI is simple enough to implement from any language.
 
 | Plugin type | What it does |
 |-------------|--------------|
@@ -266,7 +266,7 @@ pub extern "C" fn openagent_on_stage(event_json: &str) {
 | `keyring_delete(service, key)` | Delete from system keyring |
 | `http_request(method, url, headers_json, body) -> {status, body}` | Outbound HTTP |
 
-Full example: `examples/plugin/`. Rust SDK: `plugin/sdk/rust/`.
+Full example: `examples/plugin/`. Rust SDK: `plugin/pdk/rust/`.
 
 ## Examples
 
@@ -314,7 +314,7 @@ Full example: `examples/plugin/`. Rust SDK: `plugin/sdk/rust/`.
 | `plugin/agent/wasm/` | Agent-scoped WASM plugin host |
 | `plugin/cli/` | CLI plugin manager and types |
 | `plugin/cli/wasm/` | CLI-scoped WASM runtime, loader, observer hub |
-| `plugin/sdk/rust/` | Rust SDK crate for building WASM plugins |
+| `plugin/pdk/rust/` | Rust SDK crate for building WASM plugins |
 | `skill/fs/` | Filesystem skill loader |
 | `mcp/` | Model Context Protocol client |
 | `guard/llm/` | LLM-based input/output guard |

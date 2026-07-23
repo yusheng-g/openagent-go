@@ -451,7 +451,7 @@ openagent-go/
 ├── plugin/agent/wasm/    Agent WASM plugin runtime
 ├── plugin/cli/           CLI plugin host + WASM runtime
 ├── plugin/cli/wasm/      CLI WASM loader, observer hub, command runner
-├── plugin/sdk/rust/      Plugin SDK (Rust crate for plugin authors)
+├── plugin/pdk/rust/      Plugin SDK (Rust crate for plugin authors)
 ├── mcp/                  Model Context Protocol client
 ├── eventbus/             Generic pub/sub with history replay
 ├── session/              Session metadata types + persistent Store

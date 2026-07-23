@@ -85,18 +85,18 @@ A single plugin can mix types: `"type": "cli:settings,cli:commands,cli:observers
 
 ### Building Plugins
 
-Plugins are built in Rust with the `openagent-cli-sdk` crate:
+Plugins are built in Rust with the `openagent-pdk` crate:
 
 ```bash
 # Build the SDK
 cd cmd/cli
-cargo build --release --target wasm32-unknown-unknown -p openagent-cli-sdk
+cargo build --release --target wasm32-unknown-unknown -p openagent-pdk
 
 # Build a plugin
 rustc --target wasm32-unknown-unknown -C opt-level=z --edition 2021 \
   --crate-type cdylib -C link-arg=--no-entry \
   -L target/wasm32-unknown-unknown/release \
-  --extern openagent_cli_sdk \
+  --extern openagent_pdk \
   -o build/plugins/my-plugin.wasm examples/plugin/my-plugin.rs
 ```
 
@@ -106,7 +106,7 @@ Reads credentials from keyring and injects a provider + env vars:
 
 ```rust
 #![no_std]
-extern crate openagent_cli_sdk as sdk;
+extern crate openagent_pdk as sdk;
 use sdk::prelude::*;
 
 static META: &str = r#"{"type":"cli:settings","name":"my-plugin","description":"Adds my provider"}"#;
@@ -129,7 +129,7 @@ See `examples/plugin/` for more examples.
 
 ```rust
 #![no_std]
-extern crate openagent_cli_sdk as sdk;
+extern crate openagent_pdk as sdk;
 use sdk::prelude::*;
 
 static META: &str = r#"{"type":"cli:commands","name":"my-cmd","description":"My command"}"#;
