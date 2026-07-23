@@ -35,9 +35,9 @@ pub trait Plugin: Sized {
     /// Return the commands this plugin registers.
     fn commands() -> alloc::vec::Vec<CommandDef> { alloc::vec::Vec::new() }
 
-    /// Handle execution of a registered command. args is a JSON array of
-    /// positional arguments from the CLI.
-    fn run_command(_name: &str, _args_json: &str) -> Result<String, String> {
+    /// Handle execution of a registered command. input carries parsed args
+    /// and flags from the CLI (see CommandInput).
+    fn run_command(_name: &str, _input: &CommandInput) -> Result<String, String> {
         Err("unknown command".into())
     }
 

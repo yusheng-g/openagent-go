@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -21,7 +22,7 @@ import (
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
 	"github.com/yusheng-g/openagent-go/cmd/cli/keyring"
 	"github.com/yusheng-g/openagent-go/cmd/cli/server"
-	"github.com/yusheng-g/openagent-go/plugin/cli"
+	plugin "github.com/yusheng-g/openagent-go/plugin/cli"
 	cliwasm "github.com/yusheng-g/openagent-go/plugin/cli/wasm"
 )
 
@@ -97,22 +98,7 @@ func main() {
 					log.Printf("plugin %s commands: %v", meta.Name, err)
 					continue
 				}
-				for _, cd := range cmds {
-					name := cd.Name
-					rootCmd.AddCommand(&cobra.Command{
-						Use: cd.Use, Short: cd.Short, Long: cd.Long,
-						RunE: func(cmd *cobra.Command, args []string) error {
-							argsJSON, _ := json.Marshal(args)
-							out, err := cliwasm.RunCommand(ctx, name, string(argsJSON))
-							if err != nil {
-								return err
-							}
-							fmt.Print(out)
-							return nil
-						},
-					})
-					log.Printf("plugin: registered command %q", name)
-				}
+				registerCommands(rootCmd, cmds)
 			}
 
 			if meta.Is("observers") {
@@ -133,7 +119,7 @@ func main() {
 	// so defaults from config.Load() are never run. Fill in
 	// missing values before SetupLog.
 	if cfg.Log.File == "" {
-		cfg.Log.File = filepath.Join(filepath.Dir(cfgPath), "data", "openagent.log")
+		cfg.Log.File = filepath.Join(filepath.Dir(cfgPath), "logs", "openagent.log")
 	}
 	if cfg.Log.MaxSize == 0 {
 		cfg.Log.MaxSize = 10
@@ -200,7 +186,87 @@ func wrapCmd(c *cobra.Command, beforeFn func(*cobra.Command), afterFn func(*cobr
 	}
 }
 
-// ── root ──
+// registerCommands recursively builds a cobra Command tree from plugin
+// CommandDefs and registers them under parent. Group nodes (with Children)
+// get sub-commands but no RunE; leaf nodes dispatch to the WASM plugin.
+func registerCommands(parent *cobra.Command, cmds []cliwasm.CommandDef) {
+	for _, cd := range cmds {
+		cmd := &cobra.Command{
+			Use: cd.Use, Short: cd.Short, Long: cd.Long,
+			Aliases: cd.Aliases, Example: cd.Example,
+			Args: parseArgRule(cd.Args),
+		}
+
+		if len(cd.Children) > 0 {
+			registerCommands(cmd, cd.Children)
+			parent.AddCommand(cmd)
+			continue
+		}
+
+		// Leaf command — register flags and dispatch to WASM.
+		name := cd.Name
+		for _, f := range cd.Flags {
+			switch f.Kind {
+			case "bool":
+				d, _ := strconv.ParseBool(f.DefaultValue)
+				cmd.Flags().BoolP(f.Name, f.Short, d, f.Description)
+			case "int":
+				d, _ := strconv.Atoi(f.DefaultValue)
+				cmd.Flags().IntP(f.Name, f.Short, d, f.Description)
+			default:
+				cmd.Flags().StringP(f.Name, f.Short, f.DefaultValue, f.Description)
+			}
+		}
+
+		cmd.RunE = func(c *cobra.Command, args []string) error {
+			flags := make(map[string]any)
+			for _, f := range cd.Flags {
+				switch f.Kind {
+				case "bool":
+					flags[f.Name], _ = c.Flags().GetBool(f.Name)
+				case "int":
+					flags[f.Name], _ = c.Flags().GetInt(f.Name)
+				default:
+					flags[f.Name], _ = c.Flags().GetString(f.Name)
+				}
+			}
+			input, _ := json.Marshal(cliwasm.CommandInput{Args: args, Flags: flags})
+			out, err := cliwasm.RunCommand(context.Background(), name, string(input))
+			if err != nil {
+				return err
+			}
+			fmt.Print(out)
+			return nil
+		}
+		parent.AddCommand(cmd)
+		log.Printf("plugin: registered command %q", name)
+	}
+}
+
+func parseArgRule(rule string) cobra.PositionalArgs {
+	switch {
+	case strings.HasPrefix(rule, "exact="):
+		if n, err := strconv.Atoi(strings.TrimPrefix(rule, "exact=")); err == nil {
+			return cobra.ExactArgs(n)
+		}
+	case strings.HasPrefix(rule, "min="):
+		if n, err := strconv.Atoi(strings.TrimPrefix(rule, "min=")); err == nil {
+			return cobra.MinimumNArgs(n)
+		}
+	case strings.HasPrefix(rule, "max="):
+		if n, err := strconv.Atoi(strings.TrimPrefix(rule, "max=")); err == nil {
+			return cobra.MaximumNArgs(n)
+		}
+	case strings.HasPrefix(rule, "range="):
+		parts := strings.SplitN(strings.TrimPrefix(rule, "range="), ",", 2)
+		if len(parts) == 2 {
+			min, _ := strconv.Atoi(parts[0])
+			max, _ := strconv.Atoi(parts[1])
+			return cobra.RangeArgs(min, max)
+		}
+	}
+	return cobra.ArbitraryArgs
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "openagent-cli",

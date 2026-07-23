@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 // Manager loads WASM settings-injection plugins from directories or single files.
@@ -51,7 +52,20 @@ func (m *Manager) Pipe(ctx context.Context, initialSettings []byte, loadFn func(
 	return settings, nil
 }
 
+func expandPath(path string) string {
+	if strings.HasPrefix(path, "~/") {
+		if home, err := os.UserHomeDir(); err == nil {
+			return filepath.Join(home, path[2:])
+		}
+	}
+	return path
+}
+
 func (m *Manager) ResolveWasmFiles(path string) ([]string, error) {
+	path = expandPath(path)
+	if path == "" {
+		return nil, nil
+	}
 	fi, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {

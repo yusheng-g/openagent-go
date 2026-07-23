@@ -110,8 +110,8 @@ pub fn read_input_str(ptr: u32, len: u32) -> &'static str {
 /// Dispatch a CLI command by name. Used by cli:commands plugins in their
 /// hand-written `run_<name>` exports (one line per command).
 pub fn dispatch_command<T: export::Plugin>(ptr: u32, len: u32, name: &str) -> u64 {
-    let args = read_input_str(ptr, len);
-    match T::run_command(name, args) {
+    let input: types::CommandInput = read_input_json(pk(ptr, len));
+    match T::run_command(name, &input) {
         Ok(s) => sdk_return(s.as_bytes()),
         Err(e) => sdk_return(e.as_bytes()),
     }

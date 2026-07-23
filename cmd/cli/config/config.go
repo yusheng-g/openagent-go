@@ -8,17 +8,17 @@ import (
 )
 
 type Config struct {
-	Model     string                    `json:"model,omitempty"`
-	FastModel string                    `json:"fast_model,omitempty"`
-	Provider  map[string]ProviderConfig `json:"provider,omitempty"`
-	Server    ServerConfig              `json:"server,omitempty"`
-	Channels  ChannelsConfig            `json:"channels,omitempty"`
-	Sandbox   SandboxConfig             `json:"sandbox,omitempty"`
-	Log       LogConfig                 `json:"log,omitempty"`
+	Model      string                     `json:"model,omitempty"`
+	FastModel  string                     `json:"fast_model,omitempty"`
+	Provider   map[string]ProviderConfig  `json:"provider,omitempty"`
+	Server     ServerConfig               `json:"server,omitempty"`
+	Channels   ChannelsConfig             `json:"channels,omitempty"`
+	Sandbox    SandboxConfig              `json:"sandbox,omitempty"`
+	Log        LogConfig                  `json:"log,omitempty"`
 	McpServers map[string]McpServerConfig `json:"mcp_servers,omitempty"`
-	Plugins   []string                  `json:"plugins,omitempty"`
-	Profiles  string                    `json:"profiles,omitempty"`
-	Env       map[string]string         `json:"env,omitempty"`
+	Plugins    []string                   `json:"plugins,omitempty"`
+	Profiles   string                     `json:"profiles,omitempty"`
+	Env        map[string]string          `json:"env,omitempty"`
 }
 
 type ProviderConfig struct {
@@ -120,7 +120,7 @@ func Load(path string) (*Config, error) {
 		Profiles: ".openagent/profile",
 		Server:   ServerConfig{Port: 8080},
 		Log: LogConfig{
-			File:       filepath.Join(filepath.Dir(p), "data", "openagent.log"),
+			File:       filepath.Join(filepath.Dir(p), "logs", "openagent.log"),
 			MaxSize:    10,
 			MaxBackups: 5,
 			MaxAge:     30,

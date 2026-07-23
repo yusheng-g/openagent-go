@@ -103,6 +103,7 @@ pub struct StageOutput {
 // ── Command definitions (cli:commands plugins) ──
 
 /// A single command registered by a cli:commands plugin.
+/// Commands with children are group nodes (no RunE); leaves dispatch to run_command.
 /// Matches cli/wasm/abi.go CommandDef.
 #[derive(Serialize, Default)]
 pub struct CommandDef {
@@ -114,6 +115,39 @@ pub struct CommandDef {
     pub short: &'static str,
     #[serde(default, skip_serializing_if = "str::is_empty")]
     pub long: &'static str,
+    /// Arg rule: "exact=2", "min=1", "max=3", "range=1,5", "" = any.
+    #[serde(default, skip_serializing_if = "str::is_empty")]
+    pub args: &'static str,
+    #[serde(default, skip_serializing_if = "<[_]>::is_empty")]
+    pub flags: &'static [FlagDef],
+    /// Non-empty = group node with sub-commands, no RunE.
+    #[serde(default, skip_serializing_if = "<[_]>::is_empty")]
+    pub children: &'static [CommandDef],
+    #[serde(default, skip_serializing_if = "<[_]>::is_empty")]
+    pub aliases: &'static [&'static str],
+    #[serde(default, skip_serializing_if = "str::is_empty")]
+    pub example: &'static str,
+}
+
+/// A flag definition for a leaf command. Matches cli/wasm/abi.go FlagDef.
+#[derive(Serialize, Default)]
+pub struct FlagDef {
+    pub name: &'static str,
+    #[serde(default, skip_serializing_if = "str::is_empty")]
+    pub short: &'static str,
+    /// "string", "bool", or "int".
+    pub kind: &'static str,
+    pub default_value: &'static str,
+    pub description: &'static str,
+}
+
+/// Input passed to run_command. Matches cli/wasm/abi.go CommandInput.
+#[derive(Deserialize, Default)]
+pub struct CommandInput {
+    #[serde(default)]
+    pub args: alloc::vec::Vec<alloc::string::String>,
+    #[serde(default)]
+    pub flags: serde_json::Value,
 }
 
 // ── Tool input/output (agent:tools plugins) ──
