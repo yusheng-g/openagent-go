@@ -1117,7 +1117,7 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 				for _, tc := range evt.Message.ToolCalls {
 					// Detect execution tool usage in plan mode
 					// for auto-exit fallback.
-					if !isPlanTool(tc.Function.Name) {
+					if ss.mode == "plan" && !isPlanTool(tc.Function.Name) {
 						usedNonPlanTool = true
 					}
 					sender.SendToolCall(openacp.ToolCallUpdate{
@@ -1187,13 +1187,19 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	if stopReason == "" {
 		stopReason = openacp.StopReasonEndTurn
 	}
-	// Auto-exit plan mode if the turn started in plan mode,
-	// execution tools were used (meaning the system already
-	// exited plan mode), but openagent-go's exit_plan_mode
-	// was not called (mode is still "plan").
-	if ss.mode == "plan" && usedNonPlanTool {
-		_ = s.setSessionMode(ctx, req.SessionID, "auto")
-	}
+		// Auto-exit plan mode if the turn started in plan mode,
+		// execution tools were used (meaning the system already
+		// exited plan mode), but openagent-go's exit_plan_mode
+		// was not called (mode is still "plan").
+		// Restore previousMode (same as exit_plan_mode) instead
+		// of hardcoding "auto" — preserves manual mode.
+		if ss.mode == "plan" && usedNonPlanTool {
+			target := ss.previousMode
+			if target == "" || target == "plan" {
+				target = "auto"
+			}
+			_ = s.setSessionMode(ctx, req.SessionID, target)
+		}
 	return &openacp.PromptResponse{StopReason: stopReason, Meta: map[string]any{"mode": ss.mode}}, nil
 }
 
