@@ -6,12 +6,13 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
 	openagent "github.com/yusheng-g/openagent-go"
-	"github.com/yusheng-g/openagent-go/session"
 	"github.com/yusheng-g/openagent-go/eventbus"
+	"github.com/yusheng-g/openagent-go/session"
 )
 
 // ── TeamHandler ──
@@ -19,7 +20,14 @@ import (
 // TeamHandler serves a REST API for an openagent-go Team.
 type TeamHandler struct {
 	agents []TeamAgentTemplate
-	model  openagent.Model // from first template, for dynamically added agents
+	model  openagent.Model // from first template, for dynamically added agents and as fallback
+
+	// Model registry, mirroring Handler. Frontend model selection in team mode
+	// resolves through this; the chosen model overrides every team agent's
+	// model for that run via openagent.Session.Model (runner.go:68-70).
+	models    map[string]openagent.Model // "provider:id" → model instance
+	modelList []ModelInfo                // ordered list for /models endpoint
+	modelsMu  sync.RWMutex
 
 	sm *sessionManager[*teamSessionState] // session CRUD, store, bus
 }
@@ -47,12 +55,13 @@ func NewTeamHandler(mem openagent.Memory, agents ...TeamAgentTemplate) *TeamHand
 		log.Printf("team: primary agent has nil Model — dynamically added agents will have no model")
 	}
 
-	h := &TeamHandler{agents: agents, model: model}
+	h := &TeamHandler{agents: agents, model: model, models: make(map[string]openagent.Model)}
 
 	bus := eventbus.New[SSEEvent](500)
 	h.sm = newSessionManager[*teamSessionState](nil, mem, bus, sessionHooks[*teamSessionState]{
-		kind:     "team",
-		newEntry: h.newEntry,
+		kind:       "team",
+		newEntry:   h.newEntry,
+		fillDetail: h.fillDetail,
 		onDelete: func(s *teamSessionState) {
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
@@ -63,6 +72,36 @@ func NewTeamHandler(mem openagent.Memory, agents ...TeamAgentTemplate) *TeamHand
 	})
 
 	return h
+}
+
+// RegisterModel adds a model to the team handler's registry, enabling
+// frontend model selection in team mode. Mirrors Handler.RegisterModel.
+// The chosen model overrides every team agent's model for that run.
+func (h *TeamHandler) RegisterModel(id string, model openagent.Model, provider string) {
+	h.modelsMu.Lock()
+	defer h.modelsMu.Unlock()
+	h.models[provider+":"+id] = model
+	h.modelList = append(h.modelList, ModelInfo{ID: id, Provider: provider})
+}
+
+// lookupModel finds a registered model. Mirrors Handler.lookupModel.
+// When provider is non-empty, uses the exact composite key "provider:modelId";
+// otherwise scans for the first registered model matching modelId.
+func (h *TeamHandler) lookupModel(provider, modelID string) openagent.Model {
+	h.modelsMu.RLock()
+	defer h.modelsMu.RUnlock()
+	if provider != "" {
+		return h.models[provider+":"+modelID]
+	}
+	for key, m := range h.models {
+		if key == "default" {
+			continue
+		}
+		if strings.HasSuffix(key, ":"+modelID) {
+			return m
+		}
+	}
+	return nil
 }
 
 // Register adds the team handler's routes to mux.
@@ -100,13 +139,13 @@ func (h *TeamHandler) WithCleanupDir(fn func(sessionID string)) *TeamHandler {
 // ── teamSessionState ──
 
 type teamSessionState struct {
-	info       session.SessionInfo
-	team       *openagent.Team
-	agentList  []agentInfo
-	agentMems  []*teamAgentMemory // per-agent memory wrappers for cleanup
+	info      session.SessionInfo
+	team      *openagent.Team
+	agentList []agentInfo
+	agentMems []*teamAgentMemory // per-agent memory wrappers for cleanup
 
 	mu              sync.Mutex
-	running         bool             // true while agent goroutine is active
+	running         bool // true while agent goroutine is active
 	pendingApproval *pendingApproval
 }
 
@@ -218,6 +257,33 @@ func (h *TeamHandler) handleChat(w http.ResponseWriter, r *http.Request) {
 	sub := h.sm.Bus().SubscribeLive(id)
 	defer h.sm.Bus().Unsubscribe(id, sub)
 
+	// Resolve model: chat-level override > session default > handler default.
+	// Mirrors Handler.handleChat (handler.go:268-292). The chosen model is
+	// set on openagent.Session and overrides every team agent's model for
+	// this run (runner.go:68-70: r.runModel = session.Model if non-nil).
+	provider := body.Provider
+	modelID := body.ModelID
+	if provider == "" && modelID == "" {
+		h.sm.withMeta(id, func(inf *session.SessionInfo) {
+			p, _ := session.GetMeta[string](*inf, "provider")
+			m, _ := session.GetMeta[string](*inf, "modelId")
+			provider = p
+			modelID = m
+		})
+	}
+	model := h.lookupModel(provider, modelID)
+	if model == nil {
+		model = h.model
+	}
+
+	// Persist the resolved model so GET /team/sessions/{id} reflects it.
+	if inf, ok := h.sm.withMeta(id, func(inf *session.SessionInfo) {
+		inf.SetMeta("modelId", modelID)
+		inf.SetMeta("provider", provider)
+	}); ok {
+		h.sm.syncMeta(inf)
+	}
+
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 		defer cancel()
@@ -230,6 +296,8 @@ func (h *TeamHandler) handleChat(w http.ResponseWriter, r *http.Request) {
 
 		oaSession := openagent.Session{
 			ID:        id,
+			ModelID:   modelID,
+			Model:     model,
 			CreatedAt: s.info.CreatedAt,
 		}
 
@@ -439,6 +507,21 @@ func (h *TeamHandler) newEntry(info session.SessionInfo) *teamSessionState {
 
 	s.team = openagent.NewTeam(teamOpts...)
 	return s
+}
+
+// fillDetail enriches the SessionDetail with the team session's ContextWindow,
+// derived from the effective model (stored meta override > handler default).
+// Mirrors Handler.fillDetail (handler.go:92-96).
+func (h *TeamHandler) fillDetail(e *teamSessionState, detail *SessionDetail) {
+	provider, _ := session.GetMeta[string](e.info, "provider")
+	modelID, _ := session.GetMeta[string](e.info, "modelId")
+	m := h.lookupModel(provider, modelID)
+	if m == nil {
+		m = h.model
+	}
+	if m != nil {
+		detail.ContextWindow = m.ContextWindow()
+	}
 }
 
 func cloneAgentForSession(tmpl *openagent.Agent, mem openagent.Memory, s *teamSessionState, submitFn func(*teamSessionState, openagent.ToolCall, chan approveResponse)) *openagent.Agent {

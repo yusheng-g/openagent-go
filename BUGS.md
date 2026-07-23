@@ -71,13 +71,16 @@ Fix:
 
 ---
 
-### [P2] Team: no model selection, no ContextWindow, stale ModelID
+### [P2] ~~Team: no model selection, no ContextWindow, stale ModelID~~ ✅ FIXED
 
-[rest/team.go](rest/team.go):
+[rest/team.go](rest/team.go): **Fixed in this commit** — `TeamHandler` now carries a model registry (`models`/`modelList`/`modelsMu`) mirroring `Handler`, with `RegisterModel`/`lookupModel`. `handleChat` resolves the model from `ChatRequest.ModelID`/`Provider` (falling back to stored session meta, then the first-template model), persists `modelId`/`provider` to session meta via `withMeta`+`syncMeta`, and sets `Model`/`ModelID` on the `openagent.Session` handed to `team.RunStream`. Because `runner.go:68-70` does `r.runModel = session.Model if non-nil`, the selected model overrides every team agent's model for that run. `NewTeamHandler` wires a `fillDetail` hook that resolves the session's effective model (stored meta > handler default) and sets `detail.ContextWindow`, so `GET /team/sessions/{id}` returns a non-zero `contextWindow` and the current (non-stale) `modelId`.
 
-1. `handleChat` ignores `ChatRequest.ModelID` — `oaSession` constructed without `Model` or `ModelID`. Frontend model selector has no effect in team mode.
-2. `s.info.ModelID` never synced to team handler. `GET /team/sessions/{id}` returns creation-time `ModelID` forever.
-3. `handleGetSession` missing `ContextWindow` — Frontend shows `contextWindow: 0` for team sessions.
+Original issue:
+1. `handleChat` ignored `ChatRequest.ModelID` — `oaSession` constructed without `Model` or `ModelID`. Frontend model selector had no effect in team mode.
+2. `s.info.ModelID` never synced to team handler. `GET /team/sessions/{id}` returned creation-time `ModelID` forever.
+3. `handleGetSession` missing `ContextWindow` — Frontend showed `contextWindow: 0` for team sessions.
+
+Tests: `rest/team_model_test.go` — `TestTeamHandleChatModelOverride` (model-b is invoked when selected) and `TestTeamGetSessionContextWindow` (`contextWindow == 16000` and `_meta.modelId == "model-b"` after a model-b chat).
 
 ---
 
