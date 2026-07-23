@@ -108,7 +108,7 @@ func main() {
 			{"deepseek-v4-pro", "deepseek"},
 		}
 		for _, o := range opts {
-			handler.RegisterModel(o.id, openai.New(apiKey, o.id, baseURL), o.label)
+			handler.RegisterModel(o.id, openai.New(apiKey, o.id, baseURL).WithContextWindow(128_000), o.label)
 		}
 	}
 
@@ -147,6 +147,20 @@ func main() {
 		rest.TeamAgentTemplate{Name: "coder", Description: "Writes clean, well-structured code with error handling", Agent: coder},
 		rest.TeamAgentTemplate{Name: "reviewer", Description: "Reviews code for correctness, style, and security", Agent: reviewer},
 	).WithSessionStore(sessionStore)
+	// Register the same models on the team handler so the frontend model
+	// selector works in team mode too. The frontend fetches the list via
+	// GET /models (served by the single handler) and sends the chosen
+	// modelId/provider on POST /team/sessions/{id}/chat; teamHandler's
+	// registry must contain the same entries for lookupModel to resolve.
+	if apiKey != "" && baseURL != "" {
+		opts := []struct{ id, label string }{
+			{"deepseek-v4-flash", "deepseek"},
+			{"deepseek-v4-pro", "deepseek"},
+		}
+		for _, o := range opts {
+			teamHandler.RegisterModel(o.id, openai.New(apiKey, o.id, baseURL).WithContextWindow(128_000), o.label)
+		}
+	}
 
 	// ── Plan agents ──
 	planResearcher := openagent.NewAgent("researcher",
