@@ -376,7 +376,7 @@ func (m *mux) handleLoadSession(msg jsonrpcMessage) {
 		m.writeError(msg.ID, ErrorCodeInvalidParams, err.Error())
 		return
 	}
-	sender := &promptSender{bwMu: &m.notifyMu, bw: m.notifyBW, sid: req.SessionID}
+	sender := &promptSender{m: m, sid: req.SessionID}
 	resp, err := m.handler.OnLoadSession(context.Background(), req, sender)
 	if err != nil {
 		m.writeError(msg.ID, ErrorCodeInternal, err.Error())
@@ -408,7 +408,7 @@ func (m *mux) handlePrompt(msg jsonrpcMessage) {
 	m.cancelPending[reqID] = cancel
 	m.mu.Unlock()
 
-	sender := &promptSender{bwMu: &m.notifyMu, bw: m.notifyBW, sid: req.SessionID}
+	sender := &promptSender{m: m, sid: req.SessionID}
 	resp, err := m.handler.OnPrompt(ctx, req, sender)
 
 	// Check whether we were cancelled before the handler returned.
@@ -652,9 +652,8 @@ func (m *mux) notifyWrite(data []byte) {
 // ── promptSender ──
 
 type promptSender struct {
-	bwMu *sync.Mutex
-	bw   *bufio.Writer
-	sid  SessionId
+	m   *mux
+	sid SessionId
 }
 
 func (s *promptSender) send(update SessionUpdate) {
@@ -666,9 +665,7 @@ func (s *promptSender) send(update SessionUpdate) {
 	notif.Params = params
 
 	data, _ := json.Marshal(notif)
-	s.bwMu.Lock()
-	s.bw.Write(append(data, '\n'))
-	s.bwMu.Unlock()
+	s.m.notifyWrite(append(data, '\n'))
 }
 
 func (s *promptSender) SendAgentMessage(text string) error {
