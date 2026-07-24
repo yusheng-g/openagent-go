@@ -46,10 +46,11 @@ type Session struct {
 	UserID string `json:"user_id"`
 
 	// Model selection (overrides Agent default if set)
-	ModelID         string  `json:"model_id,omitempty"`
-	Model           Model   `json:"-"`                  // per-request model override; nil = use Agent.Model
-	Temperature     *float64 `json:"temperature,omitempty"`
-	MaxTokens       int     `json:"max_tokens,omitempty"`
+	ModelID     string   `json:"model_id,omitempty"`
+	Provider    string   `json:"provider,omitempty"`
+	Model       Model    `json:"-"` // per-request model override; nil = use Agent.Model
+	Temperature *float64 `json:"temperature,omitempty"`
+	MaxTokens   int      `json:"max_tokens,omitempty"`
 
 	// Context for Prompt
 	UserProfile    string `json:"user_profile,omitempty"`

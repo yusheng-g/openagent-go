@@ -154,6 +154,8 @@ func BuildAgentRuntime(agent *openagent.Agent, session *openagent.Session, setMo
 				return fmt.Sprint(session.Turn), true
 			case wasmhost.RuntimeKeyModelID:
 				return session.ModelID, true
+			case wasmhost.RuntimeKeyProvider:
+				return session.Provider, true
 			default:
 				if strings.HasPrefix(key, wasmhost.RuntimeKeyMetadataPrefix) {
 					k := strings.TrimPrefix(key, wasmhost.RuntimeKeyMetadataPrefix)

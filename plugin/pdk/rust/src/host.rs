@@ -30,6 +30,7 @@ mod ffi {
         pub fn runtime_user_id() -> u64;
         pub fn runtime_turn_count() -> u64;
         pub fn runtime_model_id() -> u64;
+        pub fn runtime_provider() -> u64;
         pub fn runtime_get_metadata(key_p: u32, key_l: u32) -> u64;
         pub fn runtime_set_metadata(key_p: u32, key_l: u32, val_p: u32, val_l: u32) -> u64;
         pub fn runtime_set_model_config(val_p: u32, val_l: u32) -> u64;
@@ -149,6 +150,7 @@ runtime_get_fn!(runtime_session_id, runtime_session_id);
 runtime_get_fn!(runtime_user_id, runtime_user_id);
 runtime_get_fn!(runtime_turn_count, runtime_turn_count);
 runtime_get_fn!(runtime_model_id, runtime_model_id);
+runtime_get_fn!(runtime_provider, runtime_provider);
 
 pub fn runtime_get_metadata(key: &str) -> Result<String, String> {
     let packed = unsafe { ffi::runtime_get_metadata(key.as_ptr() as u32, key.len() as u32) };

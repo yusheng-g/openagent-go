@@ -185,7 +185,6 @@ func (h *HostAPI) RegisterHostModule(ctx context.Context, rt wazero.Runtime) err
 			}
 		}).
 		Export("log_info").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module, msgPtr uint32, msgLen uint32) {
 			msg := read(mod, msgPtr, msgLen)
@@ -194,7 +193,6 @@ func (h *HostAPI) RegisterHostModule(ctx context.Context, rt wazero.Runtime) err
 			}
 		}).
 		Export("log_warn").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module, msgPtr uint32, msgLen uint32) {
 			msg := read(mod, msgPtr, msgLen)
@@ -217,25 +215,26 @@ func (h *HostAPI) RegisterHostModule(ctx context.Context, rt wazero.Runtime) err
 			return h.runtimeGet(ctx, mod, RuntimeKeySessionID)
 		}).
 		Export("runtime_session_id").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module) uint64 {
 			return h.runtimeGet(ctx, mod, RuntimeKeyUserID)
 		}).
 		Export("runtime_user_id").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module) uint64 {
 			return h.runtimeGet(ctx, mod, RuntimeKeyTurnCount)
 		}).
 		Export("runtime_turn_count").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module) uint64 {
 			return h.runtimeGet(ctx, mod, RuntimeKeyModelID)
 		}).
 		Export("runtime_model_id").
-
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, mod api.Module) uint64 {
+			return h.runtimeGet(ctx, mod, RuntimeKeyProvider)
+		}).
+		Export("runtime_provider").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module, keyPtr, keyLen uint32) uint64 {
 			key := read(mod, keyPtr, keyLen)
@@ -251,25 +250,21 @@ func (h *HostAPI) RegisterHostModule(ctx context.Context, rt wazero.Runtime) err
 			return h.runtimeSet(ctx, mod, RuntimeKeyMetadataPrefix+key, val)
 		}).
 		Export("runtime_set_metadata").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module, valPtr, valLen uint32) uint64 {
 			return h.runtimeSetModelConfig(ctx, mod, read(mod, valPtr, valLen))
 		}).
 		Export("runtime_set_model_config").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module, valPtr, valLen uint32) uint64 {
 			return h.runtimeSet(ctx, mod, "system_prompts", read(mod, valPtr, valLen))
 		}).
 		Export("runtime_set_system_prompts").
-
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, mod api.Module, valPtr, valLen uint32) uint64 {
 			return h.runtimeSet(ctx, mod, "max_turns", read(mod, valPtr, valLen))
 		}).
 		Export("runtime_set_max_turns").
-
 		Instantiate(ctx)
 	return err
 }

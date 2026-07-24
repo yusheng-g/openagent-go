@@ -93,6 +93,9 @@ pub trait Plugin: Sized {
         meta.plugin_type = Self::plugin_type().into();
         meta.name = Self::name().into();
         meta.description = Self::description().into();
+        let (stage, phase) = Self::stage_filter();
+        meta.stage = stage;
+        meta.phase = phase;
         meta
     }
 }

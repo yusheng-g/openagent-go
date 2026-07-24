@@ -99,6 +99,14 @@ func RunACP(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 		log.Printf("WARNING: plugin discover: %v", err)
 	} else {
 		srv.PluginMgr = mgr
+		if obs := mgr.Observer(); obs != nil {
+			if agent.Observer != nil {
+				agent.Observer = openagent.MultiObserver(agent.Observer, obs)
+			} else {
+				agent.Observer = obs
+			}
+			log.Printf("[wasm] plugin observer wired into agent")
+		}
 	}
 
 	policy := sandboxPolicy(cfg.Sandbox)

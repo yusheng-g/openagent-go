@@ -74,6 +74,12 @@ pub struct PluginMeta {
     pub name: String,
     #[serde(default)]
     pub description: String,
+    /// Observer filter: stage name e.g. "model.call". Empty = match all.
+    #[serde(default, skip_serializing_if = "str::is_empty")]
+    pub stage: &'static str,
+    /// Observer filter: "enter", "leave", or "*". Empty = match all.
+    #[serde(default, skip_serializing_if = "str::is_empty")]
+    pub phase: &'static str,
 }
 
 // ── Stage events (agent:observers plugins) ──

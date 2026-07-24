@@ -59,8 +59,8 @@ type Logger interface {
 // Agent and Session during a run. Get reads a named value; Set writes one;
 // SetModel replaces a model in the global registry.
 type AgentRuntime struct {
-	Get     func(key string) (string, bool)
-	Set     func(key string, value string) error
+	Get      func(key string) (string, bool)
+	Set      func(key string, value string) error
 	SetModel func(provider, modelID, apiKey, baseURL string)
 }
 
@@ -70,7 +70,8 @@ const (
 	RuntimeKeyUserID         = "user_id"
 	RuntimeKeyTurnCount      = "turn_count"
 	RuntimeKeyModelID        = "model_id"
-	RuntimeKeyMetadataPrefix = "metadata."  // Get("metadata.foo") / Set("metadata.foo", "bar")
+	RuntimeKeyProvider       = "provider"
+	RuntimeKeyMetadataPrefix = "metadata." // Get("metadata.foo") / Set("metadata.foo", "bar")
 )
 
 // HostAPI bundles host-provided capabilities available to WASM plugins

@@ -119,21 +119,23 @@ func (h *Handler) RegisterModel(id string, model openagent.Model, provider, apiK
 	h.modelList = append(h.modelList, ModelInfo{ID: id, Provider: provider})
 }
 
-// SetModel replaces a model in the registry. apiKey and baseURL override the
-// originals only when non-empty. Used by runtime_set_model_config host export.
+// SetModel replaces or inserts a model in the registry. apiKey and baseURL
+// override the originals only when non-empty (update) or are used as-is
+// (insert). Used by runtime_set_model_config host export.
 func (h *Handler) SetModel(provider, modelID, apiKey, baseURL string) {
 	h.modelsMu.Lock()
 	defer h.modelsMu.Unlock()
 	key := provider + "/" + modelID
-	old, ok := h.modelConfigs[key]
-	if !ok {
-		return
-	}
-	if apiKey == "" {
-		apiKey = old.APIKey
-	}
-	if baseURL == "" {
-		baseURL = old.BaseURL
+	if old, ok := h.modelConfigs[key]; ok {
+		if apiKey == "" {
+			apiKey = old.APIKey
+		}
+		if baseURL == "" {
+			baseURL = old.BaseURL
+		}
+	} else {
+		// New model: add to modelList so /models endpoint includes it.
+		h.modelList = append(h.modelList, ModelInfo{ID: modelID, Provider: provider})
 	}
 	h.models[key] = openai.New(apiKey, modelID, baseURL)
 	h.modelConfigs[key] = ModelConfig{Provider: provider, ModelID: modelID, APIKey: apiKey, BaseURL: baseURL}
@@ -174,6 +176,14 @@ func (h *Handler) lookupModel(provider, modelID string) openagent.Model {
 // Must be called before any session is created.
 func (h *Handler) WithPluginManager(mgr *wasm.Manager) *Handler {
 	h.pluginMgr = mgr
+	if obs := mgr.Observer(); obs != nil {
+		if h.observer != nil {
+			h.observer = openagent.MultiObserver(h.observer, obs)
+		} else {
+			h.observer = obs
+		}
+		log.Printf("[wasm] plugin observer wired into handler")
+	}
 	h.sm.hooks.onDelete = func(e *sessionState) {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -367,6 +377,7 @@ func (h *Handler) handleChat(w http.ResponseWriter, r *http.Request) {
 		oaSession := openagent.Session{
 			ID:        id,
 			ModelID:   modelID,
+			Provider:  provider,
 			Model:     model,
 			CreatedAt: s.info.CreatedAt,
 		}

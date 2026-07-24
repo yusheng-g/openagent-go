@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"sync"
@@ -16,8 +17,8 @@ import (
 	openagent "github.com/yusheng-g/openagent-go"
 	openacp "github.com/yusheng-g/openagent-go/acp/sdk"
 	"github.com/yusheng-g/openagent-go/mcp"
-	"github.com/yusheng-g/openagent-go/plan"
 	"github.com/yusheng-g/openagent-go/model/openai"
+	"github.com/yusheng-g/openagent-go/plan"
 	wasm "github.com/yusheng-g/openagent-go/plugin/agent/wasm"
 	"github.com/yusheng-g/openagent-go/plugin/wasmhost"
 	"github.com/yusheng-g/openagent-go/session"
@@ -165,20 +166,24 @@ func (s *AgentServer) SetClientRequester(r openacp.ClientRequester) {
 var _ openacp.ClientRPCUser = (*AgentServer)(nil)
 var _ openacp.AgentHandler = (*AgentServer)(nil)
 
-// SetModel replaces a registered model. Used by runtime_set_model_config.
+// SetModel replaces or inserts a model in the registry. Used by
+// runtime_set_model_config. When the model already exists, empty apiKey
+// or baseURL preserve the originals; when inserting a new model, values
+// are used as-is.
 func (s *AgentServer) SetModel(provider, modelID, apiKey, baseURL string) {
 	s.modelsMu.Lock()
 	defer s.modelsMu.Unlock()
 	key := provider + "/" + modelID
-	old, ok := s.modelConfigs[key]
-	if !ok {
-		return
-	}
-	if apiKey == "" {
-		apiKey = old.APIKey
-	}
-	if baseURL == "" {
-		baseURL = old.BaseURL
+	if old, ok := s.modelConfigs[key]; ok {
+		if apiKey == "" {
+			apiKey = old.APIKey
+		}
+		if baseURL == "" {
+			baseURL = old.BaseURL
+		}
+		log.Printf("[acp] updating model: %s", key)
+	} else {
+		log.Printf("[acp] inserting model: %s", key)
 	}
 	s.Models[key] = openai.New(apiKey, modelID, baseURL)
 	s.modelConfigs[key] = ModelConfig{Provider: provider, ModelID: modelID, APIKey: apiKey, BaseURL: baseURL}
@@ -189,6 +194,26 @@ func (s *AgentServer) RegisterModel(key, provider, modelID, apiKey, baseURL stri
 	s.modelsMu.Lock()
 	defer s.modelsMu.Unlock()
 	s.modelConfigs[key] = ModelConfig{Provider: provider, ModelID: modelID, APIKey: apiKey, BaseURL: baseURL}
+}
+
+// resolveModelConfig returns the provider and bare model ID for the current
+// session's model selection. The session config stores the composite key
+// "provider/modelID"; this looks up modelConfigs to extract both parts so
+// they can be set on session.Provider / session.ModelID for runtime_* host
+// exports and buildModelRequest.
+func (s *AgentServer) resolveModelConfig(ss *agentSession) (provider, modelID string) {
+	key := s.defaultModelID
+	if v, ok := ss.config["model"]; ok {
+		if val, ok := v.(string); ok {
+			key = val
+		}
+	}
+	s.modelsMu.Lock()
+	defer s.modelsMu.Unlock()
+	if mc, ok := s.modelConfigs[key]; ok {
+		return mc.Provider, mc.ModelID
+	}
+	return "", key
 }
 
 // ── Client capability helpers ──
@@ -949,8 +974,11 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	// ── Build agent clone for this turn ──
 	agent := s.agentForTurn(req.SessionID)
 
+	providerID, modelID := s.resolveModelConfig(ss)
 	oaSession := openagent.Session{
 		ID:        string(req.SessionID),
+		ModelID:   modelID,
+		Provider:  providerID,
 		CreatedAt: ss.createdAt,
 		Metadata: map[string]any{
 			"cwd":                   ss.cwd,
@@ -1187,19 +1215,19 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	if stopReason == "" {
 		stopReason = openacp.StopReasonEndTurn
 	}
-		// Auto-exit plan mode if the turn started in plan mode,
-		// execution tools were used (meaning the system already
-		// exited plan mode), but openagent-go's exit_plan_mode
-		// was not called (mode is still "plan").
-		// Restore previousMode (same as exit_plan_mode) instead
-		// of hardcoding "auto" — preserves manual mode.
-		if ss.mode == "plan" && usedNonPlanTool {
-			target := ss.previousMode
-			if target == "" || target == "plan" {
-				target = "auto"
-			}
-			_ = s.setSessionMode(ctx, req.SessionID, target)
+	// Auto-exit plan mode if the turn started in plan mode,
+	// execution tools were used (meaning the system already
+	// exited plan mode), but openagent-go's exit_plan_mode
+	// was not called (mode is still "plan").
+	// Restore previousMode (same as exit_plan_mode) instead
+	// of hardcoding "auto" — preserves manual mode.
+	if ss.mode == "plan" && usedNonPlanTool {
+		target := ss.previousMode
+		if target == "" || target == "plan" {
+			target = "auto"
 		}
+		_ = s.setSessionMode(ctx, req.SessionID, target)
+	}
 	return &openacp.PromptResponse{StopReason: stopReason, Meta: map[string]any{"mode": ss.mode}}, nil
 }
 
