@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"os"
 	"sync"
+	"time"
 )
 
 // AgentHandler receives ACP requests from a client. Implement this
@@ -86,6 +87,7 @@ func (s *Server) RunTransport(ctx context.Context, w io.Writer, r io.Reader) err
 	mux := &mux{
 		handler:       s.handler,
 		w:             w,
+		notifyBW:      bufio.NewWriterSize(w, 64*1024),
 		cancelPending: make(map[string]context.CancelFunc),
 		clientCalls:   make(map[string]*clientCall),
 		logger:        s.logger,
@@ -156,7 +158,9 @@ type clientCall struct {
 type mux struct {
 	handler AgentHandler
 	w       io.Writer
-	mu      sync.Mutex // guards writes to w (responses and notifications)
+	mu      sync.Mutex // guards writes to w (responses, SendSessionUpdate)
+	notifyBW    *bufio.Writer // notification buffer, swapped by flush goroutine
+	notifyMu    sync.Mutex    // guards notifyBW pointer and Write calls (responses and notifications)
 
 	// Prompt cancellation: client sends $/cancel_request with the
 	// JSON-RPC id of the original session/prompt request. Keys are
@@ -188,6 +192,36 @@ func (m *mux) logf(format string, args ...any) {
 func (m *mux) serve(ctx context.Context, r io.Reader) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, 0, 64*1024), 10*1024*1024)
+
+	// Flush goroutine for notification writes (promptSender).
+	// Swaps notifyBW under notifyMu, then flushes the old buffer
+	// outside the lock — pipe writes block only this goroutine.
+	notifyDone := make(chan struct{})
+	defer func() {
+		<-notifyDone
+		m.notifyMu.Lock()
+		old := m.notifyBW
+		m.notifyBW = bufio.NewWriterSize(m.w, 64*1024)
+		m.notifyMu.Unlock()
+		old.Flush()
+	}()
+	go func() {
+		defer close(notifyDone)
+		t := time.NewTicker(100 * time.Millisecond)
+		defer t.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				m.notifyMu.Lock()
+				old := m.notifyBW
+				m.notifyBW = bufio.NewWriterSize(m.w, 64*1024)
+				m.notifyMu.Unlock()
+				old.Flush()
+			}
+		}
+	}()
 
 	lines := make(chan []byte, 8)
 	errCh := make(chan error, 1)
@@ -597,6 +631,17 @@ func (m *mux) SendSessionUpdate(sid SessionId, update SessionUpdate) error {
 var _ ClientRequester = (*mux)(nil)
 var _ SessionUpdateSender = (*mux)(nil)
 
+// ── Notification write ──
+
+// notifyWrite appends data to the notification buffer under notifyMu.
+// bufio.Writer.Write copies to memory — never blocks on pipe writes.
+// The flush goroutine handles actual pipe I/O outside any lock.
+func (m *mux) notifyWrite(data []byte) {
+	m.notifyMu.Lock()
+	m.notifyBW.Write(data)
+	m.notifyMu.Unlock()
+}
+
 // ── promptSender ──
 
 type promptSender struct {
@@ -613,11 +658,7 @@ func (s *promptSender) send(update SessionUpdate) {
 	notif.Params = params
 
 	data, _ := json.Marshal(notif)
-	go func() {
-		s.m.mu.Lock()
-		s.m.w.Write(append(data, '\n'))
-		s.m.mu.Unlock()
-	}()
+	s.m.notifyWrite(append(data, '\n'))
 }
 
 func (s *promptSender) SendAgentMessage(text string) error {
