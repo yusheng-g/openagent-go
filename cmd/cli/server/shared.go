@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -13,6 +14,7 @@ import (
 	sloghooks "github.com/yusheng-g/openagent-go/hooks/slog"
 	"github.com/yusheng-g/openagent-go/memory/sqlite"
 	"github.com/yusheng-g/openagent-go/model/openai"
+	"github.com/yusheng-g/openagent-go/plugin/wasmhost"
 	"github.com/yusheng-g/openagent-go/sandbox/native"
 	"github.com/yusheng-g/openagent-go/session"
 	sessionsqlite "github.com/yusheng-g/openagent-go/session/sqlite"
@@ -20,6 +22,7 @@ import (
 	opentool "github.com/yusheng-g/openagent-go/tool"
 
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
+	"github.com/yusheng-g/openagent-go/cmd/cli/keyring"
 )
 
 // ── Shared agent setup ──
@@ -286,4 +289,15 @@ func buildOpts(opts []openagent.AgentOption, caps Capabilities, model openagent.
 		opts = append(opts, openagent.WithRunObserver(buildSlogObserver()))
 	}
 	return opts
+}
+
+// openKeyring returns the system keyring, falling back to an in-memory
+// store with a warning when the system keychain is unavailable.
+func openKeyring() wasmhost.Keyring {
+	sysKr, err := keyring.Open()
+	if err != nil {
+		log.Printf("WARNING: keyring unavailable, using in-memory fallback: %v", err)
+		return keyring.NewMemStore()
+	}
+	return sysKr
 }
