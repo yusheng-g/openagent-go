@@ -364,8 +364,13 @@ func (h *Handler) handleChat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Start the agent run in a background goroutine.
+	//
+	// The run context is derived from the request so a client SSE disconnect
+	// cancels the agent (stops LLM calls) instead of letting it run to the
+	// 5-minute timeout on context.Background — which burns API credit with no
+	// consumer. The timeout still caps the run on a healthy connection.
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+		ctx, cancel := context.WithTimeout(r.Context(), 5*time.Minute)
 		defer cancel()
 		defer func() {
 			s.mu.Lock()
@@ -390,15 +395,14 @@ func (h *Handler) handleChat(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ch := s.agent.RunStream(ctx, oaSession, openagent.UserMessage(body.Message))
+		// On client SSE disconnect: r.Context() cancelled → ctx (derived from it)
+		// cancelled → runner sees ctx.Done() at runner.go:126 and returns from run →
+		// RunStream's internal goroutine runs `defer close(ch)` (agent.go:120) →
+		// this range loop sees ch close and exits. No manual r.Context().Done()
+		// check needed here (removed when context source switched from
+		// context.Background to r.Context).
 		for evt := range ch {
 			se := streamToSSE(evt)
-			select {
-			case <-r.Context().Done():
-				// Client disconnected — stop publishing.
-				// Agent continues with its own ctx; timeout cleans up.
-				return
-			default:
-			}
 			h.sm.Bus().Publish(id, se)
 		}
 	}()

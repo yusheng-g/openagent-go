@@ -284,8 +284,13 @@ func (h *TeamHandler) handleChat(w http.ResponseWriter, r *http.Request) {
 		h.sm.syncMeta(inf)
 	}
 
+	// The run context is derived from the request so a client SSE disconnect
+	// cancels the team run (stops LLM calls across all agents) instead of
+	// letting it run to the 5-minute timeout on context.Background — which
+	// burns API credit with no consumer. The timeout still caps the run on a
+	// healthy connection.
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+		ctx, cancel := context.WithTimeout(r.Context(), 5*time.Minute)
 		defer cancel()
 		defer func() {
 			s.mu.Lock()
@@ -302,6 +307,9 @@ func (h *TeamHandler) handleChat(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ch := s.team.RunStream(ctx, oaSession, openagent.UserMessage(body.Message))
+		// On client SSE disconnect: r.Context() cancelled → ctx (derived from it)
+		// cancelled → runner sees ctx.Done() and returns → RunStream's goroutine
+		// runs `defer close(ch)` → this range loop sees ch close and exits.
 		for evt := range ch {
 			se := teamEventToSSE(evt)
 			if se.Type == "" {
