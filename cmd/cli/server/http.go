@@ -84,7 +84,7 @@ func RunREST(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 
 	// Plugin manager — loads agent:tools, agent:observers, agent:sessions.
 	pluginDir := filepath.Join(profilesDir, "plugins")
-	mgr := wasm.NewManager(pluginDir).WithHostAPI(&wasmhost.HostAPI{Logger: &logAdapter{}})
+	mgr := wasm.NewManager(pluginDir).WithHostAPI(wasmhost.NewHostAPI(openKeyring()))
 	if err := mgr.Discover(ctx); err != nil {
 		slog.Warn("plugin discover failed", "error", err)
 	} else {
@@ -146,10 +146,3 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
-// logAdapter implements wasmhost.Logger by forwarding to the standard log package.
-type logAdapter struct{}
-
-func (l *logAdapter) Info(msg string)  { slog.Info(msg, "source", "plugin") }
-func (l *logAdapter) Warn(msg string)  { slog.Warn(msg, "source", "plugin") }
-func (l *logAdapter) Error(msg string) { slog.Error(msg, "source", "plugin") }
