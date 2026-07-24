@@ -235,7 +235,7 @@ func registerCommands(parent *cobra.Command, cmds []cliwasm.CommandDef) {
 			if err != nil {
 				return err
 			}
-			fmt.Print(out)
+			fmt.Fprint(os.Stderr, out)
 			return nil
 		}
 		parent.AddCommand(cmd)
@@ -419,9 +419,9 @@ var keyringGetCmd = &cobra.Command{
 			return fmt.Errorf("keyring get: %w", err)
 		}
 		if v == "" {
-			fmt.Println("(not found)")
+			fmt.Fprintln(os.Stderr, "(not found)")
 		} else {
-			fmt.Println(v)
+			fmt.Fprintln(os.Stderr, v)
 		}
 		return nil
 	},
