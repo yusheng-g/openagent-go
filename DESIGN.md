@@ -254,7 +254,7 @@ type StreamExecutor interface {
 ```
 
 Built-in tools: `shell`, `read`, `write`, `ls`, `grep` (in `tool/` package). Auto-injected tools:
-`use_skill`, `reload_skills`, `recall`, `subagent`. ACP RPC tools: `read_client_file`,
+`load_skill`, `reload_skills`, `recall`, `subagent`. ACP RPC tools: `read_client_file`,
 `write_client_file`, `terminal_create`/`output`/`wait`/`kill`/`release` (Agent→Client).
 Plan tools: `plan_create`, `plan_update` (LLM outputs structured plan entries via function-calling).
 

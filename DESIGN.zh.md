@@ -243,7 +243,7 @@ type Tool interface {
 }
 ```
 
-内置工具：`shell`、`read`、`write`、`ls`、`grep`。自动注入工具：`use_skill`、`reload_skills`、
+内置工具：`shell`、`read`、`write`、`ls`、`grep`。自动注入工具：`load_skill`、`reload_skills`、
 `recall`、`subagent`。ACP RPC 工具：`read_client_file`、`write_client_file`、
 `terminal_create/output/wait/kill/release`。Plan 工具：`plan_create`、`plan_update`。
 

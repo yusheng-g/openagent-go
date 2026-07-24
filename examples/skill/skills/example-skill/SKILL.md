@@ -1,6 +1,6 @@
 ---
 name: example-skill
-description: 这是一个测试 skill，用于验证 use_skill 加载流程
+description: 这是一个测试 skill，用于验证 load_skill 加载流程
 ---
 
 # example-skill
