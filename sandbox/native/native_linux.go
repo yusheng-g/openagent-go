@@ -14,7 +14,12 @@ import (
 
 // confineAndRun uses Bubblewrap (bwrap) for Linux namespace isolation.
 // bwrap is available on most Linux distros (used by Flatpak) and provides
-// filesystem + network + PID isolation without root or setuid.
+// filesystem + network isolation without root or setuid.
+//
+// The ctx deadline only controls how long the caller waits — it does NOT
+// kill the process. When ctx expires the process keeps running (bwrap
+// continues with --die-with-parent, which only triggers when the parent
+// openagent-cli exits, not when a single call times out).
 //
 // Falls back to unsandboxed execution with a warning if bwrap is not found
 // or if bwrap fails to start (e.g. "setting up uid map: Permission denied"
@@ -26,7 +31,7 @@ func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (ope
 		return s.unconfinedRun(ctx, cmd)
 	}
 
-	c := exec.CommandContext(ctx, "bwrap", args...)
+	c := exec.Command("bwrap", args...)
 	c.Dir = s.workDir
 	for _, e := range cmd.Env {
 		c.Env = append(c.Env, e)
@@ -36,38 +41,62 @@ func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (ope
 	}
 
 	var stdout, stderr strings.Builder
-	c.Stdout = &stdout
-	c.Stderr = &stderr
+	outW := io.Writer(&stdout)
+	errW := io.Writer(&stderr)
+	if cmd.StdoutW != nil {
+		outW = io.MultiWriter(&stdout, cmd.StdoutW)
+	}
+	if cmd.StderrW != nil {
+		errW = io.MultiWriter(&stderr, cmd.StderrW)
+	}
+	c.Stdout = outW
+	c.Stderr = errW
 
-	err := c.Run()
-	result := openagent.Result{
-		Stdout:   stdout.String(),
-		Stderr:   stderr.String(),
-		ExitCode: 0,
+	if err := c.Start(); err != nil {
+		return openagent.Result{}, fmt.Errorf("native sandbox (linux): %w", err)
 	}
-	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			// bwrap itself failed to set up the sandbox (not the inner
-			// command failing). Detect by: empty stdout + stderr starts
-			// with "bwrap:" — bwrap's own error messages have that prefix,
-			// while output from the sandboxed command does not.
-			if stdout.Len() == 0 && strings.HasPrefix(strings.TrimSpace(stderr.String()), "bwrap:") {
-				return s.unconfinedRun(ctx, cmd)
-			}
-			result.ExitCode = exitErr.ExitCode()
-			return result, nil
+
+	waitCh := make(chan error, 1)
+	go func() { waitCh <- c.Wait() }()
+
+	select {
+	case <-ctx.Done():
+		return openagent.Result{
+			Stdout:   stdout.String(),
+			Stderr:   stderr.String(),
+			ExitCode: -1,
+			PID:      c.Process.Pid,
+		}, openagent.ErrProcessRunning
+	case err := <-waitCh:
+		result := openagent.Result{
+			Stdout: stdout.String(),
+			Stderr: stderr.String(),
+			PID:    c.Process.Pid,
 		}
-		return result, fmt.Errorf("native sandbox (linux): %w", err)
+		if err != nil {
+			if exitErr, ok := err.(*exec.ExitError); ok {
+				// bwrap itself failed to set up the sandbox (not the inner
+				// command failing). Detect by: empty stdout + stderr starts
+				// with "bwrap:" — bwrap's own error messages have that prefix,
+				// while output from the sandboxed command does not.
+				if stdout.Len() == 0 && strings.HasPrefix(strings.TrimSpace(stderr.String()), "bwrap:") {
+					return s.unconfinedRun(ctx, cmd)
+				}
+				result.ExitCode = exitErr.ExitCode()
+				return result, nil
+			}
+			return result, fmt.Errorf("native sandbox (linux): %w", err)
+		}
+		return result, nil
 	}
-	return result, nil
 }
 
-func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk {
+func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd *openagent.Command) <-chan openagent.ToolStreamChunk {
 	ch := make(chan openagent.ToolStreamChunk, 16)
 	go func() {
 		defer close(ch)
 
-		args, ok := s.bwrapArgs(cmd)
+		args, ok := s.bwrapArgs(*cmd)
 		if !ok {
 			// Fallback: run unconfined.
 			for chunk := range s.unconfinedRunStream(ctx, cmd) {
@@ -76,7 +105,7 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 			return
 		}
 
-		c := exec.CommandContext(ctx, "bwrap", args...)
+		c := exec.Command("bwrap", args...)
 		c.Dir = s.workDir
 		for _, e := range cmd.Env {
 			c.Env = append(c.Env, e)
@@ -85,14 +114,18 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 			c.Stdin = strings.NewReader(cmd.Stdin)
 		}
 
-		stdout, _ := c.StdoutPipe()
-		stderr, _ := c.StderrPipe()
+		// Manual pipes so we can tee to file writers.
+		soutR, soutW := io.Pipe()
+		serrR, serrW := io.Pipe()
+		setupPipeWriters(c, soutW, serrW, cmd.StdoutW, cmd.StderrW)
+
 		if err := c.Start(); err != nil {
 			for chunk := range s.unconfinedRunStream(ctx, cmd) {
 				ch <- chunk
 			}
 			return
 		}
+		cmd.PID = c.Process.Pid
 
 		// Read stderr first line early so we can detect bwrap setup
 		// failures (which happen before the inner command produces any
@@ -101,8 +134,8 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 		done := make(chan struct{}, 2)
 		var firstStderr string
 		firstStderrCh := make(chan string, 1)
-		go readLinesWithFirst(stderr, ch, done, firstStderrCh)
-		go readLines(stdout, ch, done)
+		go readLinesWithFirst(serrR, ch, done, firstStderrCh)
+		go readLines(soutR, ch, done)
 
 		waitErr := c.Wait()
 		<-done
@@ -153,7 +186,6 @@ func readLinesWithFirst(r io.Reader, ch chan<- openagent.ToolStreamChunk, done c
 // Isolation provided:
 //   - New mount namespace with minimal /usr, /bin, /lib bind mounts
 //   - /workspace bind-mounted (only writable path, plus any WritablePaths)
-//   - New PID namespace (via --unshare-pid)
 //   - New UTS namespace (via --unshare-uts)
 //   - New IPC namespace (via --unshare-ipc)
 //   - User namespace attempted via --unshare-user-try (gracefully skipped
@@ -161,6 +193,9 @@ func readLinesWithFirst(r io.Reader, ch chan<- openagent.ToolStreamChunk, done c
 //     containers; bwrap would still need CAP_SYS_ADMIN for the other
 //     namespaces in that case — if it can't get them, confineAndRun
 //     falls back to unconfined execution)
+//
+// PID namespace is intentionally NOT unshared so that the model can
+// kill long-running processes by PID from another shell invocation.
 //
 // Network access is governed by s.policy.Network:
 //   - "" or "host"     → host network namespace shared (no --unshare-net)
@@ -179,7 +214,6 @@ func (s *Sandbox) bwrapArgs(cmd openagent.Command) ([]string, bool) {
 	args := []string{
 		"--unshare-user-try",   // user namespace (graceful: skip if unavailable)
 		"--unshare-ipc",        // IPC namespace
-		"--unshare-pid",        // PID namespace
 		"--unshare-uts",        // UTS namespace (hostname/domainname)
 		"--unshare-cgroup-try", // cgroup namespace (graceful)
 		"--new-session",        // new session, no controlling tty

@@ -94,7 +94,7 @@ func (s *Sandbox) Run(ctx context.Context, cmd openagent.Command) (openagent.Res
 }
 
 // RunStream is like Run but streams stdout/stderr line by line.
-func (s *Sandbox) RunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk {
+func (s *Sandbox) RunStream(ctx context.Context, cmd *openagent.Command) <-chan openagent.ToolStreamChunk {
 	if !s.policy.Enabled {
 		return s.unconfinedRunStream(ctx, cmd)
 	}
@@ -115,12 +115,17 @@ func readLines(r io.Reader, ch chan<- openagent.ToolStreamChunk, done chan<- str
 // ── Unconfined execution (platform-agnostic) ──
 
 // unconfinedRun executes cmd directly on the host without any sandbox.
+// The ctx deadline only controls how long the caller waits — it does NOT
+// kill the process. When ctx expires the process keeps running and the
+// caller gets partial output + ErrProcessRunning so it can monitor or
+// kill the process later.
+//
 // A stderr warning is appended only when Policy.Enabled is true (i.e.
 // the sandbox was requested but fell back to unconfined due to bwrap/
 // seatbelt failure). When Enabled is false the user explicitly opted
 // out, so no warning is added.
 func (s *Sandbox) unconfinedRun(ctx context.Context, cmd openagent.Command) (openagent.Result, error) {
-	c := exec.CommandContext(ctx, cmd.Program, cmd.Args...)
+	c := exec.Command(cmd.Program, cmd.Args...)
 	c.Dir = s.workDir
 	for _, e := range cmd.Env {
 		c.Env = append(c.Env, e)
@@ -130,33 +135,60 @@ func (s *Sandbox) unconfinedRun(ctx context.Context, cmd openagent.Command) (ope
 	}
 
 	var stdout, stderr strings.Builder
-	c.Stdout = &stdout
-	c.Stderr = &stderr
+	outW := io.Writer(&stdout)
+	errW := io.Writer(&stderr)
+	if cmd.StdoutW != nil {
+		outW = io.MultiWriter(&stdout, cmd.StdoutW)
+	}
+	if cmd.StderrW != nil {
+		errW = io.MultiWriter(&stderr, cmd.StderrW)
+	}
+	c.Stdout = outW
+	c.Stderr = errW
 
-	err := c.Run()
-	result := openagent.Result{
-		Stdout:   stdout.String(),
-		Stderr:   stderr.String(),
-		ExitCode: 0,
+	if err := c.Start(); err != nil {
+		return openagent.Result{}, fmt.Errorf("native sandbox (unconfined): %w", err)
 	}
-	if s.policy.Enabled {
-		result.Stderr += "\n[warning: running without sandbox]"
-	}
-	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			result.ExitCode = exitErr.ExitCode()
-			return result, nil
+
+	waitCh := make(chan error, 1)
+	go func() { waitCh <- c.Wait() }()
+
+	select {
+	case <-ctx.Done():
+		return openagent.Result{
+			Stdout:   stdout.String(),
+			Stderr:   stderr.String(),
+			ExitCode: -1,
+			PID:      c.Process.Pid,
+		}, openagent.ErrProcessRunning
+	case err := <-waitCh:
+		result := openagent.Result{
+			Stdout: stdout.String(),
+			Stderr: stderr.String(),
+			PID:    c.Process.Pid,
 		}
-		return result, fmt.Errorf("native sandbox (unconfined): %w", err)
+		if s.policy.Enabled {
+			result.Stderr += "\n[warning: running without sandbox]"
+		}
+		if err != nil {
+			if exitErr, ok := err.(*exec.ExitError); ok {
+				result.ExitCode = exitErr.ExitCode()
+				return result, nil
+			}
+			return result, fmt.Errorf("native sandbox (unconfined): %w", err)
+		}
+		return result, nil
 	}
-	return result, nil
 }
 
-func (s *Sandbox) unconfinedRunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk {
+// unconfinedRunStream executes cmd directly on the host without any sandbox,
+// streaming stdout/stderr line by line. After the process starts, cmd.PID is
+// set so the caller can track long-running processes.
+func (s *Sandbox) unconfinedRunStream(ctx context.Context, cmd *openagent.Command) <-chan openagent.ToolStreamChunk {
 	ch := make(chan openagent.ToolStreamChunk, 16)
 	go func() {
 		defer close(ch)
-		c := exec.CommandContext(ctx, cmd.Program, cmd.Args...)
+		c := exec.Command(cmd.Program, cmd.Args...)
 		c.Dir = s.workDir
 		for _, e := range cmd.Env {
 			c.Env = append(c.Env, e)
@@ -165,18 +197,40 @@ func (s *Sandbox) unconfinedRunStream(ctx context.Context, cmd openagent.Command
 			c.Stdin = strings.NewReader(cmd.Stdin)
 		}
 
-		stdout, _ := c.StdoutPipe()
-		stderr, _ := c.StderrPipe()
+		// Use manual pipes so we can tee to file writers.
+		soutR, soutW := io.Pipe()
+		serrR, serrW := io.Pipe()
+		setupPipeWriters(c, soutW, serrW, cmd.StdoutW, cmd.StderrW)
+
 		if err := c.Start(); err != nil {
 			ch <- openagent.ToolStreamChunk{Error: err}
 			return
 		}
+		cmd.PID = c.Process.Pid
+
 		done := make(chan struct{}, 2)
-		go readLines(stdout, ch, done)
-		go readLines(stderr, ch, done)
+		go readLines(soutR, ch, done)
+		go readLines(serrR, ch, done)
 		<-done
 		<-done
 		_ = c.Wait()
 	}()
 	return ch
+}
+
+// setupPipeWriters configures cmd.Stdout and cmd.Stderr to write to both
+// the pipe writers (for streaming to the channel) and optional file writers
+// (for persistence). Closes the pipe write ends after the command exits.
+func setupPipeWriters(c *exec.Cmd, soutW, serrW *io.PipeWriter, stdoutFile, stderrFile io.Writer) {
+	var outWriters, errWriters []io.Writer
+	outWriters = append(outWriters, soutW)
+	errWriters = append(errWriters, serrW)
+	if stdoutFile != nil {
+		outWriters = append(outWriters, stdoutFile)
+	}
+	if stderrFile != nil {
+		errWriters = append(errWriters, stderrFile)
+	}
+	c.Stdout = io.MultiWriter(outWriters...)
+	c.Stderr = io.MultiWriter(errWriters...)
 }

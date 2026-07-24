@@ -95,7 +95,7 @@ func main() {
 	// ── Test 4: Streaming output ──
 	fmt.Println("─── Test 4: Streaming output ──")
 	fmt.Print("  ")
-	ch := sb.RunStream(ctx, openagent.Command{
+	ch := sb.RunStream(ctx, &openagent.Command{
 		Program: "/bin/bash",
 		Args:    []string{"-c", "echo 'building...'; sleep 0.3; echo 'testing...'; sleep 0.3; echo 'PASS'"},
 		WorkDir: workDir,

@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -19,6 +20,7 @@ import (
 	"github.com/yusheng-g/openagent-go/model/openai"
 	wasm "github.com/yusheng-g/openagent-go/plugin/agent/wasm"
 	"github.com/yusheng-g/openagent-go/plugin/wasmhost"
+	"github.com/yusheng-g/openagent-go/process"
 	"github.com/yusheng-g/openagent-go/session"
 	"github.com/yusheng-g/openagent-go/skill/fs"
 )
@@ -64,6 +66,11 @@ type Handler struct {
 	// for backward compatibility; set false via --approver=off.
 	approverEnabled bool
 
+	// processBaseDir is the root directory for per-session process output.
+	// When set, shell commands write stdout/stderr to files here so the
+	// model can monitor long-running processes across turns.
+	processBaseDir string
+
 	sm *sessionManager[*sessionState] // session CRUD, store, bus
 }
 
@@ -91,6 +98,11 @@ func NewHandler(agent *openagent.Agent) *Handler {
 		kind:       "single",
 		newEntry:   h.newEntry,
 		fillDetail: h.fillDetail,
+		onDelete: func(e *sessionState) {
+			if e.processMgr != nil {
+				e.processMgr.Cleanup()
+			}
+		},
 	})
 
 	return h
@@ -191,6 +203,9 @@ func (h *Handler) WithPluginManager(mgr *wasm.Manager) *Handler {
 		if e.ownedCloser != nil {
 			e.ownedCloser.Close()
 		}
+		if e.processMgr != nil {
+			e.processMgr.Cleanup()
+		}
 	}
 	return h
 }
@@ -237,6 +252,15 @@ func (h *Handler) WithApproverEnabled(v bool) *Handler {
 	return h
 }
 
+// WithProcessDir sets the root directory for per-session process output files.
+// Shell commands will persist stdout/stderr under <dir>/<sessionID>/.
+// When set, long-running commands automatically detach and the model can read
+// the output files across turns.
+func (h *Handler) WithProcessDir(dir string) *Handler {
+	h.processBaseDir = dir
+	return h
+}
+
 // ── sessionState ──
 
 // sessionState holds the per-session runtime state.
@@ -249,6 +273,10 @@ type sessionState struct {
 	// ownedCloser is a per-session resource (e.g. memory db created by
 	// an agent:sessions plugin) that is closed on session deletion.
 	ownedCloser io.Closer
+
+	// processMgr tracks background processes started by the shell tool.
+	// Created on session start, cleaned up on deletion.
+	processMgr *process.Manager
 
 	mu              sync.Mutex
 	running         bool // true while agent goroutine is active
@@ -389,6 +417,12 @@ func (h *Handler) handleChat(w http.ResponseWriter, r *http.Request) {
 			ctx = wasmhost.WithAgentRuntime(ctx, rt)
 		}
 
+		// Inject ProcessManager so the shell tool can persist
+		// long-running process output across turns.
+		if s.processMgr != nil {
+			ctx = process.WithManager(ctx, s.processMgr)
+		}
+
 		ch := s.agent.RunStream(ctx, oaSession, openagent.UserMessage(body.Message))
 		for evt := range ch {
 			se := streamToSSE(evt)
@@ -468,6 +502,14 @@ func (h *Handler) handleListModels(w http.ResponseWriter, r *http.Request) {
 // Used by sessionManager when creating or restoring sessions.
 func (h *Handler) newEntry(info session.SessionInfo) *sessionState {
 	s := &sessionState{info: info}
+
+	// Create per-session process manager for tracking long-running shell commands.
+	if h.processBaseDir != "" {
+		pm, err := process.NewManager(filepath.Join(h.processBaseDir, "sess-"+info.ID))
+		if err == nil {
+			s.processMgr = pm
+		}
+	}
 
 	opts := []openagent.AgentOption{
 		openagent.WithModel(h.defaultModel),

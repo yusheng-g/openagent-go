@@ -75,7 +75,8 @@ func RunREST(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 			dir := filepath.Join(opentool.ArtifactRoot(), sessionID)
 			_ = os.RemoveAll(dir)
 		}).
-		WithApproverEnabled(caps.OnApprover())
+		WithApproverEnabled(caps.OnApprover()).
+		WithProcessDir(filepath.Join(os.TempDir(), "openagent"))
 	handler.StartJanitor(ctx, 1*time.Hour, 24*time.Hour)
 	for _, mi := range modelInfos {
 		handler.RegisterModel(mi.ID, mi.Model, mi.Provider, mi.APIKey, mi.BaseURL)

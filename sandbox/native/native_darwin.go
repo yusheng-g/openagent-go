@@ -3,6 +3,7 @@ package native
 import (
 	"context"
 	"fmt"
+	"io"
 	"os/exec"
 	"strings"
 
@@ -12,12 +13,15 @@ import (
 // confineAndRun executes cmd confined by macOS Seatbelt (sandbox-exec).
 // The Seatbelt profile restricts filesystem access to the workspace directory
 // plus system read-only paths. Network access is denied.
+//
+// The ctx deadline only controls how long the caller waits — it does NOT
+// kill the process.
 func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (openagent.Result, error) {
 	profile := s.seatbeltProfile()
 	args := []string{"-p", profile, "--", cmd.Program}
 	args = append(args, cmd.Args...)
 
-	c := exec.CommandContext(ctx, "sandbox-exec", args...)
+	c := exec.Command("sandbox-exec", args...)
 	c.Dir = s.workDir
 	for _, e := range cmd.Env {
 		c.Env = append(c.Env, e)
@@ -27,26 +31,50 @@ func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (ope
 	}
 
 	var stdout, stderr strings.Builder
-	c.Stdout = &stdout
-	c.Stderr = &stderr
+	outW := io.Writer(&stdout)
+	errW := io.Writer(&stderr)
+	if cmd.StdoutW != nil {
+		outW = io.MultiWriter(&stdout, cmd.StdoutW)
+	}
+	if cmd.StderrW != nil {
+		errW = io.MultiWriter(&stderr, cmd.StderrW)
+	}
+	c.Stdout = outW
+	c.Stderr = errW
 
-	err := c.Run()
-	result := openagent.Result{
-		Stdout:   stdout.String(),
-		Stderr:   stderr.String(),
-		ExitCode: 0,
+	if err := c.Start(); err != nil {
+		return openagent.Result{}, fmt.Errorf("native sandbox (darwin): %w", err)
 	}
-	if err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			result.ExitCode = exitErr.ExitCode()
-			return result, nil
+
+	waitCh := make(chan error, 1)
+	go func() { waitCh <- c.Wait() }()
+
+	select {
+	case <-ctx.Done():
+		return openagent.Result{
+			Stdout:   stdout.String(),
+			Stderr:   stderr.String(),
+			ExitCode: -1,
+			PID:      c.Process.Pid,
+		}, openagent.ErrProcessRunning
+	case err := <-waitCh:
+		result := openagent.Result{
+			Stdout: stdout.String(),
+			Stderr: stderr.String(),
+			PID:    c.Process.Pid,
 		}
-		return result, fmt.Errorf("native sandbox (darwin): %w", err)
+		if err != nil {
+			if exitErr, ok := err.(*exec.ExitError); ok {
+				result.ExitCode = exitErr.ExitCode()
+				return result, nil
+			}
+			return result, fmt.Errorf("native sandbox (darwin): %w", err)
+		}
+		return result, nil
 	}
-	return result, nil
 }
 
-func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command) <-chan openagent.ToolStreamChunk {
+func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd *openagent.Command) <-chan openagent.ToolStreamChunk {
 	ch := make(chan openagent.ToolStreamChunk, 16)
 	go func() {
 		defer close(ch)
@@ -54,7 +82,7 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 		args := []string{"-p", profile, "--", cmd.Program}
 		args = append(args, cmd.Args...)
 
-		c := exec.CommandContext(ctx, "sandbox-exec", args...)
+		c := exec.Command("sandbox-exec", args...)
 		c.Dir = s.workDir
 		for _, e := range cmd.Env {
 			c.Env = append(c.Env, e)
@@ -63,16 +91,20 @@ func (s *Sandbox) confineAndRunStream(ctx context.Context, cmd openagent.Command
 			c.Stdin = strings.NewReader(cmd.Stdin)
 		}
 
-		stdout, _ := c.StdoutPipe()
-		stderr, _ := c.StderrPipe()
+		// Manual pipes so we can tee to file writers.
+		soutR, soutW := io.Pipe()
+		serrR, serrW := io.Pipe()
+		setupPipeWriters(c, soutW, serrW, cmd.StdoutW, cmd.StderrW)
+
 		if err := c.Start(); err != nil {
 			ch <- openagent.ToolStreamChunk{Error: fmt.Errorf("native sandbox (darwin): %w", err)}
 			return
 		}
+		cmd.PID = c.Process.Pid
 
 		done := make(chan struct{}, 2)
-		go readLines(stdout, ch, done)
-		go readLines(stderr, ch, done)
+		go readLines(soutR, ch, done)
+		go readLines(serrR, ch, done)
 		<-done
 		<-done
 		_ = c.Wait()

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -21,6 +22,7 @@ import (
 	"github.com/yusheng-g/openagent-go/plan"
 	wasm "github.com/yusheng-g/openagent-go/plugin/agent/wasm"
 	"github.com/yusheng-g/openagent-go/plugin/wasmhost"
+	"github.com/yusheng-g/openagent-go/process"
 	"github.com/yusheng-g/openagent-go/session"
 	"github.com/yusheng-g/openagent-go/slash"
 	opentool "github.com/yusheng-g/openagent-go/tool"
@@ -128,6 +130,10 @@ type agentSession struct {
 	// duplicate injection on repeated enter_plan_mode calls within
 	// the same turn.
 	injectedPlanTools bool
+
+	// processMgr tracks background processes started by the shell tool.
+	// Created on session start, cleaned up on deletion.
+	processMgr *process.Manager
 }
 
 // NewAgentServer creates an AgentServer wrapping the given agent.
@@ -477,6 +483,14 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 		mcpSessions:           mcpSessions,
 		mcpTools:              mcpTools,
 	}
+
+	// Create per-session process manager for long-running shell commands.
+	if req.Cwd != "" { // require cwd but put files in /tmp
+		pm, err := process.NewManager(filepath.Join(os.TempDir(), "openagent", "sess-"+string(id)))
+		if err == nil {
+			ss.processMgr = pm
+		}
+	}
 	s.putSession(id, ss)
 	s.saveMeta(string(id), req.Cwd, "acp", req.Meta)
 	if s.PluginMgr != nil {
@@ -517,6 +531,14 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 		}
 		// Reconnect MCP servers and inject tools for this session.
 		ss.mcpSessions, ss.mcpTools = s.connectMCP(ctx, req.McpServers)
+
+		// Create per-session process manager for long-running shell commands.
+		if req.Cwd != "" {
+			pm, err := process.NewManager(filepath.Join(os.TempDir(), "openagent", "sess-"+string(req.SessionID)))
+			if err == nil {
+				ss.processMgr = pm
+			}
+		}
 		s.putSession(req.SessionID, ss)
 	}
 
@@ -646,6 +668,15 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 		}
 		// Reconnect MCP servers and inject tools for this session.
 		ss.mcpSessions, ss.mcpTools = s.connectMCP(ctx, req.McpServers)
+
+		// Create per-session process manager for shell tool background processes.
+		if req.Cwd != "" {
+			pm, err := process.NewManager(filepath.Join(os.TempDir(), "openagent", "sess-"+string(req.SessionID)))
+			if err == nil {
+				ss.processMgr = pm
+			}
+		}
+
 		s.putSession(req.SessionID, ss)
 	}
 	// Load persisted plan into memory (no replay per ACP spec:
@@ -665,12 +696,6 @@ func (s *AgentServer) OnCloseSession(ctx context.Context, req openacp.CloseSessi
 		s.disconnectMCP(ss.mcpSessions)
 	}
 	s.removeSession(req.SessionID)
-	if s.SessionStore != nil {
-		_ = s.SessionStore.Delete(ctx, string(req.SessionID))
-	}
-	if s.Mem != nil {
-		_ = s.Mem.DeleteSession(ctx, string(req.SessionID))
-	}
 	return &openacp.CloseSessionResponse{}, nil
 }
 
@@ -681,6 +706,9 @@ func (s *AgentServer) OnDeleteSession(ctx context.Context, req openacp.DeleteSes
 	ss := s.getSession(req.SessionID)
 	if ss != nil {
 		s.disconnectMCP(ss.mcpSessions)
+		if ss.processMgr != nil {
+			ss.processMgr.Cleanup()
+		}
 	}
 	s.removeSession(req.SessionID)
 	if s.SessionStore != nil {
@@ -992,6 +1020,12 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	if s.PluginMgr != nil {
 		rt := wasm.BuildAgentRuntime(agent, &oaSession, s.SetModel)
 		ctx = wasmhost.WithAgentRuntime(ctx, rt)
+	}
+
+	// Inject ProcessManager so the shell tool can persist
+	// long-running process output across turns.
+	if ss.processMgr != nil {
+		ctx = process.WithManager(ctx, ss.processMgr)
 	}
 
 	// ── Register mode-specific planning tools ──

@@ -1,6 +1,15 @@
 package openagent
 
-import "context"
+import (
+	"context"
+	"errors"
+	"io"
+)
+
+// ErrProcessRunning is returned by Sandbox.Run when the command is still
+// running after ctx expires. The returned Result contains partial stdout/stderr
+// and the process PID so the caller can monitor or kill it later.
+var ErrProcessRunning = errors.New("process still running")
 
 // Command represents a command to execute in a sandbox.
 type Command struct {
@@ -9,6 +18,17 @@ type Command struct {
 	Env     []string // environment variables (KEY=VALUE)
 	WorkDir string   // working directory
 	Stdin   string   // optional stdin content
+
+	// StdoutW, if set, receives a copy of everything written to stdout.
+	// Used by ProcessManager to persist output to disk for long-running commands.
+	StdoutW io.Writer
+	// StderrW is like StdoutW but for stderr.
+	StderrW io.Writer
+
+	// PID is set by the sandbox after the process starts. The caller can
+	// read it after Run/RunStream returns (or after the first stream chunk
+	// arrives) to get the OS process ID.
+	PID int
 }
 
 // Result is the output of a command executed in a sandbox.
@@ -16,6 +36,10 @@ type Result struct {
 	Stdout   string `json:"stdout"`
 	Stderr   string `json:"stderr"`
 	ExitCode int    `json:"exit_code"`
+
+	// PID is the OS process ID of the outermost sandbox process
+	// (e.g. bwrap or bash). Valid even when ExitCode == -1 (still running).
+	PID int `json:"pid,omitempty"`
 }
 
 // Sandbox isolates command execution. Tool implementations that execute
