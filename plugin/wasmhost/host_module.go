@@ -97,6 +97,10 @@ func (h *HostAPI) RegisterHostModule(ctx context.Context, rt wazero.Runtime) err
 			headersPtr, headersLen uint32,
 			bodyPtr, bodyLen uint32) uint64 {
 
+			if h.HTTP == nil {
+				return writeJSON(ctx, mod, map[string]string{"error": "http not available"})
+			}
+
 			method := read(mod, methodPtr, methodLen)
 			url := read(mod, urlPtr, urlLen)
 			headersRaw := read(mod, headersPtr, headersLen)
