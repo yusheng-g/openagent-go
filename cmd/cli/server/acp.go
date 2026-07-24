@@ -93,7 +93,7 @@ func RunACP(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 
 	// Plugin manager — loads agent:tools, agent:observers, agent:sessions.
 	pluginDir := filepath.Join(profilesDir, "plugins")
-	mgr := wasm.NewManager(pluginDir).WithHostAPI(&wasmhost.HostAPI{Logger: &logAdapter{}})
+	mgr := wasm.NewManager(pluginDir).WithHostAPI(wasmhost.NewHostAPI(openKeyring()))
 	if err := mgr.Discover(ctx); err != nil {
 		slog.Warn("plugin discover failed", "error", err)
 	} else {
