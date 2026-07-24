@@ -24,6 +24,11 @@ import (
 // Falls back to unsandboxed execution with a warning if bwrap is not found
 // or if bwrap fails to start (e.g. "setting up uid map: Permission denied"
 // in containers that block user-namespace setup).
+//
+// When cmd.StdoutW/cmd.StderrW are *os.File (e.g. from process.Manager),
+// they are used directly as the child's stdout/stderr. This avoids OS pipes
+// that would break when the parent Go process exits and ensures output
+// persists even if the parent terminates while the command is still running.
 func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (openagent.Result, error) {
 	args, ok := s.bwrapArgs(cmd)
 	if !ok {
@@ -40,17 +45,8 @@ func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (ope
 		c.Stdin = strings.NewReader(cmd.Stdin)
 	}
 
-	var stdout, stderr strings.Builder
-	outW := io.Writer(&stdout)
-	errW := io.Writer(&stderr)
-	if cmd.StdoutW != nil {
-		outW = io.MultiWriter(&stdout, cmd.StdoutW)
-	}
-	if cmd.StderrW != nil {
-		errW = io.MultiWriter(&stderr, cmd.StderrW)
-	}
-	c.Stdout = outW
-	c.Stderr = errW
+	var co cmdOutput
+	co.configure(c, cmd)
 
 	if err := c.Start(); err != nil {
 		return openagent.Result{}, fmt.Errorf("native sandbox (linux): %w", err)
@@ -61,25 +57,20 @@ func (s *Sandbox) confineAndRun(ctx context.Context, cmd openagent.Command) (ope
 
 	select {
 	case <-ctx.Done():
-		return openagent.Result{
-			Stdout:   stdout.String(),
-			Stderr:   stderr.String(),
-			ExitCode: -1,
-			PID:      c.Process.Pid,
-		}, openagent.ErrProcessRunning
+		co.readFiles()
+		return co.partialResult(c.Process.Pid), openagent.ErrProcessRunning
+
 	case err := <-waitCh:
-		result := openagent.Result{
-			Stdout: stdout.String(),
-			Stderr: stderr.String(),
-			PID:    c.Process.Pid,
-		}
+		co.readFiles()
+		result := co.result(c.Process.Pid)
+		writeExitCode(err, cmd)
 		if err != nil {
 			if exitErr, ok := err.(*exec.ExitError); ok {
 				// bwrap itself failed to set up the sandbox (not the inner
 				// command failing). Detect by: empty stdout + stderr starts
 				// with "bwrap:" — bwrap's own error messages have that prefix,
 				// while output from the sandboxed command does not.
-				if stdout.Len() == 0 && strings.HasPrefix(strings.TrimSpace(stderr.String()), "bwrap:") {
+				if result.Stdout == "" && strings.HasPrefix(strings.TrimSpace(result.Stderr), "bwrap:") {
 					return s.unconfinedRun(ctx, cmd)
 				}
 				result.ExitCode = exitErr.ExitCode()
