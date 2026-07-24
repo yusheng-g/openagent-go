@@ -84,10 +84,10 @@ func (s *Server) Run(ctx context.Context) error {
 
 // RunTransport starts the ACP server on custom I/O streams.
 func (s *Server) RunTransport(ctx context.Context, w io.Writer, r io.Reader) error {
-	bw := bufio.NewWriterSize(w, 64*1024)
 	mux := &mux{
 		handler:       s.handler,
-		bw:            bw,
+		w:             w,
+		notifyBW:      bufio.NewWriterSize(w, 64*1024),
 		cancelPending: make(map[string]context.CancelFunc),
 		clientCalls:   make(map[string]*clientCall),
 		logger:        s.logger,
@@ -152,15 +152,21 @@ type clientCall struct {
 // mux reads JSON-RPC 2.0 messages from stdin, routes them to handler
 // methods, and writes responses (and notifications) to stdout.
 //
-// Writes go through a bufio.Writer (bw). A periodic flush goroutine
-// swaps bw under bwMu, then flushes the old buffer outside the lock —
-// pipe backpressure blocks only the flush goroutine, never a handler.
+// Notification writes (session/update) go through notifyBW — a buffered
+// writer that decouples handler writes from pipe backpressure. JSON-RPC
+// responses (writeResult, writeError, request) and SendSessionUpdate
+// write directly to w under mu — they are synchronous and must flush
+// immediately.
 type mux struct {
 	handler AgentHandler
-	w       io.Writer     // underlying pipe/tcp writer, for creating fresh buffers
-	bw      *bufio.Writer // current buffered writer, swapped by flush goroutine
-	bwMu    sync.Mutex    // guards bw pointer and Write calls
-	mu      sync.Mutex    // guards cancelPending
+	w       io.Writer
+	mu      sync.Mutex // guards writes to w (responses, SendSessionUpdate)
+
+	// Notification pipeline — promptSender uses this to avoid blocking
+	// the OnPrompt handler on pipe writes. A dedicated goroutine swaps
+	// the buffer and flushes outside notifyMu.
+	notifyBW    *bufio.Writer
+	notifyMu    sync.Mutex // guards notifyBW pointer and Write calls
 
 	// Prompt cancellation: client sends $/cancel_request with the
 	// JSON-RPC id of the original session/prompt request. Keys are
@@ -191,25 +197,24 @@ func (m *mux) logf(format string, args ...any) {
 // immediately.
 func (m *mux) serve(ctx context.Context, r io.Reader) error {
 	scanner := bufio.NewScanner(r)
+	scanner.Buffer(make([]byte, 0, 64*1024), 10*1024*1024)
 
-	// Swap-before-flush: the periodic flush goroutine swaps
-	// the current bufio.Writer with a fresh one under bwMu,
-	// then flushes the old buffer outside the lock. This ensures
-	// handler goroutines writing to a fresh bufio.Writer are
-	// never blocked by pipe backpressure (which only affects
-	// the old buffer being flushed).
-	flushDone := make(chan struct{})
+	// Periodic flush for notification writes (promptSender).
+	// Swap-before-flush: atomically swap the buffered writer with a
+	// fresh one under notifyMu, then flush the old buffer outside the
+	// lock. Pipe backpressure blocks only this goroutine — never a
+	// handler goroutine holding notifyMu.
+	notifyFlushDone := make(chan struct{})
 	defer func() {
-		<-flushDone
-		// Final drain on exit.
-		m.bwMu.Lock()
-		old := m.bw
-		m.bw = bufio.NewWriterSize(m.w, 64*1024)
-		m.bwMu.Unlock()
+		<-notifyFlushDone
+		m.notifyMu.Lock()
+		old := m.notifyBW
+		m.notifyBW = bufio.NewWriterSize(m.w, 64*1024)
+		m.notifyMu.Unlock()
 		old.Flush()
 	}()
 	go func() {
-		defer close(flushDone)
+		defer close(notifyFlushDone)
 		ticker := time.NewTicker(100 * time.Millisecond)
 		defer ticker.Stop()
 		for {
@@ -217,16 +222,14 @@ func (m *mux) serve(ctx context.Context, r io.Reader) error {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				m.bwMu.Lock()
-				old := m.bw
-				m.bw = bufio.NewWriterSize(m.w, 64*1024)
-				m.bwMu.Unlock()
+				m.notifyMu.Lock()
+				old := m.notifyBW
+				m.notifyBW = bufio.NewWriterSize(m.w, 64*1024)
+				m.notifyMu.Unlock()
 				old.Flush()
 			}
 		}
 	}()
-
-	scanner.Buffer(make([]byte, 0, 64*1024), 10*1024*1024)
 
 	lines := make(chan []byte, 8)
 	errCh := make(chan error, 1)
@@ -373,7 +376,7 @@ func (m *mux) handleLoadSession(msg jsonrpcMessage) {
 		m.writeError(msg.ID, ErrorCodeInvalidParams, err.Error())
 		return
 	}
-	sender := &promptSender{write: m.writeBuf, sid: req.SessionID}
+	sender := &promptSender{bwMu: &m.notifyMu, bw: m.notifyBW, sid: req.SessionID}
 	resp, err := m.handler.OnLoadSession(context.Background(), req, sender)
 	if err != nil {
 		m.writeError(msg.ID, ErrorCodeInternal, err.Error())
@@ -405,7 +408,7 @@ func (m *mux) handlePrompt(msg jsonrpcMessage) {
 	m.cancelPending[reqID] = cancel
 	m.mu.Unlock()
 
-	sender := &promptSender{write: m.writeBuf, sid: req.SessionID}
+	sender := &promptSender{bwMu: &m.notifyMu, bw: m.notifyBW, sid: req.SessionID}
 	resp, err := m.handler.OnPrompt(ctx, req, sender)
 
 	// Check whether we were cancelled before the handler returned.
@@ -472,15 +475,6 @@ func dispatch[Req, Resp any](m *mux, msg jsonrpcMessage, fn func(context.Context
 	m.writeResult(msg.ID, resp)
 }
 
-// ── Buffered write ──
-
-// writeBuf appends data to the current bufio.Writer under bwMu.
-func (m *mux) writeBuf(data []byte) {
-	m.bwMu.Lock()
-	m.bw.Write(data)
-	m.bwMu.Unlock()
-}
-
 // ── Response writers ──
 
 func (m *mux) writeResult(id json.RawMessage, result any) {
@@ -492,7 +486,7 @@ func (m *mux) writeResult(id json.RawMessage, result any) {
 	}
 	data, _ := json.Marshal(resp)
 	m.mu.Lock()
-	m.bw.Write(append(data, '\n'))
+	m.w.Write(append(data, '\n'))
 	m.mu.Unlock()
 }
 
@@ -504,7 +498,7 @@ func (m *mux) writeError(id json.RawMessage, code ErrorCode, message string) {
 	}
 	data, _ := json.Marshal(resp)
 	m.mu.Lock()
-	m.bw.Write(append(data, '\n'))
+	m.w.Write(append(data, '\n'))
 	m.mu.Unlock()
 }
 
@@ -551,7 +545,7 @@ func (m *mux) request(ctx context.Context, method string, params any) (rpcRespon
 	}()
 
 	m.mu.Lock()
-	m.bw.Write(append(data, '\n'))
+	m.w.Write(append(data, '\n'))
 	m.mu.Unlock()
 
 	select {
@@ -637,7 +631,7 @@ func (m *mux) SendSessionUpdate(sid SessionId, update SessionUpdate) error {
 
 	data, _ := json.Marshal(notif)
 	m.mu.Lock()
-	_, err := m.bw.Write(append(data, '\n'))
+	_, err := m.w.Write(append(data, '\n'))
 	m.mu.Unlock()
 	return err
 }
@@ -645,11 +639,22 @@ func (m *mux) SendSessionUpdate(sid SessionId, update SessionUpdate) error {
 var _ ClientRequester = (*mux)(nil)
 var _ SessionUpdateSender = (*mux)(nil)
 
+// ── Notification write ──
+
+// notifyWrite appends data to the notification buffered writer under
+// notifyMu. Used by promptSender — never blocks on pipe writes.
+func (m *mux) notifyWrite(data []byte) {
+	m.notifyMu.Lock()
+	m.notifyBW.Write(data)
+	m.notifyMu.Unlock()
+}
+
 // ── promptSender ──
 
 type promptSender struct {
-	write func([]byte) // mux.writeBuf closure
-	sid   SessionId
+	bwMu *sync.Mutex
+	bw   *bufio.Writer
+	sid  SessionId
 }
 
 func (s *promptSender) send(update SessionUpdate) {
@@ -661,7 +666,9 @@ func (s *promptSender) send(update SessionUpdate) {
 	notif.Params = params
 
 	data, _ := json.Marshal(notif)
-	s.write(append(data, '\n'))
+	s.bwMu.Lock()
+	s.bw.Write(append(data, '\n'))
+	s.bwMu.Unlock()
 }
 
 func (s *promptSender) SendAgentMessage(text string) error {
