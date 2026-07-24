@@ -274,30 +274,32 @@ func formatShellResult(result openagent.Result) string {
 // Reads the partial output from the persisted files (written via sandbox MultiWriter).
 func formatProcessRunning(proc *process.Proc) string {
 	var b strings.Builder
+	pid := proc.PIDNow()
+	stdoutPath, stderrPath, exitCodePath := proc.Paths()
 	elapsed := time.Since(proc.StartedAt).Truncate(time.Second)
 
 	// Check if exit code is available (process completed after timeout).
 	var status string
-	if code, err := os.ReadFile(proc.ExitCodePath); err == nil {
+	if code, err := os.ReadFile(exitCodePath); err == nil {
 		status = fmt.Sprintf("exited (code: %s)", strings.TrimSpace(string(code)))
 	} else {
 		status = fmt.Sprintf("running for %v", elapsed)
 	}
-	b.WriteString(fmt.Sprintf("[process: %s] PID: %d — %s\n\n", proc.ID, proc.PID, status))
+	b.WriteString(fmt.Sprintf("[process: %s] PID: %d — %s\n\n", proc.ID, pid, status))
 
-	if stdout, err := os.ReadFile(proc.StdoutPath); err == nil && len(stdout) > 0 {
+	if stdout, err := os.ReadFile(stdoutPath); err == nil && len(stdout) > 0 {
 		b.WriteString("── stdout ──\n")
 		b.WriteString(truncateStr(string(stdout), 2000))
 		b.WriteString("\n")
 	}
-	if stderr, err := os.ReadFile(proc.StderrPath); err == nil && len(stderr) > 0 {
+	if stderr, err := os.ReadFile(stderrPath); err == nil && len(stderr) > 0 {
 		b.WriteString("── stderr ──\n")
 		b.WriteString(truncateStr(string(stderr), 500))
 		b.WriteString("\n")
 	}
 
 	b.WriteString(fmt.Sprintf("── output files ──\n%s\n%s\n%s\n",
-		proc.StdoutPath, proc.StderrPath, proc.ExitCodePath))
+		stdoutPath, stderrPath, exitCodePath))
 	return b.String()
 }
 

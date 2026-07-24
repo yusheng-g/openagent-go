@@ -49,6 +49,14 @@ type Manager struct {
 }
 
 // Proc represents a single running (or recently exited) process.
+//
+// The mutable fields (PID, dir, and the three *Path fields) are written
+// by SetPID — called from the runner's tool goroutine once the OS PID is
+// known — and read concurrently by Cleanup (session deletion, a
+// different goroutine) and by the formatter that renders the model's
+// result. They are guarded by mu. The immutable fields (ID, Command,
+// StartedAt) and the file handles are set once at Create time and need
+// no locking.
 type Proc struct {
 	ID          string    // short hex ID, e.g. "a1b2c3d4"
 	PID         int       // host OS PID of the sandbox wrapper (bwrap / bash)
@@ -58,6 +66,7 @@ type Proc struct {
 	ExitCodePath string   // absolute path to exit.code
 	StartedAt   time.Time
 
+	mu       sync.Mutex // guards PID, dir, StdoutPath, StderrPath, ExitCodePath
 	dir      string    // proc subdirectory
 	stdoutF  *os.File  // open file handle for stdout
 	stderrF  *os.File  // open file handle for stderr
@@ -90,6 +99,8 @@ func (p *Proc) Close() {
 // Safe to call while files are still being written (Linux allows rename
 // of open files). Call after sandbox.Run returns the OS PID.
 func (p *Proc) SetPID(pid int) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 	p.PID = pid
 	newDir := filepath.Join(filepath.Dir(p.dir), fmt.Sprintf("proc-%d", pid))
 	if err := os.Rename(p.dir, newDir); err != nil {
@@ -99,6 +110,30 @@ func (p *Proc) SetPID(pid int) {
 	p.StdoutPath = filepath.Join(newDir, "stdout.log")
 	p.StderrPath = filepath.Join(newDir, "stderr.log")
 	p.ExitCodePath = filepath.Join(newDir, "exit.code")
+}
+
+// PIDNow returns the current OS PID under the lock. Use this instead of
+// reading p.PID directly from a goroutine other than the one that called
+// SetPID.
+func (p *Proc) PIDNow() int {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.PID
+}
+
+// DirNow returns the current proc directory under the lock.
+func (p *Proc) DirNow() string {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.dir
+}
+
+// Paths returns the current StdoutPath, StderrPath, ExitCodePath under the
+// lock, so a concurrent SetPID rename can't hand a reader a stale path.
+func (p *Proc) Paths() (stdout, stderr, exitCode string) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	return p.StdoutPath, p.StderrPath, p.ExitCodePath
 }
 
 // NewManager creates a Manager rooted at baseDir. The directory is created
@@ -228,11 +263,11 @@ func (m *Manager) Cleanup() error {
 	m.mu.Unlock()
 
 	for _, p := range procs {
-		if p.PID > 0 {
-			syscall.Kill(p.PID, syscall.SIGKILL)
+		if pid := p.PIDNow(); pid > 0 {
+			syscall.Kill(pid, syscall.SIGKILL)
 		}
 		p.Close()
-		os.RemoveAll(p.dir)
+		os.RemoveAll(p.DirNow())
 	}
 	return os.RemoveAll(m.baseDir)
 }
