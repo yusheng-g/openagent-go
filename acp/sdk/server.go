@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -84,10 +85,15 @@ func (s *Server) Run(ctx context.Context) error {
 
 // RunTransport starts the ACP server on custom I/O streams.
 func (s *Server) RunTransport(ctx context.Context, w io.Writer, r io.Reader) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	mux := &mux{
 		handler:       s.handler,
 		w:             w,
-		notifyBW:      bufio.NewWriterSize(w, 64*1024),
+		queue:         newWriteQueue(),
+		writeDone:     make(chan struct{}),
+		cancelWrite:   cancel,
 		cancelPending: make(map[string]context.CancelFunc),
 		clientCalls:   make(map[string]*clientCall),
 		logger:        s.logger,
@@ -95,6 +101,7 @@ func (s *Server) RunTransport(ctx context.Context, w io.Writer, r io.Reader) err
 	if u, ok := s.handler.(ClientRPCUser); ok {
 		u.SetClientRequester(mux)
 	}
+	go mux.writerLoop()
 	return mux.serve(ctx, r)
 }
 
@@ -152,19 +159,28 @@ type clientCall struct {
 // mux reads JSON-RPC 2.0 messages from stdin, routes them to handler
 // methods, and writes responses (and notifications) to stdout.
 //
-// Notification writes (promptSender) spawn a goroutine per send that
-// acquires mu and writes to w directly. A blocked pipe write blocks
-// only that goroutine, never the handler.
+// All writes to w go through a single writer goroutine fed by an
+// unbounded FIFO queue ([writeQueue]). Handler code and tool goroutines
+// never touch w directly — they only enqueue pre-marshaled frames via
+// [mux.enqueue]. A blocked pipe (slow client) therefore blocks only the
+// single writer goroutine, never any handler or tool goroutine, which is
+// what prevents the prompt-turn deadlocks the prior dual-mutex + bufio
+// transport produced under load.
 type mux struct {
 	handler AgentHandler
-	w       io.Writer
-	mu      sync.Mutex // guards writes to w (responses, SendSessionUpdate)
-	notifyBW    *bufio.Writer // notification buffer, swapped by flush goroutine
-	notifyMu    sync.Mutex    // guards notifyBW pointer and Write calls (responses and notifications)
+	w       io.Writer // written ONLY by writerLoop
+
+	// Single-writer transport.
+	queue       *writeQueue
+	writeDone   chan struct{}    // closed when writerLoop exits
+	writeErr    error            // first write error; set once via closeMu
+	closeMu     sync.Mutex       // guards writeErr (set-once)
+	cancelWrite context.CancelFunc // cancels serve ctx on transport failure
 
 	// Prompt cancellation: client sends $/cancel_request with the
 	// JSON-RPC id of the original session/prompt request. Keys are
-	// normalised via idString.
+	// normalised via idString. Guarded by cancelMu.
+	cancelMu      sync.Mutex
 	cancelPending map[string]context.CancelFunc
 
 	// Agent→Client RPC state.
@@ -176,7 +192,90 @@ type mux struct {
 	// within a session. LoadOrStore acquires the session lock.
 	sessionLocks sync.Map // SessionId → *sync.Mutex
 
+	// promptWG tracks in-flight session/prompt handlers (launched via
+	// `go m.handlePrompt`). serve waits on it during shutdown so that a
+	// turn's final response/notification enqueues land before the queue
+	// is closed — preventing a response from being dropped when the
+	// client disconnects (stdin EOF) or the context is cancelled mid-turn.
+	promptWG sync.WaitGroup
+
 	logger *slog.Logger
+}
+
+// errQueueClosed is returned by writeQueue.push after Close (transport
+// has failed / shut down) and by writeQueue.pop once closed and drained.
+var errQueueClosed = errors.New("acp: transport closed")
+
+// writeQueue is an unbounded FIFO of pre-marshaled JSON-RPC frames (each
+// []byte already contains its trailing '\n'). It never blocks producers
+// except after Close, which transitions the queue to a fast-fail state.
+// A single consumer (writerLoop) drains it.
+//
+// An unbounded queue is required: the stdout pipe can stall arbitrarily
+// long when the client reads slowly, and any bounded buffer (channel or
+// fixed bufio.Writer) would back-pressure producers and reintroduce the
+// deadlock this transport was rewritten to eliminate.
+type writeQueue struct {
+	mu     sync.Mutex
+	cond   *sync.Cond
+	frames [][]byte
+	closed bool
+}
+
+func newWriteQueue() *writeQueue {
+	q := &writeQueue{}
+	q.cond = sync.NewCond(&q.mu)
+	return q
+}
+
+// push appends a frame. It never blocks. Returns errQueueClosed if the
+// queue is closed (transport failed); callers treat that as "client is
+// gone". frame must be owned by the caller (no aliasing).
+func (q *writeQueue) push(frame []byte) error {
+	q.mu.Lock()
+	if q.closed {
+		q.mu.Unlock()
+		return errQueueClosed
+	}
+	q.frames = append(q.frames, frame)
+	q.mu.Unlock()
+	q.cond.Signal()
+	return nil
+}
+
+// pop returns the next frame, blocking until one arrives. Returns
+// errQueueClosed when the queue is closed AND drained. Used only by
+// the single writer goroutine.
+func (q *writeQueue) pop() ([]byte, error) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	for len(q.frames) == 0 && !q.closed {
+		q.cond.Wait()
+	}
+	if len(q.frames) == 0 { // closed && drained
+		return nil, errQueueClosed
+	}
+	f := q.frames[0]
+	q.frames[0] = nil
+	q.frames = q.frames[1:]
+	return f, nil
+}
+
+// close marks the queue closed. Pending frames remain drainable by the
+// writer; new pushes fast-fail. Wakes the consumer.
+func (q *writeQueue) close() {
+	q.mu.Lock()
+	q.closed = true
+	q.mu.Unlock()
+	q.cond.Broadcast()
+}
+
+// drainAndDrop discards all pending frames; used after the writer exits
+// on a write error so no producer can linger on a dead transport.
+func (q *writeQueue) drainAndDrop() {
+	q.mu.Lock()
+	q.frames = nil
+	q.mu.Unlock()
 }
 
 func (m *mux) logf(format string, args ...any) {
@@ -193,35 +292,23 @@ func (m *mux) serve(ctx context.Context, r io.Reader) error {
 	scanner := bufio.NewScanner(r)
 	scanner.Buffer(make([]byte, 0, 64*1024), 10*1024*1024)
 
-	// Flush goroutine for notification writes (promptSender).
-	// Swaps notifyBW under notifyMu, then flushes the old buffer
-	// outside the lock — pipe writes block only this goroutine.
-	notifyDone := make(chan struct{})
-	defer func() {
-		<-notifyDone
-		m.notifyMu.Lock()
-		old := m.notifyBW
-		m.notifyBW = bufio.NewWriterSize(m.w, 64*1024)
-		m.notifyMu.Unlock()
-		old.Flush()
-	}()
-	go func() {
-		defer close(notifyDone)
-		t := time.NewTicker(100 * time.Millisecond)
-		defer t.Stop()
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case <-t.C:
-				m.notifyMu.Lock()
-				old := m.notifyBW
-				m.notifyBW = bufio.NewWriterSize(m.w, 64*1024)
-				m.notifyMu.Unlock()
-				old.Flush()
-			}
-		}
-	}()
+	// Writer lifecycle. Defer order is LIFO (last declared runs first):
+	//   1. cancelInFlightPrompts() — cancel any still-running prompt
+	//      handlers so they cannot block on a client RPC that the now-gone
+	//      client will never answer.
+	//   2. promptWG.Wait() — wait for in-flight prompt handlers to finish
+	//      pushing their final response/notification frames BEFORE we close
+	//      the queue, so a mid-turn disconnect or ctx cancel cannot drop a
+	//      response.
+	//   3. queue.close()   — signal the writer no more frames are coming
+	//      so it drains the remaining ones.
+	//   4. <-writeDone     — block until the writer goroutine has exited,
+	//      guaranteeing serve() (and RunTransport) does not return before
+	//      all queued frames are flushed.
+	defer func() { <-m.writeDone }()
+	defer m.queue.close()
+	defer m.promptWG.Wait()
+	defer m.cancelInFlightPrompts()
 
 	lines := make(chan []byte, 8)
 	errCh := make(chan error, 1)
@@ -322,7 +409,13 @@ func (m *mux) route(msg jsonrpcMessage) {
 			// (permission requests, fs reads, terminal) deadlocks:
 			// the response arrives on stdin but serve() is
 			// blocked in route() waiting for OnPrompt to return.
-			go m.handlePrompt(msg)
+			// Tracked on promptWG so serve()'s shutdown drains the
+			// turn's final response before the queue closes.
+			m.promptWG.Add(1)
+			go func() {
+				defer m.promptWG.Done()
+				m.handlePrompt(msg)
+			}()
 		}
 	case "session/set_mode":
 		if isReq {
@@ -396,9 +489,9 @@ func (m *mux) handlePrompt(msg jsonrpcMessage) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	reqID := idString(msg.ID)
-	m.mu.Lock()
+	m.cancelMu.Lock()
 	m.cancelPending[reqID] = cancel
-	m.mu.Unlock()
+	m.cancelMu.Unlock()
 
 	sender := &promptSender{m: m, sid: req.SessionID}
 	resp, err := m.handler.OnPrompt(ctx, req, sender)
@@ -408,9 +501,9 @@ func (m *mux) handlePrompt(msg jsonrpcMessage) {
 	wasCancelled := ctx.Err() != nil
 	cancel()
 
-	m.mu.Lock()
+	m.cancelMu.Lock()
 	delete(m.cancelPending, reqID)
-	m.mu.Unlock()
+	m.cancelMu.Unlock()
 
 	if err != nil {
 		// Only report cancellation if the handler was still running
@@ -443,12 +536,24 @@ func (m *mux) handleCancelRequest(msg jsonrpcMessage) {
 	if json.Unmarshal(msg.Params, &notif) != nil {
 		return
 	}
-	m.mu.Lock()
+	m.cancelMu.Lock()
 	cancel, ok := m.cancelPending[string(notif.RequestID)]
-	m.mu.Unlock()
+	m.cancelMu.Unlock()
 	if ok {
 		cancel()
 	}
+}
+
+// cancelInFlightPrompts cancels every still-running prompt handler's
+// context. Called during serve() shutdown (before promptWG.Wait) so a
+// handler blocked on an Agent→Client RPC that the now-disconnected client
+// will never answer is released instead of stranding shutdown.
+func (m *mux) cancelInFlightPrompts() {
+	m.cancelMu.Lock()
+	for _, cancel := range m.cancelPending {
+		cancel()
+	}
+	m.cancelMu.Unlock()
 }
 
 // ── Generic dispatcher ──
@@ -476,10 +581,7 @@ func (m *mux) writeResult(id json.RawMessage, result any) {
 		ID:      id,
 		Result:  body,
 	}
-	data, _ := json.Marshal(resp)
-	m.mu.Lock()
-	m.w.Write(append(data, '\n'))
-	m.mu.Unlock()
+	_ = m.enqueue(resp)
 }
 
 func (m *mux) writeError(id json.RawMessage, code ErrorCode, message string) {
@@ -488,10 +590,53 @@ func (m *mux) writeError(id json.RawMessage, code ErrorCode, message string) {
 		ID:      id,
 		Error:   &Error{Code: code, Message: message},
 	}
-	data, _ := json.Marshal(resp)
-	m.mu.Lock()
-	m.w.Write(append(data, '\n'))
-	m.mu.Unlock()
+	_ = m.enqueue(resp)
+}
+
+// enqueue marshals a JSON-RPC message and pushes it (with trailing '\n')
+// to the single-writer queue. ALL writes to m.w go through here. The
+// error is returned so callers that care (agent→client request) can
+// react; response/notification callers discard it, but a failure still
+// shuts the transport down centrally via writerLoop.
+func (m *mux) enqueue(msg jsonrpcMessage) error {
+	data, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	return m.queue.push(append(data, '\n'))
+}
+
+// writerLoop is the ONLY goroutine that writes to m.w. It drains the
+// unbounded queue frame by frame. On the first write error it records
+// the error, closes the queue (so producers fast-fail), cancels the
+// serve context (unblocking serve and any pending agent→client request
+// selects), and exits.
+func (m *mux) writerLoop() {
+	defer close(m.writeDone)
+	for {
+		frame, err := m.queue.pop()
+		if err != nil {
+			return // queue closed and drained
+		}
+		if _, werr := m.w.Write(frame); werr != nil {
+			m.logf("transport write error: %v", werr)
+			m.setWriteErr(werr)
+			m.queue.close() // producers fast-fail from now on
+			if m.cancelWrite != nil {
+				m.cancelWrite() // unblock serve() + pending request() selects
+			}
+			m.queue.drainAndDrop()
+			return
+		}
+	}
+}
+
+func (m *mux) setWriteErr(err error) {
+	m.closeMu.Lock()
+	if m.writeErr == nil {
+		m.writeErr = err
+	}
+	m.closeMu.Unlock()
 }
 
 // ── Agent→Client RPC ──
@@ -509,6 +654,15 @@ func (m *mux) nextID() string {
 // request sends a JSON-RPC 2.0 request to the client, registers a pending
 // call, and blocks until the response arrives or ctx is cancelled.
 func (m *mux) request(ctx context.Context, method string, params any) (rpcResponse, error) {
+	// If the caller supplied no deadline, cap the call so a non-responsive
+	// client cannot hang the agent indefinitely (e.g. an abandoned manual-
+	// mode approval dialog). Caller-supplied deadlines take precedence.
+	if _, ok := ctx.Deadline(); !ok {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, 5*time.Minute)
+		defer cancel()
+	}
+
 	id := m.nextID()
 	idJSON, _ := json.Marshal(id)
 
@@ -522,8 +676,6 @@ func (m *mux) request(ctx context.Context, method string, params any) (rpcRespon
 		req.Params = p
 	}
 
-	data, _ := json.Marshal(req)
-
 	callKey := idString(idJSON)
 	call := &clientCall{done: make(chan struct{})}
 	m.clientMu.Lock()
@@ -536,9 +688,9 @@ func (m *mux) request(ctx context.Context, method string, params any) (rpcRespon
 		m.clientMu.Unlock()
 	}()
 
-	m.mu.Lock()
-	m.w.Write(append(data, '\n'))
-	m.mu.Unlock()
+	if err := m.enqueue(req); err != nil {
+		return rpcResponse{}, err // transport dead — give up before waiting
+	}
 
 	select {
 	case <-call.done:
@@ -610,9 +762,9 @@ func (m *mux) ReleaseTerminal(ctx context.Context, req ReleaseTerminalRequest) (
 	return doCall[ReleaseTerminalRequest, ReleaseTerminalResponse](m, ctx, "terminal/release", req)
 }
 
-// SendSessionUpdate writes a session/update notification directly to stdout.
-// Used by handlers that need to send notifications outside of a prompt turn
-// (e.g. current_mode_update after session/set_mode).
+// SendSessionUpdate writes a session/update notification (out of a
+// prompt turn, e.g. current_mode_update after session/set_mode) through
+// the single-writer queue.
 func (m *mux) SendSessionUpdate(sid SessionId, update SessionUpdate) error {
 	notif := jsonrpcMessage{
 		JSONRPC: "2.0",
@@ -620,27 +772,11 @@ func (m *mux) SendSessionUpdate(sid SessionId, update SessionUpdate) error {
 	}
 	params, _ := json.Marshal(SessionNotification{SessionID: sid, Update: update})
 	notif.Params = params
-
-	data, _ := json.Marshal(notif)
-	m.mu.Lock()
-	_, err := m.w.Write(append(data, '\n'))
-	m.mu.Unlock()
-	return err
+	return m.enqueue(notif)
 }
 
 var _ ClientRequester = (*mux)(nil)
 var _ SessionUpdateSender = (*mux)(nil)
-
-// ── Notification write ──
-
-// notifyWrite appends data to the notification buffer under notifyMu.
-// bufio.Writer.Write copies to memory — never blocks on pipe writes.
-// The flush goroutine handles actual pipe I/O outside any lock.
-func (m *mux) notifyWrite(data []byte) {
-	m.notifyMu.Lock()
-	m.notifyBW.Write(data)
-	m.notifyMu.Unlock()
-}
 
 // ── promptSender ──
 
@@ -649,6 +785,11 @@ type promptSender struct {
 	sid SessionId
 }
 
+// send enqueues a session/update notification for this turn. It never
+// blocks — the unbounded queue absorbs bursts from concurrent tool
+// goroutines; the single writer goroutine performs the actual pipe I/O.
+// A transport failure is recorded centrally by writerLoop and surfaces
+// as the turn unwinding.
 func (s *promptSender) send(update SessionUpdate) {
 	notif := jsonrpcMessage{
 		JSONRPC: "2.0",
@@ -656,9 +797,7 @@ func (s *promptSender) send(update SessionUpdate) {
 	}
 	params, _ := json.Marshal(SessionNotification{SessionID: s.sid, Update: update})
 	notif.Params = params
-
-	data, _ := json.Marshal(notif)
-	s.m.notifyWrite(append(data, '\n'))
+	_ = s.m.enqueue(notif)
 }
 
 func (s *promptSender) SendAgentMessage(text string) error {
