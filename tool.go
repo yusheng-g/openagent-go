@@ -45,6 +45,28 @@ type SelfApproving interface {
 	CanSelfApprove(args json.RawMessage) bool
 }
 
+// ReadOnly is an optional interface for tools that have no side effects
+// on the file system or external state. Read-only tools are automatically
+// available in plan mode and other restricted contexts where execution
+// tools are disabled.
+//
+// Examples: read, grep, ls, read_client_file.
+type ReadOnly interface {
+	Tool
+	IsReadOnly() bool
+}
+
+// PlanTool is an optional interface for tools that participate in the
+// plan workflow (plan_create, plan_update, exit_plan_mode). These tools
+// are automatically available in plan mode alongside ReadOnly tools.
+//
+// enter_plan_mode does NOT implement PlanTool — it is only available
+// outside plan mode (auto/manual).
+type PlanTool interface {
+	Tool
+	IsPlanTool() bool
+}
+
 // StreamExecutor is an optional interface for tools that produce streaming
 // output during execution. The Runner checks for this interface before
 // calling [Tool.Execute]:

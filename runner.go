@@ -616,6 +616,24 @@ func (r *runner) prepareMemory(ctx context.Context, session Session) ([]Message,
 	if keep >= len(msgs) {
 		return msgs, ci
 	}
+
+	// The overflow boundary may land on a non-first tool result in a
+	// batch (e.g. assistant with [call_00, call_01] → tool call_00 →
+	// tool call_01 ← boundary here). SafeCompressionBoundary only
+	// extends when the last compressed message is an assistant with
+	// tool_calls; it does not catch the n≥2 case. Skip leading orphan
+	// tool results to avoid API 400 errors ("Messages with role 'tool'
+	// must be a response to a preceding message with 'tool_calls'").
+	for keep < len(msgs) && msgs[keep].Role == RoleTool {
+		keep++
+	}
+	if keep >= len(msgs) {
+		// All remaining messages are orphan tools. Keep the last
+		// message so the return is non-empty (the compressed summary
+		// carried in the prompt provides context).
+		return msgs[len(msgs)-1:], ci
+	}
+
 	return msgs[keep:], ci
 }
 

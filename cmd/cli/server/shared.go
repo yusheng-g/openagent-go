@@ -279,9 +279,17 @@ func buildOpts(opts []openagent.AgentOption, caps Capabilities, model openagent.
 		opts = append(opts, openagent.WithInputGuard(g))
 		opts = append(opts, openagent.WithOutputGuard(g.Output()))
 	}
+	// ArtifactHook is always enabled — it prevents context-window blowup
+	// by saving large tool results to disk regardless of --hooks flag.
+	artifactHook := &opentool.ArtifactHook{}
 	if caps.OnHooks() {
-		opts = append(opts, openagent.WithRunHooks(buildSlogHooks()))
+		opts = append(opts, openagent.WithRunHooks(
+			openagent.MultiRunHooks(artifactHook, buildSlogHooks()),
+		))
+	} else {
+		opts = append(opts, openagent.WithRunHooks(artifactHook))
 	}
+
 	if caps.OnObserver() {
 		opts = append(opts, openagent.WithRunObserver(buildSlogObserver()))
 	}

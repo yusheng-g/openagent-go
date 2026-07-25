@@ -68,6 +68,8 @@ Once the plan is complete, call exit_plan_mode to return to your previous mode a
 	}
 }
 
+func (t *CreateTool) IsPlanTool() bool { return true }
+
 // Execute implements openagent.Tool.
 func (t *CreateTool) Execute(ctx context.Context, args json.RawMessage) (string, error) {
 	var params struct {
@@ -182,6 +184,8 @@ func (t *UpdateTool) Definition() openagent.FunctionDefinition {
 	}
 }
 
+func (t *UpdateTool) IsPlanTool() bool { return true }
+
 // Execute implements openagent.Tool.
 func (t *UpdateTool) Execute(ctx context.Context, args json.RawMessage) (string, error) {
 	var params struct {
@@ -280,6 +284,8 @@ Only call this once, and only when you are ready to start executing the plan ste
 }`),
 	}
 }
+
+func (t *ExitTool) IsPlanTool() bool { return true }
 
 // Execute implements openagent.Tool. It calls the onExit callback to
 // transition the session mode, then returns confirmation text.
