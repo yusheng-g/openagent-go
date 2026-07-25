@@ -141,6 +141,7 @@ The host never distinguishes between "user config" and "plugin config". Everythi
 ```
 openagent-cli
 ├─ serve [--acp] [--port N]        Built-in: REST or ACP server
+├─ run <message>                    Built-in: one-shot chat, streaming output
 ├─ keyring                          Built-in: credential management
 │  ├─ set <key> <value>
 │  ├─ get <key>
@@ -221,7 +222,15 @@ cmd/cli/
       loader.go                Instantiate, CallInit, ReadCommands, RunCommand
       observer.go              ObserverHub: OnStartup/OnShutdown/OnCommandStart/OnCommandEnd
       abi.go                   PluginMeta, Is() matcher, CommandDef
-  server/agent.go              Build openagent.Agent from Config, REST + ACP server
+  server/
+    cli.go                     RunCLI: one-shot chat entry, reuses shared builders
+    shared.go                  Shared agent builders: buildModels, buildTools, resolveProfiles
+    http.go                    RunREST: HTTP REST + SSE server
+    acp.go                     RunACP: ACP protocol server
+    channel.go                 IM channel integration (Feishu)
+    mcp.go                     MCP server connections
+    capabilities.go            Capabilities toggle struct
+    log.go                     Rotated file logging
   plugin/pdk/rust/                    Rust SDK crate (openagent-pdk)
   examples/plugin/
     extended-settings.rs       cli:settings  — reads keyring, merges provider+env
@@ -231,6 +240,27 @@ cmd/cli/
     openagent-cli              Compiled binary
     plugins/                   Compiled .wasm files
 ```
+
+---
+
+---
+
+## `run` command
+
+`run` sends a single message to the agent and streams the response to stdout in real time.
+
+```
+openagent-cli run "analyze main.go"
+```
+
+### Design
+
+- **Thin entry point.** `main.go` calls `server.RunCLI(ctx, cfg, message)` — a single function that encapsulates all setup and I/O.
+- **Same package as server.** `RunCLI` lives in `cmd/cli/server/cli.go`. It shares the package with `RunREST` and `RunACP`, calling the same unexported builders (`buildModels`, `resolveProfiles`, `buildTools`). No exported API surface changes.
+- **Full tool set.** The agent is created with `shell`, `read`, `write`, `ls`, `grep` — the same standard tools as the REST server. Sandbox policy comes from `settings.json` (default: unconfined). When sandbox creation fails, tools are disabled and a warning is printed to stderr.
+- **No persistence.** Each `run` creates a temporary session (`cli-<timestamp>`). No memory backend, no session store. One question, one answer.
+- **Streaming output.** Text deltas print to stdout immediately. Tool calls execute silently in the background. Token usage prints to stderr on completion.
+- **Max 50 turns.** Enough for multi-step tasks (e.g., `ls` → `grep` → `read` → analysis), bounded to prevent runaway loops.
 
 ---
 

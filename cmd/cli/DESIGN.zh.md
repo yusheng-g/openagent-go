@@ -126,6 +126,7 @@ log_error(msg_ptr, msg_len)
 ```
 openagent-cli
 ├─ serve [--acp] [--port N]        内置: REST 或 ACP 服务
+├─ run <message>                    内置: 单轮对话，流式输出
 ├─ keyring                          内置: 凭证管理
 │  ├─ set <key> <value>
 │  ├─ get <key>
@@ -206,7 +207,15 @@ cmd/cli/
       loader.go               实例化、CallInit、ReadCommands、RunCommand
       observer.go             ObserverHub: OnStartup/OnShutdown/OnCommandStart/OnCommandEnd
       abi.go                  PluginMeta、Is() 匹配器、CommandDef
-  server/agent.go             从 Config 构建 openagent.Agent、REST + ACP 服务
+  server/
+    cli.go                     RunCLI: 单轮对话入口，复用共享构建函数
+    shared.go                  共享 Agent 构建器: buildModels, buildTools, resolveProfiles
+    http.go                    RunREST: HTTP REST + SSE 服务器
+    acp.go                     RunACP: ACP 协议服务器
+    channel.go                 IM 通道集成（飞书）
+    mcp.go                     MCP 服务器连接
+    capabilities.go            能力开关结构体
+    log.go                     日志文件轮转
   plugin/pdk/rust/                   Rust SDK crate (openagent-pdk)
   examples/plugin/
     extended-settings.rs      cli:settings  — 读 keyring、合并 provider+env
@@ -216,6 +225,27 @@ cmd/cli/
     openagent-cli             编译后的二进制
     plugins/                  编译后的 .wasm 文件
 ```
+
+---
+
+---
+
+## `run` 命令
+
+`run` 发送一条消息给 Agent，实时流式输出回复到终端。
+
+```
+openagent-cli run "分析 main.go 文件"
+```
+
+### 设计要点
+
+- **薄入口。** `main.go` 仅调用 `server.RunCLI(ctx, cfg, message)` — 一个函数封装所有设置和 I/O。
+- **与 server 同包。** `RunCLI` 位于 `cmd/cli/server/cli.go`，与 `RunREST`、`RunACP` 共享同一包，复用未导出的构建器（`buildModels`、`resolveProfiles`、`buildTools`），不导出额外 API。
+- **完整工具集。** Agent 创建时注册 `shell`、`read`、`write`、`ls`、`grep`，与 REST 服务器相同的标准工具集。Sandbox 策略来自 `settings.json`（默认不隔离）。Sandbox 创建失败时禁用工具并输出 stderr 警告。
+- **不持久化。** 每次 `run` 创建临时会话（`cli-<timestamp>`），无 memory 后端，无 session 存储。一问一答。
+- **流式输出。** 文本增量直接打印到 stdout。工具调用在后台静默执行。Token 用量在结束时输出到 stderr。
+- **最多 50 轮。** 足够完成多步骤任务（如 `ls` → `grep` → `read` → 分析），上限防止失控循环。
 
 ---
 

@@ -144,6 +144,7 @@ func main() {
 
 	// 6. Build cobra tree.
 	rootCmd.AddCommand(buildServeCmd(cfg))
+	rootCmd.AddCommand(buildRunCmd(cfg))
 	rootCmd.AddCommand(keyringCmd)
 
 	// 7. Wrap every command's RunE to notify observers on entry/exit.
@@ -372,6 +373,26 @@ func parseCapabilities(cmd *cobra.Command, caps *server.Capabilities) {
 	set("approver", &caps.Approver)
 	set("hooks", &caps.Hooks)
 	set("observer", &caps.Observer)
+}
+
+// ── run ──
+
+func buildRunCmd(cfg config.Config) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "run <message>",
+		Short: "Send a message and stream the response",
+		Long: `Send a message to the AI Agent and stream the response to stdout in real time.
+
+Wrap your message in quotes when it contains spaces:
+  openagent-cli run "analyze main.go"`,
+		Example: `  openagent-cli run "Hello, introduce yourself briefly"
+  openagent-cli run "analyze cmd/cli/main.go and summarize"`,
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return server.RunCLI(cmd.Context(), &cfg, args[0])
+		},
+	}
+	return cmd
 }
 
 // ── keyring ──
