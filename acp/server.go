@@ -5,10 +5,10 @@
 package acp
 
 import (
-	"log/slog"
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -85,9 +85,9 @@ type ModelConfig struct {
 
 // agentSession holds per-session runtime state.
 type agentSession struct {
-	id           openacp.SessionId
-	cwd          string
-	createdAt    time.Time
+	id        openacp.SessionId
+	cwd       string
+	createdAt time.Time
 
 	// modeMu guards the session mode state machine and cached plan entries
 	// (mode, previousMode, planEntries, injectedPlanTools). It supersedes
@@ -110,8 +110,8 @@ type agentSession struct {
 	// held across saveMode/savePlan SessionStore I/O (those run after
 	// unlock; the snapshot is captured under the lock).
 	modeMu       sync.RWMutex
-	mode         string      // "auto", "manual", or "plan"
-	previousMode string      // mode saved when plan was entered; used by exit_plan_mode
+	mode         string                          // "auto", "manual", or "plan"
+	previousMode string                          // mode saved when plan was entered; used by exit_plan_mode
 	config       map[openacp.SessionConfigId]any // config option values
 	cancel       context.CancelFunc
 
@@ -145,6 +145,13 @@ type agentSession struct {
 	// duplicate injection on repeated enter_plan_mode calls within the
 	// same turn. Guarded by modeMu.
 	injectedPlanTools bool
+
+	// planAllowedTools is the set of tool names allowed during plan
+	// mode. Populated after all tool injection (OnPrompt or
+	// enter_plan_mode callback). Only ReadOnly and PlanTool
+	// implementations are included. Used for auto-exit detection
+	// and dynamic context generation.
+	planAllowedTools map[string]bool
 
 	// processMgr tracks background processes started by the shell tool.
 	// Created on session start, cleaned up on deletion.
@@ -1014,8 +1021,8 @@ func (s *AgentServer) persistAndNotifyMode(ctx context.Context, sid openacp.Sess
 		// Also send config_option_update so the client's mode dropdown
 		// (which reads the "mode" config option) stays in sync.
 		s.updateSender.SendSessionUpdate(sid, openacp.SessionUpdate{
-			SessionUpdate:   "config_option_update",
-			ConfigOptions:   s.buildConfigOptions(sid),
+			SessionUpdate: "config_option_update",
+			ConfigOptions: s.buildConfigOptions(sid),
 		})
 	}
 }
@@ -1135,33 +1142,9 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	// ── Build agent clone for this turn ──
 	agent := s.agentForTurn(req.SessionID)
 
-	providerID, modelID := s.resolveModelConfig(ss)
-	oaSession := openagent.Session{
-		ID:        string(req.SessionID),
-		ModelID:   modelID,
-		Provider:  providerID,
-		CreatedAt: ss.createdAt,
-		Metadata: map[string]any{
-			"cwd":                   ss.cwd,
-			"additionalDirectories": ss.additionalDirectories,
-			"mcpServers":            ss.mcpServers,
-		},
-		DynamicContext: s.buildDynamicContext(ss),
-	}
-
-	// Inject AgentRuntime for runtime_* host exports.
-	if s.PluginMgr != nil {
-		rt := wasm.BuildAgentRuntime(agent, &oaSession, s.SetModel)
-		ctx = wasmhost.WithAgentRuntime(ctx, rt)
-	}
-
-	// Inject ProcessManager so the shell tool can persist
-	// long-running process output across turns.
-	if ss.processMgr != nil {
-		ctx = process.WithManager(ctx, ss.processMgr)
-	}
-
 	// ── Register mode-specific planning tools ──
+	// Moved before oaSession construction so planAllowedTools and
+	// buildDynamicContext can see the complete tool set.
 	if ss.Mode() == "plan" {
 		// plan_create: only available in plan mode.
 		agent.AppendTools(plan.NewCreateTool(s.makeCreateCallback(ctx, req.SessionID, ss, sender)))
@@ -1192,6 +1175,22 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 					plan.NewCreateTool(s.makeCreateCallback(ctx, req.SessionID, ss, sender)))
 				agent.AppendTools(
 					plan.NewExitTool(s.makeExitCallback(ctx, req.SessionID, ss, agent, sender)))
+
+				// Populate planAllowedTools for auto-exit
+				// detection this turn. The agent clone
+				// still has ALL execution tools from the
+				// original auto/manual mode injection.
+				// Only ReadOnly and PlanTool tools are
+				// included.
+				ss.planAllowedTools = make(map[string]bool, len(agent.SnapshotTools()))
+				for _, t := range agent.SnapshotTools() {
+					if _, ok := t.(openagent.ReadOnly); ok {
+						ss.planAllowedTools[t.Definition().Name] = true
+					}
+					if _, ok := t.(openagent.PlanTool); ok {
+						ss.planAllowedTools[t.Definition().Name] = true
+					}
+				}
 			} else {
 				ss.modeMu.Unlock()
 			}
@@ -1208,9 +1207,7 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 	// concurrent exit_plan_mode's empty-plan notification.
 	pu := plan.NewUpdateTool(func(updates []plan.Update) ([]plan.Entry, error) {
 		snap, err := ss.ApplyPlanUpdates(updates, func(snap []plan.Entry) {
-			if ss.mode == "plan" {
-				sender.SendPlanUpdate(s.entriesToACP(snap))
-			}
+			sender.SendPlanUpdate(s.entriesToACP(snap))
 		})
 		if err != nil {
 			return nil, err
@@ -1219,6 +1216,48 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 		return snap, nil
 	})
 	agent.AppendTools(pu)
+
+	// ── Populate planAllowedTools after all tool injection ──
+	// Must happen BEFORE buildDynamicContext so it can list available tools.
+	// Includes both ReadOnly (read, grep, ls, read_client_file) and
+	// PlanTool (plan_create, plan_update, exit_plan_mode) implementations.
+	if ss.Mode() == "plan" {
+		ss.planAllowedTools = make(map[string]bool, len(agent.SnapshotTools()))
+		for _, t := range agent.SnapshotTools() {
+			if _, ok := t.(openagent.ReadOnly); ok {
+				ss.planAllowedTools[t.Definition().Name] = true
+			}
+			if _, ok := t.(openagent.PlanTool); ok {
+				ss.planAllowedTools[t.Definition().Name] = true
+			}
+		}
+	}
+
+	providerID, modelID := s.resolveModelConfig(ss)
+	oaSession := openagent.Session{
+		ID:        string(req.SessionID),
+		ModelID:   modelID,
+		Provider:  providerID,
+		CreatedAt: ss.createdAt,
+		Metadata: map[string]any{
+			"cwd":                   ss.cwd,
+			"additionalDirectories": ss.additionalDirectories,
+			"mcpServers":            ss.mcpServers,
+		},
+		DynamicContext: s.buildDynamicContext(ss),
+	}
+
+	// Inject AgentRuntime for runtime_* host exports.
+	if s.PluginMgr != nil {
+		rt := wasm.BuildAgentRuntime(agent, &oaSession, s.SetModel)
+		ctx = wasmhost.WithAgentRuntime(ctx, rt)
+	}
+
+	// Inject ProcessManager so the shell tool can persist
+	// long-running process output across turns.
+	if ss.processMgr != nil {
+		ctx = process.WithManager(ctx, ss.processMgr)
+	}
 	// ── Run the agent ──
 	ch := agent.RunStream(ctx, oaSession, input)
 	var usage openagent.Usage
@@ -1447,8 +1486,19 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 			clone.NoSpawn = true
 			clone.Approver = nil
 
-			// ACP read_file is safe (reads from client filesystem), but
-			// only register it if the client advertised fs.readTextFile.
+			// Collect read-only tools from ToolFactory. Shell/write/edit
+			// are excluded because they don't implement ReadOnly.
+			if s.ToolFactory != nil && ss.cwd != "" {
+				for _, t := range s.ToolFactory(ss.cwd) {
+					if _, ok := t.(openagent.ReadOnly); ok {
+						clone.AppendTools(t)
+					}
+				}
+			}
+
+			// ACP read_file — supplementary: reads from client filesystem
+			// (VS Code). Only register it if the client advertised
+			// fs.readTextFile.
 			if s.clientRPC != nil && s.clientCanReadFile() {
 				clone.Tools = append(clone.Tools,
 					opentool.NewACPReadFile(s.clientRPC, sid),
@@ -1489,22 +1539,37 @@ func (s *AgentServer) agentForTurn(sid openacp.SessionId) *openagent.Agent {
 
 // injectExecutionTools appends all execution-capable tools to the agent
 // clone. Called in manual mode and after exit_plan_mode transitions.
-// Mirrors the original flat injection — MCP tools, ToolFactory tools,
-// and Agent→Client RPC tools all go through here. The injection goes
+// Idempotent — skips tools whose name is already on the clone to prevent
+// duplicates when exit_plan_mode re-injects onto a clone that already has
+// ReadOnly tools from agentForTurn's plan mode path. The injection goes
 // through AppendTools (toolsMu-guarded): this runs inside exit_plan_mode's
 // callback, which executes within an executeTools parallel-goroutine
 // batch, so sibling tool goroutines read the clone's Tools via the
 // runner's SnapshotTools/findTool concurrently with this append.
 func (s *AgentServer) injectExecutionTools(clone *openagent.Agent, sid openacp.SessionId, ss *agentSession) {
+	// Build set of existing tool names to avoid duplicates.
+	existing := make(map[string]bool, len(clone.SnapshotTools()))
+	for _, t := range clone.SnapshotTools() {
+		existing[t.Definition().Name] = true
+	}
+
 	var add []openagent.Tool
 
 	// MCP tools from connected servers.
-	add = append(add, ss.mcpTools...)
+	for _, t := range ss.mcpTools {
+		if !existing[t.Definition().Name] {
+			add = append(add, t)
+			existing[t.Definition().Name] = true
+		}
+	}
 
 	// Per-turn tools scoped to the session cwd.
 	if s.ToolFactory != nil && ss.cwd != "" {
-		if tools := s.ToolFactory(ss.cwd); len(tools) > 0 {
-			add = append(add, tools...)
+		for _, t := range s.ToolFactory(ss.cwd) {
+			if !existing[t.Definition().Name] {
+				add = append(add, t)
+				existing[t.Definition().Name] = true
+			}
 		}
 	}
 
@@ -1514,18 +1579,23 @@ func (s *AgentServer) injectExecutionTools(clone *openagent.Agent, sid openacp.S
 	// LLM is never offered a tool whose RPC the client will reject.
 	if s.clientRPC != nil {
 		if s.clientCanWriteFile() {
-			add = append(add,
-				opentool.NewACPWriteFile(s.clientRPC, sid),
-			)
+			t := opentool.NewACPWriteFile(s.clientRPC, sid)
+			if !existing[t.Definition().Name] {
+				add = append(add, t)
+			}
 		}
 		if s.clientCanTerminal() {
-			add = append(add,
+			for _, t := range []openagent.Tool{
 				opentool.NewACPTerminalCreate(s.clientRPC, sid),
 				opentool.NewACPTerminalOutput(s.clientRPC, sid),
 				opentool.NewACPTerminalWait(s.clientRPC, sid),
 				opentool.NewACPTerminalKill(s.clientRPC, sid),
 				opentool.NewACPTerminalRelease(s.clientRPC, sid),
-			)
+			} {
+				if !existing[t.Definition().Name] {
+					add = append(add, t)
+				}
+			}
 		}
 	}
 
@@ -1789,17 +1859,6 @@ func (a *acpApprover) Approve(ctx context.Context, call openagent.ToolCall, def 
 	default:
 		return false, fmt.Sprintf("unknown option: %s", *resp.Outcome.OptionID)
 	}
-}
-
-// isPlanTool reports whether the given tool name is a plan-mode-only tool
-// (plan_create, plan_update, exit_plan_mode) or a read-only inspection tool
-// (read_client_file). These tools are allowed in plan mode.
-func isPlanTool(name string) bool {
-	switch name {
-	case "plan_create", "plan_update", "exit_plan_mode", "read_client_file":
-		return true
-	}
-	return false
 }
 
 // firstLine truncates s to the first line, up to maxLen characters.

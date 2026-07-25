@@ -76,8 +76,8 @@ func TestBuildOpts_AllOff(t *testing.T) {
 	if agent.OutGuard != nil {
 		t.Error("OutGuard should be nil when OnGuard=false")
 	}
-	if agent.Hooks != nil {
-		t.Error("Hooks should be nil when OnHooks=false")
+	if agent.Hooks == nil {
+		t.Error("ArtifactHook should be present even when OnHooks=false")
 	}
 	if agent.Observer != nil {
 		t.Error("Observer should be nil when OnObserver=false")
