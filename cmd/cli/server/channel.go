@@ -381,6 +381,14 @@ func formatInput(name, args string) string {
 		if q != "" {
 			return "`" + q + "`" + pathStr(path)
 		}
+	case "websearch":
+		if q := jsonStr(m, "query"); q != "" {
+			return "`" + q + "`"
+		}
+	case "webfetch":
+		if u := jsonStr(m, "url"); u != "" {
+			return "`" + u + "`"
+		}
 	case "recall":
 		q := jsonStr(m, "query")
 		if q != "" {
@@ -424,6 +432,10 @@ func toolEmoji(name string) string {
 		return "🔍"
 	case "ls":
 		return "📂"
+	case "websearch":
+		return "🌐"
+	case "webfetch":
+		return "🔗"
 	case "recall":
 		return "🧠"
 	case "subagent":

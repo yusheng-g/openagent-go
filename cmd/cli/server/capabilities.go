@@ -27,7 +27,7 @@ func (c Capabilities) OnMemory() bool { return c.on(c.Memory, true) }
 // OnSummarizer reports whether Summarizer is enabled.
 func (c Capabilities) OnSummarizer() bool { return c.on(c.Summarizer, true) }
 
-// OnTools reports whether built-in Tools (shell, read, write, ls, grep) are enabled.
+// OnTools reports whether built-in Tools (shell, read, write, ls, grep, edit, websearch, webfetch) are enabled.
 func (c Capabilities) OnTools() bool { return c.on(c.Tools, true) }
 
 // OnSkills reports whether SkillLoader is enabled.

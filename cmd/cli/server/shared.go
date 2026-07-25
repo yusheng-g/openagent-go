@@ -116,6 +116,12 @@ func buildTools(sandbox *native.Sandbox, workDir string, toolList []string) []op
 	if enabled["edit"] {
 		tools = append(tools, opentool.NewEditFile(workDir))
 	}
+	if enabled["websearch"] {
+		tools = append(tools, opentool.NewWebSearch())
+	}
+	if enabled["webfetch"] {
+		tools = append(tools, opentool.NewWebFetch())
+	}
 	return tools
 }
 

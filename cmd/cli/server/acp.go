@@ -112,7 +112,7 @@ func RunACP(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 	if caps.OnTools() {
 		srv.ToolFactory = func(cwd string) []openagent.Tool {
 			if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
-				return buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
+				return buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep", "websearch", "webfetch"})
 			}
 			return nil
 		}
@@ -133,7 +133,7 @@ func RunACP(ctx context.Context, cfg *config.Config, caps Capabilities) error {
 	if caps.OnTools() {
 		cwd, _ := os.Getwd()
 		if sb, err := native.NewWithPolicy(cwd, policy); err == nil {
-			channelAgent.Tools = buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep"})
+			channelAgent.Tools = buildTools(sb, cwd, []string{"shell", "read", "write", "ls", "grep", "websearch", "webfetch"})
 		}
 	}
 

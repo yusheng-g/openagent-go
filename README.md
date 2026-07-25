@@ -320,6 +320,6 @@ Full example: `examples/plugin/`. Rust SDK: `plugin/pdk/rust/`.
 | `guard/llm/` | LLM-based input/output guard |
 | `hooks/otel/` | OpenTelemetry hooks |
 | `hooks/slog/` | Structured logging hooks |
-| `tool/` | Built-in tools (shell, read, write, ls, grep, ACP fs, ACP terminal) |
+| `tool/` | Built-in tools (shell, read, write, ls, grep, edit, websearch, webfetch, ACP fs, ACP terminal) |
 | `channel/` | IM platform adapters — Feishu WebSocket, card rendering |
 | `cmd/cli/` | CLI runtime, WASM host, Rust SDK examples |
