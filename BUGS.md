@@ -104,9 +104,11 @@ Original issue (stale — described a version before `995bbb8`): `parseResult` d
 
 ---
 
-### [P3] API credit leak on client SSE disconnect
+### [P3] ~~API credit leak on client SSE disconnect~~ ✅ FIXED
 
-[rest/handler.go:272](rest/handler.go#L272), [rest/team.go:222](rest/team.go#L222), [rest/orchestrate_handler.go:264](rest/orchestrate_handler.go#L264): All three use `context.Background()` (with long timeout) for agent goroutines. SSE client disconnects → goroutine continues running with no consumer.
+[rest/handler.go:301](rest/handler.go), [rest/team.go:227](rest/team.go), [rest/orchestrate_handler.go:268](rest/orchestrate_handler.go): **Fixed in this commit** — all three chat goroutines now derive the run context from the request via `context.WithTimeout(r.Context(), ...)` instead of `context.WithTimeout(context.Background(), ...)`. On client SSE disconnect, `r.Context()` is cancelled → the derived ctx is cancelled → `runner.go:126` sees `ctx.Done()` and returns from `run` → `RunStream`'s internal goroutine runs `defer close(ch)` (`agent.go:120`) → the publish `for range ch` loop exits. The LLM call stops immediately instead of running to the timeout with no consumer. The timeout still caps the run on a healthy connection. `handler.go`'s manual `select <-r.Context().Done()` check in the publish loop was removed (now redundant — ctx propagation stops the agent directly). `rest/sse_disconnect_test.go` adds two end-to-end httptest cases: `TestSSEDisconnectCancelsAgent` (disconnect → model ctx cancelled within 3s; confirmed to hang on the old `context.Background` code) and `TestSSENormalCompletionNotPrematurelyCancelled` (normal completion → model returns, not prematurely cancelled).
+
+Original issue: all three used `context.Background()` (with long timeout) for agent goroutines. SSE client disconnects → goroutine continues running with no consumer.
 
 ---
 

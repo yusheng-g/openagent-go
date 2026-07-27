@@ -260,8 +260,12 @@ func (h *OrchestrateHandler) handleExecute(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// Create a cancellable context for the execution.
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
+	// Create a cancellable context for the execution. Derived from the request
+	// so a client SSE disconnect cancels the plan (stops LLM calls) instead of
+	// letting it run to the 30-minute timeout on context.Background — which
+	// burns API credit with no consumer. handleCancel can still cancel via the
+	// stored cancel func. The timeout still caps the run on a healthy connection.
+	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Minute)
 
 	s.mu.Lock()
 	s.execCancel = cancel
@@ -300,6 +304,9 @@ func (h *OrchestrateHandler) handleExecute(w http.ResponseWriter, r *http.Reques
 			ch := s.plan.ExecuteWithState(ctx, oaSession, def, state)
 
 			paused := false
+			// On client SSE disconnect: r.Context() cancelled → ctx (derived from
+			// it) cancelled → plan sees ctx.Done() and returns → ExecuteWithState's
+			// goroutine closes ch → this range loop sees ch close and exits.
 			for evt := range ch {
 				se := planEventToSSE(evt)
 				if se.Type == "" {
