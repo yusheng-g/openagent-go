@@ -26,6 +26,7 @@ import (
 	"github.com/yusheng-g/openagent-go/session"
 	"github.com/yusheng-g/openagent-go/slash"
 	opentool "github.com/yusheng-g/openagent-go/tool"
+	"github.com/yusheng-g/openagent-go/utils"
 )
 
 // AgentServer wraps an [openagent.Agent] as an [openacp.AgentHandler].
@@ -591,12 +592,26 @@ func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRe
 
 // ── Session CRUD ──
 
+// resolveSessionCwd resolves the working directory for a session being loaded
+// or resumed. If reqCwd is empty, it falls back to the persisted SessionInfo.Cwd
+// from the store, then normalizes (tilde expansion + empty-cwd fallback).
+func (s *AgentServer) resolveSessionCwd(ctx context.Context, sessionID, reqCwd string) string {
+	cwd := reqCwd
+	if cwd == "" && s.SessionStore != nil {
+		if info, err := s.SessionStore.Get(ctx, sessionID); err == nil && info != nil && info.Cwd != "" {
+			cwd = info.Cwd
+		}
+	}
+	return utils.NormalizePath(cwd)
+}
+
 func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRequest) (*openacp.NewSessionResponse, error) {
 	id := s.newSessionID()
 	mcpSessions, mcpTools := s.connectMCP(ctx, req.McpServers)
+	cwd := utils.NormalizePath(req.Cwd)
 	ss := &agentSession{
 		id:                    id,
-		cwd:                   req.Cwd,
+		cwd:                   cwd,
 		createdAt:             time.Now(),
 		mode:                  "auto",
 		config:                map[openacp.SessionConfigId]any{"thought_level": "medium", "model": s.defaultModelID},
@@ -608,14 +623,14 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 	}
 
 	// Create per-session process manager for long-running shell commands.
-	if req.Cwd != "" { // require cwd but put files in /tmp
+	if cwd != "" { // require cwd but put files in /tmp
 		pm, err := process.NewManager(filepath.Join(os.TempDir(), "openagent", "sess-"+string(id)))
 		if err == nil {
 			ss.processMgr = pm
 		}
 	}
 	s.putSession(id, ss)
-	s.saveMeta(string(id), req.Cwd, "acp", req.Meta)
+	s.saveMeta(string(id), cwd, "acp", req.Meta)
 	if s.PluginMgr != nil {
 		s.PluginMgr.OnSessionInit(ctx, wasm.SessionCtx{SessionID: string(id)})
 	}
@@ -642,9 +657,10 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 		if mode == "" {
 			mode = "auto"
 		}
+		cwd := s.resolveSessionCwd(ctx, string(req.SessionID), req.Cwd)
 		ss = &agentSession{
 			id:                    req.SessionID,
-			cwd:                   req.Cwd,
+			cwd:                   cwd,
 			createdAt:             time.Now(),
 			mode:                  mode,
 			config:                map[openacp.SessionConfigId]any{"thought_level": "medium", "model": s.defaultModelID},
@@ -656,7 +672,7 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 		ss.mcpSessions, ss.mcpTools = s.connectMCP(ctx, req.McpServers)
 
 		// Create per-session process manager for long-running shell commands.
-		if req.Cwd != "" {
+		if cwd != "" {
 			pm, err := process.NewManager(filepath.Join(os.TempDir(), "openagent", "sess-"+string(req.SessionID)))
 			if err == nil {
 				ss.processMgr = pm
@@ -779,9 +795,10 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 		if mode == "" {
 			mode = "auto"
 		}
+		cwd := s.resolveSessionCwd(ctx, string(req.SessionID), req.Cwd)
 		ss = &agentSession{
 			id:                    req.SessionID,
-			cwd:                   req.Cwd,
+			cwd:                   cwd,
 			createdAt:             time.Now(),
 			mode:                  mode,
 			config:                map[openacp.SessionConfigId]any{"thought_level": "medium", "model": s.defaultModelID},
@@ -793,7 +810,7 @@ func (s *AgentServer) OnResumeSession(ctx context.Context, req openacp.ResumeSes
 		ss.mcpSessions, ss.mcpTools = s.connectMCP(ctx, req.McpServers)
 
 		// Create per-session process manager for shell tool background processes.
-		if req.Cwd != "" {
+		if cwd != "" {
 			pm, err := process.NewManager(filepath.Join(os.TempDir(), "openagent", "sess-"+string(req.SessionID)))
 			if err == nil {
 				ss.processMgr = pm
