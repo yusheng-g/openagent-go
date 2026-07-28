@@ -62,6 +62,8 @@ Open `http://localhost:5173` or connect an ACP client — the server supports bo
 
 Connect your agent to Feishu (Lark) so users can chat with it in IM — group chats, private chats, cards with markdown rendering, and real-time streaming output.
 
+<img src=".github/images/feishu-bot-effect.jpg" alt="Feishu bot in action" width="750" />
+
 **First-time setup (no credentials needed):**
 
 ```bash
@@ -69,6 +71,8 @@ Connect your agent to Feishu (Lark) so users can chat with it in IM — group ch
 ```
 
 A QR code will appear in your terminal. Open Feishu on your phone, scan it, and confirm the app creation. The SDK automatically provisions a bot app with the correct permissions (`im:message`, `im:message:send_as_bot`, `im.message.receive_v1` event) and saves the credentials locally.
+
+![First login - scan QR code](.github/images/feishu-first-login.jpg)
 
 **If you already have an app, configure it in `settings.json`:**
 
@@ -93,6 +97,8 @@ Then run with the flag to enable the channel:
 ```
 
 The `--channel` flag is always required to start the bot — settings.json alone won't auto-start it. If your credentials are in settings.json, the setup step is skipped automatically.
+
+![Subsequent login - start with credentials](.github/images/feishu-subsequent-login.jpg)
 
 **Where credentials are stored:**
 

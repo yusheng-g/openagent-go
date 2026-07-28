@@ -62,6 +62,8 @@ cd examples/frontend/vue-app && npm install && npm run dev
 
 将 agent 接入飞书（Lark），支持群聊、私聊、Markdown 卡片渲染、流式输出。
 
+<img src=".github/images/feishu-bot-effect.jpg" alt="飞书机器人对话效果" width="750" />
+
 **首次使用（无需凭据）：**
 
 ```bash
@@ -69,6 +71,8 @@ cd examples/frontend/vue-app && npm install && npm run dev
 ```
 
 终端会出现二维码。打开飞书 App 扫码，确认创建应用即可。SDK 会自动创建机器人应用并配置好权限（`im:message`、`im:message:send_as_bot`、`im.message.receive_v1` 事件），凭据保存在本地。
+
+![首次使用 - 扫码创建应用](.github/images/feishu-first-login.jpg)
 
 **如果已有应用，在 `settings.json` 中配置：**
 
@@ -93,6 +97,8 @@ cd examples/frontend/vue-app && npm install && npm run dev
 ```
 
 `--channel` flag 是必须的 — 仅配置 settings.json 不会自动启动 bot。如果凭据已在 settings.json 中，启动时会跳过扫码步骤。
+
+![已有应用 - 带凭据启动](.github/images/feishu-subsequent-login.jpg)
 
 **凭据解析优先级：**
 
