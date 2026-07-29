@@ -34,8 +34,8 @@ go build -o openagent-cli ./cmd/cli/
 # REST mode (HTTP + SSE)
 ./openagent-cli serve --port 8080
 
-# Frontend
-cd examples/frontend/vue-app && npm install && npm run dev
+# One-shot chat with streaming output
+./openagent-cli run "Hello, introduce yourself briefly"
 ```
 
 ### Configuration
@@ -56,7 +56,7 @@ Create `~/.openagent/settings.json`:
 
 Put `AGENTS.md` and `SOUL.md` in `~/.openagent/profile/` or `$(pwd)/.openagent/profile/` to customise the agent's behaviour.
 
-Open `http://localhost:5173` or connect an ACP client — the server supports both protocols.
+Connect an ACP client (VSCode/Zed plugin).
 
 ### Feishu / Lark Integration
 
@@ -292,7 +292,9 @@ Full example: `examples/plugin/`. Rust SDK: `plugin/pdk/rust/`.
 | `examples/acp/` | ACP agent protocol (server + client) |
 | `examples/iac/` | Multi-agent IaC pipeline |
 | `examples/backend/` | Full REST + SSE API server |
-| `examples/frontend/vue-app/` | Vue 3 SPA reference UI |
+| `examples/artifact/` | Artifact hook — saves large tool results to disk |
+| `examples/browser-agent/` | Browser agent via Playwright MCP |
+| `examples/mcp-client/` | MCP client demo (IaC pipeline) |
 | `cmd/cli/` | Full-featured CLI with WASM plugin runtime |
 
 ## Packages
@@ -326,6 +328,7 @@ Full example: `examples/plugin/`. Rust SDK: `plugin/pdk/rust/`.
 | `guard/llm/` | LLM-based input/output guard |
 | `hooks/otel/` | OpenTelemetry hooks |
 | `hooks/slog/` | Structured logging hooks |
-| `tool/` | Built-in tools (shell, read, write, ls, grep, edit, websearch, webfetch, ACP fs, ACP terminal) |
+| `hooks/artifact/` | Artifact hook — saves large tool results to disk |
+| `tool/` | Built-in tools (shell, read, write, ls, grep, edit, artifact, websearch, webfetch, ACP fs, ACP terminal) |
 | `channel/` | IM platform adapters — Feishu WebSocket, card rendering |
 | `cmd/cli/` | CLI runtime, WASM host, Rust SDK examples |
