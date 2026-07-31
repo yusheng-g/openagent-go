@@ -514,17 +514,23 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 // ── Internal helpers ──
 
 // workingTokenBudget returns the token budget for the working message set.
-// If MaxWorkingTokens is set explicitly, use it. Otherwise, use 70% of the
-// model's context window. Falls back to 20000 if the model doesn't report
-// its context window.
+// If MaxWorkingTokens is set explicitly, use it. Otherwise, use a percentage
+// of the model's context window: 70% for models with a known tiktoken
+// encoding, 50% for unknown models (cl100k_base fallback) where token
+// estimates may diverge significantly from the model's actual tokenizer.
+// Falls back to 20000 if the model doesn't report its context window.
 func (r *runner) workingTokenBudget() int {
 	if r.agent.MaxWorkingTokens > 0 {
 		return r.agent.MaxWorkingTokens
 	}
-	if cw := r.runModel.ContextWindow(); cw > 0 {
+	cw := r.runModel.ContextWindow()
+	if cw <= 0 {
+		return 20000
+	}
+	if tokenizer.IsKnownModel(tokenizerModelID(r.runModel)) {
 		return cw * 7 / 10 // 70%
 	}
-	return 20000
+	return cw / 2 // 50% — cl100k_base fallback, larger safety margin
 }
 
 // prepareMemory fetches the working message set, triggers token-based
@@ -636,8 +642,16 @@ func (r *runner) estimatePromptOverhead(ctx context.Context, session Session, mo
 	}
 
 	// Dynamic context — same assembly order as buildPrompt.
+	// Preamble is always present in buildPrompt.
+	n += tokenizer.Count(modelID,
+		"\nIMPORTANT: The context below is generated fresh for this turn. "+
+			"If it conflicts with static instructions or earlier conversation, the latest context here is authoritative. "+
+			"Earlier summaries, skill lists, semantic memory, or plan state may be outdated.\n") + 4
+
 	if len(r.skills) > 0 {
 		n += tokenizer.Count(modelID, buildSkillsSection(r.skills)) + 4
+	} else {
+		n += tokenizer.Count(modelID, "\nIMPORTANT: No available skills.") + 4
 	}
 	for name, body := range r.loadedSkills {
 		n += tokenizer.Count(modelID, "## Loaded Skill: "+name+"\n\n"+body) + 4
@@ -655,9 +669,28 @@ func (r *runner) estimatePromptOverhead(ctx context.Context, session Session, mo
 		}
 	}
 
-	// Compressed summary + hints.
+	// Compressed summary + hints (or fallback when empty).
 	if cc, err := r.agent.Memory.Compressed(ctx, session.ID); err == nil && cc != nil && cc.Summary != "" {
 		n += tokenizer.Count(modelID, buildCompressedSection(cc)) + 4
+	} else {
+		n += tokenizer.Count(modelID, "## Conversation Summary\n\n(no prior conversation history)") + 4
+	}
+
+	// Tool definitions — sent as part of the API request (ChatCompletionRequest.Tools)
+	// but not included in messages. These consume prompt tokens on the model side.
+	// With 15+ tools (shell, read, write, ls, grep, websearch, webfetch, ACP tools,
+	// plan tools, builtins), this is typically 5-10K tokens.
+	for _, td := range toolDefinitions(r.agent.SnapshotTools()) {
+		n += tokenizer.Count(modelID, td.Name)
+		n += tokenizer.Count(modelID, td.Description)
+		n += tokenizer.Count(modelID, string(td.Parameters))
+		n += 4
+	}
+	for _, td := range r.builtinTools {
+		n += tokenizer.Count(modelID, td.Name)
+		n += tokenizer.Count(modelID, td.Description)
+		n += tokenizer.Count(modelID, string(td.Parameters))
+		n += 4
 	}
 
 	return n
@@ -1211,8 +1244,15 @@ func trimToContextWindow(modelID string, messages []Message, window int) []Messa
 		}
 	}
 
-	// 5% safety margin — tiktoken is accurate but not exact.
-	budget := window * 95 / 100
+	// Safety margin — tiktoken is accurate but not exact for known models.
+	// For unknown models (cl100k_base fallback), the estimate may diverge
+	// significantly from the model's actual tokenizer (e.g. GLM, Qwen),
+	// so use a larger margin to avoid 400 "prompt too long" errors.
+	margin := 90
+	if !tokenizer.IsKnownModel(modelID) {
+		margin = 75
+	}
+	budget := window * margin / 100
 	sysTokens := countMessages(modelID, sys)
 	budget -= sysTokens
 	if budget <= 0 {

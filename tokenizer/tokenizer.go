@@ -81,6 +81,16 @@ func Count(modelID, text string) (n int) {
 	return len(tke.EncodeOrdinary(text))
 }
 
+// IsKnownModel reports whether tiktoken has a model-specific encoding for
+// the given model ID. When false, ForModel falls back to cl100k_base and
+// token estimates may diverge significantly from the model's actual
+// tokenizer (especially for Chinese models like GLM, Qwen, etc.). Callers
+// use this to apply larger safety margins for unknown tokenizers.
+func IsKnownModel(modelID string) bool {
+	_, err := tiktoken.EncodingForModel(modelID)
+	return err == nil
+}
+
 // heuristicCount is a fast fallback (~4 chars/token, conservative for CJK).
 func heuristicCount(text string) int {
 	n := 0

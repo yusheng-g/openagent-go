@@ -491,6 +491,12 @@ Errors discarded without logging:
 
 ---
 
+### [DEBT] Config does not support per-model `context_window` override
+
+[cmd/cli/config/config.go](cmd/cli/config/config.go): `ProviderConfig.Models` is `[]string`, so there is no way to specify `context_window` or `max_tokens` per model. For castrated MAAS models (e.g. GLM-5.2 on Huawei Cloud: official ctx=1,980,000 but MAAS enforces 131,072), users cannot configure the effective limit in config. The code falls back to the lookup table (`Window128K = 128,000`), which is close but cannot be tuned. Fix: extend `ProviderConfig` with a `model_config` map (`{model_id: {context_window, max_tokens}}`) and apply `WithContextWindow` in `buildModels`.
+
+---
+
 ## Legend
 
 | Tag | Meaning |
