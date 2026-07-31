@@ -917,6 +917,12 @@ func (r *runner) executeOneToolInternal(ctx context.Context, session Session, ca
 		}
 	}
 
+	// noErr is a stable nil error value whose address is passed to
+	// fireToolHooksEnd for built-in tools that have no error to report.
+	// Passing a valid *error (pointing to nil) instead of a nil pointer
+	// prevents downstream hooks from nil-dereferencing err.
+	var noErr error
+
 	args := json.RawMessage(call.Function.Arguments)
 
 	// Inject session into ctx so tools and hooks can retrieve it via
@@ -928,22 +934,22 @@ func (r *runner) executeOneToolInternal(ctx context.Context, session Session, ca
 	case "load_skill":
 		toolStart := r.fireToolHooks(toolCtx, *def, args)
 		msg := r.executeLoadSkill(toolCtx, call)
-		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, nil)
+		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, &noErr)
 		return msg
 	case "reload_skills":
 		toolStart := r.fireToolHooks(toolCtx, *def, args)
 		msg := r.executeReloadSkills(toolCtx, call)
-		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, nil)
+		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, &noErr)
 		return msg
 	case "recall":
 		toolStart := r.fireToolHooks(toolCtx, *def, args)
 		msg := r.executeRecall(toolCtx, session, call)
-		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, nil)
+		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, &noErr)
 		return msg
 	case "subagent":
 		toolStart := r.fireToolHooks(toolCtx, *def, args)
 		msg := r.executeSubAgent(toolCtx, session, call, ch)
-		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, nil)
+		r.fireToolHooksEnd(toolCtx, *def, args, &msg.Content, toolStart, &noErr)
 		return msg
 	}
 

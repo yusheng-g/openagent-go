@@ -78,7 +78,7 @@ func (h *Hooks) OnToolEnd(ctx context.Context, tool openagent.FunctionDefinition
 	}
 	defer span.End()
 
-	if *err != nil {
+	if err != nil && *err != nil {
 		span.SetStatus(codes.Error, (*err).Error())
 		span.RecordError(*err)
 	}

@@ -71,7 +71,7 @@ func (h *Hooks) OnToolEnd(ctx context.Context, tool openagent.FunctionDefinition
 		slog.String("tool", tool.Name),
 		slog.Duration("elapsed", elapsed),
 	}
-	if *err != nil {
+	if err != nil && *err != nil {
 		attrs = append(attrs, slog.String("error", (*err).Error()))
 		h.logger.LogAttrs(ctx, slog.LevelError, "tool end", attrs...)
 	} else {
