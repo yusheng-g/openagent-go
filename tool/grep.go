@@ -50,6 +50,8 @@ func (t *Grep) Definition() openagent.FunctionDefinition {
 	}
 }
 
+func (t *Grep) IsReadOnly() bool { return true }
+
 func (t *Grep) CanSelfApprove(args json.RawMessage) bool {
 	var params struct {
 		Path string `json:"path"`

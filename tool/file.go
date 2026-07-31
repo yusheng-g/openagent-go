@@ -74,6 +74,8 @@ func (t *ReadFile) Definition() openagent.FunctionDefinition {
 	}
 }
 
+func (t *ReadFile) IsReadOnly() bool { return true }
+
 func (t *ReadFile) CanSelfApprove(args json.RawMessage) bool {
 	var params struct {
 		Path string `json:"path"`
@@ -306,6 +308,8 @@ func (t *ListDir) Definition() openagent.FunctionDefinition {
 		}`),
 	}
 }
+
+func (t *ListDir) IsReadOnly() bool { return true }
 
 func (t *ListDir) CanSelfApprove(args json.RawMessage) bool {
 	var params struct {

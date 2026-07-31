@@ -37,6 +37,8 @@ func (t *ACPReadFile) Definition() openagent.FunctionDefinition {
 	}
 }
 
+func (t *ACPReadFile) IsReadOnly() bool { return true }
+
 func (t *ACPReadFile) Execute(ctx context.Context, args json.RawMessage) (string, error) {
 	var params struct {
 		Path  string `json:"path"`
