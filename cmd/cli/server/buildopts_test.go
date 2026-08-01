@@ -24,7 +24,7 @@ func (mockModel) ChatCompletionStream(ctx context.Context, req openagent.ChatCom
 }
 func (mockModel) ContextWindow() int { return 0 }
 
-// chdirEmpty ensures openSkillLoader() finds no .openagent/skills by moving
+// chdirEmpty ensures openSkillLoader() finds no .agents/skills by moving
 // to a temp dir and pointing HOME elsewhere. Returns a restore func.
 func chdirEmpty(t *testing.T) func() {
 	t.Helper()
@@ -39,7 +39,7 @@ func chdirEmpty(t *testing.T) func() {
 	}
 }
 
-// chdirWithSkills creates .openagent/skills in a temp cwd so openSkillLoader
+// chdirWithSkills creates .agents/skills in a temp cwd so openSkillLoader
 // returns a non-nil loader.
 func chdirWithSkills(t *testing.T) func() {
 	t.Helper()
@@ -48,7 +48,7 @@ func chdirWithSkills(t *testing.T) func() {
 	tmp := t.TempDir()
 	os.Chdir(tmp)
 	os.Setenv("HOME", filepath.Join(tmp, "no-home"))
-	if err := os.MkdirAll(filepath.Join(tmp, ".openagent", "skills"), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Join(tmp, ".agents", "skills"), 0o755); err != nil {
 		t.Fatal(err)
 	}
 	return func() {
@@ -118,7 +118,7 @@ func TestBuildOpts_Skills_NoDir(t *testing.T) {
 	restore := chdirEmpty(t)
 	defer restore()
 	on := true
-	// OnSkills=true but no .openagent/skills dir → loader stays nil.
+	// OnSkills=true but no .agents/skills dir → loader stays nil.
 	agent := applyOpts(Capabilities{Skills: &on}, mockModel{})
 	if agent.SkillLoader != nil {
 		t.Error("SkillLoader should be nil when no skills dir exists")
