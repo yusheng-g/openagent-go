@@ -1,0 +1,133 @@
+{
+  "name": "SetSecondLevelMonitor",
+  "summary": "设置秒级监控策略",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/second-level-monitor": {
+      "put": {
+        "x-support-sdk": "Y",
+        "x-constraint": "接口公测中,申请后可用,仅支持Mysql 4U以上实例",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/second-level-monitor",
+        "x-request-examples-description-1": "秒级监控策略",
+        "x-request-examples-text-1": {
+          "switch_option": true,
+          "interval": 1
+        },
+        "x-request-examples-1": {
+          "switch_option": true,
+          "interval": 1
+        },
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "设置秒级监控策略",
+        "description": "设置实例秒级监控策略,约五分钟后生效,对于1秒监控和5秒监控,计费方式为按需付费(每小时扣费一次)。\n设置只读实例秒级监控与主实例互不影响。\n规格变更到4U以下的实例,秒级监控功能会自动关闭。",
+        "operationId": "SetSecondLevelMonitor",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "SecondMonitorReq",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SecondMonitor"
+            },
+            "description": "请求体"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "description": "请求失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "SecondMonitor": {
+      "type": "object",
+      "description": "秒级监控信息",
+      "required": [
+        "switch_option"
+      ],
+      "properties": {
+        "switch_option": {
+          "type": "boolean",
+          "description": "秒级监控开关"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32",
+          "description": "监控间隔, 支持1秒和5秒",
+          "enum": [
+            1,
+            5
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

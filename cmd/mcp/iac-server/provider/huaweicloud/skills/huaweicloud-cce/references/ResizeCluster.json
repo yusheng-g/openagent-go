@@ -1,0 +1,182 @@
+{
+  "name": "ResizeCluster",
+  "summary": "变更集群规格",
+  "tags": "集群管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/operation/resize": {
+      "post": {
+        "tags": [
+          "集群管理"
+        ],
+        "summary": "变更集群规格",
+        "description": "该API用于变更一个指定集群的规格。\n\n>   - 集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。\n>   - 使用限制请参考[变更集群规格](https://support.huaweicloud.com/usermanual-cce/cce_10_0403.html)。\n>",
+        "operationId": "ResizeCluster",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "ResizeClusterRequestBody",
+            "in": "body",
+            "description": "变更集群规格的结构体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResizeClusterRequestBody"
+            },
+            "x-order": 200
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "表示按需集群规格变更作业下发成功",
+            "examples": {
+              "application/json": {
+                "jobID": "13b8d958-8fcf-11ed-aef3-0255ac1001bd"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ResizeClusterResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "变更指定集群的规格",
+        "x-order": 13,
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-request-examples-description-1": "变更包周期集群规格(自动付费)",
+        "x-request-examples-url-1": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/operation/resize",
+        "x-request-examples-1": {
+          "flavorResize": "cce.s1.medium",
+          "extendParam": {
+            "isAutoPay": "true"
+          }
+        },
+        "x-request-examples-description-2": "变更按需集群规格",
+        "x-request-examples-url-2": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/operation/resize",
+        "x-request-examples-2": {
+          "flavorResize": "cce.s1.medium"
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ResizeClusterResponseBody": {
+      "description": "变更集群规格的返回体",
+      "required": [
+        "jobID"
+      ],
+      "properties": {
+        "jobID": {
+          "type": "string",
+          "description": "**参数解释**:\n任务ID\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "orderID": {
+          "type": "string",
+          "description": "**参数解释**:\n包周期集群变更规格订单ID\n**约束限制**:\nv2接口不支持包周期集群规格变更\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "ResizeClusterRequestBody": {
+      "description": "变更集群规格的请求体",
+      "required": [
+        "flavorResize"
+      ],
+      "properties": {
+        "flavorResize": {
+          "type": "string",
+          "description": "**参数解释**:\n要变更的目标规格。仅支持变更集群最大节点规模,不支持变更控制节点数,且不支持降低集群规格。例如原集群规格为cce.s2.medium,仅支持变更至cce.s2.large及以上规格,不支持变更至cce.s2.small或cce.s1.medium。\n**约束限制**:\nVPC 网络模型建议集群规模为 1000 节点及以下。集群本身规模受 VPC 路由表配额上限限制,若扩容规格至cce.s2.xlarge,可能出现实际节点规模无法达到目标规模的情况。\n**取值范围**:\n- cce.s1.small: 小规模单控制节点CCE集群(最大50节点)\n- cce.s1.medium: 中等规模单控制节点CCE集群(最大200节点)\n- cce.s2.small: 小规模三控制节点CCE集群(最大50节点)\n- cce.s2.medium: 中等规模三控制节点CCE集群(最大200节点)\n- cce.s2.large: 大规模三控制节点CCE集群(最大1000节点)\n- cce.s2.xlarge: 超大规模三控制节点CCE集群(最大2000节点)\n- \n- \n- \n- \n**默认取值**:\n不涉及\n\n>    关于规格参数中的字段说明如下:\n>    - s1:单控制节点的集群,控制节点数为1。单控制节点故障后,集群将不可用,但已运行工作负载不受影响。\n>    - s2:三控制节点的集群,即高可用集群,控制节点数为3。当某个控制节点故障时,集群仍然可用。\n>    \n>    - dec:表示专属云的CCE集群规格。例如cce.dec.s1.small表示小规模单控制节点的专属云CCE集群(最大50节点)。\n>    - small:表示集群支持管理的最大节点规模为50节点。\n>    - medium:表示集群支持管理的最大节点规模为200节点。\n>    - large:表示集群支持管理的最大节点规模为1000节点。\n>    - xlarge:表示集群支持管理的最大节点规模为2000节点。"
+        },
+        "skippedTasks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "IngressChecker"
+            ]
+          },
+          "description": "**参数解释**:\n该参数用于控制集群规格变更时跳过部分任务。\n**约束限制**:\n无\n**取值范围**:\n- IngressChecker: 集群规格变更时跳过Ingress与ELB配置一致性检查\n\n> - 跳过Ingress与ELB配置一致性检查可能导致业务中断,请谨慎操作!\n> - 集群不可用或者过载时,必须跳过Ingress与ELB配置一致性检查,否则会导致集群规格变更失败。请确保变更集群规格前已按 [ELB Ingress与ELB配置不一致如何处理?](https://support.huaweicloud.com/cce_faq/cce_faq_00493.html) 指南解决一致性问题。\n\n**默认取值**:\n集群不可用时默认包含IngressChecker"
+        },
+        "extendParam": {
+          "description": "**参数解释**:\n变更集群规格扩展字段\n**约束限制**:\n不涉及",
+          "type": "object",
+          "properties": {
+            "decMasterFlavor": {
+              "type": "string",
+              "description": "**参数解释**:\n专属云CCE集群可指定控制节点的规格\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            },
+            "isAutoPay": {
+              "type": "string",
+              "description": "**参数解释**:\n是否自动扣款\n**约束限制**:\n不涉及\n**取值范围**:\n- “true”:自动扣款\n- “false”:不自动扣款\n> 包周期集群时生效,不填写此参数时默认不会自动扣款。\n\n**默认取值**:\n不涉及"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

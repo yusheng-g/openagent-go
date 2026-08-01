@@ -1,0 +1,151 @@
+{
+  "name": "ListNameServers",
+  "summary": "查询名称服务器列表",
+  "tags": "名称服务器管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/nameservers": {
+      "get": {
+        "tags": [
+          "名称服务器管理"
+        ],
+        "operationId": "ListNameServers",
+        "summary": "查询名称服务器列表",
+        "description": "查询名称服务器列表",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-publishpath": "dns_api_69001",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "待查询名称服务器的类型。\n取值范围: public, private。\n如果为空,表示查询所有类型的名称服务器。\n如果为public,表示查询公网的名称服务器。\n如果为private,表示查询内网的名称服务器。\n搜索模式精确搜索。\n默认值为空。",
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "description": "待查询的region ID。\n当查询公网的名称服务器时,此处不填。\n搜索模式精确搜索。\n默认值为空。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询名称服务器列表响应。",
+            "schema": {
+              "$ref": "#/definitions/ListNameServersResp"
+            },
+            "examples": {
+              "application/json": {
+                "nameservers": [
+                  {
+                    "region": null,
+                    "type": "public",
+                    "ns_records": [
+                      {
+                        "hostname": "ns1.huawei.com.",
+                        "priority": 1
+                      },
+                      {
+                        "hostname": "ns2.huawei.com.",
+                        "priority": 2
+                      }
+                    ]
+                  },
+                  {
+                    "region": "xxx",
+                    "type": "private",
+                    "ns_records": [
+                      {
+                        "priority": 1,
+                        "address": "100.125.1.0"
+                      },
+                      {
+                        "priority": 2,
+                        "address": "100.125.1.1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListNameServersResp": {
+      "properties": {
+        "nameservers": {
+          "type": "array",
+          "description": "name server列表对象。",
+          "items": {
+            "$ref": "#/definitions/NameServersResp"
+          }
+        }
+      }
+    },
+    "ns_records": {
+      "properties": {
+        "hostname": {
+          "type": "string",
+          "description": "主机名。  当为内网名称服务器时,此值为空。"
+        },
+        "address": {
+          "type": "string",
+          "description": "名称服务器地址。  当为公网名称服务器时,此值为空。"
+        },
+        "priority": {
+          "type": "integer",
+          "description": "优先级。  示例:  如果priority的值为“1”,表示会第一个采用该域名服务器进行解析。",
+          "format": "int32"
+        }
+      }
+    },
+    "NameServersResp": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "待查询名称服务器的类型。  取值范围: public, private。  如果为空,表示查询所有类型的名称服务器。\n如果为public,表示查询公网的名称服务器。  如果为private,表示查询内网的名称服务器。"
+        },
+        "region": {
+          "type": "string",
+          "description": "待查询的region ID。  当查询公网的名称服务器时,此处不填。"
+        },
+        "ns_records": {
+          "type": "array",
+          "description": "名称服务器列表。",
+          "items": {
+            "$ref": "#/definitions/ns_records"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,358 @@
+{
+  "name": "ListSnapshots",
+  "summary": "查询云硬盘快照详情列表",
+  "tags": "云硬盘快照",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/cloudsnapshots/detail": {
+      "get": {
+        "tags": [
+          "云硬盘快照"
+        ],
+        "summary": "查询云硬盘快照详情列表",
+        "description": "查询云硬盘快照详细列表信息。",
+        "operationId": "ListSnapshots",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "偏移量。 说明:分页查询快照时使用,与limit配合使用。假如共有30个快照,设置offset为11,limit为10,即为从第12个快照开始查询,一次最多可读取10个快照。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "返回结果个数限制,值为大于0的整数。默认值为1000。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "云硬盘快照名称。最大支持255个字节。",
+            "required": false,
+            "type": "string",
+            "x-order": 5
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "云硬盘快照状态,具体请参见A.3 云硬盘快照状态。",
+            "required": false,
+            "type": "string",
+            "x-order": 6
+          },
+          {
+            "name": "volume_id",
+            "in": "query",
+            "description": "快照所属云硬盘的ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 7,
+            "x-admin": "",
+            "x-internal": ""
+          },
+          {
+            "name": "availability_zone",
+            "in": "query",
+            "description": "快照所属云硬盘的可用区。",
+            "required": false,
+            "type": "string",
+            "x-order": 8,
+            "x-admin": "",
+            "x-internal": ""
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "指定快照id进行过滤。可以传入多个id过滤查询,格式:id=id1&id=id2&id=id3",
+            "required": false,
+            "type": "string",
+            "x-order": 9,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "dedicated_storage_name",
+            "in": "query",
+            "description": "专属存储的名称。",
+            "required": false,
+            "type": "string",
+            "x-order": 10
+          },
+          {
+            "name": "dedicated_storage_id",
+            "in": "query",
+            "description": "专属存储ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 11
+          },
+          {
+            "name": "service_type",
+            "in": "query",
+            "description": "服务类型。仅支持EVS、DSS、DESS。",
+            "required": false,
+            "type": "string",
+            "x-order": 12
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "指定企业项目id进行过滤。\n传入“all_granted_eps”,代表查询权限范围内的所有企业项目下的云硬盘。\n> 说明:\n> \n> 关于企业项目ID的获取及企业项目特性的详细信息,请参考:\"[企业管理用户指南](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0123692049.html)\"。",
+            "required": false,
+            "type": "string",
+            "x-order": 13
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "count": 3,
+                "snapshots_links": [
+                  {
+                    "href": "https://{endpoint}/v2/20a68d6b7a124ae2b6b8a22046ee5966/cloudsnapshots/detail?limit=1&marker=fc05d5d7-7e99-42fb-b6f2-9ddd1b990e67",
+                    "rel": "next"
+                  }
+                ],
+                "snapshots": [
+                  {
+                    "status": "available",
+                    "description": null,
+                    "dedicated_storage_id": null,
+                    "updated_at": "2018-06-06T10:58:47.349051",
+                    "volume_id": "f687bd70-37b3-4f00-a900-0ba1cfaa5196",
+                    "id": "fc05d5d7-7e99-42fb-b6f2-9ddd1b990e67",
+                    "size": 1,
+                    "os-extended-snapshot-attributes:progress": "100%",
+                    "name": "test03",
+                    "os-extended-snapshot-attributes:project_id": "20a68d6b7a124ae2b6b8a22046ee5966",
+                    "dedicated_storage_name": null,
+                    "service_type": "EVS",
+                    "created_at": "2018-05-30T03:14:44.457975",
+                    "metadata": {}
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListSnapshotsResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云硬盘快照详情列表",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 20,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/{project_id}/cloudsnapshots/detail",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2016/6/30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListSnapshotsResponseBody": {
+      "required": [
+        "count"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "快照的总数量,不受limi参数的影响。"
+        },
+        "snapshots": {
+          "type": "array",
+          "description": "快照信息。",
+          "items": {
+            "$ref": "#/definitions/SnapshotList"
+          }
+        },
+        "snapshots_links": {
+          "type": "array",
+          "description": "云硬盘快照列表查询位置标记。当查询时指定limit时会返回该字段,返回该字段表示本次查询只查出了部分云硬盘快照信息。",
+          "items": {
+            "$ref": "#/definitions/Link"
+          },
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "快照列表信息。"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "Link": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应的快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        }
+      },
+      "description": "云硬盘uri自描述信息。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "SnapshotList": {
+      "required": [
+        "created_at",
+        "id",
+        "os-extended-snapshot-attributes:progress",
+        "os-extended-snapshot-attributes:project_id",
+        "service_type",
+        "size",
+        "status",
+        "volume_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云硬盘快照ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "云硬盘快照的状态。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘快照名称。"
+        },
+        "description": {
+          "type": "string",
+          "description": "云硬盘快照描述信息。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "云硬盘快照创建时间。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "云硬盘快照更新时间。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云硬盘快照的元数据信息。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "快照所属的云硬盘。"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘快照大小。"
+        },
+        "os-extended-snapshot-attributes:project_id": {
+          "type": "string",
+          "description": "项目ID。"
+        },
+        "os-extended-snapshot-attributes:progress": {
+          "type": "string",
+          "description": "快照进度。"
+        },
+        "dedicated_storage_id": {
+          "type": "string",
+          "description": "专属存储ID。"
+        },
+        "dedicated_storage_name": {
+          "type": "string",
+          "description": "专属存储名称。"
+        },
+        "service_type": {
+          "type": "string",
+          "description": "服务类型。"
+        }
+      },
+      "description": "快照列表信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

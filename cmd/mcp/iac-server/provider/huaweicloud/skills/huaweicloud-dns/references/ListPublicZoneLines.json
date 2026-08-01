@@ -1,0 +1,213 @@
+{
+  "name": "ListPublicZoneLines",
+  "summary": "查询公网域名的线路列表",
+  "tags": "记录集管理(v2.1)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/zones/{zone_id}/lines": {
+      "get": {
+        "tags": [
+          "记录集管理(v2.1)"
+        ],
+        "x-request-examples-description-1": "查询公网域名的线路列表。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2.1/zones/2c9eb155587194ec01587224c9f90149/lines?limit=10&offset=0",
+        "summary": "查询公网域名的线路列表",
+        "description": "公网域名支持设置线路解析,当您的公网域名创建完成并添加记录集时,可通过调用此接口查询公网域名的所有解析线路。",
+        "operationId": "ListPublicZoneLines",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询公网域名的线路列表响应。",
+            "examples": {
+              "application/json": {
+                "links": {
+                  "self": "https://Endpoint/v2.1/zones/2c9eb155587194ec01587224c9f90149/lines?limit=10&offset=0"
+                },
+                "lines": [
+                  {
+                    "line": "default_view",
+                    "line_name": null,
+                    "create_time": "2016-11-17T12:03:17.827"
+                  },
+                  {
+                    "line": "custom_2ce45ef669fc87870169fcbada7a0007",
+                    "line_name": "customline",
+                    "create_time": "2019-04-10T12:03:17.827"
+                  },
+                  {
+                    "line": "lgroup_ff8080826c33046a016c3ce46a3322cf",
+                    "line_name": "linegroup",
+                    "create_time": "2019-07-29T08:41:38.096"
+                  }
+                ],
+                "metadata": {
+                  "total_count": 3
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListPublicZoneLinesResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 7
+      }
+    }
+  },
+  "definitions": {
+    "metadata": {
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "description": "**参数解释:**\n满足查询条件的资源总数,不受分页(即limit、offset参数)影响。\n**取值范围:**\n不涉及。",
+          "format": "int32",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。"
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "PublicZoneLines": {
+      "properties": {
+        "line": {
+          "type": "string",
+          "description": "**参数解释:**\n线路ID。\n**取值范围:**\n不涉及。"
+        },
+        "line_name": {
+          "type": "string",
+          "description": "**参数解释:**\n线路名称。\n**取值范围:**\n不涉及。"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "**参数解释:**\n创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        }
+      }
+    },
+    "ListPublicZoneLinesResponseBody": {
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/definitions/PublicZoneLines"
+          },
+          "description": "**参数解释:**\n查询公网域名的线路列表响应。\n**取值范围:**\n不涉及。",
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata",
+          "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。"
+        }
+      }
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "offset": {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "description": "**参数解释:**\n分页查询起始偏移量,表示从偏移量的下一个资源开始查询。\n**约束限制:**\n当设置marker不为空时,以marker为分页起始标识,offset不生效。\n**取值范围:**\n0~2147483647。\n**默认取值:**\n0",
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
+    },
+    "limit": {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "description": "**参数解释:**\n分页查询时配置每页返回的资源个数。\n**约束限制:**\n不涉及。\n**取值范围:**\n0~500。\n**默认取值:**\n500",
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0,
+      "maximum": 500
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

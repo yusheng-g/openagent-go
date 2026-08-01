@@ -1,0 +1,263 @@
+{
+  "name": "ListBucketInventory",
+  "summary": "列举桶清单",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "description": "OBS使用不带清单id的GET操作来获取指定桶的所有清单配置,获取到的清单配置一次性返回,不分页。\n\n要正确执行此操作,需要确保执行者有GetBucketInventoryConfiguration权限。缺省情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n\n有关权限控制的更多信息请参考《对象存储服务权限配置指南》的OBS权限控制概述章节。\n",
+        "operationId": "ListBucketInventory",
+        "summary": "列举桶清单",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?inventory",
+        "x-request-examples-1": "GET /?inventory HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Tue, 08 Jan 2019 09:32:24 +0000\nAuthorization: OBS UDSIAMSTUBTEST000001:ySWncC9M08jNsyXdJLSMJkpi7XM=\n",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "inventory",
+            "in": "query",
+            "required": true,
+            "description": "inventory表示请求桶清单API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 000001682CB4C2EE6808A0D8DF9F3D00\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSBjn5O7Jv9CqvUMO0BenehRdil1n8rR\nContent-Type: application/xml\nDate: Tue, 08 Jan 2019 09:04:30 GMT\nContent-Length: 626\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ListInventoryConfiguration  xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n <InventoryConfiguration>\n  <Id>id1</Id>\n   <IsEnabled>true</IsEnabled>\n   <Destination>\n     <Format>CSV</Format>\n     <Bucket>bucket</Bucket>\n     <Prefix>prefix</Prefix>\n   </Destination>\n   <Schedule>\n     <Frequency>Daily</Frequency>\n   </Schedule>\n   <IncludedObjectVersions>Current</IncludedObjectVersions>\n   <OptionalFields>\n     <Field>Size</Field>\n     <Field>LastModifiedDate</Field>\n     <Field>ETag</Field>\n     <Field>StorageClass</Field>\n     <Field>IsMultipartUploaded</Field>\n     <Field>ReplicationStatus</Field>\n     <Field>EncryptionStatus</Field>\n   </OptionalFields>\n </InventoryConfiguration>\n</ListInventoryConfiguration>\n"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListInventoryConfigurationResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "Filter": {
+      "description": "清单过滤器配置,清单只包含符合过滤器规则的对象(只支持按对象名前缀进行过滤),如果没有配置过滤器,则包含所有对象。\n",
+      "properties": {
+        "Prefix": {
+          "description": "前缀过滤条件,清单文件中只生成以此前缀开头的对象列表。\n",
+          "type": "string"
+        }
+      }
+    },
+    "SetBucketInventoryRequestBody": {
+      "xml": {
+        "name": "InventoryConfiguration"
+      },
+      "description": "清单配置\n",
+      "required": [
+        "Id",
+        "IsEnabled",
+        "Schedule",
+        "Destination",
+        "IncludedObjectVersions"
+      ],
+      "properties": {
+        "Id": {
+          "description": "清单配置的id,必须和请求参数中的清单配置id一致。\n有效字符:\"a-z\"、\"A-Z\"、\"0-9\"、\"-\"、\"_\"和\".\"\n",
+          "maxLength": 64,
+          "type": "string"
+        },
+        "IsEnabled": {
+          "description": "规则是否启用,如果设置为true,则生成清单,反之不生成。\n",
+          "type": "boolean"
+        },
+        "Filter": {
+          "$ref": "#/definitions/Filter"
+        },
+        "Destination": {
+          "$ref": "#/definitions/Destination"
+        },
+        "Schedule": {
+          "$ref": "#/definitions/Schedule"
+        },
+        "IncludedObjectVersions": {
+          "description": "清单文件中包含对象的多版本配置。\n如果设置为All,清单会包含对象所有的版本,清单中会增加版本相关的字段:VersionId、IsLatest、和DeleteMarker。\n如果设置为Current,则清单文件中只会列出当前版本信息,不会出现版本相关字段。\n",
+          "type": "string",
+          "enum": [
+            "All",
+            "Current"
+          ]
+        },
+        "OptionalFields": {
+          "description": "在此选项中可以添加一些额外的对象元数据字段,生成的清单文件中会包含OptionalFields中配置的字段。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Field"
+          }
+        }
+      }
+    },
+    "ListInventoryConfigurationResponseBody": {
+      "xml": {
+        "name": "ListInventoryConfiguration"
+      },
+      "description": "桶清单配置列表。\n",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SetBucketInventoryRequestBody"
+      }
+    },
+    "Destination": {
+      "description": "清单的目标配置。\n",
+      "required": [
+        "Format",
+        "Bucket"
+      ],
+      "properties": {
+        "Format": {
+          "type": "string",
+          "description": "生成的清单文件的格式,现只支持CSV格式。\n",
+          "enum": [
+            "CSV"
+          ]
+        },
+        "Bucket": {
+          "type": "string",
+          "description": "存放清单文件的目标桶的桶名。\n"
+        },
+        "Prefix": {
+          "type": "string",
+          "description": "生成的清单文件对象名会以此前缀开头,如果不配置前缀,则生成的清单文件对象名默认以BucketInventory开头。\n"
+        }
+      }
+    },
+    "Field": {
+      "type": "string",
+      "description": "可选字段类型,OptionalFields可以包含多个Field元素。\n",
+      "enum": [
+        "Size",
+        "LastModifiedDate",
+        "ETag",
+        "StorageClass",
+        "IsMultipartUploaded",
+        "ReplicationStatus",
+        "EncryptionStatus"
+      ]
+    },
+    "Schedule": {
+      "description": "清单文件的生成周期。\n",
+      "required": [
+        "Frequency"
+      ],
+      "properties": {
+        "Frequency": {
+          "type": "string",
+          "description": "清单文件的生成周期,只支持按天和按周生成清单,第一次配置完桶清单,任务会在一个小时内启动,之后每隔一个周期启动一次。\n",
+          "enum": [
+            "Daily",
+            "Weekly"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

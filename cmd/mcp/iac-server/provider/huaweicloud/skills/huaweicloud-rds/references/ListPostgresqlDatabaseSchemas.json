@@ -1,0 +1,168 @@
+{
+  "name": "ListPostgresqlDatabaseSchemas",
+  "summary": "查询数据库SCHEMA列表",
+  "tags": "管理数据库和用户(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/schema/detail": {
+      "get": {
+        "tags": [
+          "管理数据库和用户(PostgreSQL)"
+        ],
+        "operationId": "ListPostgresqlDatabaseSchemas",
+        "summary": "查询数据库SCHEMA列表",
+        "description": "查询指定实例的数据库SCHEMA列表。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 实例在异常或冻结状态下不能执行该操作。\n- 不支持查询只读实例的数据库SCHEMA列表。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "db_name",
+            "in": "query",
+            "description": "数据库名称。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "分页页码,从1开始。",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数据条数。取值范围[1, 100]。",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListDatabaseSchemaResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "database_schemas": [
+                  {
+                    "schema_name": "rds-test",
+                    "owner": "root"
+                  },
+                  {
+                    "schema_name": "testdb1",
+                    "owner": "root"
+                  }
+                ],
+                "total_count": 2
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/0483b6b16e954cb88930a360d2c4e663/instances/dsfae23fsfdsae3435in01/schema/detail?db_name=rds_test&page=1&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "ListDatabaseSchemaResponseBody": {
+      "required": [
+        "database_schemas",
+        "total_count"
+      ],
+      "properties": {
+        "database_schemas": {
+          "description": "列表中每个元素表示一个数据库schema。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PostgresqlDatabaseForListSchema"
+          }
+        },
+        "total_count": {
+          "description": "数据库schema总数。",
+          "type": "integer"
+        }
+      }
+    },
+    "PostgresqlDatabaseForListSchema": {
+      "description": "数据库schema信息。",
+      "required": [
+        "schema_name",
+        "owner"
+      ],
+      "properties": {
+        "schema_name": {
+          "description": "schema名称。",
+          "type": "string"
+        },
+        "owner": {
+          "description": "schema所属用户。",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

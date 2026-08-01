@@ -1,0 +1,122 @@
+{
+  "name": "ShowSecondLevelMonitoring",
+  "summary": "查询秒级监控策略",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/second-level-monitor": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-constraint": "接口公测中,申请后可用,仅支持mysql,4U以上实例",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/second-level-monitor",
+        "x-request-examples-description-1": "查询秒级监控策略",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "查询秒级监控策略",
+        "description": "查询实例秒级监控策略",
+        "operationId": "ShowSecondLevelMonitoring",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "schema": {
+              "$ref": "#/definitions/SecondMonitor"
+            },
+            "examples": {
+              "application/json": {
+                "switch_option": true,
+                "interval": 1
+              }
+            }
+          },
+          "default": {
+            "description": "查询失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "SecondMonitor": {
+      "type": "object",
+      "description": "秒级监控信息",
+      "required": [
+        "switch_option"
+      ],
+      "properties": {
+        "switch_option": {
+          "type": "boolean",
+          "description": "秒级监控开关"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32",
+          "description": "监控间隔, 支持1秒和5秒",
+          "enum": [
+            1,
+            5
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

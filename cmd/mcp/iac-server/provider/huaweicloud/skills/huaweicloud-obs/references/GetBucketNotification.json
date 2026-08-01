@@ -1,0 +1,247 @@
+{
+  "name": "GetBucketNotification",
+  "summary": "获取桶的消息通知配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "GetBucketNotification",
+        "summary": "获取桶的消息通知配置",
+        "description": "获取指定桶的消息通知配置信息。\n\n为了能成功执行此配置操作,需要确保执行者拥有GetBucketNotification权限。默认情况下只有桶的所有者拥有该权限,但可以通过设置桶策略或用户策略授权给其他用户。\n",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "notification",
+            "in": "query",
+            "required": true,
+            "description": "notification表示请求桶的消息通知配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetBucketNotificationResponseBody"
+            },
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 900B000001643FDDD751B37BA87590D8\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSJRBSladan5ZCVw6ZIY/DAs0zs6z7Hh\nContent-Type: application/xml\nDate: WED, 01 Jul 2015 03:16:32 GMT\nContent-Length: 490\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<NotificationConfiguration xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n\n  <TopicConfiguration>\n    <Topic>urn:smn:cn-east-3:4b29a3cb5bd64581bda5714566814bb7:tet522</Topic>\n    <Id>ConfigurationId</Id>\n    <Filter>\n      <Object>\n        <FilterRule>\n          <Name>prefix</Name>\n          <Value>object</Value>\n        </FilterRule>\n        <FilterRule>\n          <Name>suffix</Name>\n          <Value>txt</Value>\n        </FilterRule>\n      </Object>\n    </Filter>\n    <Event>ObjectCreated:Put</Event>\n  </TopicConfiguration>\n</NotificationConfiguration>\n"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|InvalidArgument|该错误可能是由于下列原因导致。指定了不支持的event。指定的URN不存在或者填写错误,请确认URN合法。指定的URN中的区域与桶所在的区域不一致,请确保桶所在的区域与URN中的区域一致。指定的过滤规则之间存在互相包含或者重叠。|400 Bad Request|\n|AccessDenied|执行者不是桶的所有者,或者还未被授权PutBucketNotification权限。|403 Forbidden|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "TopicConfiguration": {
+      "description": "配置事件通知主题的元素。\n",
+      "properties": {
+        "Id": {
+          "type": "string",
+          "description": "每项事件通知配置的唯一标识,若是用户未指定ID,系统将自动分配一个ID。\n"
+        },
+        "Filter": {
+          "description": "Object的元素,用以保存过滤对象名的一组规则。\n",
+          "properties": {
+            "Object": {
+              "$ref": "#/definitions/FilterObject"
+            }
+          }
+        },
+        "Topic": {
+          "type": "string",
+          "description": "事件通知主题的URN,当OBS检测到桶中发生特定的事件后,将会发布通知消息至该主题,可以在[消息通知服务主题](https://console.huaweicloud.com/smn/?region=cn-north-4#/topics/list)部分找到具体值。\n模板:<Topic>urn:smn:region:project_id:smn_topic</Topic>\n"
+        },
+        "Event": {
+          "type": "string",
+          "description": "需要发布通知消息的事件类型。\n说明:在一个TopicConfiguration、FunctionStageConfiguration配置项中可以添加多个事件类型。\n合法值:\n上传对象操作可以取以下值:\nObjectCreated:Put\nObjectCreated:Post\nObjectCreated:Copy\nObjectCreated:CompleteMultipartUpload\n\n或者使用通配符支持所有上传操作\nObjectCreated:*\n\n删除对象操作可以取以下值:\nObjectRemoved:Delete\nObjectRemoved:DeleteMarkerCreated\n\n或者使用通配符支持所有删除操作\nObjectRemoved:*\n"
+        }
+      }
+    },
+    "FilterObject": {
+      "description": "定义过滤规则的元素,该规则用以匹配对象名前缀和后缀。\n",
+      "properties": {
+        "FilterRule": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FilterRule"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "GetBucketNotificationResponseBody": {
+      "properties": {
+        "NotificationConfiguration": {
+          "$ref": "#/definitions/SetBucketNotificationRequestBody"
+        }
+      }
+    },
+    "FilterRule": {
+      "description": "定义过滤规则键值对的元素。\n",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "指定规则按对象名前缀或后缀进行过滤。\n"
+        },
+        "Value": {
+          "type": "string",
+          "description": "指定的对象名关键字,根据Name元素定义的前缀或后缀,输入需要过滤的对象的关键字信息,字符越长匹配精度越高,最大可支持1024个字符。\n",
+          "maxLength": 1024
+        }
+      }
+    },
+    "FunctionStageConfiguration": {
+      "description": "配置函数服务的元素。\n",
+      "properties": {
+        "Id": {
+          "type": "string",
+          "description": "每项事件通知配置的唯一标识,若是用户未指定ID,系统将自动分配一个ID。\n"
+        },
+        "Filter": {
+          "description": "Object的元素,用以保存过滤对象名的一组规则。\n",
+          "properties": {
+            "Object": {
+              "$ref": "#/definitions/FilterObject"
+            }
+          }
+        },
+        "Topic": {
+          "type": "string",
+          "description": "事件通知主题的URN,当OBS检测到桶中发生特定的事件后,将会发布通知消息至该主题,可以在[消息通知服务主题](https://console.huaweicloud.com/smn/?region=cn-north-4#/topics/list)部分找到具体值。\n模板:<Topic>urn:smn:region:project_id:smn_topic</Topic>\n"
+        },
+        "Event": {
+          "type": "string",
+          "description": "需要发布通知消息的事件类型。\n说明:在一个TopicConfiguration、FunctionStageConfiguration配置项中可以添加多个事件类型。\n合法值:\n上传对象操作可以取以下值:\nObjectCreated:Put\nObjectCreated:Post\nObjectCreated:Copy\nObjectCreated:CompleteMultipartUpload\n\n或者使用通配符支持所有上传操作\nObjectCreated:*\n\n删除对象操作可以取以下值:\nObjectRemoved:Delete\nObjectRemoved:DeleteMarkerCreated\n\n或者使用通配符支持所有删除操作\nObjectRemoved:*\n"
+        },
+        "FunctionStage": {
+          "type": "string",
+          "description": "函数服务中函数的URN,当OBS检测到桶中发生特定的事件后,将会发送消息至函数服务调用执行该函数。\n若添加父元素FunctionStageConfiguration,本元素是必选项。\n"
+        }
+      }
+    },
+    "SetBucketNotificationRequestBody": {
+      "xml": {
+        "name": "NotificationConfiguration"
+      },
+      "description": "配置桶事件通知的根元素,如果子元素为空,说明消息通知功能处于关闭状态。\n",
+      "properties": {
+        "TopicConfiguration": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopicConfiguration"
+          }
+        },
+        "FunctionStageConfiguration": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FunctionStageConfiguration"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

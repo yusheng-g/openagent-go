@@ -1,0 +1,137 @@
+{
+  "name": "SendVerificationMessageCode",
+  "summary": "发送验证码",
+  "tags": "注册客户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bases/verificationcode/send": {
+      "post": {
+        "summary": "发送验证码",
+        "description": "客户注册时,如果填写了手机号,可以向对应的手机发送注册验证码,校验信息的正确性。使用个人银行卡方式进行实名认证时,通过该接口向指定的手机发送验证码。",
+        "tags": [
+          "注册客户(伙伴)"
+        ],
+        "operationId": "SendVerificationMessageCode",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/bases/verificationcode/send",
+        "x-open-region-cloud": "hc,hk",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "发送校验码请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SendVerificationCodeV2Req"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/bases/verificationcode/send",
+        "x-request-examples-1": {
+          "receiver_type": 1,
+          "timeout": 5,
+          "mobile_phone": "188****8888",
+          "lang": "en-us",
+          "scene": 18,
+          "customer_id": "a0d736359ada40aab6502d1a828c1809"
+        },
+        "responses": {
+          "204": {
+            "description": "默认返回:no content"
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "注册客户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SendVerificationCodeV2Req": {
+      "required": [
+        "receiver_type",
+        "mobile_phone"
+      ],
+      "properties": {
+        "receiver_type": {
+          "description": "发送验证码的类型: 1:发送短信验证码",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1,
+          "maximum": 2,
+          "minimum": 1
+        },
+        "timeout": {
+          "description": "验证码超时时间。此参数不携带或携带值为null时,采用系统默认超时时间10分钟。此参数值超过60时,取值固定为5分钟。单位:分钟",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 5,
+          "maximum": 3000,
+          "minimum": 1
+        },
+        "mobile_phone": {
+          "type": "string",
+          "description": "指定发送验证码的手机号。 目前系统只支持中国手机号。 示例:13XXXXXXXXX",
+          "minLength": 0,
+          "maxLength": 32,
+          "example": "13XXXXXXXXX",
+          "x-site": "HC"
+        },
+        "lang": {
+          "type": "string",
+          "description": "根据该参数的取值选择发送短信验证码的语言。此参数默认值为“zh-cn:中文”。 zh-cn:中文en-us:英文",
+          "minLength": 0,
+          "maxLength": 16,
+          "example": "zh-cn"
+        },
+        "scene": {
+          "description": "验证码使用的场景,目前支持如下场景: 29:注册场景18:个人银行卡实名认证场景 此参数不携带或携带值为null时,默认值为“29:注册场景”。",
+          "type": "integer",
+          "format": "int32",
+          "minimum": 18,
+          "maximum": 29,
+          "default": 29,
+          "x-allowNull": true,
+          "example": 18,
+          "x-site": "HC"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。 当scene=18时此参数必填;除此之外此参数非必填,不携带或携带值为null时均不做处理。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "a0d736359ada40aab6502d1a828c1809",
+          "x-site": "HC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

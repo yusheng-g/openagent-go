@@ -1,0 +1,211 @@
+{
+  "name": "ListServiceResources",
+  "summary": "根据云服务类型查询资源类型列表",
+  "tags": "管理产品(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/products/service-resources": {
+      "get": {
+        "summary": "根据云服务类型查询资源类型列表",
+        "description": "伙伴在伙伴销售平台根据云服务类型查询关联的资源类型编码和名称,用于查询按需产品的价格或包年/包月产品的价格。",
+        "tags": [
+          "管理产品(公共)"
+        ],
+        "operationId": "ListServiceResources",
+        "x-constraint": "该接口可以使用合作伙伴AK/SK或者Token调用,也该接口可以使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/products/service-resources",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-09-17",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L1",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。中文:zh_CN英文:en_US缺省为zh_CN。",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "service_type_code",
+            "in": "query",
+            "required": true,
+            "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用[查询云服务类型列表](https://support.huaweicloud.com/api-oce/zh-cn_topic_0000001256679455.html)接口获取。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "hws.service.type.obs",
+            "x-allowNull": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量,默认值为10。此参数不支持携带值为空。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "x-allowNull": false,
+            "default": "10"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "x-allowNull": false,
+            "default": "0"
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/products/service-resources?service_type_code=hws.service.type.obs&limit=5&offset=0",
+        "responses": {
+          "200": {
+            "description": "根据云服务类型查询资源列表响应",
+            "schema": {
+              "$ref": "#/definitions/QueryServiceResourceRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 5,
+                "infos": [
+                  {
+                    "basic_info": {
+                      "resource_type_code": "hws.resource.type.general",
+                      "product_owner_service": "hws.service.type.offline",
+                      "name": "通用规格",
+                      "description": "通用规格"
+                    }
+                  },
+                  {
+                    "basic_info": {
+                      "resource_type_code": "hws.resource.type.bandwidth",
+                      "product_owner_service": "hws.service.type.vpc",
+                      "name": "固定带宽",
+                      "description": "固定带宽"
+                    }
+                  },
+                  {
+                    "basic_info": {
+                      "resource_type_code": "hws.resource.type.ip",
+                      "product_owner_service": "hws.service.type.vpc",
+                      "name": "弹性公网IP",
+                      "description": "弹性公网IP"
+                    }
+                  },
+                  {
+                    "basic_info": {
+                      "resource_type_code": "hws.resource.type.vm.image",
+                      "product_owner_service": "hws.service.type.ec2",
+                      "name": "云主机镜像",
+                      "description": "云主机镜像"
+                    }
+                  },
+                  {
+                    "basic_info": {
+                      "resource_type_code": "hws.resource.type.vm",
+                      "product_owner_service": "hws.service.type.ec2",
+                      "name": "云主机",
+                      "description": "云主机"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败,参数范围超限,非法值或格式错误|"
+          }
+        },
+        "x-category": "管理产品(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryServiceResourceRsp": {
+      "properties": {
+        "total_count": {
+          "description": "总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "infos": {
+          "description": "资源基本信息列表,具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServiceResourceInfo"
+          }
+        }
+      }
+    },
+    "ResourceBasicInfo": {
+      "properties": {
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码。例如:hws.resource.type.general。",
+          "example": "hws.resource.type.testsync"
+        },
+        "product_owner_service": {
+          "type": "string",
+          "description": "资源类型归属的服务类型编码。例如:hws.service.type.offline。",
+          "example": "hws.service.type.obs"
+        },
+        "name": {
+          "type": "string",
+          "description": "资源类型名称。例如:通用规格。",
+          "example": "testsync"
+        },
+        "description": {
+          "type": "string",
+          "description": "资源类型描述。",
+          "example": "testdescription"
+        }
+      }
+    },
+    "ServiceResourceInfo": {
+      "properties": {
+        "basic_info": {
+          "description": "资源基本信息。具体请参见表4。",
+          "$ref": "#/definitions/ResourceBasicInfo"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

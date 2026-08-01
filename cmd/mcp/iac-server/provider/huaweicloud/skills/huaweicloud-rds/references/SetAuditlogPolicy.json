@@ -1,0 +1,178 @@
+{
+  "name": "SetAuditlogPolicy",
+  "summary": "设置审计日志策略",
+  "tags": "获取日志信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/auditlog-policy": {
+      "put": {
+        "tags": [
+          "获取日志信息"
+        ],
+        "operationId": "SetAuditlogPolicy",
+        "summary": "设置审计日志策略",
+        "description": "设置审计日志策略。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "SetAuditlogPolicyRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetAuditlogPolicyRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "响应信息。",
+            "examples": {
+              "application/json": {
+                "status": "COMPLETED"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/SetAuditLogPolicyResponse"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "更新审计日志策略",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/auditlog-policy",
+        "x-request-examples-1": {
+          "keep_days": 5,
+          "audit_types": [
+            "SELECT"
+          ]
+        },
+        "x-request-examples-description-2": "关闭审计日志策略",
+        "x-request-examples-url-2": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/auditlog-policy",
+        "x-request-examples-2": {
+          "keep_days": 0,
+          "reserve_auditlogs": false
+        },
+        "x-request-examples-text-1": {
+          "keep_days": 5,
+          "audit_types": [
+            "SELECT"
+          ]
+        },
+        "x-request-examples-text-2": {
+          "keep_days": 0,
+          "reserve_auditlogs": false
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "SetAuditLogPolicyResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "设置审计日志策略的操作结果。\n- COMPLETED:已完成。"
+        }
+      }
+    },
+    "SetAuditlogPolicyRequestBody": {
+      "required": [
+        "keep_days"
+      ],
+      "properties": {
+        "keep_days": {
+          "type": "integer",
+          "description": "审计日志保存天数,取值范围0~3660。0表示关闭审计日志策略。"
+        },
+        "reserve_auditlogs": {
+          "type": "boolean",
+          "description": "仅关闭审计日志策略时有效。\n\n- true(默认),表示关闭审计日志策略的同时,延迟删除已有的历史审计日志。\n- false,表示关闭审计日志策略的同时,删除已有的历史审计日志。"
+        },
+        "audit_types": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 1024,
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1024
+          },
+          "description": "审计记录的操作类型,动态范围。空表示不过滤任何操作类型。该参数仅针对RDS for MySQL实例。"
+        },
+        "databases": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 1024,
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1024
+          },
+          "description": "仅打开审计日志策略时有效。内容为打开审计日志时需自动安装pg_audit插件的数据库名称。空表示不自动安装。该参数仅针对RDS for PostgreSQL实例。"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

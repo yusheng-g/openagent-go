@@ -1,0 +1,179 @@
+{
+  "name": "NovaListServerInterfaces",
+  "summary": "查询云服务器网卡信息",
+  "tags": "网卡管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers/{server_id}/os-interface": {
+      "get": {
+        "tags": [
+          "网卡管理"
+        ],
+        "summary": "查询云服务器网卡信息",
+        "description": "查询云服务器网卡信息。",
+        "operationId": "NovaListServerInterfaces",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "interfaceAttachments": [
+                  {
+                    "port_state": "ACTIVE",
+                    "fixed_ips": [
+                      {
+                        "subnet_id": "f8a6e8f8-c2ec-497c-9f23-da9616de54ef",
+                        "ip_address": "192.168.1.3"
+                      }
+                    ],
+                    "net_id": "3cb9bc59-5699-4588-a4b1-b87f96708bc6",
+                    "port_id": "ce531f90-199f-48c0-816c-13e38010b442",
+                    "mac_addr": "fa:16:3e:4c:2c:30"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaListServerInterfacesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云服务器网卡信息",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 41,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1/{project_id}/servers/{server_id}/os-interface",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1/{project_id}/servers/{server_id}/os-interface",
+        "x-support_json": "是",
+        "x-registered_to": "nova",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "N",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaListServerInterfacesResponseBody": {
+      "required": [
+        "interfaceAttachments"
+      ],
+      "properties": {
+        "interfaceAttachments": {
+          "type": "array",
+          "description": "云服务器网卡信息列表。",
+          "items": {
+            "$ref": "#/definitions/NovaServerInterfaceDetail"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaServerInterfaceDetail": {
+      "required": [
+        "fixed_ips",
+        "mac_addr",
+        "net_id",
+        "port_id",
+        "port_state"
+      ],
+      "properties": {
+        "fixed_ips": {
+          "type": "array",
+          "description": "网卡私网IP信息列表。",
+          "items": {
+            "$ref": "#/definitions/NovaServerInterfaceFixedIp"
+          }
+        },
+        "mac_addr": {
+          "type": "string",
+          "description": "网卡Mac地址信息。"
+        },
+        "net_id": {
+          "type": "string",
+          "description": "网卡端口所属网络ID。"
+        },
+        "port_id": {
+          "type": "string",
+          "description": "网卡端口ID。"
+        },
+        "port_state": {
+          "type": "string",
+          "description": "网卡端口状态。"
+        }
+      },
+      "description": " "
+    },
+    "NovaServerInterfaceFixedIp": {
+      "required": [
+        "ip_address",
+        "subnet_id"
+      ],
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "网卡私网IP信息。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "网卡私网IP对应子网信息。"
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

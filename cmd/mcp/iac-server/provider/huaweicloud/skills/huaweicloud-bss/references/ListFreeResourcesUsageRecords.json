@@ -1,0 +1,266 @@
+{
+  "name": "ListFreeResourcesUsageRecords",
+  "summary": "查询资源包使用明细",
+  "tags": "管理资源包(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/customer-bills/free-resources-usage-records": {
+      "get": {
+        "summary": "查询资源包使用明细",
+        "description": "客户在自建平台查询资源包使用明细。",
+        "tags": [
+          "管理资源包(客户)"
+        ],
+        "operationId": "ListFreeResourcesUsageRecords",
+        "x-open-region-cloud": "hc,hk",
+        "x-constraint": "无",
+        "x-externalURL": "/v2/bills/customer-bills/free-resources-usage-records",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-11-08",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "free_resource_id",
+            "in": "query",
+            "required": false,
+            "description": "资源项ID,一个资源包中会含有多个资源项,一个使用量类型对应一个资源项。资源项ID来自查询资源包列表接口的响应。 此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "description": "产品ID,即资源包ID。 此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "resource_type_code",
+            "in": "query",
+            "required": false,
+            "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用查询资源类型列表接口获取。 此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "deduct_time_begin",
+            "in": "query",
+            "required": true,
+            "description": "资源抵扣的起始时间。东八区时间,格式为YYYY-MM-DD。",
+            "x-maxLength": 10,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": ""
+          },
+          {
+            "name": "deduct_time_end",
+            "in": "query",
+            "required": true,
+            "description": "资源抵扣的结束时间。东八区时间,格式为YYYY-MM-DD。  说明: 抵扣结束时间-抵扣起始时间<=90天。",
+            "x-maxLength": 10,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": ""
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": "0"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量限制。默认值为10。",
+            "maximum": 1000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": "10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询资源扣减明细响应| |成功:成功| |参数约束及描述: 查询资源扣减明细响应|",
+            "schema": {
+              "$ref": "#/definitions/ListFreeResourcesUsageRecordsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "free_resource_records": [
+                  {
+                    "deduct_time": "2021-10-19T08:04:25Z",
+                    "free_resource_id": "43248428-8409-47cd-b115-6a5872e2200b",
+                    "resource_id": "resourceInstanceId_north1_obs_10120001112",
+                    "resource_type_code": "",
+                    "resource_tag": "--",
+                    "product_id": "90301-247012-0--0",
+                    "product_name": "OBS存储包 10TB 包月 北京7",
+                    "usage_type_code": "",
+                    "available_amount": "10190",
+                    "remaining_amount": "10140",
+                    "used_amount": "50",
+                    "measure_id": 10,
+                    "effective_time": "2021-10-13T10:01:49Z",
+                    "expire_time": "2021-10-13T11:00:00Z"
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理资源包(客户)",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/bills/customer-bills/free-resources-usage-records?free_resource_id=free_resource_id&product_id=product_id&resource_type_code=resource_type_code&deduct_time_begin=2021-10-01&deduct_time_end=2021-10-31&offset=0&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "FreeResourceRecord": {
+      "properties": {
+        "deduct_time": {
+          "type": "string",
+          "description": "资源抵扣时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如\"2021-10-13T10:01:49Z\"。",
+          "example": ""
+        },
+        "free_resource_id": {
+          "type": "string",
+          "description": "资源项ID,一个资源包中会含有多个资源项,一个使用量类型对应一个资源项。",
+          "example": ""
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID。",
+          "example": ""
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码。例如ECS的VM为“hws.resource.type.vm”。",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        },
+        "resource_tag": {
+          "type": "string",
+          "description": "资源标签。",
+          "example": ""
+        },
+        "product_id": {
+          "type": "string",
+          "description": "产品ID,即资源包ID。",
+          "example": ""
+        },
+        "product_name": {
+          "type": "string",
+          "description": "产品名称,即资源包名称。",
+          "example": ""
+        },
+        "usage_type_code": {
+          "type": "string",
+          "description": "使用量类型。",
+          "example": ""
+        },
+        "available_amount": {
+          "type": "string",
+          "description": "资源抵扣前余量。",
+          "example": ""
+        },
+        "remaining_amount": {
+          "type": "string",
+          "description": "资源抵扣后余量。",
+          "example": ""
+        },
+        "used_amount": {
+          "type": "string",
+          "description": "抵扣量。",
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位,免费资源套餐额度度量单位。您可以调用查询度量单位列表接口获取。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "资源使用的开始时间,UTC时间。",
+          "example": ""
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "资源使用的结束时间,UTC时间。",
+          "example": ""
+        }
+      }
+    },
+    "ListFreeResourcesUsageRecordsRsp": {
+      "properties": {
+        "free_resource_records": {
+          "description": "资源包使用明细记录,具体参见表1。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FreeResourceRecord"
+          }
+        },
+        "total_count": {
+          "description": "满足条件的总个数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

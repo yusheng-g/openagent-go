@@ -1,0 +1,149 @@
+{
+  "name": "CreateMetadata",
+  "summary": "导入Metadata文件",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3-ext/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/metadata": {
+      "post": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "导入Metadata文件",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)导入Metadata文件。\n\n账号在使用联邦认证功能前,需要先将Metadata文件导入到IAM中。Metadata文件是SAML 2.0协议约定的接口文件,包含访问接口地址和证书信息,请找企业管理员获取企业IdP的Metadata文件。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "CreateMetadata",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "idp_id",
+            "in": "path",
+            "description": "身份提供商ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "ACME",
+            "x-order": 2
+          },
+          {
+            "name": "protocol_id",
+            "in": "path",
+            "description": "协议ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "saml",
+            "x-order": 3
+          },
+          {
+            "in": "body",
+            "name": "CreateMetadataRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateMetadataRequestBody"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "导入成功。",
+            "examples": {
+              "application/json": {
+                "message": "Import metadata successful"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateMetadataResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "导入Metadata文件",
+        "x-constraint": "",
+        "x-version": "v3-ext",
+        "x-scope": "Commercial",
+        "x-order": 100,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3-ext/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/metadata",
+        "x-request-examples-1": {
+          "xaccount_type": "",
+          "domain_id": "d78cbac186b744899480f25bd022f468",
+          "metadata": "$metadataContent"
+        },
+        "x-request-examples-text-1": "{\n    \"xaccount_type\":\"\",\n    \"domain_id\":\"d78cbac186b744899480f25bd022f468\",\n    \"metadata\":\"$metadataContent\"\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateMetadataRequestBody": {
+      "required": [
+        "domain_id",
+        "metadata",
+        "xaccount_type"
+      ],
+      "properties": {
+        "domain_id": {
+          "type": "string",
+          "example": "ed7a77d365304f458f7d0a7909c6d889",
+          "description": "用户所属账号ID。"
+        },
+        "xaccount_type": {
+          "type": "string",
+          "description": "该字段为标识租户来源字段,默认为空。"
+        },
+        "metadata": {
+          "type": "string",
+          "example": "<md:EntityDescript...",
+          "description": "该字段为用户IdP服务器的Metadata文件的内容。"
+        }
+      },
+      "description": ""
+    },
+    "CreateMetadataResponseBody": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Import metadata successful",
+          "description": "导入结果信息。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

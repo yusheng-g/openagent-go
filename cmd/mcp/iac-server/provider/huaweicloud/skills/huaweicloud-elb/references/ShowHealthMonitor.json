@@ -1,0 +1,247 @@
+{
+  "name": "ShowHealthMonitor",
+  "summary": "查询健康检查详情",
+  "tags": "健康检查",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/healthmonitors/{healthmonitor_id}": {
+      "get": {
+        "x-request-examples-description-1": "查询健康检查详情",
+        "tags": [
+          "健康检查"
+        ],
+        "summary": "查询健康检查详情",
+        "description": "查询健康检查详情。",
+        "operationId": "ShowHealthMonitor",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "healthmonitor_id",
+            "in": "path",
+            "description": "**参数解释**:健康检查ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "healthmonitor": {
+                  "name": "my-healthmonitor",
+                  "monitor_port": null,
+                  "id": "00b42a6a-0a16-47af-be4e-dc821fc316a3",
+                  "project_id": "0c1503d710984bad92306faea3654dfd",
+                  "domain_name": null,
+                  "delay": 1,
+                  "max_retries": 1,
+                  "max_retries_down": 1,
+                  "pools": [
+                    {
+                      "id": "c73600be-e3af-4d9f-bec2-f7c4ccf84b33"
+                    }
+                  ],
+                  "admin_state_up": true,
+                  "timeout": 1,
+                  "type": "HTTP",
+                  "expected_codes": "200",
+                  "url_path": "/",
+                  "http_method": "HEAD",
+                  "created_at": "2024-08-08T09:00:34Z",
+                  "updated_at": "2024-08-08T09:00:34Z"
+                },
+                "request_id": "08660101bcaff627f2f48730cf837e5f"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowHealthMonitorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询健康检查详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/healthmonitors/c2b210b2-60c4-449d-91e2-9e9ea1dd7441",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ShowHealthMonitorResponseBody": {
+      "required": [
+        "healthmonitor",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "healthmonitor": {
+          "description": "**参数解释**:监看检查对象。",
+          "$ref": "#/definitions/HealthMonitor"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "HealthMonitor": {
+      "required": [
+        "admin_state_up",
+        "delay",
+        "domain_name",
+        "expected_codes",
+        "http_method",
+        "id",
+        "max_retries",
+        "max_retries_down",
+        "monitor_port",
+        "name",
+        "pools",
+        "project_id",
+        "timeout",
+        "type",
+        "url_path"
+      ],
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "健康检查的管理状态。\n\n**取值范围**:\n- true:表示开启健康检查。\n- false表示关闭健康检查。"
+        },
+        "delay": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查间隔。\n\n**取值范围**:1-50,单位:秒。",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释**:发送健康检查请求的域名。\n\n**取值范围**:以数字或字母开头,只能包含数字、字母、’-’、’.’。"
+        },
+        "expected_codes": {
+          "type": "string",
+          "description": "**参数解释**:期望响应状态码。\n\n**取值范围**:\n- 单值:单个返回码,例如200。\n- 列表:多个特定返回码,例如200,202。\n- 区间:一个返回码区间,例如200-204。"
+        },
+        "http_method": {
+          "type": "string",
+          "description": "**参数解释**:HTTP请求方法。\n\n**取值范围**:GET、HEAD、POST"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:健康检查ID。\n\n**取值范围**:不涉及"
+        },
+        "max_retries": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续成功多少次后,将后端服务器的健康检查状态由OFFLINE判定为ONLINE。\n\n**取值范围**:1-10",
+          "minimum": 1,
+          "maximum": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "max_retries_down": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续失败多少次后,将后端服务器的健康检查状态由ONLINE判定为OFFLINE。\n\n**取值范围**:1-10",
+          "minimum": 1,
+          "maximum": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "monitor_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查端口号。\n\n**取值范围**:1-65535和null,传null表示使用后端服务器端口号。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:健康检查名称。\n\n**取值范围**:不涉及"
+        },
+        "pools": {
+          "type": "array",
+          "description": "**参数解释**:健康检查所在的后端服务器组ID列表。实际只会有一个后端服务器组ID。\n\n**取值范围**:不涉及",
+          "items": {
+            "$ref": "#/definitions/PoolRef"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:健康检查所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:一次健康检查请求的超时时间。\n\n**取值范围**:不涉及",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**: 健康检查请求协议。\n\n**取值范围**:TCP、UDP_CONNECT、HTTP、HTTPS、TLS、GRPC。UDP_CONNECT即UDP协议。"
+        },
+        "url_path": {
+          "type": "string",
+          "description": "**参数解释**:健康检查请求的请求路径。以\"/\"开头,默认为\"/\"。\n\n**取值范围**:支持使用字母、数字和短划线(-)、正斜线(/)、半角句号(.)、百分号(%)、半角问号(?)、井号(#)和and(&)以及扩展字符集_;~!()*[]@$^:',+"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**: 更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        }
+      },
+      "type": "object"
+    },
+    "PoolRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组ID。\n\n**取值范围**:不涉及",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "**参数解释**:关联的后端服务器组。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

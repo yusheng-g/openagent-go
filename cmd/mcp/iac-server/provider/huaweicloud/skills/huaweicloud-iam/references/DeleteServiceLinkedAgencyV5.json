@@ -1,0 +1,87 @@
+{
+  "name": "DeleteServiceLinkedAgencyV5",
+  "summary": "删除服务关联委托",
+  "tags": "委托及信任委托管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/service-linked-agencies/{agency_id}": {
+      "delete": {
+        "tags": [
+          "Agency"
+        ],
+        "operationId": "DeleteServiceLinkedAgencyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "删除服务关联委托",
+        "description": "该接口可以用于服务关联委托删除自己。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgencyId"
+          }
+        ],
+        "x-request-examples-description-1": "以服务关联委托的身份删除自己。",
+        "x-request-examples-url-1": "DELETE https://{endpoint}/v5/service-linked-agencies/{agency_id}",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "202": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteServiceLinkedAgencyResp"
+                },
+                "example": {
+                  "deletion_task_id": "task"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "delete",
+  "uri": null
+}

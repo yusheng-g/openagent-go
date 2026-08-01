@@ -1,0 +1,86 @@
+{
+  "name": "ShowTdeStatus",
+  "summary": "根据实例id查询sqlserver TDE状态",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/tde-status": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ShowTdeStatus",
+        "summary": "根据实例id查询sqlserver TDE状态",
+        "description": "根据实例id查询sqlserver TDE状态",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ShowTDEResponseBody"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ShowTDEResponseBody": {
+      "type": "object",
+      "required": [
+        "instance_id",
+        "tde_status"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例ID"
+        },
+        "tde_status": {
+          "type": "string",
+          "description": "TDE状态",
+          "enum": [
+            {
+              "open": "开启"
+            },
+            {
+              "close": "关闭"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,158 @@
+{
+  "name": "ListResourceTypes",
+  "summary": "查询资源类型列表",
+  "tags": "管理产品(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/products/resource-types": {
+      "get": {
+        "summary": "查询资源类型列表",
+        "description": "伙伴在伙伴销售平台查询资源类型的列表。",
+        "tags": [
+          "管理产品(公共)"
+        ],
+        "operationId": "ListResourceTypes",
+        "x-constraint": "该接口可以使用合作伙伴AK/SK或者Token调用,也该接口可以使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/products/resource-types",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2022-03-02",
+        "x-readOnly": true,
+        "x-delayTime": "2500ms",
+        "x-operation-data-level": "L1",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。zh_CN:中文en_US:英文缺省为zh_CN。",
+            "x-maxLength": 8,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_CN"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量,默认值为10。",
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "maximum": 1000,
+            "minimum": 1,
+            "x-allowNull": true,
+            "x-example": 10
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "type": "integer",
+            "format": "int32",
+            "default": 0,
+            "maximum": 2147483647,
+            "minimum": 0,
+            "x-allowNull": true,
+            "x-example": 0
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/products/resource-types?limit=0&offset=10",
+        "responses": {
+          "200": {
+            "description": "查询资源类型列表响应",
+            "schema": {
+              "$ref": "#/definitions/ListResourceTypesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "resource_types": [
+                  {
+                    "resource_type_code": "hws.resource.type.workspacehost.desktop",
+                    "resource_type_name": "云桌面",
+                    "resource_type_desc": "云桌面",
+                    "service_type_code": "hws.service.type.workspacehost"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理产品(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListResourceTypesRsp": {
+      "properties": {
+        "total_count": {
+          "description": "总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "resource_types": {
+          "description": "资源类型信息列表,具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        }
+      }
+    },
+    "ResourceTypes": {
+      "properties": {
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型的编码。例如ECS的VM为“hws.resource.type.vm”。",
+          "example": "hws.resource.type.vm"
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型的名称。",
+          "example": ""
+        },
+        "resource_type_desc": {
+          "type": "string",
+          "description": "资源类型的描述。",
+          "example": ""
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "资源类型归属的服务类型编码。例如:hws.service.type.offline。",
+          "example": "hws.service.type.offline"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

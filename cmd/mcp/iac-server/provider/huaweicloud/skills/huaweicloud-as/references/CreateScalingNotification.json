@@ -1,0 +1,239 @@
+{
+  "name": "CreateScalingNotification",
+  "summary": "配置伸缩组通知",
+  "tags": "通知管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_notification/{scaling_group_id}": {
+      "put": {
+        "tags": [
+          "通知管理"
+        ],
+        "summary": "配置伸缩组通知",
+        "description": "给弹性伸缩组配置通知功能。每调用一次该接口,伸缩组即配置一个通知主题及其通知场景,每个伸缩组最多可以增加5个主题。通知主题由用户事先在SMN创建并进行订阅,当通知主题对应的通知场景出现时,伸缩组会向用户的订阅终端发送通知。",
+        "operationId": "CreateScalingNotification",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组标识。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 3,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateNotificationOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "examples": {
+              "application/json": {
+                "topic_urn": "urn:smn:regionId:b53e5554fad0494d96206fb84296510b:gsh",
+                "topic_scene": [
+                  "SCALING_UP",
+                  "SCALING_DOWN",
+                  "SCALING_DOWN_FAIL",
+                  "SCALING_GROUP_ABNORMAL"
+                ],
+                "topic_name": "gsh"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateNotificationResult"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了在ID为e5d27f5c-dd76-4a61-b4bc-a67c5686719a的伸缩组内创建一个topic_urn为urn:smn:regionId:b53e5554fad0494d96206fb84296510b:gsh的通知,在扩容成功,扩容失败,缩容成功,缩容失败,伸缩组发生异常场景下会发送消息。",
+        "x-support-sdk": "Y",
+        "x-hybridcloud": true,
+        "x-name": "配置伸缩组通知",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 1,
+        "x-request-examples-url-1": "PUT https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_notification/e5d27f5c-dd76-4a61-b4bc-a67c5686719a",
+        "x-request-examples-1": {
+          "topic_urn": "urn:smn:regionId:b53e5554fad0494d96206fb84296510b:gsh",
+          "topic_scene": [
+            "SCALING_UP",
+            "SCALING_UP_FAIL",
+            "SCALING_DOWN",
+            "SCALING_DOWN_FAIL",
+            "SCALING_GROUP_ABNORMAL"
+          ]
+        },
+        "x-request-examples-text-1": {
+          "topic_urn": "urn:smn:regionId:b53e5554fad0494d96206fb84296510b:gsh",
+          "topic_scene": [
+            "SCALING_UP",
+            "SCALING_UP_FAIL",
+            "SCALING_DOWN",
+            "SCALING_DOWN_FAIL",
+            "SCALING_GROUP_ABNORMAL"
+          ]
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "26",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "260",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "CreateNotificationOption": {
+      "required": [
+        "topic_scene",
+        "topic_urn"
+      ],
+      "properties": {
+        "topic_urn": {
+          "type": "string",
+          "description": "SMN服务中Topic的唯一的资源标识。"
+        },
+        "topic_scene": {
+          "type": "array",
+          "description": "通知场景,有以下五种类型。SCALING_UP:扩容成功。SCALING_UP_FAIL:扩容失败。SCALING_DOWN:减容成功。SCALING_DOWN_FAIL:减容失败。SCALING_GROUP_ABNORMAL:伸缩组发生异常",
+          "items": {
+            "type": "string",
+            "enum": [
+              "SCALING_UP",
+              "SCALING_UP_FAIL",
+              "SCALING_DOWN",
+              "SCALING_DOWN_FAIL",
+              "SCALING_GROUP_ABNORMAL"
+            ]
+          }
+        }
+      },
+      "description": "配置伸缩组通知"
+    },
+    "CreateNotificationResult": {
+      "properties": {
+        "topic_urn": {
+          "type": "string",
+          "example": "urn:smn:regionId:b53e5554fad0494d96206fb84296510b:gsh",
+          "description": "SMN服务中Topic的唯一的资源标识。"
+        },
+        "topic_scene": {
+          "type": "array",
+          "example": [
+            "SCALING_UP",
+            "SCALING_UP_FAIL",
+            "SCALING_DOWN",
+            "SCALING_DOWN_FAIL",
+            "SCALING_GROUP_ABNORMAL"
+          ],
+          "description": "通知场景,有以下五种类型。SCALING_UP:扩容成功。SCALING_UP_FAIL:扩容失败。SCALING_DOWN:减容成功。SCALING_DOWN_FAIL:减容失败。SCALING_GROUP_ABNORMAL:伸缩组发生异常",
+          "items": {
+            "type": "string"
+          }
+        },
+        "topic_name": {
+          "type": "string",
+          "example": "gsh",
+          "description": "SMN服务中Topic的资源名称。"
+        }
+      },
+      "description": "请求正常"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

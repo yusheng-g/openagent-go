@@ -1,0 +1,150 @@
+{
+  "name": "DeleteSubNetworkInterface",
+  "summary": "删除辅助弹性网卡",
+  "tags": "辅助弹性网卡",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/sub-network-interfaces/{sub_network_interface_id}": {
+      "delete": {
+        "tags": [
+          "辅助弹性网卡"
+        ],
+        "summary": "删除辅助弹性网卡",
+        "description": "删除辅助弹性网卡",
+        "operationId": "DeleteSubNetworkInterface",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "sub_network_interface_id",
+            "in": "path",
+            "description": "弹性辅助网卡唯一标识",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除辅助弹性网卡",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 29,
+        "x-request-examples-description-1": "删除辅助弹性网卡",
+        "x-request-examples-url-1": "DELETE https://{Endpoint}/v3/8c6fb137a48a428aaf9a0229dca4edb3/vpc/sub-network-interfaces/2be868f2-f7c9-48db-abc0-eea0b9105b0d",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

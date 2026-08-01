@@ -1,0 +1,268 @@
+{
+  "name": "ShowJob",
+  "summary": "查询任务的执行状态",
+  "tags": "查询Job状态",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "查询Job状态"
+        ],
+        "summary": "查询任务的执行状态",
+        "description": "查询Job的执行状态。\n\n对于创建云服务器、删除云服务器、云服务器批量操作和网卡操作等异步API,命令下发后,会返回job_id,通过job_id可以查询任务的执行状态。",
+        "operationId": "ShowJob",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "description": "异步请求的任务ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2c9eb2c5544cbf6101544f0602af2b4f",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "status": "SUCCESS",
+                "entities": {
+                  "sub_jobs_total": 1,
+                  "sub_jobs": [
+                    {
+                      "status": "SUCCESS",
+                      "entities": {
+                        "server_id": "bae51750-0089-41a1-9b18-5c777978ff6d"
+                      },
+                      "job_id": "2c9eb2c5544cbf6101544f0635672b60",
+                      "job_type": "createSingleServer",
+                      "begin_time": "2016-04-25T20:04:47.591Z",
+                      "end_time": "2016-04-25T20:08:21.328Z",
+                      "error_code": null,
+                      "fail_reason": null
+                    }
+                  ]
+                },
+                "job_id": "2c9eb2c5544cbf6101544f0602af2b4f",
+                "job_type": "createServer",
+                "begin_time": "2016-04-25T20:04:34.604Z",
+                "end_time": "2016-04-25T20:08:41.593Z",
+                "error_code": null,
+                "fail_reason": null
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowJobResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询任务的执行状态",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 44,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1/{project_id}/jobs/{job_id}",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1/{project_id}/jobs/{job_id}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SubJob": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Job的状态。\n\n- SUCCESS:成功。\n\n- RUNNING:运行中。\n\n- FAIL:失败。\n\n- INIT:正在初始化。",
+          "enum": [
+            "SUCCESS",
+            "RUNNING",
+            "FAIL",
+            "INIT"
+          ]
+        },
+        "entities": {
+          "description": "Job操作的对象。根据不同Job类型,显示不同的内容,云服务器相关操作显示server_id,网卡相关操作显示nic_id。",
+          "$ref": "#/definitions/SubJobEntities"
+        },
+        "job_id": {
+          "type": "string",
+          "description": "子任务的ID。"
+        },
+        "job_type": {
+          "type": "string",
+          "description": "子任务的类型。"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间。"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间。"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "Job执行失败时的错误码。\n\nJob执行成功后,该值为null。"
+        },
+        "fail_reason": {
+          "type": "string",
+          "description": "Job执行失败时的错误原因。\n\nJob执行成功后,该值为null。"
+        }
+      },
+      "description": ""
+    },
+    "ShowJobResponseBody": {
+      "required": [
+        "begin_time",
+        "end_time",
+        "entities",
+        "error_code",
+        "fail_reason",
+        "job_id",
+        "job_type",
+        "status"
+      ],
+      "properties": {
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间。"
+        },
+        "code": {
+          "type": "string",
+          "description": "查询Job的API请求出现错误时,返回的错误码。"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间。"
+        },
+        "entities": {
+          "description": "Job操作的对象。\n\n根据不同Job类型,显示不同的内容,云服务器相关操作显示server_id,网卡相关操作显示nic_id。有子Job时为子job的详情。",
+          "$ref": "#/definitions/JobEntities"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "Job执行失败时的错误码。\n\nJob执行成功后,该值为null。"
+        },
+        "fail_reason": {
+          "type": "string",
+          "description": "Job执行失败时的错误原因。\n\nJob执行成功后,该值为null。"
+        },
+        "job_id": {
+          "type": "string",
+          "description": "异步请求的任务ID。"
+        },
+        "job_type": {
+          "type": "string",
+          "description": "异步请求的任务类型。"
+        },
+        "message": {
+          "type": "string",
+          "description": "查询Job的API请求出现错误时,返回的错误消息。"
+        },
+        "status": {
+          "type": "string",
+          "description": "Job的状态。\n\n- SUCCESS:成功。\n\n- RUNNING:运行中。\n\n- FAIL:失败。\n\n- INIT:正在初始化。",
+          "enum": [
+            "SUCCESS",
+            "RUNNING",
+            "FAIL",
+            "INIT"
+          ]
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "JobEntities": {
+      "properties": {
+        "server_id": {
+          "type": "string",
+          "description": "云服务器相关操作显示server_id。"
+        },
+        "nic_id": {
+          "type": "string",
+          "description": "网卡相关操作显示nic_id。"
+        },
+        "sub_jobs": {
+          "type": "array",
+          "description": "每个子任务的执行信息。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/SubJob"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "sub_jobs_total": {
+          "type": "integer",
+          "format": "int32",
+          "description": "子任务数量。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": ""
+    },
+    "SubJobEntities": {
+      "properties": {
+        "server_id": {
+          "type": "string",
+          "description": "云服务器相关操作显示server_id。"
+        },
+        "nic_id": {
+          "type": "string",
+          "description": "网卡相关操作显示nic_id。"
+        },
+        "errorcode_message": {
+          "type": "string",
+          "description": "子任务执行失败的具体原因。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

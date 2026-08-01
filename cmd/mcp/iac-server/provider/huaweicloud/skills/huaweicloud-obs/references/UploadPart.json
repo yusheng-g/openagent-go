@@ -1,0 +1,213 @@
+{
+  "name": "UploadPart",
+  "summary": "上传段",
+  "tags": "多段操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "put": {
+        "x-request-examples-url-1": "PUT /object02?partNumber=1&uploadId=00000163D40171ED8DF4050919BD02B8",
+        "x-request-examples-1": "PUT /object02?partNumber=1&uploadId=00000163D40171ED8DF4050919BD02B8 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 05:15:55 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:ZB0hFwaHubi1aKHv7dSZjJts40g=\nContent-Length: 102015348\n\n[102015348 Byte part content]",
+        "tags": [
+          "多段操作"
+        ],
+        "operationId": "UploadPart",
+        "summary": "上传段",
+        "description": "上传段\n多段上传任务创建后,用户可以通过指定多段上传任务号,通过上传段接口为特定的任务上传段,从客户端上传新数据。同一个对象的同一个多段上传任务在上传段时,上传的顺序对后续的合并操作没有影响,也即支持多个段并发上传。\n段大小范围是[100KB,5GB],但在进行合并段操作时,最后一个段的大小范围为[0,5GB]。上传的段的编号也有范围限制,其范围是[1,10000]。\n该操作支持服务端加密功能\n须知: 段任务中的partNumber是唯一的,重复上传相同partNumber的段,后一次上传会覆盖前一次上传内容。多并发上传同一对象的同一partNumber时,服务端遵循Last Write Win策略,但“Last Write”的时间定义为段元数据创建时间。为了保证数据准确性,客户端需要加锁保证同一对象的同一个段上传的并发性。同一对象的不同段并发上传不需要加锁。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "consumes": [
+          "application/octet-stream"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "通过此请求创建的对象名称。\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "partNumber",
+            "in": "query",
+            "required": true,
+            "description": "上传段的段号。取值为从1到10000的整数\n",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "uploadId",
+            "in": "query",
+            "required": true,
+            "description": "多段上传任务Id。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-algorithm",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的算法。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption-customer-algorithm:AES256\n\n约束:需要和x-obs-server-side-encryption-customer-key, x-obs-server-side-encryption-customer-key-MD5一起使用。\n\n当使用SSE-C方式时,必选,需要与初始化上传段任务使用相同的算法。",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-key",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的密钥。该密钥用于加密对象。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption-customer-key:K7QkYpBkM5+hcs27fsNkUnNVaobncnLht/rCB2o/9Cw=\n\n约束:该头域由256-bit的密钥经过base64-encoded得到,需要和x-obs-server-side-encryption-customer-algorithm,x-obs-server-side-encryption-customer-key-MD5一起使用。\n\n当使用SSE-C方式时,必选,需要与初始化上传段任务使用相同的密钥",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-checksum-crc64ecma",
+            "in": "header",
+            "required": false,
+            "description": "按照ECMA-182标准计算出当前段的crc64值,采用64位无符号数编码;使用该头域服务端会进行数据一致性校验。 如果服务端计算出的crc64值与头域携带的crc64值相同,响应码为200 如果服务端计算出的crc64值与头域携带的crc64值不符,响应码为400 示例:x-obs-checksum-crc64ecma: 11051210869376104954",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-key-MD5",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的密钥的MD5值。MD5值用于验证密钥传输过程中没有出错。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption-customer-key-MD5:4XvB3tbNTN+tIEVa0/fGaQ==\n\n约束:该头域由密钥的128-bit MD5值经过base64-encoded得到,需要和x-obs-server-side-encryption-customer-algorithm,x-obs-server-side-encryption-customer-key一起使用。\n\n当使用SSE-C方式时,必选,需要与初始化上传段任务使用相同的MD5值",
+            "type": "string"
+          },
+          {
+            "name": "UploadPartRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption:kms",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-kms-key-id": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域,该头域表示主密钥。\n\n类型:字符串\n\n格式为: regionID:domainID(租户ID):key/key_id\n\n其中regionID是使用密钥所属region的ID;domainID是使用密钥所属租户的租户ID;key_id是本次加密使用的密钥ID。\n\n示例: x-obs-server-side-encryption-kms-key-id:cn-north-4:domainiddomainiddomainiddoma0001:key/4f1cd4de-ab64-4807-920a-47fc42e7f0d0",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-algorithm": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示加密使用的算法。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption-customer-algorithm:AES256",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-key-MD5": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示加密使用的密钥的MD5值。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption-customer-key-MD5:4XvB3tbNTN+tIEVa0/fGaQ==",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|-|段序号超过范围[1,10000]。|400 Bad Request|\n|-|段大小超过5G。|400 Bad Request|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|AccessDenied|AccessKey或签名无效。|403 Forbidden|\n|AccessDenied|用户对目的桶没有写权限。|403 Forbidden|\n|AccessDenied|用户不是多段上传任务的发起者。|403 Forbidden|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|NoSuchBucket|桶不存在。|404 Not Found|\n|NoSuchUpload|多段上传任务不存在。|404 Not Found|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,217 @@
+{
+  "name": "ListFeatureConfigs",
+  "summary": "查询当前租户ELB服务的特性配置",
+  "tags": "特性配置",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/feature/configs": {
+      "get": {
+        "x-request-examples-url-1": "https://{ELB_Endpoint}/v3/7b7705dce1e847b08b3b16dda67fec24/elb/feature/configs",
+        "tags": [
+          "特性配置"
+        ],
+        "summary": "查询当前租户ELB服务的特性配置",
+        "description": "查询当前租户ELB服务的特性配置。",
+        "operationId": "ListFeatureConfigs",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "feature",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:特性名称。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "schema": {
+              "$ref": "#/definitions/ListFeatureConfigsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "request_id": "7d7874c9-9296-4337-bd97-93d69619f38e",
+                "configs": [
+                  {
+                    "created_at": "2024-05-16T12:54:54Z",
+                    "updated_at": "2024-05-16T12:54:54Z",
+                    "id": "1911170d-27b0-4609-9ccd-f67fc3359092",
+                    "service": "ELB",
+                    "tenant_id": "0c1503d710984bad92306faea3654dfd",
+                    "feature": "feature.gates.batch_create_v2_loadbalancers_amount",
+                    "switch": true,
+                    "type": "INT",
+                    "value": "10",
+                    "description": "",
+                    "caller": "unknown"
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "1911170d-27b0-4609-9ccd-f67fc3359092",
+                  "current_count": 1
+                }
+              }
+            }
+          }
+        },
+        "x-name": "查询租户特性配置列表",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2024-06-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ListFeatureConfigsResponseBody": {
+      "required": [
+        "configs",
+        "page_info",
+        "request_id"
+      ],
+      "properties": {
+        "configs": {
+          "type": "array",
+          "description": "**参数解释**:特性配置列表。",
+          "items": {
+            "$ref": "#/definitions/FeatureConfig"
+          }
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "type": "object"
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "FeatureConfig": {
+      "type": "object",
+      "description": "**参数解释**:特性配置信息。",
+      "required": [
+        "id",
+        "created_at",
+        "updated_at",
+        "service",
+        "tenant_id",
+        "feature",
+        "switch",
+        "type",
+        "value",
+        "description",
+        "caller"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1911170d-27b0-4609-9ccd-f67fc3359092",
+          "description": "**参数解释**:配置的ID。\n\n**取值范围**:不涉及"
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2024-05-16T12:54:54Z",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:不涉及"
+        },
+        "updated_at": {
+          "type": "string",
+          "example": "2024-05-16T12:54:54Z",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:不涉及"
+        },
+        "service": {
+          "type": "string",
+          "example": "ELB",
+          "description": "**参数解释**:所属服务,固定ELB。\n\n**取值范围**:不涉及"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "0c1503d710984bad92306faea3654dfd",
+          "description": "**参数解释**:租户ID,含义同project_id。\n\n**取值范围**:不涉及"
+        },
+        "feature": {
+          "type": "string",
+          "example": "feature.gates.multi_vip",
+          "description": "**参数解释**:特性名称。\n\n**取值范围**:不涉及"
+        },
+        "switch": {
+          "type": "boolean",
+          "example": true,
+          "description": "**参数解释**:特性配置启用开关,表示当前配置是否生效。\n\n**取值范围**:\n- true:特性配置已生效。\n- false: 特性配置未生效。"
+        },
+        "type": {
+          "type": "string",
+          "example": "INT",
+          "description": "**参数解释**:特性配置值(value字段)的类型。\n\n**取值范围**:\n- VARCHAR:字符串\n- INT:整型\n- BOOL:布尔型\n- LIST:列表"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:特性配置值。如开关类型的特性配置取值true/false,表示特性开启关闭;配额类型的特性配置取值整数,表示限制配额。\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "example": "",
+          "description": "**参数解释**:特性配置描述。\n\n**取值范围**:不涉及"
+        },
+        "caller": {
+          "type": "string",
+          "description": "**参数解释**:配置创建者。\n\n**取值范围**:不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

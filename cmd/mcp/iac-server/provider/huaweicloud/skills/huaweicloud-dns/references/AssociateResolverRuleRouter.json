@@ -1,0 +1,172 @@
+{
+  "name": "AssociateResolverRuleRouter",
+  "summary": "解析器转发规则关联VPC",
+  "tags": "解析器管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/resolverrules/{resolverrule_id}/associaterouter": {
+      "post": {
+        "tags": [
+          "解析器管理"
+        ],
+        "x-request-examples-description-1": "解析器转发规则关联VPC。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/resolverrules/{resolverrule_id}/associaterouter",
+        "x-request-examples-1": {
+          "router": {
+            "router_id": "f0791650-db8c-4a20-8a44-a06c6e24b15b"
+          }
+        },
+        "operationId": "AssociateResolverRuleRouter",
+        "summary": "解析器转发规则关联VPC",
+        "description": "解析器转发规则关联VPC。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ResolverRuleIdInPath"
+          },
+          {
+            "name": "AssociateResolverRuleRouterRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AssociateOrDisassociateRouterWithRuleRequestBody"
+            },
+            "description": "解析器转发规则关联VPC请求。"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "解析器转发规则关联VPC响应。",
+            "schema": {
+              "$ref": "#/definitions/AssociateRouterResp"
+            },
+            "examples": {
+              "application/json": {
+                "status": "PENDING_CREATE",
+                "router_id": "f0791650-db8c-4a20-8a44-a06c6e24b15b",
+                "router_region": "xx"
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 14
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "RouterForRule": {
+      "required": [
+        "router_id"
+      ],
+      "properties": {
+        "router_id": {
+          "type": "string",
+          "description": "Router(VPC)所属VPC的ID。",
+          "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+        }
+      }
+    },
+    "AssociateRouterResp": {
+      "description": "**参数解释:**\n在内网域名上关联VPC响应。\n**取值范围:**\n不涉及。",
+      "properties": {
+        "router_id": {
+          "type": "string",
+          "description": "**参数解释:**\n关联VPC的ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "router_region": {
+          "type": "string",
+          "description": "**参数解释:**\n关联VPC所在的region。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n关联VPC的状态。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    },
+    "AssociateOrDisassociateRouterWithRuleRequestBody": {
+      "required": [
+        "router"
+      ],
+      "properties": {
+        "router": {
+          "$ref": "#/definitions/RouterForRule",
+          "description": "VPC信息。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "ResolverRuleIdInPath": {
+      "name": "resolverrule_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "转发规则ID。",
+      "pattern": "[0-9a-fA-F]{32}"
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

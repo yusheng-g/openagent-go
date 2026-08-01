@@ -1,0 +1,166 @@
+{
+  "name": "EnableDnssecConfig",
+  "summary": "开启DNSSEC",
+  "tags": "DNSSEC",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/zones/{zone_id}/enable-dnssec": {
+      "post": {
+        "tags": [
+          "DNSSEC"
+        ],
+        "summary": "开启DNSSEC",
+        "description": "开启公网域名的DNSSEC。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "operationId": "EnableDnssecConfig",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "zone_id",
+            "in": "path",
+            "description": "公网域名的ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "开启DNSSEC响应。",
+            "schema": {
+              "$ref": "#/definitions/DnssecResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "zone_name": "example.com.",
+                "key_tag": 46576,
+                "flag": 257,
+                "digest": "2cb6a21bc5ea1622a24d35b94d171dcc06523daf708f6eb08c3358608e84f51c",
+                "digest_algorithm": "SHA256",
+                "digest_type": 2,
+                "signature": "ECDSAP256SHA256",
+                "signature_type": 13,
+                "ksk_public_key": "M7/fjwRNXwWsBxjIMZ2KzxEQ+DnhZ8pbPTn8VCcPKdrDhvV750DkFdXhuXRMLFHrXI9xjIVUugtVKgmdPIEf8w==",
+                "ds_record": "example.com. 300 IN DS 46576 13 2 2cb6a21bc5ea1622a24d35b94d171dcc06523daf708f6eb08c3358608e84f51c",
+                "created_at": "2023-11-17T12:03:17.827",
+                "updated_at": "2023-11-17T12:03:17.827",
+                "status": "ENABLE"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 0
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "DnssecResponseBody": {
+      "properties": {
+        "zone_name": {
+          "type": "string",
+          "description": "**参数解释:**\n域名。\n**取值范围:**\n不涉及。"
+        },
+        "key_tag": {
+          "type": "integer",
+          "description": "**参数解释:**\n密钥标签。\n**取值范围:**\n不涉及。"
+        },
+        "flag": {
+          "type": "integer",
+          "description": "**参数解释:**\n旗标。\n**取值范围:**\n不涉及。"
+        },
+        "digest_algorithm": {
+          "type": "string",
+          "description": "**参数解释:**\n摘要算法。\n**取值范围:**\n不涉及。"
+        },
+        "digest_type": {
+          "type": "integer",
+          "description": "**参数解释:**\n摘要算法类型。\n**取值范围:**\n不涉及。"
+        },
+        "digest": {
+          "type": "string",
+          "description": "**参数解释:**\n摘要。\n**取值范围:**\n不涉及。"
+        },
+        "signature": {
+          "type": "string",
+          "description": "**参数解释:**\n签名算法。\n**取值范围:**\n不涉及。"
+        },
+        "signature_type": {
+          "type": "integer",
+          "description": "**参数解释:**\n签名算法类型。\n**取值范围:**\n不涉及。"
+        },
+        "ksk_public_key": {
+          "type": "string",
+          "description": "**参数解释:**\n公有密钥。\n**取值范围:**\n不涉及。"
+        },
+        "ds_record": {
+          "type": "string",
+          "description": "**参数解释:**\nDS记录。\n**取值范围:**\n不涉及。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释:**\n创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释:**\n更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n状态。\n**取值范围:**\n- ENABLE:启用\n- DISABLE:关闭"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

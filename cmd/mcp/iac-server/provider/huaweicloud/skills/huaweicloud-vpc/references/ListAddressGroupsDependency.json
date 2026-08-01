@@ -1,0 +1,213 @@
+{
+  "name": "ListAddressGroupsDependency",
+  "summary": "查询IP地址组的关联资源",
+  "tags": "IP地址组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/list-address-groups-dependency": {
+      "get": {
+        "tags": [
+          "IP地址组"
+        ],
+        "summary": "查询IP地址组的关联资源",
+        "description": "当您的IP地址组被网络ACL和安全组资源关联时,您可以通过调用该接口查询IP地址组关联的网络ACL或安全组的资源ID和名称。",
+        "operationId": "ListAddressGroupsDependency",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\nIP地址组所属的项目ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:\n用IP地址组的资源ID过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:\n用IP地址组所属的企业项目ID过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET操作正常返回,更多状态码请参见[状态码](vpc_api_0002.xml)。",
+            "examples": {
+              "application/json": {
+                "request_id": "8ede499276cf61d82bea7afde3ace82d",
+                "address_groups": [
+                  {
+                    "id": "551691cf-400a-43f2-8e12-576c34558e52",
+                    "enterprise_project_id": "0",
+                    "dependency": [
+                      {
+                        "type": "acl",
+                        "instance_id": "8197f5f0-4b73-40c6-b041-8b97271afaef",
+                        "instance_name": "fw-test"
+                      },
+                      {
+                        "type": "sg",
+                        "instance_id": "9a644a13-198f-4f34-b2ab-227632131f71",
+                        "instance_name": "sg-test"
+                      }
+                    ]
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "551691cf-400a-43f2-8e12-576c34558e52",
+                  "current_count": 1
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListAddressGroupsDependencyRespBody"
+            }
+          }
+        },
+        "x-is-translated": "N",
+        "x-name": "查询IP地址组的关联资源",
+        "x-version": "v3",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "查询地址组关联的网络ACL或安全组的资源信息。",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/2bc7a67b35a64a79ad1d3bb8b5f61fc9/vpc/list-address-groups-dependency?id={address_group_id}",
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2019-6-30",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "PageInfo": {
+      "required": [
+        "current_count",
+        "previous_marker"
+      ],
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "当前页第一条记录",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前页总数",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "当前页最后一条记录,最后一页时无next_marker字段",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ListAddressGroupsDependencyRespBody": {
+      "type": "object",
+      "required": [
+        "address_groups",
+        "page_info",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:\n请求ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "address_groups": {
+          "type": "array",
+          "description": "**参数解释**:\n查询地址组的关联资源的响应体。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/AddressGroupDependency"
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "page_info": {
+          "description": "**参数解释**:\n分页信息。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "AddressGroupDependency": {
+      "type": "object",
+      "required": [
+        "dependency",
+        "enterprise_project_id",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\nIP地址组的资源ID。IP地址组创建成功后,会生成一个IP地址组 ID,是IP地址组对应的唯一标识。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:\nIP地址组所属的企业项目ID。\n**取值范围**:\n最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。"
+        },
+        "dependency": {
+          "type": "array",
+          "description": "**参数解释**:\nIP地址组关联的资源列表。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        }
+      }
+    },
+    "Dependency": {
+      "type": "object",
+      "required": [
+        "instance_id",
+        "instance_name",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:\nIP地址组关联的资源类型。\n**取值范围**:\n- sg:IP地址组关联的安全组。\n- acl:IP地址组关联的网络ACL。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:\nIP地址组关联资源的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "instance_name": {
+          "type": "string",
+          "description": "**参数解释**:\nIP地址组关联资源的名称。\n**取值范围**:\n1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

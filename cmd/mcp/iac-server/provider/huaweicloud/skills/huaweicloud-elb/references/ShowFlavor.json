@@ -1,0 +1,223 @@
+{
+  "name": "ShowFlavor",
+  "summary": "查询规格详情",
+  "tags": "规格",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/flavors/{flavor_id}": {
+      "get": {
+        "tags": [
+          "规格"
+        ],
+        "summary": "查询规格详情",
+        "description": "查询规格的详情。",
+        "operationId": "ShowFlavor",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "flavor_id",
+            "in": "path",
+            "description": "**参数解释**:规格ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "flavor": {
+                  "shared": true,
+                  "project_id": "8d53f081ea24444aa95e2bfa942ef6ee",
+                  "info": {
+                    "bandwidth": 10000000,
+                    "connection": 8000000,
+                    "cps": 80000,
+                    "qps": 160000,
+                    "lcu": 100
+                  },
+                  "id": "3588b525-63ed-4b8f-8a03-6aaa9ad1c36a",
+                  "name": "L7_flavor.slb.s2.large",
+                  "type": "L7",
+                  "flavor_sold_out": false,
+                  "public_border_group": "center",
+                  "category": 0
+                },
+                "request_id": "3b9fb516-b7bb-4760-9128-4a23dd36ae10"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowFlavorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询规格详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 13,
+        "x-request-examples-description-1": "查询指定负载均衡的规格的详情",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/{project_id}/elb/flavors/{flavor_id}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,ct,sbc,g42,tm,cmcc,hk_g42,mix,hk_sbc,hws_ocb,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "Flavor": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:规格ID。\n\n**取值范围**:不涉及"
+        },
+        "info": {
+          "description": "**参数解释**:规格相关的指标。\n\n**取值范围**:不涉及",
+          "$ref": "#/definitions/FlavorInfo"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:规格名称。\n\n**取值范围**:\n网络型有如下规格:\n  - L4_flavor.elb.s1.small: 小型 I\n  - L4_flavor.elb.s2.small: 小型 II\n  - L4_flavor.elb.s1.medium: 中型 I\n  - L4_flavor.elb.s2.medium: 中型 II\n  - L4_flavor.elb.s1.large: 大型 I\n  - L4_flavor.elb.s2.large: 大型 II\n  - L4_flavor.elb.pro.max: 四层弹性规格\n\n应用型有如下规格:\n  - L7_flavor.elb.s1.small: 小型 I\n  - L7_flavor.elb.s2.small: 小型 II\n  - L7_flavor.elb.s1.medium: 中型 I\n  - L7_flavor.elb.s2.medium: 中型 II\n  - L7_flavor.elb.s1.large: 大型 I\n  - L7_flavor.elb.s2.large: 大型 II\n  - L7_flavor.elb.s1.extra-large: 超大型 I\n  - L7_flavor.elb.s2.extra-large: 超大型 II\n  - L7_flavor.elb.pro.max: 七层弹性规格"
+        },
+        "shared": {
+          "type": "boolean",
+          "description": "**参数解释**:是否公共规格。\n\n**取值范围**:\n- true表示公共规格,所有租户可见。\n- false表示私有规格,为当前租户所有。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:规格类别。\n\n**取值范围**:\n  - L4和L7 表示四层网络型和七层应用型flavor。\n  - gwlb 表示网关型LB的flavor。\n  - L4_elastic和L7_elastic 表示弹性扩缩容实例的下限规格。已废弃,请勿使用。\n  - L4_elastic_max、L7_elastic_max和gwlb_elastic_max表示弹性扩缩容实例的上限规格。",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "flavor_sold_out": {
+          "type": "boolean",
+          "description": "**参数解释**:是否售罄。\n\n**取值范围**:\n- true:已售罄,将无法购买该规格的LB。\n- false:未售罄,可购买该规格的LB。"
+        },
+        "public_border_group": {
+          "type": "string",
+          "description": "**参数解释**:公网边界组。\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:可用区子类型编码。该字段主要用于区分在边缘场景下,边缘AZ的类型。\n\n**取值范围**:0表示center,21表示homezone,41表示IES。"
+        }
+      },
+      "description": "**参数解释**:负载均衡器规格信息。",
+      "required": [
+        "id",
+        "info",
+        "name",
+        "shared",
+        "project_id",
+        "type",
+        "flavor_sold_out"
+      ],
+      "type": "object"
+    },
+    "FlavorInfo": {
+      "properties": {
+        "connection": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:最大并发连接数。单位:个。\n\n**取值范围**:不涉及"
+        },
+        "cps": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:每秒新建连接数。单位:个。\n\n**取值范围**:不涉及"
+        },
+        "tls_connection": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:tls最大并发连接数。单位:个。\n\n**取值范围**:不涉及"
+        },
+        "tls_cps": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:tls每秒新建连接数。单位:个。\n\n**取值范围**:不涉及"
+        },
+        "qps": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:每秒查询速率。单位:个。仅7层LB有该指标。\n\n**取值范围**:不涉及"
+        },
+        "bandwidth": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:带宽。单位:Kbit/s。\n\n**取值范围**:不涉及"
+        },
+        "lcu": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前flavor对应的lcu数量。单位:个。\n\n**取值范围**:不涉及\n\n> LCU是用来衡量独享型ELB处理性能综合指标,LCU值越大,性能越好。"
+        },
+        "https_cps": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:https新建连接数,仅7层LB有该指标。单位:个。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:规格指标信息。",
+      "required": [
+        "connection",
+        "cps"
+      ],
+      "type": "object"
+    },
+    "ShowFlavorResponseBody": {
+      "required": [
+        "request_id",
+        "flavor"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "flavor": {
+          "description": "**参数解释**:规格对象。",
+          "$ref": "#/definitions/Flavor"
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

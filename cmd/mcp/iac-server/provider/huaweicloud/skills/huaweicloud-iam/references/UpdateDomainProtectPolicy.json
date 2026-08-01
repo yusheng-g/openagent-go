@@ -1,0 +1,314 @@
+{
+  "name": "UpdateDomainProtectPolicy",
+  "summary": "修改账号操作保护策略",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/protect-policy": {
+      "put": {
+        "tags": [
+          "安全设置"
+        ],
+        "summary": "修改账号操作保护策略",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)修改账号操作保护策略。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "UpdateDomainProtectPolicy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "待修改的账号ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "UpdateDomainProtectPolicyRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateDomainProtectPolicyRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "protect_policy": {
+                  "admin_check": "off",
+                  "allow_user": {
+                    "manage_accesskey": true,
+                    "manage_email": true,
+                    "manage_mobile": true,
+                    "manage_password": false
+                  },
+                  "operation_protection": true
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateDomainProtectPolicyResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "examples": {
+              "application/json": {
+                "error_msg": "'%(key)s' is a required property.",
+                "error_code": "IAM.0072"
+              },
+              "application/json-1": {
+                "error_msg": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+                "error_code": "IAM.0073"
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "鉴权失败。",
+            "examples": {
+              "application/json": {
+                "error_msg": "Policy doesn't allow %(actions)s to be performed.",
+                "error_code": "IAM.0003"
+              },
+              "application/json-1": {
+                "error_msg": "You are not authorized to perform the requested action.",
+                "error_code": "IAM.0002"
+              }
+            }
+          },
+          "500": {
+            "description": "系统异常。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改账号操作保护策略",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 10,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/protect-policy",
+        "x-request-examples-1": {
+          "protect_policy": {
+            "operation_protection": true,
+            "allow_user": {
+              "manage_accesskey": true,
+              "manage_email": true,
+              "manage_mobile": true,
+              "manage_password": false
+            },
+            "admin_check": "off"
+          }
+        },
+        "x-request-examples-text-1": {
+          "protect_policy": {
+            "operation_protection": true,
+            "allow_user": {
+              "manage_accesskey": true,
+              "manage_email": true,
+              "manage_mobile": true,
+              "manage_password": false
+            },
+            "admin_check": "off"
+          }
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0072",
+            "httpStatus": "400",
+            "errorMessage": "'%(key)s' is a required property.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0073",
+            "httpStatus": "400",
+            "errorMessage": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "UpdateDomainProtectPolicyRequestBody": {
+      "required": [
+        "protect_policy"
+      ],
+      "properties": {
+        "protect_policy": {
+          "description": "操作保护策略。",
+          "$ref": "#/definitions/ProtectPolicyOption"
+        }
+      },
+      "description": ""
+    },
+    "UpdateDomainProtectPolicyResponseBody": {
+      "required": [
+        "protect_policy"
+      ],
+      "properties": {
+        "protect_policy": {
+          "required": [
+            "allow_user",
+            "operation_protection",
+            "admin_check",
+            "scene"
+          ],
+          "properties": {
+            "allow_user": {
+              "$ref": "#/definitions/AllowUserBody"
+            },
+            "operation_protection": {
+              "type": "boolean",
+              "example": false,
+              "description": "是否开启操作保护,取值范围true或false。"
+            },
+            "admin_check": {
+              "type": "string",
+              "example": "off",
+              "description": "是否指定人员验证。on为指定人员验证,必须填写scene参数。off为操作员验证。"
+            },
+            "scene": {
+              "type": "string",
+              "description": "操作保护指定人员验证方式,admin_check为on时,必须填写。包括mobile、email。"
+            }
+          }
+        }
+      }
+    },
+    "AllowUserBody": {
+      "properties": {
+        "manage_accesskey": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否允许子用户自行管理AK,取值范围true或false。"
+        },
+        "manage_email": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否允许子用户自己修改邮箱,取值范围true或false。"
+        },
+        "manage_mobile": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否允许子用户自己修改电话,取值范围true或false。"
+        },
+        "manage_password": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否允许子用户自己修改密码,取值范围true或false。"
+        }
+      },
+      "description": "用户可以自主修改的属性。"
+    },
+    "ProtectPolicyOption": {
+      "required": [
+        "operation_protection"
+      ],
+      "properties": {
+        "operation_protection": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否开启操作保护,开启为\"true\",未开启为\"false\"。"
+        },
+        "allow_user": {
+          "$ref": "#/definitions/AllowUserBody"
+        },
+        "mobile": {
+          "type": "string",
+          "description": "操作保护验证指定手机号码。示例:0086-123456789。"
+        },
+        "admin_check": {
+          "type": "string",
+          "example": "off",
+          "description": "是否指定人员验证。on为指定人员验证,必须填写scene参数。off为操作员验证。"
+        },
+        "email": {
+          "type": "string",
+          "description": "操作保护验证指定邮件地址。示例:example@email.com。"
+        },
+        "scene": {
+          "type": "string",
+          "description": "操作保护指定人员验证方式,admin_check为on时,必须填写。包括mobile、email。"
+        }
+      },
+      "description": "操作保护策略"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,98 @@
+{
+  "name": "ReclaimPartnerCoupons",
+  "summary": "回收优惠券",
+  "tags": "管理优惠券(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/promotions/benefits/partner-coupons/reclaim": {
+      "post": {
+        "summary": "回收优惠券",
+        "description": "对于合作伙伴已经下发给客户的优惠券,如遇发错或其他特殊情况,合作伙伴有回收的权利。优惠券回收后,客户将不再拥有该优惠券。\n\n伙伴登录合作伙伴中心回收为客户发放的代金券请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/espp_050503.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>只能回收代售类子客户的优惠券。",
+        "tags": [
+          "管理优惠券(伙伴)"
+        ],
+        "operationId": "ReclaimPartnerCoupons",
+        "x-constraint": "该接口只能给合作伙伴使用,调用的时候必须传递合作伙伴的AK/SK或者Token。",
+        "x-externalURL": "/v2/promotions/benefits/partner-coupons/reclaim",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-19",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "回收优惠券请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReclaimPartnerCouponsReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/promotions/benefits/partner-coupons/reclaim",
+        "x-request-examples-1": {
+          "coupon_id": "2018011615520150",
+          "indirect_partner_id": "f8231a7d11484dfaaea8b70755680c7e"
+        },
+        "responses": {
+          "204": {
+            "description": "默认返回:no content"
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败parameter error|"
+          }
+        },
+        "x-category": "管理优惠券(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ReclaimPartnerCouponsReq": {
+      "required": [
+        "coupon_id"
+      ],
+      "properties": {
+        "coupon_id": {
+          "type": "string",
+          "description": "待回收的代金券ID。 请从“发放优惠券”或“查询已发放的优惠券”接口的响应参数中获取。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "2018011615520150"
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。  云经销商回收给子客户发放的优惠券时,需要携带该字段。除此之外,此参数不做处理。",
+          "minLength": 1,
+          "maxLength": 100,
+          "example": "[f8231a7d11484dfaaea8b70755680c7e,f8231a7d11484dfaaea8b70755680c7e]",
+          "x-site": "HC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,152 @@
+{
+  "name": "ShowPublicZoneNameServer",
+  "summary": "查询公网域名的名称服务器",
+  "tags": "公网域名管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/zones/{zone_id}/nameservers": {
+      "get": {
+        "tags": [
+          "公网域名管理"
+        ],
+        "x-request-examples-description-1": "查询公网域名的名称服务器。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/zones/2c9eb155587194ec01587224c9f90149/nameservers",
+        "operationId": "ShowPublicZoneNameServer",
+        "summary": "查询公网域名的名称服务器",
+        "description": "当您的公网域名创建成功后,您可以通过调用此接口查询公网域名的名称服务器信息,包括主机名、优先级等。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-publishpath": "dns_api_62004",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询公网域名的名称服务器响应。",
+            "schema": {
+              "$ref": "#/definitions/QueryPublicZoneNameServerResp"
+            },
+            "examples": {
+              "application/json": {
+                "nameservers": [
+                  {
+                    "hostname": "ns1.example.com.",
+                    "priority": 1
+                  },
+                  {
+                    "hostname": "ns2.example.com.",
+                    "priority": 2
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "资源不存在。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 3
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "Nameserver": {
+      "properties": {
+        "hostname": {
+          "type": "string",
+          "description": "**参数解释:**\n主机名。\n**取值范围:**\n不涉及。"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n优先级。\n**取值范围:**\n不涉及。"
+        }
+      }
+    },
+    "QueryPublicZoneNameServerResp": {
+      "description": "**参数解释:**\n查询公网域名的名称服务器响应。\n**取值范围:**\n不涉及。",
+      "required": [
+        "nameservers"
+      ],
+      "properties": {
+        "nameservers": {
+          "items": {
+            "$ref": "#/definitions/Nameserver"
+          },
+          "type": "array",
+          "description": "**参数解释:**\n查询公网域名的名称服务器响应。\n**取值范围:**\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

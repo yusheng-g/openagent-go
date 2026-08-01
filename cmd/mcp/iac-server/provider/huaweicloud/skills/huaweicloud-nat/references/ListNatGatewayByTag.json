@@ -1,0 +1,528 @@
+{
+  "name": "ListNatGatewayByTag",
+  "summary": "查询公网NAT网关资源实例",
+  "tags": "公网NAT网关标签",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/nat_gateways/resource_instances/action": {
+      "post": {
+        "tags": [
+          "公网NAT网关标签"
+        ],
+        "summary": "查询公网NAT网关资源实例",
+        "description": "- 使用标签过滤公网NAT网关资源实例。\n- 标签管理服务需要提供按标签过滤公网NAT网关服务实例并汇总显示在列表中,需要公网NAT网关服务提供查询能力。\n- 资源默认按照创建时间倒序,资源tag也按照创建时间倒序。",
+        "operationId": "ListNatGatewayByTag",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "ListNatGatewayByTagRequestBody",
+            "in": "body",
+            "description": "查询资源实例的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListNatsByTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "- 查询操作成功。\n- 示例1:action为filter时的响应体\n- 示例2:action为count时的响应体",
+            "schema": {
+              "$ref": "#/definitions/ListNatsByTagsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "resource_detail": null,
+                    "resource_id": "e5ad289f-9c56-4daf-b08b-2e53a983473a",
+                    "resource_name": "nat_gateways",
+                    "tags": [
+                      {
+                        "key": "key2",
+                        "value": "value4"
+                      },
+                      {
+                        "key": "key2",
+                        "value": "value3"
+                      }
+                    ]
+                  }
+                ],
+                "total_count": 1000
+              },
+              "application/json-1": {
+                "total_count": 1000
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询公网NAT网关资源实例",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-api-type": "open-api",
+        "x-request-examples-1": {
+          "offset": "100",
+          "limit": "100",
+          "action": "filter",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "nat_gateways"
+            }
+          ],
+          "not_tags": [
+            {
+              "key": "key1",
+              "values": [
+                "*value1",
+                "value2"
+              ]
+            }
+          ],
+          "tags": [
+            {
+              "key": "key2",
+              "values": [
+                "*value3",
+                "value4"
+              ]
+            }
+          ],
+          "tags_any": [
+            {
+              "key": "key3",
+              "values": [
+                "*value5",
+                "value6"
+              ]
+            }
+          ],
+          "not_tags_any": [
+            {
+              "key": "key4",
+              "values": [
+                "*value7",
+                "value8"
+              ]
+            }
+          ]
+        },
+        "x-request-examples-description-1": "查询公网NAT网关资源实例,其中,操作标识为filter,进行分页查询,查询记录数为100条。",
+        "x-request-examples-url-1": "POST  https://{Endpoint}/v3/9ad601814ac94c80bf7bb9073ded66fc/nat_gateways/resource_instances/action",
+        "x-request-examples-text-1": {
+          "offset": "100",
+          "limit": "100",
+          "action": "filter",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "nat_gateways"
+            }
+          ],
+          "not_tags": [
+            {
+              "key": "key1",
+              "values": [
+                "*value1",
+                "value2"
+              ]
+            }
+          ],
+          "tags": [
+            {
+              "key": "key2",
+              "values": [
+                "*value3",
+                "value4"
+              ]
+            }
+          ],
+          "tags_any": [
+            {
+              "key": "key3",
+              "values": [
+                "*value5",
+                "value6"
+              ]
+            }
+          ],
+          "not_tags_any": [
+            {
+              "key": "key4",
+              "values": [
+                "*value7",
+                "value8"
+              ]
+            }
+          ]
+        },
+        "x-request-examples-2": {
+          "action": "count",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "nat_gateways"
+            }
+          ],
+          "not_tags": [
+            {
+              "key": "key1",
+              "values": [
+                "*value1",
+                "value2"
+              ]
+            }
+          ],
+          "tags": [
+            {
+              "key": "key2",
+              "values": [
+                "*value3",
+                "value4"
+              ]
+            }
+          ],
+          "tags_any": [
+            {
+              "key": "key3",
+              "values": [
+                "*value5",
+                "value6"
+              ]
+            }
+          ],
+          "not_tags_any": [
+            {
+              "key": "key4",
+              "values": [
+                "*value7",
+                "value8"
+              ]
+            }
+          ]
+        },
+        "x-request-examples-description-2": "查询公网NAT网关资源实例,其中,操作标识为count,按照条件将总条数返回。",
+        "x-request-examples-url-2": "POST  https://{Endpoint}/v3/9ad601814ac94c80bf7bb9073ded66fc/nat_gateways/resource_instances/action",
+        "x-request-examples-text-2": {
+          "action": "count",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "nat_gateways"
+            }
+          ],
+          "not_tags": [
+            {
+              "key": "key1",
+              "values": [
+                "*value1",
+                "value2"
+              ]
+            }
+          ],
+          "tags": [
+            {
+              "key": "key2",
+              "values": [
+                "*value3",
+                "value4"
+              ]
+            }
+          ],
+          "tags_any": [
+            {
+              "key": "key3",
+              "values": [
+                "*value5",
+                "value6"
+              ]
+            }
+          ],
+          "not_tags_any": [
+            {
+              "key": "key4",
+              "values": [
+                "*value7",
+                "value8"
+              ]
+            }
+          ]
+        },
+        "x-obc": "Y",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "400",
+            "httpStatus": "400",
+            "errorMessage": "",
+            "errorDescription": "Bad Request",
+            "solution": "",
+            "errorDescriptionEn": "Bad Request",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "401",
+            "httpStatus": "401",
+            "errorMessage": "",
+            "errorDescription": "Unauthorized",
+            "solution": "",
+            "errorDescriptionEn": "Unauthorized",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "403",
+            "httpStatus": "403",
+            "errorMessage": "",
+            "errorDescription": "Forbidden",
+            "solution": "",
+            "errorDescriptionEn": "Forbidden",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "404",
+            "httpStatus": "404",
+            "errorMessage": "",
+            "errorDescription": "Not Found",
+            "solution": "",
+            "errorDescriptionEn": "Not Found",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "500",
+            "httpStatus": "500",
+            "errorMessage": "",
+            "errorDescription": "Internal Server Error",
+            "solution": "",
+            "errorDescriptionEn": "Internal Server Error",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PublicResourceTag": {
+      "description": "ResourceTag字段数据结构说明",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。不能包含非打印字符ASCII(0-31),*,<,>,\\\\,="
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符,可以为空字符串。不能包含非打印字符ASCII(0-31), *,<,>,\\\\,="
+        }
+      }
+    },
+    "PublicResource": {
+      "required": [
+        "resource_id",
+        "resource_detail",
+        "tags",
+        "resource_name"
+      ],
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID",
+          "x-huawei-extraAnnotation": ""
+        },
+        "resource_detail": {
+          "type": "object",
+          "description": "资源详情。资源对象,用于扩展。默认为空",
+          "x-huawei-extraAnnotation": ""
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表,没有标签默认为空数组。请参考表ResourceTag字段数据结构说明。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicResourceTag"
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "x-huawei-extraAnnotation": ""
+        },
+        "resource_name": {
+          "type": "string",
+          "example": "nat_gateways",
+          "description": "资源名称,没有默认为空字符串",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "Resource字段数据结构说明"
+    },
+    "ListNatsByTagsResponseBody": {
+      "required": [
+        "resources",
+        "total_count"
+      ],
+      "properties": {
+        "resources": {
+          "type": "array",
+          "description": "资源对象列表。请参考表Resource字段数据结构说明。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicResource"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "总记录数",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "响应参数。"
+    },
+    "ListNatsByTagsRequestBody": {
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "包含标签对象列表,最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。返回包含所有标签的资源列表,key之间是与的关系,key-value结构中value是或的关系。无tag过滤条件时返回全量数据。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicTag"
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "tags_any": {
+          "type": "array",
+          "description": "包含任意标签对象列表,最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。返回包含标签的资源列表,key之间是或的关系,key-value结构中value是或的关系。无过滤条件时返回全量数据。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicTag"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "not_tags": {
+          "type": "array",
+          "description": "不包含标签对象列表,最多包含10个key,每个key下面的value最多10个, 结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。返回不包含标签的资源列表,key之间是与的关系,key-value结构中value是或的关系。无过滤条件时返回全量数据。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicTag"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "not_tags_any": {
+          "type": "array",
+          "description": "不包含任意标签对象列表,最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。返回不包含标签的资源列表,key之间是或的关系,key-value结构中value是或的关系。无过滤条件时返回全量数据。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicTag"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "limit": {
+          "type": "string",
+          "description": "查询记录数(action为count时无此参数)如果action为filter默认为1000,limit最多为1000,不能为负数,最小值为1",
+          "x-huawei-extraAnnotation": ""
+        },
+        "offset": {
+          "type": "string",
+          "description": "(索引位置),\n从offset指定的下一条数据开始查询。查询第一页数据时,不需要传入此参数,查询后续页码数据时,将查询前一页数据时响应体中的值带入此参数(action为count时无此参数)如果action为filter默认为0,必须为数字,不能为负数",
+          "x-huawei-extraAnnotation": ""
+        },
+        "action": {
+          "type": "string",
+          "description": "- 操作标识(仅限于filter,count):filter(过滤),count(查询总条数)\n- 如果是filter就是分页查询,如果是count只需按照条件将总条数返回即可。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "matches": {
+          "type": "array",
+          "description": "- 搜索字段列表,key为要匹配的字段,如resource_name等。value为匹配的值。此字段为固定字典值。\n- 根据不同的字段确认是否需要模糊匹配,如resource_name默认为模糊搜索(不区分大小写),如果value为空字符串精确匹配。resource_id为精确匹配。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PublicMatch"
+          },
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "查询资源实例的请求体"
+    },
+    "PublicMatch": {
+      "description": "Match字段数据结构说明",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。限定为resource_name。"
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。"
+        }
+      }
+    },
+    "PublicTag": {
+      "description": "Tag 字段数据结构说明",
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。(搜索时不对此参数做校验) ,key不能为空或者空字符串,不能为空格,校验和使用之前先trim 前后空格。"
+        },
+        "values": {
+          "type": "array",
+          "description": "- 值列表。每个值最大长度255个unicode字符,不能为空格,校验和使用之前先trim 前后空格。\n- *为系统保留字符,value可为空但不可缺省。\n- 如果里面的value是以\\*开头表示按照\\*后面的值全模糊匹配。\n- 如果values为空列表,则表示any_value(查询任意value)。value之间为或的关系。",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

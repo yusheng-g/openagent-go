@@ -1,0 +1,160 @@
+{
+  "name": "BatchDeleteManualBackup",
+  "summary": "批量删除手动备份",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/backups/batch-delete": {
+      "post": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "BatchDeleteManualBackup",
+        "summary": "批量删除手动备份",
+        "description": "批量删除手动备份。",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-constraint": "该接口仅支持实例的数据库引擎Microsoft SQL Server。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "BatchDeleteBackupRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteBackupRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteBackupRspBody"
+            },
+            "examples": {
+              "application/json": {
+                "delete_results": [
+                  {
+                    "backup_id": "dsfae23fsfdsae3435br04",
+                    "error_code": "DBS.200054",
+                    "error_msg": "the backup is in use"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/backups/batch-delete",
+        "x-request-examples-1": {
+          "backup_ids": [
+            "53ad33abe43976054br04",
+            "63ad3439af9776054br04"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "DeleteBackupResult": {
+      "properties": {
+        "backup_id": {
+          "description": "备份id",
+          "type": "string"
+        },
+        "error_code": {
+          "description": "提交任务异常时返回的错误编码。0表示成功。",
+          "type": "string"
+        },
+        "error_msg": {
+          "description": "提交任务异常时返回的错误描述信息。",
+          "type": "string"
+        }
+      }
+    },
+    "BatchDeleteBackupRspBody": {
+      "required": [
+        "delete_results"
+      ],
+      "properties": {
+        "delete_results": {
+          "description": "备份删除结果",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeleteBackupResult"
+          }
+        }
+      }
+    },
+    "BatchDeleteBackupRequestBody": {
+      "required": [
+        "backup_ids"
+      ],
+      "properties": {
+        "backup_ids": {
+          "description": "需要删除的手动备份ID列表。列表大小范围:[1-50]",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

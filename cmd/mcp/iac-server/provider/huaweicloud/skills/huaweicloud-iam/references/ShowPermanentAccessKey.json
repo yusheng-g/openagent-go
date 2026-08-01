@@ -1,0 +1,153 @@
+{
+  "name": "ShowPermanentAccessKey",
+  "summary": "查询指定永久访问密钥",
+  "tags": "Credential管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-CREDENTIAL/credentials/{access_key}": {
+      "get": {
+        "tags": [
+          "Credential管理"
+        ],
+        "summary": "查询指定永久访问密钥",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户的指定永久访问密钥,或IAM用户查询自己的指定永久访问密钥。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ShowPermanentAccessKey",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户的指定永久访问密钥:拥有Security Administrator权限的token。\n\nIAM用户查询自己的指定永久访问密钥:URL中access_key所属IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "access_key",
+            "in": "path",
+            "description": "待查询的指定AK。",
+            "required": true,
+            "type": "string",
+            "x-example": "LOSZM4YRVLKOY9E8XYE1",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "credential": {
+                  "last_use_time": "2020-01-08T06:26:08.123059Z",
+                  "access": "LOSZM4YRVLKOY9E8XYE1",
+                  "create_time": "2020-01-08T06:26:08.123059Z",
+                  "user_id": "07609fb9358010e21f7bc003751c7c32",
+                  "description": "",
+                  "status": "active"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowPermanentAccessKeyResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询指定永久访问密钥",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 9,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/credentials/{access_key}",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/credentials/{access_key}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ShowPermanentAccessKeyResponseBody": {
+      "required": [
+        "credential"
+      ],
+      "properties": {
+        "credential": {
+          "description": "认证结果信息。",
+          "$ref": "#/definitions/ShowCredential"
+        }
+      },
+      "description": ""
+    },
+    "ShowCredential": {
+      "required": [
+        "access",
+        "create_time",
+        "description",
+        "last_use_time",
+        "status",
+        "user_id"
+      ],
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "07609fb9358010e21f7bc003751c7c32",
+          "description": "IAM用户ID。"
+        },
+        "access": {
+          "type": "string",
+          "example": "LOSZM4YRVLKOY9E8XYE1",
+          "description": "查询的AK。"
+        },
+        "status": {
+          "type": "string",
+          "example": "active",
+          "description": "访问密钥状态。"
+        },
+        "create_time": {
+          "type": "string",
+          "example": "2020-01-08T06:26:08.123059Z",
+          "description": "访问密钥创建时间。"
+        },
+        "last_use_time": {
+          "type": "string",
+          "example": "2020-01-08T06:26:08.123059Z",
+          "description": "访问密钥的上次使用时间。"
+        },
+        "description": {
+          "type": "string",
+          "description": "访问密钥描述信息。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

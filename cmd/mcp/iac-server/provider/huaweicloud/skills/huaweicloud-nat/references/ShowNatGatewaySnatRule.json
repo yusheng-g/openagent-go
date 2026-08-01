@@ -1,0 +1,231 @@
+{
+  "name": "ShowNatGatewaySnatRule",
+  "summary": "查询指定的SNAT规则详情",
+  "tags": "公网SNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/snat_rules/{snat_rule_id}": {
+      "get": {
+        "tags": [
+          "公网SNAT规则"
+        ],
+        "summary": "查询指定的SNAT规则详情",
+        "description": "查询指定的SNAT规则详情。",
+        "operationId": "ShowNatGatewaySnatRule",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "snat_rule_id",
+            "in": "path",
+            "description": "SNAT规则的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询SNAT规则成功。",
+            "examples": {
+              "application/json": {
+                "snat_rule": {
+                  "floating_ip_id": "bdc10a4c-d81a-41ec-adf7-de857f7c812a",
+                  "status": "ACTIVE",
+                  "nat_gateway_id": "a78fb3eb-1654-4710-8742-3fc49d5f04f8",
+                  "admin_state_up": true,
+                  "network_id": "eaad9cd6-2372-4be1-9535-9bd37210ae7b",
+                  "source_type": 0,
+                  "tenant_id": "d199ba7e0ba64899b2e81518104b1526",
+                  "created_at": "2017-11-18 07:54:21.665430",
+                  "id": "5b95c675-69c2-4656-ba06-58ff72e1d338",
+                  "floating_ip_address": "5.21.11.226",
+                  "freezed_ip_address": "",
+                  "description": "my snat rule 01"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowNatGatewaySnatRuleResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询指定的SNAT规则详情",
+        "x-constraint": null,
+        "x-version": "v2",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v2/d199ba7e0ba64899b2e81518104b1526/snat_rules/5b95c675-69c2-4656-ba06-58ff72e1d33",
+        "x-request-examples-1": null,
+        "x-request-examples-text-1": "  ",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-obc": "N",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ShowNatGatewaySnatRuleResponseBody": {
+      "required": [
+        "snat_rules"
+      ],
+      "properties": {
+        "snat_rule": {
+          "$ref": "#/definitions/NatGatewaySnatRuleResponseBody"
+        }
+      },
+      "description": "查询SNAT规则的响应体。"
+    },
+    "NatGatewaySnatRuleResponseBody": {
+      "required": [
+        "admin_state_up",
+        "cidr",
+        "created_at",
+        "description",
+        "floating_ip_address",
+        "floating_ip_id",
+        "freezed_ip_address",
+        "id",
+        "nat_gateway_id",
+        "network_id",
+        "source_type",
+        "status",
+        "tenant_id",
+        "global_eip_id",
+        "global_eip_address"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "nat_gateway_id": {
+          "type": "string",
+          "description": "公网NAT网关实例的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "cidr": {
+          "type": "string",
+          "description": "cidr,可以是网段或者主机格式,与network_id参数二选一。\nSource_type=0时,cidr必须是vpc 子网网段的子集(不能相等);\nSource_type=1时,cidr必须指定专线侧网段。",
+          "minLength": 9,
+          "maxLength": 18,
+          "x-huawei-extraAnnotation": ""
+        },
+        "source_type": {
+          "type": "integer",
+          "format": "int32",
+          "description": "资源类型。\n取值范围:\n- 0:VPC侧,可以指定network_id 或者cidr\n- 1:专线侧,只能指定cidr\n不输入默认为0(VPC)",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "floating_ip_id": {
+          "type": "string",
+          "description": "功能说明:弹性公网IP的id,多个弹性公网IP使用逗号分隔。\n取值范围:最大长度4096字节。"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255,
+          "description": "SNAT规则的描述,长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "SNAT规则的状态。\n取值为: \n- ACTIVE: 可用\n- PENDING_CREATE: 创建中\n- PENDING_UPDATE: 更新中\n- PENDING_DELETE: 删除中\n- EIP_FREEZED: EIP冻结\n- INACTIVE: 不可用",
+          "enum": [
+            "ACTIVE",
+            "PENDING_CREATE",
+            "PENDING_UPDATE",
+            "PENDING_DELETE",
+            "EIP_FREEZED",
+            "INACTIVE"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的创建时间,格式是yyyy-mm-dd hh:mm:ss.SSSSSS。"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "规则使用的网络id。与cidr参数二选一。",
+          "example": "3faa719d-6d18-4ccb-a5c7-33e65a09663e",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "解冻/冻结状态。\n取值范围: \n- true: 解冻\n- false: 冻结"
+        },
+        "floating_ip_address": {
+          "type": "string",
+          "description": "功能说明:弹性公网IP,多个弹性公网IP使用逗号分隔。"
+        },
+        "freezed_ip_address": {
+          "type": "string",
+          "description": "功能说明:冻结的弹性公网IP,多个冻结的弹性公网IP使用逗号分隔。"
+        },
+        "global_eip_id": {
+          "type": "string",
+          "description": "全域弹性公网IP的id。"
+        },
+        "global_eip_address": {
+          "type": "string",
+          "description": "全域弹性公网IP的地址。"
+        }
+      },
+      "description": "SNAT规则的响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

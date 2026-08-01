@@ -1,0 +1,268 @@
+{
+  "name": "UpdateLifeCycleHook",
+  "summary": "修改生命周期挂钩",
+  "tags": "生命周期挂钩管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_lifecycle_hook/{scaling_group_id}/{lifecycle_hook_name}": {
+      "put": {
+        "tags": [
+          "生命周期挂钩管理"
+        ],
+        "summary": "修改生命周期挂钩",
+        "description": "修改一个指定生命周期挂钩中的信息。",
+        "operationId": "UpdateLifeCycleHook",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组标识。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 3,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "lifecycle_hook_name",
+            "in": "path",
+            "description": "生命周期挂钩标识。",
+            "required": true,
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "x-order": 4,
+            "x-example": "test"
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "Bodyparameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateLifeCycleHookOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "examples": {
+              "application/json": {
+                "lifecycle_hook_name": "test-hook1",
+                "default_result": "CONTINUE",
+                "default_timeout": 3600,
+                "notification_topic_urn": "urn:smn:regionId:b53e5554fad0494d96206fb84296510b:gsh",
+                "notification_topic_name": "gsh",
+                "lifecycle_hook_type": "INSTANCE_LAUNCHING",
+                "create_time": "2016-11-18T04:01:34Z"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/LifeCycleHookResult"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了修改ID为e5d27f5c-dd76-4a61-b4bc-a67c5686719a的伸缩组内挂钩名称为test-hook1的生命周期挂钩,将其回调操作修改为CONTINUE。",
+        "x-support-sdk": "Y",
+        "x-hybridcloud": true,
+        "x-name": "修改生命周期挂钩",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 4,
+        "x-request-examples-url-1": "PUT https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_lifecycle_hook/e5d27f5c-dd76-4a61-b4bc-a67c5686719a/test-hook1",
+        "x-request-examples-1": {
+          "default_result": "CONTINUE"
+        },
+        "x-request-examples-text-1": {
+          "default_result": "CONTINUE"
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "26",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "N",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "260",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "LifeCycleHookResult": {
+      "type": "object",
+      "properties": {
+        "lifecycle_hook_name": {
+          "type": "string",
+          "description": "生命周期挂钩名称。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "lifecycle_hook_type": {
+          "type": "string",
+          "description": "生命周期挂钩类型。INSTANCE_TERMINATING;INSTANCE_LAUNCHING",
+          "enum": [
+            "INSTANCE_TERMINATING",
+            "INSTANCE_LAUNCHING"
+          ]
+        },
+        "default_result": {
+          "type": "string",
+          "description": "生命周期挂钩默认回调操作。ABANDON;CONTINUE",
+          "enum": [
+            "ABANDON",
+            "CONTINUE"
+          ]
+        },
+        "default_timeout": {
+          "type": "integer",
+          "description": "生命周期挂钩超时时间,单位秒。",
+          "minimum": 60,
+          "maximum": 86400
+        },
+        "notification_topic_urn": {
+          "type": "string",
+          "description": "SMN服务中Topic的唯一的资源标识。"
+        },
+        "notification_topic_name": {
+          "type": "string",
+          "description": "SMN服务中Topic的资源名称。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "notification_metadata": {
+          "type": "string",
+          "description": "自定义通知消息。"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "生命周期挂钩创建时间,遵循UTC时间。"
+        }
+      },
+      "description": "请求正常"
+    },
+    "UpdateLifeCycleHookOption": {
+      "type": "object",
+      "properties": {
+        "lifecycle_hook_type": {
+          "type": "string",
+          "description": "生命周期挂钩类型。INSTANCE_TERMINATING。INSTANCE_LAUNCHING。INSTANCE_TERMINATING 类型的挂钩负责在实例终止时将实例挂起,INSTANCE_LAUNCHING 类型的挂钩则是在实例启动时将实例挂起。",
+          "enum": [
+            "INSTANCE_TERMINATING",
+            "INSTANCE_LAUNCHING"
+          ]
+        },
+        "default_result": {
+          "type": "string",
+          "example": "CONTINUE",
+          "description": "生命周期挂钩默认回调操作。默认情况下,到达超时时间后执行的操作。ABANDON;CONTINUE;如果实例正在启动,则 CONTINUE 表示用户自定义操作已成功,可将实例投入使用。否则,ABANDON 表示用户自定义操作未成功,终止实例,伸缩活动置为失败,重新创建新实例。如果实例正在终止,则 ABANDON 和 CONTINUE 都允许终止实例。不过,ABANDON 将停止其他生命周期挂钩,而 CONTINUE 将允许完成其他生命周期挂钩。该字段缺省时默认为 ABANDON。",
+          "enum": [
+            "ABANDON",
+            "CONTINUE"
+          ]
+        },
+        "default_timeout": {
+          "type": "integer",
+          "description": "生命周期挂钩超时时间,取值范围60-86400,默认为3600,单位是秒。默认情况下,实例保持等待状态的时间。您可以延长超时时间,也可以在超时时间结束前进行 CONTINUE 或 ABANDON 操作。",
+          "minimum": 60,
+          "maximum": 86400
+        },
+        "notification_topic_urn": {
+          "type": "string",
+          "description": "SMN 服务中 Topic 的唯一的资源标识。为生命周期挂钩定义一个通知目标,当实例被生命周期挂钩挂起时向该通知目标发送消息。该消息包含实例的基本信息、用户自定义通知消息,以及可用于控制生命周期操作的令牌信息。"
+        },
+        "notification_metadata": {
+          "type": "string",
+          "description": "自定义通知消息,长度不超过256位,不能包含字符< > & ' ( )当配置了通知目标时,可向其发送用户自定义的通知内容。"
+        }
+      },
+      "description": "修改生命周期挂钩"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

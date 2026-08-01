@@ -1,0 +1,195 @@
+{
+  "name": "CreateSubCustomer",
+  "summary": "创建客户",
+  "tags": "注册客户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/sub-customers": {
+      "post": {
+        "summary": "创建客户",
+        "description": "在伙伴销售平台创建客户时同步创建华为云账号,并将客户在伙伴销售平台上的账号与华为云账号进行映射。同时,创建的华为云账号与伙伴账号关联绑定。\n\n华为云总经销商(一级经销商)可以注册云经销商(二级经销商)的子客户。注册完成后,子客户可以自动和云经销商绑定。\n\n>![](public_sys-resources/icon-caution.gif) **注意:** \n>-   调用该接口为客户创建华为云账号后,如果想从合作伙伴销售平台跳转至华为云官网,还需要进行SAML认证,具体请参见“[Web UI方式](https://support.huaweicloud.com/api-bpconsole/jac_00001.html)”中的“SAML认证”。\n>-   如果创建的时候不输入手机号,那么客户将无法收到华为云发出的任何提醒短信,需要客户自己登录到华为云平台补充手机号。\n>-   调用“创建客户”接口时,华为云会同步创建华为云客户账号,将客户ID及账号名返回给伙伴平台,然后华为云异步完成客户与伙伴的关联。伙伴与客户的关联结果可通过“[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)”查询。",
+        "tags": [
+          "注册客户(伙伴)"
+        ],
+        "operationId": "CreateSubCustomer",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。 合作伙伴调用该接口创建的客户为合作伙伴的垫付类客户。",
+        "x-yamlfile": "model/src/main/resources/rest-services-customer.yaml",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L3",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "创建客户请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCustomerV2Req"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "创建客户返回",
+            "schema": {
+              "$ref": "#/definitions/CreateCustomerV2Rsp"
+            },
+            "examples": {
+              "application/json": {
+                "domain_id": "06a7969058802f0c0f01c00b91846780",
+                "domain_name": "a0d736359ada40aab6502d1a828c1809"
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败  parameter error| |CBC.0101:参数无效  parameter invalid|"
+          }
+        },
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/sub-customers",
+        "x-request-examples-1": {
+          "domain_name": "test",
+          "mobile_phone": "188****8888",
+          "verification_code": "253***",
+          "xaccount_id": "35rey****",
+          "xaccount_type": "***_IDP",
+          "password": "*******",
+          "is_close_market_ms": "true",
+          "cooperation_type": "1",
+          "indirect_partner_id": "a0d736********aab6502d1a828c1809",
+          "include_association_result": false
+        },
+        "x-externalURL": "/v2/partners/sub-customers",
+        "x-open-region-cloud": "hc,hk",
+        "x-category": "注册客户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateCustomerV2Req": {
+      "required": [
+        "xaccount_id",
+        "xaccount_type"
+      ],
+      "properties": {
+        "domain_name": {
+          "description": "客户的华为云账号名。 如果为空,随机生成。 不能以“op_”或“shadow_”开头且不能全为数字。 校验长度(5到32位)和规则^([a-zA-Z_-]([a-zA-Z0-9_-])*)$。 此参数不携带或携带值为空串或携带值为null时,随机生成。",
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 0,
+          "x-allowNull": true,
+          "example": "test"
+        },
+        "mobile_phone": {
+          "description": "手机号。 目前系统只支持中国的手机号。 示例:13XXXXXXXXX 此参数不携带或携带值为null时,不被赋值;携带值为空串时,赋值为空串。",
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 0,
+          "x-allowNull": true,
+          "example": "189xxxxxxxx",
+          "x-site": "HC"
+        },
+        "verification_code": {
+          "description": "验证码。 请调用“发送验证码”接口获取。 如果手机号不存在,则不需要输入验证码。 此参数不携带或携带值为null时,不做处理;不支持携带值为空串。",
+          "type": "string",
+          "maxLength": 10,
+          "minLength": 1,
+          "x-allowNull": true,
+          "example": "253xxx"
+        },
+        "xaccount_id": {
+          "description": "伙伴销售平台的用户唯一标识,该标识的具体值由伙伴分配。",
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "x-allowNull": true,
+          "example": "35reyxxxx"
+        },
+        "xaccount_type": {
+          "description": "华为分给合作伙伴的平台标识。 该标识的具体值由华为分配。获取方法请参见如何获取xaccountType的取值。",
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "x-allowNull": true,
+          "example": "xxx_IDP"
+        },
+        "password": {
+          "description": "密码规则如下: 至少包含以下四种字符中的两种: 大写字母、小写字母、数字、特殊字符;不能和账号名或倒序的账号名相同;不能包含手机号。 如果为空,用户没有密码,则不能直接在华为云登录,只能通过伙伴系统SSO方式跳转到华为云。 此参数不携带或携带值为null时,密码随机生成;不支持携带值为空串。",
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 8,
+          "example": "xxxxxxx"
+        },
+        "is_close_market_ms": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 10,
+          "description": "是否关闭营销消息的发送。 true:关闭false:不关闭(默认) 此参数不携带或携带值为空串或携带值为null时,赋值为false。",
+          "default": "false",
+          "example": "true"
+        },
+        "cooperation_type": {
+          "type": "string",
+          "example": "1",
+          "description": "合作类型。 1:顾问销售。 不传递或传递非1的值,默认会创建成代售模式的客户。(字段预下线,新用户不再提供)",
+          "minLength": 0,
+          "maxLength": 1,
+          "x-site": "HC"
+        },
+        "indirect_partner_id": {
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。 如果需要创建云经销商的子客户,必须携带该字段。除此之外,此参数不做处理。",
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 0,
+          "x-allowNull": true,
+          "example": "a0d736359ada40aab6502d1a828c1809",
+          "x-site": "HC"
+        },
+        "include_association_result": {
+          "description": "是否返回子客户的关联结果。 true:返回子客户和伙伴的关联结果false:不返回子客户和伙伴的关联结果 默认值为false。 此参数不携带或携带值为空串或携带值为null时,赋值为false。",
+          "type": "boolean",
+          "x-allowNull": true,
+          "example": true
+        }
+      }
+    },
+    "CreateCustomerV2Rsp": {
+      "properties": {
+        "domain_id": {
+          "description": "客户ID。 只有成功或者错误码在CBC.99000050时才会返回。",
+          "type": "string",
+          "example": "06a7969058802f0c0f01c00b91846780"
+        },
+        "domain_name": {
+          "description": "客户的华为云账号名。 若请求参数中传递了此参数值,此处返回的响应值与请求参数中取值一致。若请求参数中未传递此参数值,此处返回的响应值为系统随机生成的32位字符串。 只有成功时或者错误码在CBC.99000050时才会返回。",
+          "type": "string",
+          "example": "a0d736359ada40aab6502d1a828c1809"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

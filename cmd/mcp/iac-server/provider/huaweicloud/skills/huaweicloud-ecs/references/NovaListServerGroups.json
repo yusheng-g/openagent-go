@@ -1,0 +1,203 @@
+{
+  "name": "NovaListServerGroups",
+  "summary": "查询云服务器组列表",
+  "tags": "云服务器组管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/os-server-groups": {
+      "get": {
+        "tags": [
+          "云服务器组管理"
+        ],
+        "summary": "查询云服务器组列表",
+        "description": "查询云服务器组列表。",
+        "operationId": "NovaListServerGroups",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 6
+          },
+          {
+            "name": "all_projects",
+            "in": "query",
+            "description": "是否查询所有租户的云服务器。\n\n注意:即使此处参数值不为True,只要有参数名称all_projects即可查询所有租户。",
+            "required": false,
+            "type": "boolean",
+            "x-example": "false",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询返回server group数量限制。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "x-order": 4
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "从marker指定的server group的下一条数据开始查询。",
+            "required": false,
+            "type": "string",
+            "x-example": "5bbcc3c4-1da2-4437-a48a-66f15b1b13f9",
+            "x-order": 5
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "server_groups": [
+                  {
+                    "id": "616fb98f-46ca-475e-917e-2563e5a8cd19",
+                    "name": "test",
+                    "policies": [
+                      "anti-affinity"
+                    ],
+                    "members": [],
+                    "metadata": {},
+                    "project_id": "9c53a566cb3443ab910cf0daebca90c4"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaListServerGroupsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云服务器组列表",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 77,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1/9c53a566cb3443ab910cf0daebca90c4/os-server-groups",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1/9c53a566cb3443ab910cf0daebca90c4/os-server-groups",
+        "x-registered_to": "nova",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "N",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaListServerGroupsResponseBody": {
+      "required": [
+        "server_groups"
+      ],
+      "properties": {
+        "server_groups": {
+          "type": "array",
+          "description": "云服务器组信息。",
+          "items": {
+            "$ref": "#/definitions/NovaServerGroup"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaServerGroup": {
+      "required": [
+        "id",
+        "members",
+        "metadata",
+        "name",
+        "policies",
+        "project_id",
+        "user_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云服务器组UUID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云服务器组名称。"
+        },
+        "members": {
+          "type": "array",
+          "description": "云服务器组中包含的云服务器列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云服务器组元数据。",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "policies": {
+          "type": "array",
+          "description": "与服务器组关联的策略名称列表。当前有效的策略名称为:\n\nanti-affinity -此组中的服务器必须安排到不同的主机;\n\naffinity -此组中的服务器必须安排在同一主机上.\n\nsoft-anti-affinity –如果可能, 应将此组中的服务器安排到不同的主机, 但如果无法实现, 则仍应安排它们, 而不是导致生成失败。\n\nsoft-affinity -如果可能, 应将此组中的服务器安排在同一主机上, 但如果无法实现, 则仍应安排它们, 而不是导致生成失败。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "description": "弹性云服务器组所属项目ID,UUID格式。 \n\n> 说明:\n\n- 微版本2.13新增参数。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "弹性云服务器组所属用户ID,UUID格式。 \n\n> 说明:\n\n- 微版本2.13新增参数。"
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

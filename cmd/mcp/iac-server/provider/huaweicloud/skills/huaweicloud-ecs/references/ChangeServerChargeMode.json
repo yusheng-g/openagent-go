@@ -1,0 +1,190 @@
+{
+  "name": "ChangeServerChargeMode",
+  "summary": "更换云服务器计费模式",
+  "tags": "状态管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/actions/change-charge-mode": {
+      "post": {
+        "tags": [
+          "状态管理"
+        ],
+        "summary": "更换云服务器计费模式",
+        "description": "更换云服务器的计费模式",
+        "operationId": "ChangeServerChargeMode",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "ChangeServerChargeModeRequestBody",
+            "description": "This is a change server charge mode Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangeServerChargeModeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "order_id": "CS2209141549862WI"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/changeServerChargeModeResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更换云服务器计费模式",
+        "x-constraint": "- 仅支持更换按需计费模式为包周期计费模式。\n- 最大支持批量更换10个弹性云服务器计费模式。\n- 更换计费模式的云服务器绑定的弹性公网IP类型必须是“独享”,“按带宽计费”。\n- 挂载了共享云硬盘、DSS硬盘以及DESS硬盘的的服务器不支持更改计费模式。\n- 若想使用优惠券,请将prepaid_options中的字段is_auto_pay设置为false,参考华为官网“支付包周期产品订单”进行支付,或者在华为云控制台使用优惠券进行支付。\n- 不支持专属主机、专属云以及边缘云下的云服务器更换计费模式\n- 不支持竞价实例更换计费模式",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 99,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/actions/change-charge-mode",
+        "x-request-examples-1": {
+          "server_ids": [
+            "6acbe5aa-2e41-4d41-9d1e-59957e1b79f3"
+          ],
+          "charge_mode": "prePaid",
+          "prepaid_options": {
+            "include_publicips": "false",
+            "include_data_disks": "false",
+            "period_type": "month",
+            "period_num": "1",
+            "auto_pay": "true",
+            "auto_renew": "false"
+          },
+          "dry_run": "false"
+        },
+        "x-request-examples-text-1": "{\n    \"server_ids\": [\n      \"6acbe5aa-2e41-4d41-9d1e-59957e1b79f3\"\n    ],\n    \"charge_mode\": \"prePaid\",\n    \"prepaid_options\": {\n      \"include_publicips\": \"false\",\n      \"include_data_disks\": \"false\",\n      \"period_type\": \"month\",\n      \"period_num\": \"1\",\n      \"auto_pay\": \"true\",\n      \"auto_renew\": false\n    },\n    \"dry_run\": false\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2023-06-08",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ChangeServerChargeModeRequestBody": {
+      "required": [
+        "server_ids",
+        "charge_mode"
+      ],
+      "properties": {
+        "server_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "云服务器ID列表"
+        },
+        "charge_mode": {
+          "type": "string",
+          "example": "prePaid",
+          "description": "更换后的计费模式:prePaid包周期计费模式"
+        },
+        "prepaid_options": {
+          "description": "包周期选项",
+          "$ref": "#/definitions/ChangeServerChargeModePrepaidOption"
+        },
+        "dry_run": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否预先校验此次请求。\ntrue: 发送检查请求,不触发真正的计费转换操作\nfalse: 发送正常请求,触发计费转换操作。\n默认值为false"
+        }
+      }
+    },
+    "ChangeServerChargeModePrepaidOption": {
+      "required": [
+        "period_type",
+        "period_num"
+      ],
+      "properties": {
+        "include_data_disks": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否连同支持的按需数据盘一起转为包周期。\n当参数为true,包括按需非共享的数据盘,不包括共享云硬盘,DSS和DESS硬盘\n默认值为false"
+        },
+        "include_publicips": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否连同弹性公网IP一起转为包周期\n只有“独享”、“按带宽计费”的弹性公网IP才可以转换为包周期计费模式\n默认值为false"
+        },
+        "period_type": {
+          "type": "string",
+          "example": "month",
+          "description": "订购周期类型,取值范围:\nmonth-月\nyear-年"
+        },
+        "period_num": {
+          "type": "string",
+          "example": "1",
+          "description": "订购周期的周期数。\n取值范围:\nperiod_type=month时,取值范围为[1,9]。\nperiod_type=year时,取值范围为[1,3]。"
+        },
+        "auto_pay": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否自动支付。\ntrue:自动支付,需要确保账户余额充足,如果余额不足则会生成异常订单,只能作废此订单\nfalse:只生成订单不扣费\n默认值为false"
+        },
+        "auto_renew": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否自动续费。默认值:false"
+        }
+      }
+    },
+    "changeServerChargeModeResult": {
+      "required": [
+        "order_id"
+      ],
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "example": "CS2209141549862WI",
+          "description": "按需转包提交后返回的订单ID,用户可以使用该ID对订单结果进行查询。"
+        }
+      },
+      "description": "按需转包响应返回体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

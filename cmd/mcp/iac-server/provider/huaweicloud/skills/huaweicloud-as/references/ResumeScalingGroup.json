@@ -1,0 +1,168 @@
+{
+  "name": "ResumeScalingGroup",
+  "summary": "启用弹性伸缩组",
+  "tags": "弹性伸缩组管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_group/{scaling_group_id}/action": {
+      "post": {
+        "tags": [
+          "弹性伸缩组管理"
+        ],
+        "summary": "启用弹性伸缩组",
+        "description": "启用或停止一个指定弹性伸缩组。已停用状态的伸缩组,不会自动触发任何伸缩活动。当伸缩组正在进行伸缩活动,即使停用,正在进行的伸缩活动也不会立即停止。",
+        "operationId": "ResumeScalingGroup",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组ID",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "in": "body",
+            "name": "bodyParam",
+            "description": "BodyParamters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResumeScalingGroupOption"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求正常"
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了启用ID为a8327883-6b07-4497-9c61-68d03ee193a1的伸缩组。",
+        "x-support-sdk": "Y",
+        "x-name": "启用或停止弹性伸缩组",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 6,
+        "x-request-examples-url-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group/a8327883-6b07-4497-9c61-68d03ee193a1/action",
+        "x-request-examples-1": {
+          "action": "resume"
+        },
+        "x-request-examples-text-1": {
+          "action": "resume"
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "26",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "260",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "ResumeScalingGroupOption": {
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "启用或停止伸缩组操作的标识。启用:resume 停止:pause",
+          "enum": [
+            "resume"
+          ]
+        }
+      },
+      "description": "启停伸缩组请求"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

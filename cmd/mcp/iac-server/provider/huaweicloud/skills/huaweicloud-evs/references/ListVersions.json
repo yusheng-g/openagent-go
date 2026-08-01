@@ -1,0 +1,281 @@
+{
+  "name": "ListVersions",
+  "summary": "查询接口版本信息列表",
+  "tags": "API版本信息查询",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "API版本信息查询"
+        ],
+        "summary": "查询接口版本信息列表",
+        "description": "查询接口版本信息列表。",
+        "operationId": "ListVersions",
+        "consumes": [],
+        "produces": [],
+        "parameters": [],
+        "responses": {
+          "300": {
+            "description": "版本号详情列表。",
+            "examples": {
+              "application/json": {
+                "versions": [
+                  {
+                    "min_version": "",
+                    "media-types": [
+                      {
+                        "type": "application/vnd.openstack.volume+json;version=1",
+                        "base": "application/json"
+                      },
+                      {
+                        "type": "application/vnd.openstack.volume+xml;version=1",
+                        "base": "application/xml"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "rel": "describedby",
+                        "href": "http://docs.openstack.org/",
+                        "type": "text/html"
+                      },
+                      {
+                        "rel": "self",
+                        "href": "https://evs.localdomain.com/v1"
+                      }
+                    ],
+                    "id": "v1.0",
+                    "updated": "2014-06-28T12:20:21Z",
+                    "version": "",
+                    "status": "SUPPORTED"
+                  },
+                  {
+                    "min_version": "",
+                    "media-types": [
+                      {
+                        "type": "application/vnd.openstack.volume+json;version=1",
+                        "base": "application/json"
+                      },
+                      {
+                        "type": "application/vnd.openstack.volume+xml;version=1",
+                        "base": "application/xml"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "rel": "describedby",
+                        "href": "http://docs.openstack.org/",
+                        "type": "text/html"
+                      },
+                      {
+                        "rel": "self",
+                        "href": "https://evs.localdomain.com/v2"
+                      }
+                    ],
+                    "id": "v2.0",
+                    "updated": "2014-06-28T12:20:21Z",
+                    "version": "",
+                    "status": "SUPPORTED"
+                  },
+                  {
+                    "min_version": "3.0",
+                    "media-types": [
+                      {
+                        "type": "application/vnd.openstack.volume+json;version=1",
+                        "base": "application/json"
+                      },
+                      {
+                        "type": "application/vnd.openstack.volume+xml;version=1",
+                        "base": "application/xml"
+                      }
+                    ],
+                    "links": [
+                      {
+                        "rel": "describedby",
+                        "href": "http://docs.openstack.org/",
+                        "type": "text/html"
+                      },
+                      {
+                        "rel": "self",
+                        "href": "https://evs.localdomain.com/v3"
+                      }
+                    ],
+                    "id": "v3.0",
+                    "updated": "2016-02-08T12:20:21Z",
+                    "version": "3.0",
+                    "status": "CURRENT"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowVersionResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": "string",
+                  "message": "string"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询接口版本信息列表",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2017/5/30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "MediaTypes": {
+      "required": [
+        "base",
+        "type"
+      ],
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "文本类型"
+        },
+        "type": {
+          "type": "string",
+          "description": "返回类型"
+        }
+      },
+      "description": "接口版本的请求消息类型信息"
+    },
+    "Versions": {
+      "required": [
+        "id",
+        "links",
+        "media-types",
+        "status",
+        "updated",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "接口版本的ID"
+        },
+        "links": {
+          "type": "array",
+          "description": "接口版本信息的URI描述信息",
+          "items": {
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "media-types": {
+          "type": "array",
+          "description": "接口版本的请求消息类型信息",
+          "items": {
+            "$ref": "#/definitions/MediaTypes"
+          }
+        },
+        "min_version": {
+          "type": "string",
+          "description": "接口版本的最小版本号"
+        },
+        "status": {
+          "type": "string",
+          "description": "接口版本的状态"
+        },
+        "updated": {
+          "type": "string",
+          "description": "接口版本更新时间"
+        },
+        "version": {
+          "type": "string",
+          "description": "接口版本的版本号信息"
+        }
+      },
+      "description": "版本信息结构体"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "Link": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应的快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        }
+      },
+      "description": "云硬盘uri自描述信息。"
+    },
+    "ShowVersionResponseBody": {
+      "required": [
+        "versions"
+      ],
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "版本信息。",
+          "items": {
+            "$ref": "#/definitions/Versions"
+          }
+        }
+      },
+      "description": "版本号信息。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

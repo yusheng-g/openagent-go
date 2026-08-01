@@ -1,0 +1,142 @@
+{
+  "name": "DeleteScalingInstance",
+  "summary": "移出弹性伸缩组实例",
+  "tags": "弹性伸缩实例管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_group_instance/{instance_id}": {
+      "delete": {
+        "tags": [
+          "弹性伸缩实例管理"
+        ],
+        "summary": "移出弹性伸缩组实例",
+        "description": "从弹性伸缩组中移出一个指定实例。实例处于INSERVICE且移出后实例数不能小于伸缩组的最小实例数时才可以移出。当伸缩组没有伸缩活动时,才能移出实例。",
+        "operationId": "DeleteScalingInstance",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID,可参考[查询弹性伸缩组中的实例列表](https://support.huaweicloud.com/api-as/as_06_0301.html)获取。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "instance_delete",
+            "in": "query",
+            "description": "实例移出伸缩组,是否删除云服务器实例。默认为no;可选值为yes或no。",
+            "required": false,
+            "type": "string",
+            "default": "no",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "x-order": 4,
+            "x-example": "yes"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求正常"
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了将ID为b25c1589-c96c-465b-9fef-d06540d1945c的实例移出伸缩组但不删除实例的操作。",
+        "x-support-sdk": "Y",
+        "x-name": "移出弹性伸缩组实例",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 2,
+        "x-request-examples-url-1": "DELETE https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group_instance/b25c1589-c96c-465b-9fef-d06540d1945c?instance_delete=no",
+        "x-flow_control_group": "as",
+        "x-tenant_flow_time": 1,
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": 26,
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": 1,
+        "x-ctc": "Y",
+        "x-hc": "Y",
+        "x-multi_tenant_flow_value": 260,
+        "x-otc": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "delete",
+  "uri": null
+}

@@ -1,0 +1,242 @@
+{
+  "name": "ShowAutoCesAlarm",
+  "summary": "查询当前用户自动告警配置",
+  "tags": "RDS",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/auto-ces-alarm": {
+      "get": {
+        "x-request-examples-url-1": "/rds/v3/54623db08b174c858ba779d2aa7923a3/auto-ces-alarm",
+        "x-request-examples-description-1": "查询当前用户自动告警列表",
+        "tags": [
+          "RDS"
+        ],
+        "operationId": "ShowAutoCesAlarm",
+        "summary": "查询当前用户自动告警配置",
+        "description": "查询当前用户自动告警配置",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。",
+            "required": true,
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "engine",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n数据库引擎。\n\n**约束限制**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ShowAutoCesAlarmResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "entities": [
+                  {
+                    "id": "cd8fc267492d4efab6a62501d6acf5e1",
+                    "domain_id": "05491c53e680d4e80f60c007evd35fc0",
+                    "domain_name": "account_name",
+                    "project_id": "54623db08b174c858ba77002aa7923a3",
+                    "project_name": "project_name",
+                    "engine_name": "mysql",
+                    "new_instance_default": true,
+                    "switch_status": "closed",
+                    "alarm_id": "al16908078013717jEgojzo8",
+                    "topic_urn": "urn:smn:xxx:54623db08b174c858ba77002aa7923a3:AUTO_ALARM_NOTIFY_TOPIC_MYSQL_mysql_54623db08b174c858ba77002aa7923a3",
+                    "created_at": 1683339579161,
+                    "updated_at": 1760001523537
+                  }
+                ],
+                "count": 1
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AutoCesAlarmInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n告警记录唯一标识符。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "domain_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n租户ID。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n租户名称。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "user_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n用户ID。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "user_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n用户名称。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n项目ID。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "project_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n项目名称。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "engine_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n数据库引擎名称。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "new_instance_default": {
+          "type": "boolean",
+          "description": "**参数解释**:\n\n新实例是否默认开启自动告警。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "switch_status": {
+          "type": "string",
+          "description": "**参数解释**:\n\n自动告警状态转换。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "alarm_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n告警规则唯一标识符。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 512
+        },
+        "topic_urn": {
+          "type": "string",
+          "description": "**参数解释**:\n\n主题URN。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "**参数解释**:\n\n记录被创建的时间戳。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 9999999999999
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "**参数解释**:\n\n记录最后一次被更新的时间戳。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 9999999999999
+        }
+      }
+    },
+    "ShowAutoCesAlarmResponseBody": {
+      "type": "object",
+      "description": "查询当前用户自动告警配置响应体",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AutoCesAlarmInfo"
+          },
+          "description": "**参数解释**:\n\n自动告警列表\n\n**约束限制**:\n\n不涉及。",
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n总数量。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,157 @@
+{
+  "name": "ShowBackupDownloadLink",
+  "summary": "获取备份下载链接",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/backup-files": {
+      "get": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ShowBackupDownloadLink",
+        "summary": "获取备份下载链接",
+        "x-support-sdk": "Y",
+        "description": "获取备份下载链接。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "backup_id",
+            "in": "query",
+            "description": "备份ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "afbf982b46ca421e9118f7db916058b5br01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetBackupDownloadLink"
+            },
+            "examples": {
+              "application/json": {
+                "files": [
+                  {
+                    "name": "c0c9f155c7b7423a9d30f0175998b63bbr01.xxx",
+                    "size": 2803,
+                    "download_link": "https://obs.domainname.com/rdsbucket.username.1/xxxxxx",
+                    "link_expired_time": "2018-08-016T10:15:14+0800",
+                    "database_name": "rdsbucket"
+                  }
+                ],
+                "bucket": "rdsbucket.bucketname"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/backup-files?backup_id=c0c9f155c7b7423a9d30f0175998b63bbr01"
+      }
+    }
+  },
+  "definitions": {
+    "GetBackupDownloadLink": {
+      "required": [
+        "files",
+        "bucket"
+      ],
+      "properties": {
+        "files": {
+          "description": "备份文件信息。",
+          "type": "array",
+          "items": {
+            "required": [
+              "name",
+              "size",
+              "download_link",
+              "link_expired_time",
+              "database_name"
+            ],
+            "properties": {
+              "name": {
+                "description": "文件名。",
+                "type": "string"
+              },
+              "size": {
+                "description": "文件大小,单位为KB。",
+                "type": "integer",
+                "format": "int64"
+              },
+              "download_link": {
+                "description": "文件下载链接。",
+                "type": "string"
+              },
+              "link_expired_time": {
+                "description": "下载链接过期时间,格式为“yyyy-mm-ddThh:mm:ssZ”。其中,T指某个时间的开始,Z指时区偏移量,例如北京时间偏移显示为+0800。",
+                "type": "string"
+              },
+              "database_name": {
+                "description": "数据库名。若文件不是数据库备份,则返回空",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "bucket": {
+          "type": "string",
+          "description": "OBS桶名。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

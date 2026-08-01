@@ -1,0 +1,271 @@
+{
+  "name": "ListRenewRateOnPeriod",
+  "summary": "查询待续订包年包月资源的续订金额",
+  "tags": "购买云服务(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/ratings/period-resources/renew-rate": {
+      "post": {
+        "summary": "查询待续订包年包月资源的续订金额",
+        "description": "功能描述:客户在自建平台按照条件查询待续订包年/包月资源续订时候的续订金额",
+        "tags": [
+          "购买云服务(公共)"
+        ],
+        "operationId": "ListRenewRateOnPeriod",
+        "x-open-region-cloud": "hc,hk",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用",
+        "x-externalURL": "/v2/bills/ratings/period-resources/renew-rate",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2023-02-21",
+        "x-readOnly": true,
+        "x-delayTime": "2500ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "|客户token|",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "|参数名称:查询待续订包年包月资源的续订金额请求体| |参数的约束及描述:|",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListRenewRateOnPeriodReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询待续订包年包月资源的续订金额响应体| |成功:成功| |参数约束及描述: 查询待续订包年包月资源的续订金额响应体|",
+            "schema": {
+              "$ref": "#/definitions/ListRenewRateOnPeriodRsp"
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "购买云服务(公共)",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RenewInquiryResultInfo": {
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "description": "|参数名称:资源ID。| |参数约束及描述:资源ID。|",
+          "example": "96308d5efd7841b9a4dac673d84d0e14"
+        },
+        "amount": {
+          "type": "string",
+          "description": "|参数名称:主资源(包含从资源)续订金额。单位为元| |参数约束及描述:主资源(包含从资源)续订金额。单位为元|",
+          "example": "100"
+        }
+      }
+    },
+    "OfficialWebsiteRatingResultV2": {
+      "properties": {
+        "official_website_amount": {
+          "type": "string",
+          "description": "|参数名称:官网价格。单位为元| |参数约束及描述:官网价格。单位为元|",
+          "example": "100"
+        },
+        "installment_official_website_amount": {
+          "type": "string",
+          "description": "|参数名称:分期金额的官网价。单位为元| |参数约束及描述:分期金额的官网价。单位为元|",
+          "example": "100"
+        },
+        "installment_period_type": {
+          "description": "|参数名称:分期付款的周期类型。2:月| |参数的约束及描述:分期付款的周期类型。2:月|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "2"
+        }
+      }
+    },
+    "FailResourceInfo": {
+      "properties": {
+        "error_code": {
+          "type": "string",
+          "description": "状态码。 具体请参见状态码。",
+          "example": ""
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误描述信息。",
+          "example": ""
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "|参数名称:资源ID| |参数约束及描述:资源ID|",
+          "example": ""
+        }
+      }
+    },
+    "OptionalDiscountRatingResultV2": {
+      "properties": {
+        "discount_id": {
+          "type": "string",
+          "description": "|参数名称:折扣优惠ID| |参数约束及描述:折扣优惠ID|",
+          "example": "CP19092406014086E3"
+        },
+        "amount": {
+          "type": "string",
+          "description": "|参数名称:总额,即最终优惠后的金额。单位为元。amount= official_website_amount - discount_amount| |参数约束及描述:总额,即最终优惠后的金额。单位为元。amount= official_website_amount - discount_amount|",
+          "example": "100"
+        },
+        "official_website_amount": {
+          "type": "string",
+          "description": "|参数名称:官网价。单位为元| |参数约束及描述:官网价。单位为元|",
+          "example": "200"
+        },
+        "discount_amount": {
+          "type": "string",
+          "description": "|参数名称:可选折扣优惠额,如商务折扣、伙伴折扣、促销折扣和折扣券选用时的优惠额。单位为| |参数约束及描述:可选折扣优惠额,如商务折扣、伙伴折扣、促销折扣和折扣券选用时的优惠额。单位为|",
+          "example": "100"
+        },
+        "discount_type": {
+          "description": "|参数名称:折扣优惠类型| |参数约束及描述:折扣优惠类型。商务授权折扣:605(华为云BE场景下的合同商务折扣)、伙伴授予折扣:606(分销商BE场景下的合同商务折扣)、伙伴设置折扣:607(合作伙伴设置折扣-折扣率)|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "605"
+        },
+        "discount_name": {
+          "type": "string",
+          "description": "|参数名称:折扣名称| |参数约束及描述:折扣名称|",
+          "example": ""
+        },
+        "best_offer": {
+          "description": "|参数名称:是否为最优折扣。0:不是最优折扣,为缺省值。1:是最优折扣最优折扣:在商务折扣、伙伴折扣中选择(优惠金额最大的折扣为最优,优惠金额相等则按此顺序排优先级),促销折扣,折扣券不参与最优折扣的计算| |参数的约束及描述:是否为最优折扣。0:不是最优折扣,为缺省值。1:是最优折扣最优折扣:在商务折扣、伙伴折扣中选择(优惠金额最大的折扣为最优,优惠金额相等则按此顺序排优先级),促销折扣,折扣券不参与最优折扣的计算|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0"
+        },
+        "installment_official_website_amount": {
+          "type": "string",
+          "description": "|参数名称:分期金额的官网价。单位为元| |参数约束及描述:分期金额的官网价。单位为元|",
+          "example": "100.0"
+        },
+        "installment_official_discount_amount": {
+          "type": "string",
+          "description": "|参数名称:分期金额的折扣价。单位为元| |参数约束及描述:分期金额的折扣价。单位为元|",
+          "example": "100.0"
+        },
+        "installment_amount": {
+          "type": "string",
+          "description": "|参数名称:分期金额的成交价。单位为元| |参数约束及描述:分期金额的成交价。单位为元|",
+          "example": "100.0"
+        },
+        "installment_period_type": {
+          "description": "|参数名称:分期付款的周期类型。2:月| |参数的约束及描述:分期付款的周期类型。2:月|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "2"
+        }
+      }
+    },
+    "ListRenewRateOnPeriodReq": {
+      "required": [
+        "resource_ids",
+        "period_type",
+        "period_num"
+      ],
+      "properties": {
+        "resource_ids": {
+          "description": "|参数名称:资源ID列表。只支持传入主资源ID,最多10个资源ID。| |参数约束以及描述:资源ID列表。只支持传入主资源ID,最多10个资源ID。|",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "x-maxLength": 10,
+          "x-minLength": 1,
+          "items": {
+            "type": "string"
+          },
+          "example": "[96308d5efd7841b9a4dac673d84d0e14]"
+        },
+        "period_type": {
+          "description": "|参数名称:周期类型:2:月3:年| |参数的约束及描述:周期类型:2:月3:年|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "2",
+          "maximum": 3,
+          "minimum": 2
+        },
+        "period_num": {
+          "description": "|参数名称:周期数目:如果是月,目前支持1-11如果是年,目前支持1-3| |参数的约束及描述:周期数目:如果是月,目前支持1-11如果是年,目前支持1-3|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1",
+          "maximum": 11,
+          "minimum": 1
+        },
+        "include_relative_resources": {
+          "description": "是否包含关联资源一起续费询价。 false:不包含true:包含 此参数不携带或携带值为空串时,默认值为“false\"。",
+          "type": "boolean",
+          "x-allowNull": true,
+          "example": false
+        }
+      }
+    },
+    "ListRenewRateOnPeriodRsp": {
+      "properties": {
+        "currency": {
+          "type": "string",
+          "description": "|参数名称:币种。CNY:人民币。USD:美元。| |参数约束及描述:币种。CNY:人民币。USD:美元。|",
+          "example": "CNY"
+        },
+        "renew_inquiry_results": {
+          "description": "|参数名称:主资源(包含从资源)询价结果| |参数约束以及描述:主资源(包含从资源)询价结果|",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RenewInquiryResultInfo"
+          }
+        },
+        "official_website_rating_result": {
+          "description": "|参数名称:主资源(包含从资源)的官网价格查询结果| |参数约束及描述: 主资源(包含从资源)的官网价格查询结果|",
+          "$ref": "#/definitions/OfficialWebsiteRatingResultV2"
+        },
+        "optional_discount_rating_results": {
+          "description": "|参数名称:存在可选折扣优惠时返回折扣优惠维度询价结果,每个折扣优惠一组询价结果| |参数约束以及描述:存在可选折扣优惠时返回折扣优惠维度询价结果,每个折扣优惠一组询价结果|",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OptionalDiscountRatingResultV2"
+          }
+        },
+        "fail_resource_infos": {
+          "description": "|参数名称:失败的资源信息列表| |参数约束以及描述:失败的资源信息列表|",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FailResourceInfo"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

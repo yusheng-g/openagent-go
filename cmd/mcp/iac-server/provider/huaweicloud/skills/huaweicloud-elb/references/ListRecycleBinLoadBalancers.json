@@ -1,0 +1,1021 @@
+{
+  "name": "ListRecycleBinLoadBalancers",
+  "summary": "查询回收站负载均衡器列表",
+  "tags": "回收站",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/recycle-bin/loadbalancers": {
+      "get": {
+        "tags": [
+          "回收站"
+        ],
+        "summary": "查询回收站负载均衡器列表",
+        "description": "查询回收站负载均衡器列表。",
+        "operationId": "ListRecycleBinLoadBalancers",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "IAM鉴权Token",
+            "required": false,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器ID。\n支持多值查询,查询条件格式:\n*id=xxx&id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器名称。\n支持多值查询,查询条件格式:\n*name=xxx&name=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器的描述信息。\n支持多值查询,查询条件格式:\n*description=xxx&description=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器的启用状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true :启用。\n- false:停用。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 9
+          },
+          {
+            "name": "operating_status",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器的操作状态。\n支持多值查询,查询条件格式:\n*operating_status=xxx&operating_status=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- ONLINE:正常运行。\n- FROZEN:已冻结。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 11
+          },
+          {
+            "name": "guaranteed",
+            "in": "query",
+            "description": "**参数解释**:是否独享型LB。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- false:共享型\n- true:独享型\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 12
+          },
+          {
+            "name": "vpc_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器所在的VPC ID。\n支持多值查询,查询条件格式:*vpc_id=xxx&vpc_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 13
+          },
+          {
+            "name": "vip_port_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器的IPv4对应的port ID。\n支持多值查询,查询条件格式:\n*vip_port_id=xxx&vip_port_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 14
+          },
+          {
+            "name": "vip_address",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器的IPv4私网IP地址。\n支持多值查询,查询条件格式:\n*vip_address=xxx&vip_address=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 15
+          },
+          {
+            "name": "vip_subnet_cidr_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器所在子网的IPv4子网ID,也称为该负载均衡器实例的前端子网。\n支持多值查询,查询条件格式:\n*vip_subnet_cidr_id=xxx&vip_subnet_cidr_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 16
+          },
+          {
+            "name": "ipv6_vip_port_id",
+            "in": "query",
+            "description": "**参数解释**:双栈类型负载均衡器的IPv6对应的port ID。\n支持多值查询,查询条件格式:\n*ipv6_vip_port_id=xxx&ipv6_vip_port_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 21
+          },
+          {
+            "name": "ipv6_vip_address",
+            "in": "query",
+            "description": "**参数解释**:双栈类型负载均衡器的IPv6地址。\n支持多值查询,查询条件格式:\n*ipv6_vip_address=xxx&ipv6_vip_address=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 19
+          },
+          {
+            "name": "ipv6_vip_virsubnet_id",
+            "in": "query",
+            "description": "**参数解释**:双栈类型负载均衡器所在的子网IPv6网络ID,也称为该负载均衡器实例的前端子网。\n支持多值查询,查询条件格式:\n*ipv6_vip_virsubnet_id=xxx&ipv6_vip_virsubnet_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 20
+          },
+          {
+            "name": "eips",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器绑定的EIP。例如要查询绑定以下EIP的LB:\n\"eips\": [\n    {\n        \"eip_id\": \"e9b72a9d-4275-455e-a724-853504e4d9c6\",\n        \"eip_address\": \"88.88.14.122\",\n        \"ip_version\": 4\n    }\n]\n可以通如下查询:\neips=ip_version%3D4&eips=eip_address%3D88.88.14.122&eips=eip_id%3De9b72a9d-4275-455e-a724-853504e4d9c6\n支持多值查询,查询条件格式:\n- eip_id作为查询条件:*eips=eip_id=xxx&eips=eip_id=xxx*。\n- eip_address作为查询条件:*eips=eip_address=xxx&eips=eip_address=xxx*。\n- ip_version作为查询条件:*eips=ip_version=xxx&eips=ip_version=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n注:该字段与publicips字段一致。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 23
+          },
+          {
+            "name": "publicips",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器绑定的公网IP。例如要查询绑定以下公网IP的LB:\n\"publicips\": [\n    {\n        \"public_id\": \"e9b72a9d-4275-455e-a724-853504e4d9c6\",\n        \"public_address\": \"88.88.14.122\",\n        \"ip_version\": 4\n    }\n]\n可以通如下查询:\npublicips=ip_version%3D4&publicips=public_address%3D88.88.14.122&publicips=public_id%3De9b72a9d-4275-455e-a724-853504e4d9c6\n支持多值查询,查询条件格式:\n- publicip_id作为查询条件:\n*publicips=publicip_id=xxx&publicips=publicip_id=xxx*\n- publicip_address作为查询条件:\n*publicips=publicip_address=xxx&publicips=publicip_address=xxx*\n- ip_version作为查询条件:\n*publicips=ip_version=xxx&publicips=ip_version=xxx*\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n注:该字段与eips字段一致。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 30
+          },
+          {
+            "name": "availability_zone_list",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器所在可用区列表。\n支持多值查询,查询条件格式:\n*availability_zone_list=xxx&availability_zone_list=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 22
+          },
+          {
+            "name": "l4_flavor_id",
+            "in": "query",
+            "description": "**参数解释**:网络型规格ID。\n支持多值查询,查询条件格式:\n*l4_flavor_id=xxx&l4_flavor_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 17
+          },
+          {
+            "name": "l7_flavor_id",
+            "in": "query",
+            "description": "**参数解释**:应用型规格ID。\n支持多值查询,查询条件格式:\n*l7_flavor_id=xxx&l7_flavor_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 24
+          },
+          {
+            "name": "billing_info",
+            "in": "query",
+            "description": "**参数解释**:资源账单信息。\n支持多值查询,查询条件格式:\n*billing_info=xxx&billing_info=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 26,
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "member_device_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器中的后端服务器对应的弹性云服务器的ID。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:\n*member_device_id=xxx&member_device_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 27
+          },
+          {
+            "name": "member_address",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器中的后端服务器对应的弹性云服务器的IP地址。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:\n*member_address=xxx&member_address=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 28
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:资源所属的企业项目ID。\n支持多值查询,查询条件格式:\n*enterprise_project_id=xxx&enterprise_project_id=xxx*。\n\n**约束限制**:\n如果enterprise_project_id不传值,默认查询所有企业项目下的资源,鉴权按照细粒度权限鉴权,必须在用户组下分配elb:loadbalancers:list权限。\n如果enterprise_project_id传值,鉴权按照企业项目权限鉴权,分为传入具体eps_id和all_granted_eps两种场景,前者查询指定eps_id的eps下的资源,后者查询的是所有有list权限的eps下的资源。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 29
+          },
+          {
+            "name": "ip_version",
+            "in": "query",
+            "description": "**参数解释**:IP版本信息。\n支持多值查询,查询条件格式:\n*ip_version=xxx&ip_version=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:4代表IPv4,6代表IPv6。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 31
+          },
+          {
+            "name": "deletion_protection_enable",
+            "in": "query",
+            "description": "**参数解释**:是否开启删除保护。\n\n**约束限制**:不涉及\n\n**取值范围**:false 不开启,true 开启。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 32
+          },
+          {
+            "name": "elb_virsubnet_type",
+            "in": "query",
+            "description": "**参数解释**:下联面子网类型。\n支持多值查询,查询条件格式:\n*elb_virsubnet_type=ipv4&elb_virsubnet_type=dualstack*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- ipv4:ipv4。\n- dualstack:双栈,同时支持IPv4和IPv6的子网。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 33
+          },
+          {
+            "name": "autoscaling",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:是否开启弹性扩缩容。示例如下:\n\"autoscaling\": {\n    \"enable\": \"true\"\n}\n\n支持多值查询,查询条件格式:\n*autoscaling=enable=true&autoscaling=enable=false*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "protection_status",
+            "in": "query",
+            "description": "**参数解释**:修改保护状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- nonProtection: 不保护,默认值为nonProtection。\n- consoleProtection: 控制台修改保护。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "global_eips",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:负载均衡器绑定的公网IP。示例如下:\n{\n    \"global_eips\": [\n        {\n            \"global_eip_id\": \"24000000-0000-0000-0000-100000000001\",\n            \"global_eip_address\": \"10.10.10.10\",\n            \"ip_version\": 4\n        }\n    ]\n}\n支持多值查询,查询条件格式:\n- global_eip_id作为查询条件:*global_eips=global_eip_id=xxx&global_eips=global_eip_id=xxx*。\n- global_eip_address作为查询条件:*global_eips=global_eip_address=xxx&global_eips=global_eip_address=xxx*。\n- ip_version作为查询条件:*global_eips=ip_version=xxx&global_eips=ip_version=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "log_topic_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:LB所关联的云日志服务(LTS)的日志流ID。\n支持多值查询,查询条件格式:\n*log_topic_id=xxx&log_topic_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string",
+            "x-open-region-cloud": "hc,hk,hws_eu,ctc,tm,cmcc,otc"
+          },
+          {
+            "name": "log_group_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:LB所关联的云日志服务(LTS)的日志组ID。\n支持多值查询,查询条件格式:\n*log_group_id=xxx&log_group_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string",
+            "x-open-region-cloud": "hc,hk,hws_eu,ctc,tm,cmcc,otc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "46b7d911-cece-408c-a2cc-55c78ab025d8",
+                "loadbalancers": [
+                  {
+                    "id": "65672f7e-2024-4c39-9198-98249da479c5",
+                    "auto_terminate_time": "2021-07-26T03:21:37Z",
+                    "project_id": "057ef081eb00d2732fd1c01a9be75e6f",
+                    "name": "dxq_2021_07_26_11_12_37",
+                    "description": "",
+                    "vip_port_id": "b289f890-a6fa-4405-a9cc-fe62b8a3bed0",
+                    "vip_address": "172.16.0.152",
+                    "admin_state_up": true,
+                    "provisioning_status": "ACTIVE",
+                    "operating_status": "ONLINE",
+                    "listeners": [
+                      {
+                        "id": "dc9572eb-a5b2-47b3-a982-44892d833892"
+                      }
+                    ],
+                    "pools": [
+                      {
+                        "id": "dc6b01c4-f704-4427-a4c2-21cd5f58d177"
+                      }
+                    ],
+                    "tags": [],
+                    "provider": "vlb",
+                    "created_at": "2021-07-26T03:12:37Z",
+                    "updated_at": "2021-07-26T03:12:37Z",
+                    "vpc_id": "6e0ee31f-7a46-4530-b32f-ce41f30959d4",
+                    "enterprise_project_id": "0",
+                    "availability_zone_list": [
+                      "az1"
+                    ],
+                    "ipv6_vip_address": "2001:db8:a583:4cb:d6b8:f8b4:4211:fe72",
+                    "ipv6_vip_virsubnet_id": "0b9e3c5e-3ec8-46b3-bab9-80b1450e59ee",
+                    "ipv6_vip_port_id": "5186bb47-24e5-4171-b795-62d22846db9b",
+                    "publicips": [],
+                    "elb_virsubnet_ids": [
+                      "0b9e3c5e-3ec8-46b3-bab9-80b1450e59ee"
+                    ],
+                    "elb_virsubnet_type": "dualstack",
+                    "ip_target_enable": false,
+                    "autoscaling": {
+                      "enable": false,
+                      "min_l7_flavor_id": ""
+                    },
+                    "frozen_scene": null,
+                    "eips": [],
+                    "guaranteed": true,
+                    "billing_info": null,
+                    "l4_flavor_id": "aa06b26b-9ff9-43c6-92b9-41e0f746bca6",
+                    "l4_scale_flavor_id": null,
+                    "l7_flavor_id": "e2a5675c-a181-444e-b9a5-17b052dc7fb9",
+                    "l7_scale_flavor_id": null,
+                    "vip_subnet_cidr_id": "96e52038-7983-462f-8a96-415d8a280b13",
+                    "public_border_group": "center",
+                    "log_topic_id": null,
+                    "log_group_id": null
+                  },
+                  {
+                    "id": "cce5318e-c79a-4f68-94a2-9fb285c6efbe",
+                    "project_id": "057ef081eb00d2732fd1c01a9be75e6f",
+                    "name": "elb-reset",
+                    "description": "",
+                    "vip_port_id": null,
+                    "vip_address": null,
+                    "admin_state_up": true,
+                    "provisioning_status": "ACTIVE",
+                    "operating_status": "ONLINE",
+                    "listeners": [
+                      {
+                        "id": "0ae21c37-8b90-4e73-8a35-eedde6d2538c"
+                      }
+                    ],
+                    "pools": [
+                      {
+                        "id": "904ecca6-8ebb-4974-9c5c-61d1d66fba17"
+                      }
+                    ],
+                    "tags": [],
+                    "provider": "vlb",
+                    "created_at": "2021-07-26T02:46:31Z",
+                    "updated_at": "2021-07-26T02:46:59Z",
+                    "vpc_id": "59cb11ef-f185-49ba-92af-0539e8ff9734",
+                    "enterprise_project_id": "0",
+                    "availability_zone_list": [
+                      "az1"
+                    ],
+                    "ipv6_vip_address": null,
+                    "ipv6_vip_virsubnet_id": null,
+                    "ipv6_vip_port_id": null,
+                    "publicips": [
+                      {
+                        "publicip_id": "0c07e04d-e2f9-41ad-b934-f58a65b6734d",
+                        "publicip_address": "97.97.2.171",
+                        "ip_version": 4
+                      }
+                    ],
+                    "elb_virsubnet_ids": [
+                      "7f817f9c-8731-4002-9e47-18cb8d431787"
+                    ],
+                    "elb_virsubnet_type": "dualstack",
+                    "ip_target_enable": false,
+                    "autoscaling": {
+                      "enable": false,
+                      "min_l7_flavor_id": ""
+                    },
+                    "frozen_scene": null,
+                    "eips": [
+                      {
+                        "eip_id": "0c07e04d-e2f9-41ad-b934-f58a65b6734d",
+                        "eip_address": "97.97.2.171",
+                        "ip_version": 4
+                      }
+                    ],
+                    "guaranteed": true,
+                    "billing_info": null,
+                    "l4_flavor_id": "636ba721-935a-4ca5-a685-8076ce0e4148",
+                    "l4_scale_flavor_id": null,
+                    "l7_flavor_id": null,
+                    "l7_scale_flavor_id": null,
+                    "vip_subnet_cidr_id": null,
+                    "public_border_group": "center",
+                    "log_topic_id": null,
+                    "log_group_id": null
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "cce5318e-c79a-4f68-94a2-9fb285c6efbe",
+                  "previous_marker": "65672f7e-2024-4c39-9198-98249da479c5",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListRecycleLoadBalancersResponseBody"
+            }
+          }
+        },
+        "x-name": "查询回收站负载均衡器列表",
+        "x-constraint": "- 分页查询使用的参数为marker、limit、page_reverse。\n\n- marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "分页查询负载均衡器列表",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/b2782e6708b8475c993e6064bc456bf8/elb/recycle-bin/loadbalancers?limit=2&marker=87627cb6-9ff1-4580-984f-cc564fa9fc34",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,",
+        "x-apiexplorer-hide": "false",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:标签键。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:标签值。\n\n**取值范围**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "**参数解释**:资源标签。",
+      "type": "object"
+    },
+    "PublicIpInfo": {
+      "required": [
+        "ip_version",
+        "publicip_address",
+        "publicip_id"
+      ],
+      "properties": {
+        "publicip_id": {
+          "type": "string",
+          "description": "**参数解释**:弹性公网EIP的ID。\n\n**取值范围**:不涉及"
+        },
+        "publicip_address": {
+          "type": "string",
+          "description": "**参数解释**:EIP的IP地址。\n\n**取值范围**:不涉及"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP版本信息。\n\n**取值范围**:\n- 4:IPv4地址。\n- 6:IPv6地址。"
+        }
+      }
+    },
+    "GlobalEipInfo": {
+      "properties": {
+        "global_eip_id": {
+          "type": "string",
+          "description": "**参数解释**:global eip的ID。\n\n**取值范围**:不涉及"
+        },
+        "global_eip_address": {
+          "type": "string",
+          "description": "**参数解释**:global eip的ip地址。\n\n**取值范围**:不涉及"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP版本信息。\n\n**取值范围**:\n- 4,表示IPv4\n- 6,表示IPv6"
+        }
+      }
+    },
+    "RecycleLoadBalancer": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器ID。\n\n**取值范围**:不涉及"
+        },
+        "auto_terminate_time": {
+          "type": "string",
+          "description": "**参数解释**:回收站elb的自动到期销毁时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z'\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器描述信息。\n\n**取值范围**:不涉及"
+        },
+        "provisioning_status": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的配置状态。\n\n**取值范围**:\n- RECYCLING:处于回收站用中。"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:负载均衡器的启用状态。\n\n**取值范围**:\n- true :启用。\n- false:停用。"
+        },
+        "provider": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的生产者名称。固定为vlb。\n\n**取值范围**:不涉及"
+        },
+        "pools": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器直接关联的后端服务器组的ID列表。",
+          "items": {
+            "$ref": "#/definitions/PoolRef"
+          }
+        },
+        "listeners": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器关联的监听器的ID列表。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          }
+        },
+        "operating_status": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的操作状态。\n\n**取值范围**:\n- ONLINE:在线。\n- FROZEN:已冻结。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的名称。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器所属的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "vip_subnet_cidr_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器所在子网的IPv4子网ID,也称为该负载均衡器实例的前端子网。\n\n**取值范围**:不涉及"
+        },
+        "vip_address": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的IPv4私网IP地址。\n\n**取值范围**:不涉及"
+        },
+        "vip_port_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的IPv4对应的port ID。\n\n\n**取值范围**:不涉及"
+        },
+        "tags": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡的标签列表。",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的创建时间。\n\n**取值范围**:\n格式:yyyy-MM-dd'T'HH:mm:ss'Z'"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的更新时间。\n\n**取值范围**:\n格式:yyyy-MM-dd'T'HH:mm:ss'Z'"
+        },
+        "guaranteed": {
+          "type": "boolean",
+          "description": "**参数解释**:是否独享型LB。\n\n**取值范围**:\n- false:共享型。\n- true:独享型。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器所在VPC ID。\n\n**取值范围**:不涉及"
+        },
+        "eips": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器绑定的EIP。\n注:该字段与publicips一致。",
+          "items": {
+            "$ref": "#/definitions/EipInfo"
+          }
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器的IPv6地址。\n\n**取值范围**:不涉及"
+        },
+        "ipv6_vip_virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器所在子网的IPv6网络ID,也称为该负载均衡器实例的前端子网。\n\n**取值范围**:不涉及"
+        },
+        "ipv6_vip_port_id": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器的IPv6对应的port ID。\n\n**取值范围**:不涉及"
+        },
+        "availability_zone_list": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器所在的可用区列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "billing_info": {
+          "type": "string",
+          "description": "**参数解释**:资源账单信息。\n\n**取值范围**:\n- 空:按需计费。",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "l4_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:网络型规格ID。\n对于弹性扩缩容实例,表示上限规格。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "l4_scale_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:四层弹性Flavor ID。\n\n**取值范围**:不涉及\n\n不支持该字段,请勿使用。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "l7_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:应用型ID。\n对于弹性扩缩容实例,表示上限规格ID。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "l7_scale_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:七层弹性Flavor ID。\n\n**取值范围**:不涉及\n\n不支持该字段,请勿使用。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "publicips": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器绑定的公网IP。只支持绑定一个公网IP。\n\n注:该字段与eips一致。",
+          "items": {
+            "$ref": "#/definitions/PublicIpInfo"
+          }
+        },
+        "global_eips": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GlobalEipInfo"
+          },
+          "description": "**参数解释**:负载均衡器绑定的global eip。"
+        },
+        "elb_virsubnet_ids": {
+          "type": "array",
+          "description": "**参数解释**:下联面子网的网络ID列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "elb_virsubnet_type": {
+          "type": "string",
+          "description": "**参数解释**:下联面子网类型。\n\n**取值范围**:\n- ipv4:ipv4\n- dualstack:双栈",
+          "enum": [
+            "ipv4",
+            "dualstack"
+          ]
+        },
+        "ip_target_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否启用IP类型后端转发。\n开启IP类型后端转发后,后端服务器组不仅支持添加云上VPC内的服务器,还支持添加其他VPC、其他公有云、云下数据中心的服务器。\n\n\n**取值范围**:\n- true:开启。\n- false:不开启。"
+        },
+        "frozen_scene": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的冻结场景。\n若负载均衡器有多个冻结场景,用逗号分隔。\n\n**取值范围**:\n- POLICE:公安冻结场景。\n- ILLEGAL:违规冻结场景。\n- VERIFY:客户未实名认证冻结场景。\n- PARTNER:合作伙伴冻结(合作伙伴冻结子客户资源)。\n- ARREAR:欠费冻结场景。"
+        },
+        "ipv6_bandwidth": {
+          "$ref": "#/definitions/BandwidthRef",
+          "description": "**参数解释**:带宽对象ID。"
+        },
+        "deletion_protection_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否开启删除保护。\n\n**取值范围**:\n- false:不开启。\n- true:开启。"
+        },
+        "autoscaling": {
+          "$ref": "#/definitions/AutoscalingRef"
+        },
+        "public_border_group": {
+          "type": "string",
+          "description": "**参数解释**:LB所属AZ组。\n\n**取值范围**:不涉及"
+        },
+        "charge_mode": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器实例的计费模式。\n\n**取值范围**:\n- flavor:按规格计费\n- lcu:按使用量计费\n- 空值:若是共享型表示免费实例。若是独享型则与flavor模式一致,都是按规格计费。",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "waf_failure_action": {
+          "type": "string",
+          "description": "**参数解释**:WAF故障时的流量处理策略。\n\n**取值范围**:discard:丢弃,forward: 转发到后端。"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "**参数解释**:修改保护状态。\n\n**取值范围**:\n- nonProtection: 不保护。\n- consoleProtection: 控制台修改保护。",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ],
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "**参数解释**:设置保护的原因。作为protection_status的转态设置的原因。\n\n**取值范围**:除<和>外通用Unicode字符集字符,最大255个字符。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk"
+        },
+        "log_group_id": {
+          "type": "string",
+          "description": "**参数解释**:LB所绑定的logtank对应的group id。\n\n**取值范围**:不涉及",
+          "x-open-region-cloud": "hc,hk,hws_eu,ctc,tm,cmcc,otc"
+        },
+        "log_topic_id": {
+          "type": "string",
+          "description": "**参数解释**:LB所绑定的logtank对应的topic id。\n\n**取值范围**:不涉及",
+          "x-open-region-cloud": "hc,hk,hws_eu,ctc,tm,cmcc,otc"
+        }
+      },
+      "description": "负载均衡器的详细信息。",
+      "type": "object"
+    },
+    "Extension": {
+      "properties": {
+        "ep_id": {
+          "type": "string",
+          "description": "**参数解释**:EP ID.\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "ep_service_id": {
+          "type": "string",
+          "description": "**参数解释**:EP Service ID.\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      }
+    },
+    "PoolRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组ID。\n\n**取值范围**:不涉及",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "**参数解释**:关联的后端服务器组。"
+    },
+    "ListRecycleLoadBalancersResponseBody": {
+      "required": [
+        "loadbalancers",
+        "page_info",
+        "request_id"
+      ],
+      "properties": {
+        "loadbalancers": {
+          "type": "array",
+          "description": "**参数解释**:回收站中的弹性负载均衡器实例列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/RecycleLoadBalancer"
+          }
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "EipInfo": {
+      "properties": {
+        "eip_id": {
+          "type": "string",
+          "description": "**参数解释**:弹性IP的ID。\n\n**取值范围**:不涉及"
+        },
+        "eip_address": {
+          "type": "string",
+          "description": "**参数解释**:弹性IP的IP地址。\n\n**取值范围**:不涉及"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP版本号。\n\n**取值范围**:\n- 4:表示IPv4地址。\n- 6:表示IPv6地址。"
+        }
+      },
+      "description": "**参数解释**:弹性IP,同publicips。"
+    },
+    "AutoscalingRef": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:当前负载均衡器是否开启弹性扩缩容。\n\n**取值范围**:\n- true:开启。\n- false:不开启。"
+        },
+        "min_l7_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:弹性扩缩容的最小七层规格ID(规格类型L7_elastic)。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "**参数解释**:弹性扩缩容配置信息。负载均衡器开启弹性扩缩容后,可根据负载情况自动调整负载均衡器的规格。\n\n> 该字段已经废弃,但仍然保留兼容性支持,建议不要使用该字段。如果传入该字段,创建的弹性实例将会有保底规格并产生对应保底规格的费用。",
+      "required": [
+        "enable"
+      ]
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    },
+    "BandwidthRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:共享带宽的ID。",
+          "x-admin": "False"
+        }
+      },
+      "description": "**参数解释**:共享带宽的ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+    },
+    "ProxyProtocolExtension": {
+      "required": [
+        "extension"
+      ],
+      "properties": {
+        "vip_address": {
+          "type": "string",
+          "description": "**参数解释**:ipv4 vip地址。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:ipv6 vip地址。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "extension": {
+          "description": "**参数解释**:pp 扩展。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/Extension"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

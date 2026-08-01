@@ -1,0 +1,296 @@
+{
+  "name": "ListBackupTransfers",
+  "summary": "查询转储任务列表",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/transfer-info": {
+      "get": {
+        "x-request-examples-url-1": "/rds/v3/05491c53e680d4e80f60c007e4735fc0/transfer-info?offset=0&limit=50&order_field=&order_rule=&filter_field=&filter_content=&begin_time=&end_time=&",
+        "x-request-examples-description-1": "获取转储任务列表",
+        "x-api-type": "open-api",
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListBackupTransfers",
+        "summary": "查询转储任务列表",
+        "description": "查询转储任务列表",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询记录数",
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          {
+            "name": "order_field",
+            "in": "query",
+            "required": false,
+            "description": "排序字段",
+            "type": "string"
+          },
+          {
+            "name": "order_rule",
+            "in": "query",
+            "required": false,
+            "description": "排序规则",
+            "type": "string"
+          },
+          {
+            "name": "filter_field",
+            "in": "query",
+            "required": false,
+            "description": "筛选字段",
+            "type": "string"
+          },
+          {
+            "name": "filter_content",
+            "in": "query",
+            "required": false,
+            "description": "筛选关键字",
+            "type": "string"
+          },
+          {
+            "name": "begin_time",
+            "in": "query",
+            "required": false,
+            "description": "开始时间戳",
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false,
+            "description": "结束时间戳",
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": false,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          },
+          {
+            "name": "transfer_type",
+            "in": "query",
+            "required": false,
+            "description": "转储任务类型,默认为manual\nmanual:手动转储任务\nauto:自动转储任务",
+            "type": "string",
+            "default": "manual",
+            "enum": [
+              "manual",
+              "auto"
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "分页页码",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "minimum": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "转储任务响应",
+            "schema": {
+              "$ref": "#/definitions/BackupTransferInfos"
+            },
+            "examples": {
+              "application/json": {
+                "total": 3,
+                "transfer_list": [
+                  {
+                    "id": "38e7f95bc332408e9b4d6409fc28f9a0br01",
+                    "name": "mysql-local-adf1-20250305072705950",
+                    "begin_time": 1741171386518,
+                    "end_time": 1741171389039,
+                    "status": "Completed",
+                    "size": 3607.899415,
+                    "instance_id": "9addef3bcf264a8a82e710d62b3f1439in01",
+                    "file_name": "test/0cf6f193231e41feac6deabbf6620274_9addef3bcf264a8a82e710d62b3f1439in01_Db_38e7f95bc332408e9b4d6409fc28f9a0br01_20250305072659001_20250305072705879_2c6b7a6bd85b4a4596673e37acc732deno01_xbcloud_.qp/0cf6f193231e41feac6deabbf6620274_9addef3bcf264a8a82e710d62b3f1439in01_Db_38e7f95bc332408e9b4d6409fc28f9a0br01_20250305072659001_20250305072705879_2c6b7a6bd85b4a4596673e37acc732deno01_xbcloud_.qp",
+                    "destination": "obs-4144"
+                  },
+                  {
+                    "id": "38e7f95bc332408e9b4d6409fc28f9a0br01",
+                    "name": "mysql-local-adf1-20250305072705950",
+                    "begin_time": 1741171082762,
+                    "end_time": 1741171087592,
+                    "status": "Completed",
+                    "size": 3607.899415,
+                    "instance_id": "9addef3bcf264a8a82e710d62b3f1439in01",
+                    "file_name": "0cf6f193231e41feac6deabbf6620274_9addef3bcf264a8a82e710d62b3f1439in01_Db_38e7f95bc332408e9b4d6409fc28f9a0br01_20250305072659001_20250305072705879_2c6b7a6bd85b4a4596673e37acc732deno01_xbcloud_.qp/0cf6f193231e41feac6deabbf6620274_9addef3bcf264a8a82e710d62b3f1439in01_Db_38e7f95bc332408e9b4d6409fc28f9a0br01_20250305072659001_20250305072705879_2c6b7a6bd85b4a4596673e37acc732deno01_xbcloud_.qp",
+                    "destination": "obs-rdstest1"
+                  },
+                  {
+                    "id": "38e7f95bc332408e9b4d6409fc28f9a0br01",
+                    "name": "mysql-local-adf1-20250305072705950",
+                    "begin_time": 1741166966484,
+                    "end_time": 1741166970807,
+                    "status": "Completed",
+                    "size": 3607.899415,
+                    "instance_id": "9addef3bcf264a8a82e710d62b3f1439in01",
+                    "file_name": "0cf6f193231e41feac6deabbf6620274_9addef3bcf264a8a82e710d62b3f1439in01_Db_38e7f95bc332408e9b4d6409fc28f9a0br01_20250305072659001_20250305072705879_2c6b7a6bd85b4a4596673e37acc732deno01_xbcloud_.qp/0cf6f193231e41feac6deabbf6620274_9addef3bcf264a8a82e710d62b3f1439in01_Db_38e7f95bc332408e9b4d6409fc28f9a0br01_20250305072659001_20250305072705879_2c6b7a6bd85b4a4596673e37acc732deno01_xbcloud_.qp",
+                    "destination": "obs-rdstest1"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "BackupTransferInfos": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "任务数量"
+        },
+        "transfer_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BackupTransferInfo"
+          },
+          "description": "任务列表"
+        }
+      },
+      "description": "转储任务信息列表"
+    },
+    "BackupTransferInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "备份id"
+        },
+        "name": {
+          "type": "string",
+          "description": "备份名称"
+        },
+        "begin_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "开始时间"
+        },
+        "end_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "结束时间"
+        },
+        "status": {
+          "type": "string",
+          "description": "任务状态"
+        },
+        "size": {
+          "type": "number",
+          "format": "double",
+          "description": "对象大小,单位为KByte"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "实例id"
+        },
+        "file_name": {
+          "type": "string",
+          "description": "目标对象名称"
+        },
+        "destination": {
+          "type": "string",
+          "description": "目标桶名"
+        },
+        "backup_begin_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "转储备份起始时间"
+        },
+        "backup_end_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "转储备份结束时间"
+        },
+        "transfer_type": {
+          "type": "string",
+          "description": "转储任务类型"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "转储目标前缀"
+        },
+        "type": {
+          "type": "string",
+          "description": "转储备份类型"
+        }
+      },
+      "description": "转储任务信息"
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

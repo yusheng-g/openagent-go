@@ -1,0 +1,156 @@
+{
+  "name": "ShowReplayDelayStatus",
+  "summary": "获取wal日志延迟回放状态",
+  "tags": "配置只读延迟库(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/replay-delay/show": {
+      "get": {
+        "tags": [
+          "配置只读延迟库(PostgreSQL)"
+        ],
+        "x-request-examples-url-1": "https://rds.cn-north-1.myhuaweicloud.com/v3/0483b6b16e954cb88930a360d2c4e663/instances/794c38e5309344818f4b33b86ebce9b4in03/replay-delay/show",
+        "x-request-examples-description-1": "获取wal日志延迟回放状态",
+        "operationId": "ShowReplayDelayStatus",
+        "summary": "获取wal日志延迟回放状态",
+        "description": "获取wal日志延迟回放状态",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "获取只读实例延迟状态成功",
+            "schema": {
+              "$ref": "#/definitions/ShowReplayDelayStatusRsp"
+            },
+            "examples": {
+              "application/json": {
+                "cur_delay_time_mills": 0,
+                "delay_time_value_range": "0-2147483647",
+                "real_delay_time_mills": 0,
+                "cur_log_replay_paused": true,
+                "latest_receive_log": "0/8000060",
+                "latest_replay_log": "0/8000060"
+              }
+            }
+          },
+          "400": {
+            "description": "获取只读实例延迟状态失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_code": "DBS.200005",
+                "error_msg": "Parameter error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ShowReplayDelayStatusRsp": {
+      "type": "object",
+      "description": "获取只读实例延迟状态响应",
+      "required": [
+        "cur_delay_time_mills",
+        "delay_time_value_range",
+        "real_delay_time_mills",
+        "cur_log_replay_paused",
+        "latest_receive_log",
+        "latest_replay_log"
+      ],
+      "properties": {
+        "cur_delay_time_mills": {
+          "description": "当前配置的延迟时间,单位ms",
+          "type": "integer",
+          "format": "int32"
+        },
+        "delay_time_value_range": {
+          "description": "延迟时间参数取值范围",
+          "type": "string"
+        },
+        "real_delay_time_mills": {
+          "description": "真实延迟时间,单位ms",
+          "type": "integer",
+          "format": "int32"
+        },
+        "cur_log_replay_paused": {
+          "description": "当前日志回放状态。true表示回放暂停,false表示回放正常",
+          "type": "boolean"
+        },
+        "latest_receive_log": {
+          "description": "最新接收的日志",
+          "type": "string"
+        },
+        "latest_replay_log": {
+          "description": "最新回放的日志位点",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

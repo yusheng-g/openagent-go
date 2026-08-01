@@ -1,0 +1,344 @@
+{
+  "name": "ListRolesForGroupOnEnterpriseProject",
+  "summary": "查询企业项目关联用户组的权限",
+  "tags": "企业项目管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-PERMISSION/enterprise-projects/{enterprise_project_id}/groups/{group_id}/roles": {
+      "get": {
+        "tags": [
+          "企业项目管理"
+        ],
+        "summary": "查询企业项目关联用户组的权限",
+        "description": "该接口可用于查询企业项目已关联用户组的权限。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ListRolesForGroupOnEnterpriseProject",
+        "parameters": [
+          {
+            "name": "enterprise_project_id",
+            "in": "path",
+            "description": "待查询企业项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "待查询用户组。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "已认证的拥有iam:permissions:listRolesForGroupOnEnterpriseProject细粒度权限或Security Administrator权限的token。同时要求group_id所属账号的domain_id与Token中的domain_id一致。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "roles": [
+                  {
+                    "catalog": "CUSTOMED",
+                    "description": "u81eau5b9au4e49u6743u9650",
+                    "description_cn": null,
+                    "display_name": "XpBdkPYCCx",
+                    "domain_id": "0456fd5a278033120f37c006683abf00",
+                    "flag": null,
+                    "id": "5d1b6256331f4fb494534bf2406986c6",
+                    "name": "custom_policy1",
+                    "policy": {
+                      "Statement": [
+                        {
+                          "Action": [
+                            "aaa:a*b:baa*"
+                          ],
+                          "Condition": null,
+                          "Effect": "deny",
+                          "Resource": null
+                        },
+                        {
+                          "Action": [
+                            "aaa:a*b:bab*"
+                          ],
+                          "Condition": null,
+                          "Effect": "Allow",
+                          "Resource": null
+                        }
+                      ],
+                      "Version": "1.1"
+                    },
+                    "type": "XA"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListRolesOfEnterpriseProjectsOnGroup"
+            }
+          },
+          "400": {
+            "description": "请求参数出错。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0007",
+                "error_msg": "Request parameter %(key)s is invalid."
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0001",
+                "error_msg": "The request you have made requires authentication."
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0002",
+                "error_msg": "You are not authorized to perform the requested action."
+              },
+              "application/json-1": {
+                "error_code": "IAM.0003",
+                "error_msg": "Policy doesn't allow %(actions)s to be performed."
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0004",
+                "error_msg": "Could not find domain: dd87a1a8-8602-45a8-8145-not-exist."
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询企业项目直接关联用户组的权限",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-PERMISSION/enterprise-projects/{enterprise_project_id}/groups/{group_id}/roles",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "请求认证失败。",
+            "solution": "请补充或确认请求认证信息。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "请求未授权。",
+            "solution": "请确认是否授权成功。\n1、存在op_gated_eps权限\n2、不存在secu_admin权限和细粒度权限",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0004",
+            "httpStatus": "404",
+            "errorMessage": "Could not find %(target)s: %(target_id)s.",
+            "errorDescription": "无法找到请求资源。",
+            "solution": "请确认请求或联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "RolePolicy": {
+      "required": [
+        "Statement",
+        "Version"
+      ],
+      "properties": {
+        "Depends": {
+          "type": "array",
+          "description": "该权限所依赖的权限。",
+          "items": {
+            "$ref": "#/definitions/PolicyDepends"
+          }
+        },
+        "Statement": {
+          "type": "array",
+          "description": "授权语句,描述权限的具体内容。",
+          "items": {
+            "$ref": "#/definitions/PolicyStatement"
+          }
+        },
+        "Version": {
+          "type": "string",
+          "example": "1.0",
+          "description": "权限版本号。\n> - 1.0:系统预置的角色。以服务为粒度,提供有限的服务相关角色用于授权。\n> - 1.1:策略。IAM最新提供的一种细粒度授权的能力,可以精确到具体服务的操作、资源以及请求条件等。"
+        }
+      },
+      "description": ""
+    },
+    "PolicyDepends": {
+      "required": [
+        "catalog",
+        "display_name"
+      ],
+      "properties": {
+        "catalog": {
+          "type": "string",
+          "example": "BASE",
+          "description": "权限所在目录。"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "Tenant Guest",
+          "description": "权限展示名。"
+        }
+      },
+      "description": ""
+    },
+    "PolicyStatement": {
+      "required": [
+        "Action",
+        "Effect"
+      ],
+      "properties": {
+        "Action": {
+          "type": "array",
+          "description": "授权项,指对资源的具体操作权限,不超过100个。\n> - 格式为:服务名:资源类型:操作,例:vpc:ports:create。\n> - 服务名为产品名称,例如ecs、evs和vpc等,服务名仅支持小写。 资源类型和操作没有大小写,要求支持通配符号*,无需罗列全部授权项。\n> - 当自定义策略为委托自定义策略时,该字段值为:``` \"Action\": [\"iam:agencies:assume\"]```。",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100
+        },
+        "Effect": {
+          "type": "string",
+          "example": "Allow",
+          "description": "作用。包含两种:允许(Allow)和拒绝(Deny),既有Allow又有Deny的授权语句时,遵循Deny优先的原则。",
+          "enum": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "Condition": {
+          "type": "object",
+          "description": "限制条件。不超过10个。"
+        },
+        "Resource": {
+          "type": "object",
+          "description": "资源。数组长度不超过10,每个字符串长度不超过128,规则如下:\n> - 可填 * 的五段式:<service-name>:<region>:<account-id>:<resource-type>:<resource-path>,例:\"obs:*:*:bucket:*\"。\n> - region字段为*或用户可访问的region。service必须存在且resource属于对应service。\n> - 当该自定义策略为委托自定义策略时,该字段类型为Object,值为:```\"Resource\": {\"uri\": [\"/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c\"]}```。"
+        }
+      },
+      "description": ""
+    },
+    "RolesItem": {
+      "required": [
+        "catalog",
+        "display_name",
+        "domain_id",
+        "flag",
+        "id",
+        "name",
+        "policy",
+        "type",
+        "description",
+        "description_cn"
+      ],
+      "properties": {
+        "catalog": {
+          "type": "string",
+          "description": "权限所在目录。",
+          "example": "CUSTOMED"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "权限展示名称。",
+          "example": "XpBdkPYCCx"
+        },
+        "description": {
+          "description": "权限的英文描述。",
+          "type": "string"
+        },
+        "description_cn": {
+          "type": "string",
+          "description": "权限的中文描述信息。"
+        },
+        "domain_id": {
+          "type": "string",
+          "description": "权限所属账号ID。",
+          "example": "0456fd5a278033120f37c006683abf00"
+        },
+        "flag": {
+          "type": "string",
+          "example": "fine_grained",
+          "description": "该参数值为fine_grained时,标识此权限为系统内置的策略。"
+        },
+        "id": {
+          "type": "string",
+          "example": "5d1b6256331f4fb494534bf2406986c6",
+          "description": "权限Id。"
+        },
+        "name": {
+          "type": "string",
+          "example": "custom_policy1",
+          "description": "权限名称。"
+        },
+        "policy": {
+          "description": "权限具体内容。",
+          "$ref": "#/definitions/RolePolicy"
+        },
+        "type": {
+          "type": "string",
+          "example": "XA",
+          "description": "权限的显示模式。\n> - AX表示在domain层显示。\n> - XA表示在project层显示。\n> - AA表示在domain和project层均显示。\n> - XX表示在domain和project层均不显示。\n> - 自定义策略的显示模式只能为AX或者XA,不能在domain层和project层都显示(AA),或者在domain层和project层都不显示(XX)。"
+        }
+      }
+    },
+    "ListRolesOfEnterpriseProjectsOnGroup": {
+      "required": [
+        "roles"
+      ],
+      "properties": {
+        "roles": {
+          "type": "array",
+          "description": "角色列表。",
+          "items": {
+            "$ref": "#/definitions/RolesItem"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

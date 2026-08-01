@@ -1,0 +1,504 @@
+{
+  "name": "ListVirsubnets",
+  "summary": "查询虚拟子网列表",
+  "tags": "虚拟子网",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/virsubnets": {
+      "get": {
+        "tags": [
+          "虚拟子网"
+        ],
+        "summary": "查询虚拟子网列表",
+        "description": "当您的子网创建成功后,您可以通过调用该接口查询所有子网信息,包括子网的名称、ID等。",
+        "operationId": "ListVirsubnets",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n子网所属的项目ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:\n每页返回的资源个数。\n**取值范围**:\n0~2000。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:\n分页查询起始的资源ID,为空时查询第一页。\n**取值范围**:\n子网的资源ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:\n子网的资源ID,填写后按照ID进行过滤,支持传入多个ID过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+            },
+            "collectionFormat": "multi",
+            "x-example": "62818c73-543d-4e73-bf3f-771491113dbc",
+            "x-order": 5,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:\n子网的名称,填写后按照名称进行过滤,支持传入多个名称过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "vpc_id",
+            "in": "query",
+            "description": "**参数解释**:\n子网所在VPC的资源ID,填写后按照VPC资源ID进行过滤,支持传入多个ID过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "**参数解释**:\n子网的状态,填写后按照状态进行过滤,只支持传入单个状态过滤。\n**取值范围**:\n- ACTIVE:表示子网已挂载到VPC上。\n- UNKNOWN:表示子网还未挂载到VPC上。\n- ERROR:表示子网状态故障。",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "**参数解释**:\n子网的作用域,填写后按照作用域进行过滤,支持传入多个作用域过滤。\n**取值范围**:\n- center:表示作用域为中心。\n- {publicBorderGroup}:表示作用域为具体的公网边界组。公网边界组限制子网的可用区范围,可关联多个边缘可用区。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zone_id",
+            "in": "query",
+            "description": "**参数解释**:\n子网的可用区ID,填写后按照可用区ID进行过滤,支持传入多个可用区ID过滤。\n**取值范围**:\n不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "**参数解释**:\n子网的描述信息,填写后按照描述信息进行过滤,支持传入多个描述信息过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET操作正常返回,更多状态码请参见[状态码](vpc_api_0002.xml)。",
+            "schema": {
+              "$ref": "#/definitions/ListVirsubnetsRespBody"
+            },
+            "x-response-examples-tags-1": "hws,hws_hk",
+            "x-response-examples-1": {
+              "application/json": {
+                "request_id": "83ce7c3aebc450bc40316e5856eff16e",
+                "virsubnets": [
+                  {
+                    "name": "subnet-1",
+                    "id": "26c31230-6c2e-4dc3-b423-97ea75abac7c",
+                    "project_id": "11e8dd119c77479db890e266e68c1ecf",
+                    "status": "ACTIVE",
+                    "tags": [],
+                    "description": "",
+                    "created_at": "2025-11-26T07:21:25",
+                    "updated_at": "2025-12-05T09:11:19",
+                    "subnet_cidrs": [
+                      {
+                        "id": "0ab40e38-edd2-46ff-bfec-d092d417275b",
+                        "ip_version": "4",
+                        "cidr": "192.168.23.0/24",
+                        "gateway_ip": "192.168.23.1",
+                        "enable_dhcp": true
+                      },
+                      {
+                        "id": "37fcba97-5fab-4328-906e-fc2b3f261796",
+                        "ip_version": "6",
+                        "cidr": "2420:2023:410:d5d::/64",
+                        "gateway_ip": "2420:2023:410:d5d::1",
+                        "enable_dhcp": true
+                      }
+                    ],
+                    "dns_nameservers": [
+                      "100.125.3.250",
+                      "100.125.3.251"
+                    ],
+                    "vpc_id": "1e8a8ea6-c641-4461-810c-5851868f98be",
+                    "extra_dhcp_opts": [
+                      {
+                        "opt_value": "10.0.0.1,10.0.0.2",
+                        "opt_name": "42",
+                        "ip_version": 4
+                      },
+                      {
+                        "opt_value": "2h",
+                        "opt_name": "651",
+                        "ip_version": 6
+                      },
+                      {
+                        "opt_value": "87600h",
+                        "opt_name": "51",
+                        "ip_version": 4
+                      },
+                      {
+                        "opt_value": "domain.com",
+                        "opt_name": "15",
+                        "ip_version": 4
+                      }
+                    ],
+                    "scope": "center",
+                    "zone_id": ""
+                  },
+                  {
+                    "name": "subnet-2",
+                    "id": "518a60c6-06a1-427c-88b7-3e4fc98e2998",
+                    "project_id": "11e8dd119c77479db890e266e68c1ecf",
+                    "status": "ACTIVE",
+                    "tags": [
+                      {
+                        "key": "a",
+                        "value": "a"
+                      }
+                    ],
+                    "description": "",
+                    "created_at": "2025-11-14T03:57:02",
+                    "updated_at": "2025-11-14T03:57:02",
+                    "subnet_cidrs": [
+                      {
+                        "id": "eded5d66-4f57-4f9e-82f9-26796b00c526",
+                        "ip_version": "4",
+                        "cidr": "192.168.12.0/24",
+                        "gateway_ip": "192.168.12.1",
+                        "enable_dhcp": true
+                      }
+                    ],
+                    "dns_nameservers": [
+                      "100.125.3.250",
+                      "100.125.3.251"
+                    ],
+                    "vpc_id": "a45cbb45-a36c-4d49-8616-0517aa158b14",
+                    "extra_dhcp_opts": [
+                      {
+                        "opt_value": "87600h",
+                        "opt_name": "51",
+                        "ip_version": 4
+                      }
+                    ],
+                    "scope": "center",
+                    "zone_id": ""
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "26c31230-6c2e-4dc3-b423-97ea75abac7c",
+                  "current_count": 2
+                }
+              }
+            }
+          }
+        },
+        "x-order": 1,
+        "x-api-type": "open-api",
+        "x-is-translated": "N",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": false,
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/{project_id}/vpc/virsubnets",
+        "x-request-examples-description-1": "查询子网列表。"
+      }
+    }
+  },
+  "definitions": {
+    "PageInfo": {
+      "required": [
+        "current_count",
+        "previous_marker"
+      ],
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "当前页第一条记录",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前页总数",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "当前页最后一条记录,最后一页时无next_marker字段",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "Virsubnet": {
+      "required": [
+        "id",
+        "name",
+        "description",
+        "dns_nameservers",
+        "zone_id",
+        "vpc_id",
+        "status",
+        "project_id",
+        "scope",
+        "subnet_cidrs",
+        "tags",
+        "extra_dhcp_opts",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网的资源ID。子网创建成功后,会生成一个子网 ID,是子网对应的唯一标识。\n**取值范围**:\n带“-”的标准UUID格式。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网的名称。\n**取值范围**:\n1-64个字符,支持数字、字母、中文字符、_(下划线)、-(中划线)、.(点)。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n子网的描述信息。\n**取值范围**:\n0-255个字符,不能包含“<”和“>”。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "dns_nameservers": {
+          "type": "array",
+          "description": "**参数解释**:\n子网的DNS服务器地址列表。\n**取值范围**:\n不涉及。",
+          "items": {
+            "type": "string"
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "zone_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网的可用区ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网所属VPC的资源ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释**:\n子网的状态。\n**取值范围**:\n- ACTIVE:表示子网已挂载到VPC上。\n- UNKNOWN:表示子网还未挂载到VPC上。\n- ERROR:表示子网状态故障。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网所属的项目ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "scope": {
+          "type": "string",
+          "description": "**参数解释**:\n子网的作用域(边缘云场景)。\n**取值范围**:\n- center:表示作用域为中心。\n- {publicBorderGroup}:表示作用域为具体的公网边界组。公网边界组限制子网的可用区范围,可关联多个边缘可用区。"
+        },
+        "subnet_cidrs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubnetCidr"
+          },
+          "description": "**参数解释**:\nOpenStack Neutron子网信息。\n**取值范围**:\n不涉及。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "**参数解释**:\n子网的标签信息,包括标签键和标签值,可用来分类和标识资源。详情请参见Tag对象。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/ResponseTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "extra_dhcp_opts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubnetExtraDhcpOpt"
+          },
+          "description": "**参数解释**:\n子网的DHCP属性,支持配置NTP地址、DNS域名或租约到期时间。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网的创建时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ss。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网的更新时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ss。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "type": "object"
+    },
+    "ListVirsubnetsRespBody": {
+      "type": "object",
+      "required": [
+        "page_info",
+        "request_id",
+        "virsubnets"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:\n请求ID。\n**取值范围**:\n不涉及。"
+        },
+        "virsubnets": {
+          "type": "array",
+          "description": "**参数解释**:\n查询子网列表的响应体。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/Virsubnet"
+          }
+        },
+        "page_info": {
+          "description": "**参数解释**:\n分页信息。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/PageInfo"
+        }
+      }
+    },
+    "SubnetCidr": {
+      "type": "object",
+      "required": [
+        "id",
+        "ip_version",
+        "cidr",
+        "gateway_ip",
+        "enable_dhcp"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\nOpenStack Neutron子网的资源ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "ip_version": {
+          "type": "string",
+          "description": "**参数解释**:\nOpenStack Neutron子网的IP版本。\n**取值范围**:\n- 4:IPv4子网。\n- 6:IPv6子网。"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "**参数解释**:\nOpenStack Neutron子网的IP网段。\n**取值范围**:\nCIDR格式,如IPv4网段:192.168.23.0/24,IPv6网段:2420:2023:410:d5d::/64。"
+        },
+        "gateway_ip": {
+          "type": "string",
+          "description": "**参数解释**:\nOpenStack Neutron子网的网关IP地址。\n**取值范围**:\n不涉及。"
+        },
+        "enable_dhcp": {
+          "type": "boolean",
+          "description": "**参数解释**:\nOpenStack Neutron子网是否开启DHCP功能。\n**取值范围**:\n- true:开启DHCP功能。\n- false:未开启DHCP功能。"
+        }
+      }
+    },
+    "SubnetExtraDhcpOpt": {
+      "type": "object",
+      "required": [
+        "opt_name",
+        "opt_value",
+        "ip_version"
+      ],
+      "properties": {
+        "opt_name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网配置的NTP地址、DNS域名或租约到期时间的名称。\n**取值范围**:\n- 42:表示子网ntp地址。\n- 15:表示DNS配置的域名,用于向DNS服务器获取IP地址。\n- 51:表示IPv4子网租约到期时间。\n- 651:表示IPv6子网租约到期时间。"
+        },
+        "opt_value": {
+          "type": "string",
+          "description": "**参数解释**:\n子网配置的NTP地址、DNS域名或租约到期时间。\n**取值范围**:\n- opt_name配置为“42”,则表示是子网ntp地址,目前只支持IPv4地址,每个IP地址以逗号隔开,IP地址个数不能超过4个,不能存在相同地址。\n- opt_name配置为“15”,则该值表示是DNS配置的域名,用于向DNS服务器获取IP地址。域名只能由字母,数字,中划线组成,中划线不能在开头或末尾。域名可以包含多个字符串,单个字符串不超过63个字符,字符串间以点分隔。域名长度不超过254个字符。\n- opt_name配置为“51”,则该值表示是IPv4子网租约到期时间,取值格式有两种,取-1,表示无限租约;数字+h,数字范围是1~175200,比如5h,默认值为87600h。\n- opt_name配置为“651”,则该值表示是IPv6子网租约到期时间,取值格式有两种,取-1,表示无限租约;数字+h,数字范围是1~175200,比如5h,默认值为2h。"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n子网的IP版本。\n**取值范围**:\n- 4:默认值,IPv4。\n- 6:IPv6,只有opt_name是“651”时,ip_version为6。"
+        }
+      }
+    },
+    "ResponseTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:\n标签键。\n**取值范围**:\n  - 最大长度128个unicode字符, key不能为空。\n  - 同一资源的key不能重复。\n  - 可以包含的字符范围:\n\t- 英文字母\n    - 数字\n    - 特殊字符:下划线(_)、点(.)、冒号(:)、加号(+)、中划线(-)、等号(=)\n    - 中文字符",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:\n标签值。\n**取值范围**:\n  - 每个值最大长度255个unicode字符,value可以为空。\n  - 可以包含的字符范围:\n\t- 英文字母\n    - 数字\n    - 特殊字符:下划线(_)、点(.)、冒号(:)、加号(+)、中划线(-)、等号(=)\n    - 中文字符",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

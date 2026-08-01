@@ -1,0 +1,145 @@
+{
+  "name": "UpdateDatabase",
+  "summary": "修改指定实例的数据库备注",
+  "tags": "管理数据库和用户(MySQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/database/update": {
+      "post": {
+        "tags": [
+          "管理数据库和用户(MySQL)"
+        ],
+        "operationId": "UpdateDatabase",
+        "summary": "修改指定实例的数据库备注",
+        "description": "修改指定实例中的数据库备注。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 如果您需要使用该功能,请联系客服提交开启修改数据库备注权限的申请。\n- 实例在创建、变更规格、修改端口、异常状态或冻结状态下不能执行该操作。\n- 更新备注的操作不受数据库是否存在影响。\n  - 若备注存在则更新,不存在则自动新建备注。\n  - 更新为空值备注将会被删除。\n  - 若新建备注过程中数据库被删除或不存在,则备注依旧会保存。\n- 该方法只针对新版本的实例生效,必须大于等于指定的内核版本,如果不符合内核小版本要求,参考升级内核小版本升级至最新。\n  - MySQL 5.6:大于等于5.6.51.3。\n  - MySQL 5.7:大于等于5.7.33.1。\n  - MySQL 8.0:大于等于8.0.21.4。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "UpdateDatabaseReq",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateDatabaseReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DBMSuccessRsp"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "修改指定实例中的数据库",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/database/update",
+        "x-request-examples-1": {
+          "name": "test",
+          "comment": "this is a comment"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DBMSuccessRsp": {
+      "required": [
+        "resp"
+      ],
+      "properties": {
+        "resp": {
+          "description": "操作结果。",
+          "type": "string",
+          "example": "successful"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "UpdateDatabaseReq": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "数据库名称。"
+        },
+        "comment": {
+          "type": "string",
+          "description": "数据库备注。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

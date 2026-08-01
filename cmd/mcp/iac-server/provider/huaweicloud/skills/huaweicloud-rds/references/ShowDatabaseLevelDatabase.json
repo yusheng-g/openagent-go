@@ -1,0 +1,128 @@
+{
+  "name": "ShowDatabaseLevelDatabase",
+  "summary": "查询库级备份包含的库",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/database/db-table-name": {
+      "get": {
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/e28979107ed04d3b8b2f1b819b8d2be3in03/database/db-table-name?backup_id=501cde65f1b54de28fbb35fe9d597e2dbr03",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "tags": [
+          "备份与恢复"
+        ],
+        "summary": "查询库级备份包含的库",
+        "description": "查询库级备份包含的库",
+        "operationId": "ShowDatabaseLevelDatabase",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "backup_id",
+            "in": "query",
+            "required": true,
+            "description": "备份id",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "响应体",
+            "schema": {
+              "$ref": "#/definitions/QueryDatabaseLevelBackupDatabaseRsp"
+            },
+            "examples": {
+              "application/json": "{\n    \"bucket_name\": \"backet1\",\n    \"databases\": [\n        {\n            \"database_name\": \"databases1\",\n            \"backup_file_name\": \"file1\",\n            \"backup_file_size\": 10\n        },\n        {\n            \"database_name\": \"databases2\",\n            \"backup_file_name\": \"file2\",\n            \"backup_file_size\": 11\n        },\n        {\n            \"database_name\": \"databases3\",\n            \"backup_file_name\": \"file3\",\n            \"backup_file_size\": 12\n        },\n    ],\n    \"database_limit\": 50\n}"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "QueryDatabaseLevelBackupDatabaseRsp": {
+      "type": "object",
+      "properties": {
+        "databases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DatabaseBackupInfo"
+          },
+          "description": "库信息列表"
+        },
+        "database_limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "可恢复库的个数"
+        },
+        "bucket_name": {
+          "type": "string",
+          "description": "obs桶名"
+        }
+      },
+      "required": [
+        "databases",
+        "database_limit",
+        "bucket_name"
+      ]
+    },
+    "DatabaseBackupInfo": {
+      "type": "object",
+      "required": [
+        "database_name",
+        "backup_file_name",
+        "backup_file_size"
+      ],
+      "properties": {
+        "database_name": {
+          "type": "string",
+          "description": "库名"
+        },
+        "backup_file_name": {
+          "type": "string",
+          "description": "备份文件名"
+        },
+        "backup_file_size": {
+          "type": "integer",
+          "format": "int64",
+          "description": "备份文件大小"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

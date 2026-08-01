@@ -1,0 +1,138 @@
+{
+  "name": "ListMajorVersionFeature",
+  "summary": "查询版本支持特性",
+  "tags": "引擎版本和规格",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/major-version-feature": {
+      "get": {
+        "tags": [
+          "引擎版本和规格"
+        ],
+        "summary": "查询版本支持特性",
+        "description": "查询版本支持特性。",
+        "operationId": "ListMajorVersionFeature",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-constraint": "仅支持RDS for SQL Server。",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言。",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "version",
+            "type": "string",
+            "in": "query",
+            "description": "版本,例如:2022_SE, 2022_EE, 2022_WEB。",
+            "required": true
+          },
+          {
+            "name": "single",
+            "type": "boolean",
+            "in": "query",
+            "description": "是否是单机版。",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/MagorVersionFeatureResponse"
+            },
+            "examples": {
+              "application/json": {
+                "version": "2022_SE",
+                "support_upgrade_version": [
+                  "2022_EE"
+                ],
+                "support_recover_version": [
+                  "2022_SE",
+                  "2022_EE"
+                ],
+                "support_file_stream": true,
+                "support_tde": true,
+                "support_always_on": false,
+                "support_read_only": false
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "查询2022标准版单机实例支持特性。",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/54623db08b174c858ba779d2aa7923a3/major-version-feature?version=2022_SE&single=true"
+      }
+    }
+  },
+  "definitions": {
+    "MagorVersionFeatureResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "版本名称。"
+        },
+        "support_upgrade_version": {
+          "type": "array",
+          "description": "支持升级的版本列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "support_recover_version": {
+          "type": "array",
+          "description": "支持备份恢复的版本列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "support_file_stream": {
+          "type": "boolean",
+          "description": "是否支持FileStream特性。"
+        },
+        "support_tde": {
+          "type": "boolean",
+          "description": "是否支持透明数据加密。"
+        },
+        "support_always_on": {
+          "type": "boolean",
+          "description": "是否支持Always On。"
+        },
+        "support_read_only": {
+          "type": "boolean",
+          "description": "是否支持只读。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

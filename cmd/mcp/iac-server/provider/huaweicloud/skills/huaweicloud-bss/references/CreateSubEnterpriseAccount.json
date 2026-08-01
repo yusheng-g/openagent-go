@@ -1,0 +1,205 @@
+{
+  "name": "CreateSubEnterpriseAccount",
+  "summary": "创建企业子账号",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/sub-customers": {
+      "post": {
+        "summary": "创建企业子账号",
+        "description": "企业主账号在自建平台创建企业子账号。\n\n企业主账号创建企业子账号请参见[这里](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0104194162.html)。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "CreateSubEnterpriseAccount",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/sub-customers",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "创建企业子账号请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateSubCustomerReqV2"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/sub-customers",
+        "x-request-examples-1": {
+          "new_sub_customer": {
+            "password": "*******",
+            "mobile_phone": "188****8888",
+            "customer_name": "sub***003",
+            "use_pri_mobile_phone": "N",
+            "verification_code": "625***"
+          },
+          "permission_ids": [
+            "READ_FINANCE_INFO",
+            "READ_CONSUME_BILL",
+            "SUBSTITUTE-OPEN-INVOICE",
+            "TAKE-OVER-OPEN-INVOICE",
+            "SHARE-CREDIT-TO-SUB",
+            "SHARE-BIZ-DISCOUNT-TO-SUB"
+          ],
+          "party_id": "99920",
+          "display_name": null,
+          "sub_customer_association_type": 1,
+          "financial_custody": 0
+        },
+        "responses": {
+          "204": {
+            "description": "默认返回:no content"
+          },
+          "400": {
+            "description": "|CBC.0100:parameter error|",
+            "schema": {
+              "$ref": "#/definitions/FailCheckItems"
+            }
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "FailCheckItems": {
+      "properties": {
+        "fail_check_items": {
+          "description": "不满足的业务规则检查项。 当错误码为CBC.99007004时返回。具体检查项参见”表1”。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "NewCustomerV2": {
+      "required": [
+        "customer_name",
+        "password"
+      ],
+      "properties": {
+        "customer_name": {
+          "type": "string",
+          "description": "企业子账号登录名。",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": ""
+        },
+        "mobile_phone": {
+          "type": "string",
+          "description": "企业管理员的手机号码。如果use_pri_mobile_phone取值为Y,则这个参数无效,否则必选。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "17069622XXX",
+          "x-site": "HC"
+        },
+        "use_pri_mobile_phone": {
+          "type": "string",
+          "description": "是否使用企业主账号手机号码作为子账号手机号码: Y:是N:否(默认值) 当为Y时,mobile_phone输入无效。",
+          "minLength": 0,
+          "maxLength": 10,
+          "example": "Y",
+          "x-site": "HC"
+        },
+        "password": {
+          "type": "string",
+          "description": "企业子账号的登录密码。",
+          "minLength": 8,
+          "maxLength": 32,
+          "example": "password"
+        },
+        "verification_code": {
+          "type": "string",
+          "description": "验证码,只有输入企业子账号的手机号的情况下,才需要填写该字段。 具体请参见发送短信验证码。",
+          "minLength": 0,
+          "maxLength": 6,
+          "example": "123XXX"
+        }
+      }
+    },
+    "CreateSubCustomerReqV2": {
+      "required": [
+        "party_id",
+        "new_sub_customer",
+        "sub_customer_association_type"
+      ],
+      "properties": {
+        "party_id": {
+          "type": "string",
+          "description": "企业子账号挂载的组织单元。 组织单元的Party ID,通过查询企业组织结构接口的响应获得。",
+          "minLength": 1,
+          "maxLength": 20,
+          "example": "163"
+        },
+        "display_name": {
+          "type": "string",
+          "description": "企业子账号的显示名称,不限制特殊字符。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": ""
+        },
+        "sub_customer_association_type": {
+          "description": "子账号关联类型:1:同一法人。 关联类型目前只能是同一法人。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "minimum": -1,
+          "maximum": 1,
+          "example": "1"
+        },
+        "permission_ids": {
+          "description": "申请的权限列表。 支持的权限项请参见下表。当financial_custody为1时,此参数不生效,默认指定权限项:READ_FINANCE_INFO、READ_CONSUME_BILL、SHARE-BIZ-DISCOUNT-TO-SUB。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 6,
+          "items": {
+            "type": "string"
+          }
+        },
+        "new_sub_customer": {
+          "description": "企业子账号信息。具体请参见表2。",
+          "$ref": "#/definitions/NewCustomerV2"
+        },
+        "financial_custody": {
+          "description": "是否开通财务托管,0:不开通;1:开通。默认值0,默认不开通。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0,
+          "example": 0
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,133 @@
+{
+  "name": "CreateDistribution",
+  "summary": "给当前实例配置分发服务器",
+  "tags": "发布订阅(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/replication/distribution": {
+      "post": {
+        "tags": [
+          "发布订阅(SQL Server)"
+        ],
+        "operationId": "CreateDistribution",
+        "summary": "给当前实例配置分发服务器",
+        "description": "给当前实例配置分发服务器",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "CreateDistributionRequestBody",
+            "description": "给当前实例配置分发服务器请求体。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateDistributionRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/ReplicationJobResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "7be09cc4-c269-4f3a-9539-aaf2b40d79a0"
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/1aa833000a124455a6801e83cca37e6ein04/replication/distribution",
+        "x-request-examples-text-1": {
+          "distributor_instance_id": "2fa6723046fa4da78d65048baafb5928in04"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "CreateDistributionRequestBody": {
+      "description": "分发服务器信息。",
+      "required": [
+        "distributor_instance_id"
+      ],
+      "properties": {
+        "distributor_instance_id": {
+          "description": "配置为分发服务器的实例id。",
+          "type": "string",
+          "example": "2fa6723046fa4da78d65048baafb5928in04"
+        }
+      },
+      "type": "object"
+    },
+    "ReplicationJobResponse": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务id。",
+          "example": "7be09cc4-c269-4f3a-9539-aaf2b40d79a0"
+        }
+      },
+      "required": [
+        "job_id"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,104 @@
+{
+  "name": "BatchDeletePtrRecords",
+  "summary": "批量删除反向解析",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/reverse/floatingips": {
+      "delete": {
+        "tags": [
+          "批量操作"
+        ],
+        "x-request-examples-description-1": "批量删除反向解析。",
+        "x-request-examples-url-1": "DELETE https://{endpoint}/v2.1/reverse/floatingips",
+        "x-request-examples-1": {
+          "floatingip_ids": [
+            "region-1:2c9eb155587194ec01587224c9f90149",
+            "region-1:2c9eb155587194ec01587224c9f90150"
+          ]
+        },
+        "operationId": "BatchDeletePtrRecords",
+        "summary": "批量删除反向解析",
+        "description": "批量删除反向解析。本接口为原子操作,所有记录应全部删除成功或全部失败。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BatchDeletePtrRecordsRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "批量删除反向解析请求。",
+            "schema": {
+              "$ref": "#/definitions/BatchDeletePtrRecordsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量删除反向解析响应。"
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 2
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "BatchDeletePtrRecordsRequestBody": {
+      "properties": {
+        "floatingip_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 50,
+          "description": "待删除反向解析记录ID列表。\n最多支持50个。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

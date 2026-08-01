@@ -1,0 +1,430 @@
+{
+  "name": "UpdateServer",
+  "summary": "修改云服务器",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}": {
+      "put": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "修改云服务器",
+        "description": "修改云服务器信息,目前支持修改云服务器名称及描述和hostname。",
+        "operationId": "UpdateServer",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "UpdateServerRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateServerRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "server": {
+                  "tenant_id": "66c860cb130b465fbafcdee43fb09c64",
+                  "image": "",
+                  "accessIPv4": "",
+                  "addresses": {
+                    "01d7aef8-442b-408e-b82f-13afff51e4e4": [
+                      {
+                        "addr": "192.168.26.22",
+                        "version": 4
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "virtual_env_type": "FusionCompute"
+                  },
+                  "accessIPv6": "",
+                  "created": "2019-04-25T11:52:53Z",
+                  "hostId": "57d278e7c53d07cd34fad3ba4fdc9f3d779017d0879726d83b45a22a",
+                  "flavor": {
+                    "links": [
+                      {
+                        "rel": "bookmark",
+                        "href": "https://None/66c860cb130b465fbafcdee43fb09c64/flavors/s2.large.2"
+                      }
+                    ],
+                    "id": "s2.large.2"
+                  },
+                  "OS-DCF:diskConfig": "MANUAL",
+                  "user_id": "f88581d53be64716a985c66ca28c75f6",
+                  "name": "new-test-hostname0000",
+                  "progress": 0,
+                  "links": [
+                    {
+                      "rel": "self",
+                      "href": "https://None/v2/66c860cb130b465fbafcdee43fb09c64/servers/24930df0-db4c-4a8b-8914-d0bd558564b0"
+                    },
+                    {
+                      "rel": "bookmark",
+                      "href": "https://None/66c860cb130b465fbafcdee43fb09c64/servers/24930df0-db4c-4a8b-8914-d0bd558564b0"
+                    }
+                  ],
+                  "id": "24930df0-db4c-4a8b-8914-d0bd558564b0",
+                  "updated": "2019-04-28T08:15:36Z",
+                  "status": "ACTIVE"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateServerResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改云服务器",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v1/{project_id}/cloudservers/{server_id}",
+        "x-request-examples-1": {
+          "server": {
+            "name": "new-server-test"
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"server\": {\n\t\t\"name\": \"new-server-test\"\n\t}\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-5-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateServerResponseBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "server": {
+          "description": "云服务器详情信息。",
+          "$ref": "#/definitions/UpdateServerResult"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "UpdateServerResult": {
+      "required": [
+        "OS-EXT-SRV-ATTR:hostname",
+        "accessIPv4",
+        "accessIPv6",
+        "addresses",
+        "created",
+        "flavor",
+        "hostId",
+        "id",
+        "image",
+        "links",
+        "metadata",
+        "name",
+        "progress",
+        "status",
+        "tags",
+        "tenant_id",
+        "updated",
+        "user_id"
+      ],
+      "properties": {
+        "tenant_id": {
+          "type": "string",
+          "example": "743b4c0428d94531b9f2add666646666",
+          "description": "项目ID。"
+        },
+        "image": {
+          "type": "string",
+          "description": "镜像ID。"
+        },
+        "accessIPv4": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "accessIPv6": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云服务器元数据。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "addresses": {
+          "type": "object",
+          "description": "弹性云服务器的网络属性。",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/UpdateServerAddress"
+            }
+          }
+        },
+        "created": {
+          "type": "string",
+          "example": "2017-07-15T11:30:52Z",
+          "description": "弹性云服务器创建时间。\n\n时间格式例如:2019-05-22T03:19:19Z"
+        },
+        "hostId": {
+          "type": "string",
+          "example": "c7145889b2e3202cd295ceddb1742ff8941b827b586861fd0acedf64",
+          "description": "弹性云服务器所在主机的主机ID。"
+        },
+        "flavor": {
+          "description": "弹性云服务器规格信息。",
+          "$ref": "#/definitions/SimpleFlavor"
+        },
+        "OS-DCF:diskConfig": {
+          "type": "string",
+          "example": "AUTO",
+          "description": "扩展属性, diskConfig的类型。\n\n- MANUAL,镜像空间不会扩展。\n- AUTO,系统盘镜像空间会自动扩展为与flavor大小一致。"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "05498fe56b8010d41f7fc01e280b6666",
+          "description": "创建弹性云服务器的用户ID,格式为UUID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "ecs-test-server",
+          "description": "弹性云服务器名称。"
+        },
+        "progress": {
+          "type": "integer",
+          "format": "int32",
+          "example": 0,
+          "description": "弹性云服务器进度。"
+        },
+        "links": {
+          "type": "array",
+          "description": "云服务器相关标记快捷链接信息。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "id": {
+          "type": "string",
+          "example": "4f4b3dfa-eb70-47cf-a60a-998a53bd6666",
+          "description": "弹性云服务器ID,格式为UUID。"
+        },
+        "updated": {
+          "type": "string",
+          "example": "2019-05-22T03:30:52Z",
+          "description": "弹性云服务器更新时间。\n\n时间格式例如:2019-05-22T03:30:52Z"
+        },
+        "locked": {
+          "type": "boolean",
+          "example": false,
+          "description": "弹性云服务器是否为锁定状态。\n\n- true:锁定\n- false:未锁定"
+        },
+        "description": {
+          "type": "string",
+          "example": "ecs description",
+          "description": "弹性云服务器的描述信息。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "云服务器的标签列表。\n\n微版本2.26后支持,如果不使用微版本查询,响应中无tags字段。\n\n系统近期对标签功能进行了升级,升级后,返回的tag值遵循如下规则:\n\n- key与value使用“=”连接,如“key=value”。\n- 如果value为空字符串,则仅返回key。\n- key与value使用“=”连接,如“key=value”。\n- 如果value为空字符串,则仅返回key。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "status": {
+          "type": "string",
+          "example": "ACTIVE",
+          "description": "弹性云服务器状态。\n\n取值范围:\n\nACTIVE、BUILD、DELETED、ERROR、HARD_REBOOT、MIGRATING、PAUSED、REBOOT、REBUILD、RESIZE、REVERT_RESIZE、SHUTOFF、SHELVED、SHELVED_OFFLOADED、SOFT_DELETED、SUSPENDED、VERIFY_RESIZE\n\n弹性云服务器状态说明请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)"
+        },
+        "OS-EXT-SRV-ATTR:user_data": {
+          "type": "string",
+          "example": "IyEvYmluL2Jhc2gKZWNobyAncm9vdDokNiRjcGRkSjckWm5WZHNiR253Z0l0SGlxUjZxbWtLTlJaeU9lZUtKd3dPbG9XSFdUeGFzWjA1STYwdnJYRTdTUTZGbEpFbWlXZ21WNGNmZ1pac1laN1BkMTBLRndyeC8nIHwgY2hwYXNzd2Q6666",
+          "description": "创建弹性云服务器时指定的user_data(编码过后的信息)。"
+        },
+        "OS-EXT-SRV-ATTR:hostname": {
+          "type": "string",
+          "description": "弹性云服务器的主机名。"
+        }
+      },
+      "description": "云服务器详情。"
+    },
+    "SimpleFlavor": {
+      "required": [
+        "id",
+        "links"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "c3.15xlarge.2",
+          "description": "云服务器规格的ID。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "links": {
+          "type": "array",
+          "description": "规格相关快捷链接地址。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Link"
+          }
+        }
+      },
+      "description": "云服务器规格。"
+    },
+    "UpdateServerOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "修改后的云服务器名称。\n\n只能由中文字符、英文字母、数字及“_”、“-”、“.”组成,且长度为[1-64]个字符。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "description": {
+          "type": "string",
+          "example": "new server test",
+          "description": "对弹性云服务器的任意描述。\n\n不能包含“<”,“>”,且长度范围为[0-85]个字符。",
+          "minLength": 0,
+          "maxLength": 85
+        },
+        "hostname": {
+          "type": "string",
+          "example": "new-server",
+          "description": "修改云服务hostname。\n\n命令规范:长度为 [1-64] 个字符,允许使用点号(.)分隔字符成多段,每段允许使用大小写字母、数字或连字符(-),但不能连续使用点号(.)或连字符(-),不能以点号(.)或连字符(-)开头或结尾,不能出现(.-)和(-.)。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "security_options": {
+          "description": "弹性云服务器安全启动信息",
+          "$ref": "#/definitions/SecurityOptions"
+        },
+        "user_data": {
+          "type": "string",
+          "example": "IyEvYmluL2Jhc2gKZWNobyB1c2VyX3Rlc3QgPiAvaG9tZS91c2VyLnR4dA==",
+          "description": "修改云服务器云主机过程中待注入实例自定义数据。支持注入文本、文本文件。\n\n示例:\n\nbase64编码前:\n  Linux服务器:\n    #!/bin/bash\n    echo user_test > /home/user.txt\n  Windows服务器:\n    rem cmd\n    echo 111 > c:\\aaa.txt\n\nbase64编码后:\n  Linux服务器:IyEvYmluL2Jhc2gKZWNobyB1c2VyX3Rlc3QgPiAvaG9tZS91c2VyLnR4dA==\n  Windows服务器:cmVtIGNtZA0KZWNobyAxMTEgJmd0OyBjOlxhYWEudHh0"
+        }
+      },
+      "description": "更新云服务器Body体。"
+    },
+    "Link": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        }
+      },
+      "description": "相关快捷链接地址。"
+    },
+    "UpdateServerAddress": {
+      "required": [
+        "addr",
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "format": "int32",
+          "example": 4,
+          "description": "IP地址版本。\n\n- 4:代表IPv4。\n- 6:代表IPv6。"
+        },
+        "addr": {
+          "type": "string",
+          "description": "IP地址。"
+        }
+      },
+      "description": "弹性云服务器的网络属性。"
+    },
+    "SecurityOptions": {
+      "properties": {
+        "secure_boot_enabled": {
+          "type": "boolean",
+          "description": "是否支持安全启动 true:支持安全启动 false:不支持安全启动 默认值:false",
+          "x-huawei-extraAnnotation": ""
+        },
+        "tpm_enabled": {
+          "type": "boolean",
+          "description": "是否支持vtpm启动 true:支持vtpm启动 false:不支持vtpm启动 默认值:false",
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    },
+    "UpdateServerRequestBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "server": {
+          "description": "要修改的云服务器信息。",
+          "$ref": "#/definitions/UpdateServerOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,307 @@
+{
+  "name": "UpdateUserDefinedDomainConfig",
+  "summary": "自定义配置负载均衡器域名解析",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/dns/user-defined-config": {
+      "post": {
+        "summary": "自定义配置负载均衡器域名解析",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": false,
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/dns/user-defined-config",
+        "x-request-examples-description-1": "自定义配置负载均衡器域名解析",
+        "x-request-examples-text-1": {
+          "loadbalancer": {
+            "private_dns_record_set_ttl": "302",
+            "private_dns_zone_name": "elb-test.",
+            "private_dns_zone_type": "private",
+            "private_domain_name_enable": true,
+            "public_dns_record_set_ttl": "301",
+            "public_dns_zone_name": "www.example.com.",
+            "public_domain_name_enable": true
+          }
+        },
+        "x-request-examples-1": {
+          "loadbalancer": {
+            "private_dns_record_set_ttl": "302",
+            "private_dns_zone_name": "elb-test.",
+            "private_dns_zone_type": "private",
+            "private_domain_name_enable": true,
+            "public_dns_record_set_ttl": "301",
+            "public_dns_zone_name": "www.example.com.",
+            "public_domain_name_enable": true
+          }
+        },
+        "tags": [
+          "负载均衡器"
+        ],
+        "description": "自定义配置负载均衡器域名解析。",
+        "operationId": "UpdateUserDefinedDomainConfig",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "UpdateUserDefinedDomainConfigRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "配置负载均衡器自定义域名解析的请求体。",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserDefinedDomainConfigRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "schema": {
+              "$ref": "#/definitions/LoadbalancerDnsConfigResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "request_id": "2939b3e68e917cd11af436c6dfe3194d",
+                "loadbalancer": {
+                  "id": "737b61b6-ff56-4112-a14a-c7abaa4e58bf",
+                  "vip_address": "192.168.0.166",
+                  "ipv6_vip_address": null,
+                  "global_eips": [],
+                  "eips": [
+                    {
+                      "eip_id": "0e2749aa-15ca-4826-91e8-d944086b452f",
+                      "eip_address": "10.83.50.35",
+                      "ip_version": 4
+                    }
+                  ],
+                  "public_dns_zone_name": "www.example.com.",
+                  "public_domain_name_enable": true,
+                  "public_domain_name": "737b61b6-ff56-4112-a14a-c7abaa4e58bf.elb.cn-southwest-242.www.example.com",
+                  "public_dns_record_set_ttl": 301,
+                  "private_dns_zone_name": "elb-lzs-test.",
+                  "private_dns_zone_type": "private",
+                  "private_domain_name_enable": true,
+                  "private_domain_name": "737b61b6-ff56-4112-a14a-c7abaa4e58bf-internal.elb.elb-test",
+                  "private_dns_record_set_ttl": 302
+                }
+              }
+            }
+          }
+        },
+        "x-name": "自定义配置负载均衡器域名解析",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 19,
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "EipInfo": {
+      "properties": {
+        "eip_id": {
+          "type": "string",
+          "description": "**参数解释**:弹性IP的ID。\n\n**取值范围**:不涉及"
+        },
+        "eip_address": {
+          "type": "string",
+          "description": "**参数解释**:弹性IP的IP地址。\n\n**取值范围**:不涉及"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP版本号。\n\n**取值范围**:\n- 4:表示IPv4地址。\n- 6:表示IPv6地址。"
+        }
+      },
+      "description": "**参数解释**:弹性IP,同publicips。"
+    },
+    "UpdateUserDefinedDomainConfigRequestBody": {
+      "required": [
+        "loadbalancer"
+      ],
+      "properties": {
+        "loadbalancer": {
+          "description": "**参数解释**:自定义负载均衡器域名解析的配置参数。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "$ref": "#/definitions/UserDefinedDnsConfigRequestBody"
+        }
+      },
+      "description": "**参数解释**:自定义负载均衡器域名解析的请求参数。",
+      "type": "object"
+    },
+    "GlobalEipInfo": {
+      "properties": {
+        "global_eip_id": {
+          "type": "string",
+          "description": "**参数解释**:global eip的ID。\n\n**取值范围**:不涉及"
+        },
+        "global_eip_address": {
+          "type": "string",
+          "description": "**参数解释**:global eip的ip地址。\n\n**取值范围**:不涉及"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP版本信息。\n\n**取值范围**:\n- 4,表示IPv4\n- 6,表示IPv6"
+        }
+      }
+    },
+    "UserDefinedDnsConfigRequestBody": {
+      "type": "object",
+      "properties": {
+        "public_domain_name_enable": {
+          "type": "boolean",
+          "example": true,
+          "description": "**参数解释**:是否启用公网域名解析。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true:开启公网域名解析。\n- false:关闭公网域名解析。\n\n**默认取值**:false"
+        },
+        "public_dns_zone_name": {
+          "type": "string",
+          "description": "**参数解释**:公网域名解析所使用的根域名。\n\n**约束限制**:\n- 公网域名解析只能选择公网类型的根域名。\n- 若启用公网域名解析(public_domain_name_enable=true),则公网根域名不能为空,且必须在云解析服务已注册。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "public_dns_record_set_ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:公网域名解析记录在本地DNS服务器的缓存超时时间,单位:秒。域名解析信息更新后,需要等待DNS服务器上的缓存超时才会生效。如果您的域名解析信息经常变更,建议TTL值设置相对小些,反之建议设置相对大些。\n\n**约束限制**:不涉及\n\n**取值范围**:1-2147483647\n\n**默认取值**:300"
+        },
+        "private_domain_name_enable": {
+          "type": "boolean",
+          "example": true,
+          "description": "**参数解释**:是否启用私网域名解析。\n\n**约束限制**:不涉及\n\n**取值范围**:\ntrue:开启私网域名\nfalse:关闭私网域名\n\n**默认取值**:false"
+        },
+        "private_dns_zone_name": {
+          "type": "string",
+          "description": "**参数解释**:私网域名解析所使用的根域名。\n\n**约束限制**:\n- 私网域名解析可以选择私网类型的根域名,也可以选择公网类型的根域名。需要在private_dns_zone_type字段中明确指定。\n- 若启用私网域名解析(private_domain_name_enable=true),则私网根域名不能为空,且必须在云解析服务已注册。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "private_dns_zone_type": {
+          "type": "string",
+          "description": "**参数解释**:私网域名解析所使用的根域名的类型。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- private: 私网根域名。\n- public: 公网根域名。\n\n**默认取值**:private"
+        },
+        "private_dns_record_set_ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:私网域名解析记录在本地DNS服务器的缓存超时时间,单位:秒。域名解析信息更新后,需要等待DNS服务器上的缓存超时才会生效。如果您的域名解析信息经常变更,建议TTL值设置相对小些,反之建议设置相对大些。\n\n**约束限制**:不涉及\n\n**取值范围**:1-2147483647\n\n**默认取值**:300"
+        }
+      }
+    },
+    "DnsConfigResponseBody": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:自定义域名解析配置ID。"
+        },
+        "vip_address": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的IPv4虚拟IP地址。"
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器的IPv6地址。\n\n**约束限制**:"
+        },
+        "eips": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器绑定的EIP。\n\n注:该字段与publicips一致。",
+          "items": {
+            "$ref": "#/definitions/EipInfo"
+          }
+        },
+        "global_eips": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GlobalEipInfo"
+          },
+          "description": "**参数解释**:负载均衡器绑定的GEIP。"
+        },
+        "public_domain_name_enable": {
+          "type": "boolean",
+          "example": true,
+          "description": "**参数解释**:是否配置公网域名。\n**取值范围**:\n  true:开启公网域名\n  false:关闭公网域名",
+          "default": "false"
+        },
+        "public_dns_zone_name": {
+          "type": "string",
+          "description": "**参数解释**:公网域名所使用的zone名称。\n**约束限制**:\n  公网域名只能使用公网类型的zone。\n  当配置公网域名开关打开时,该字段不能置空。\n  所填的公网zone必须在云解析服务已注册过。"
+        },
+        "public_domain_name": {
+          "type": "string",
+          "description": "**参数解释**:\n  负载均衡实例的公网域名。\n**约束限制**:\n  根据负载均衡实例id,局点id和zone信息以如下格式生成:\n  {lb_id}.elb.{region_id}.{zone_name}"
+        },
+        "public_dns_record_set_ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "参数解释:\n  公网解析记录集超时时间。\n  解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n  如果您的服务地址经常更换,建议TTL值设置相对小些,反之,建议设置相对大些。\n**取值范围**:\n  1-2147483647\n**默认取值**:\n  300"
+        },
+        "private_domain_name_enable": {
+          "type": "boolean",
+          "example": true,
+          "description": "**参数解释**:\n  是否配置私网域名。\n**取值范围**:\n  true:开启私网域名\n  false:关闭私网域名",
+          "default": "false"
+        },
+        "private_dns_zone_name": {
+          "type": "string",
+          "description": "**参数解释**:\n  私网域名所使用的zone的名称。\n**约束限制**:\n  私网域名既能使用公网zone,也能使用私网zone,zone的类型在private_dns_zone_type字段中指定。\n  当配置私网域名开关打开时,该字段不能置空。\n  所填的私网zone必须在云解析服务已注册过。"
+        },
+        "private_domain_name": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡实例的私网域名。\n**约束限制**:\n  根据负载均衡实例id,局点id和zone信息以如下格式生成:\n  {lb_id}-internal.elb.{region_id}.{zone_name}"
+        },
+        "private_dns_zone_type": {
+          "type": "string",
+          "description": "**参数解释**:私网域名所使用的zone的类型。\n**约束限制**:不涉及\n**取值范围**:private public\n**默认取值**:private"
+        },
+        "private_dns_record_set_ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n  私网解析记录集超时时间。\n  解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n  如果您的服务地址经常更换,建议TTL值设置相对小些,反之,建议设置相对大些。\n**取值范围**:\n  1-2147483647\n**默认取值**:\n  300"
+        }
+      }
+    },
+    "LoadbalancerDnsConfigResponseBody": {
+      "required": [
+        "loadbalancer",
+        "request_id"
+      ],
+      "properties": {
+        "loadbalancer": {
+          "description": "**参数解释**:负载均衡器域名解析配置。",
+          "$ref": "#/definitions/DnsConfigResponseBody"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "**参数解释**:更新负载均衡器域名解析配置响应体。",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

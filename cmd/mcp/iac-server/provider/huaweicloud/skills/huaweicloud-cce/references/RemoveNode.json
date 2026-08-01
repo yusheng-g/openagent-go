@@ -1,0 +1,241 @@
+{
+  "name": "RemoveNode",
+  "summary": "节点移除",
+  "tags": "节点管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/operation/remove": {
+      "put": {
+        "tags": [
+          "节点管理"
+        ],
+        "summary": "节点移除",
+        "description": "该API用于在指定集群下移除节点。\n>集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。",
+        "operationId": "RemoveNode",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "RemoveNodesTask",
+            "description": "移除节点的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RemoveNodesTask"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示在指定集群下移除节点的作业下发成功。",
+            "examples": {
+              "application/json": {
+                "spec": {
+                  "login": {
+                    "sshKey": "KeyPair-001"
+                  },
+                  "nodes": [
+                    {
+                      "uid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    },
+                    {
+                      "uid": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+                    }
+                  ]
+                },
+                "status": {
+                  "jobID": "2ec9b78d-9368-46f3-8f29-d1a95622a568"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/RemoveNodesTask"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "移除节点",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-request-examples-description-1": "移除节点",
+        "x-request-examples-url-1": "PUT /api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/operation/remove",
+        "x-request-examples-1": {
+          "spec": {
+            "login": {
+              "sshKey": "KeyPair-001"
+            },
+            "nodes": [
+              {
+                "uid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              },
+              {
+                "uid": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+              }
+            ]
+          }
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,hk_g42,hcso,hcs,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "NodeItem": {
+      "required": [
+        "uid"
+      ],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n节点ID,节点ID获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "RemoveNodesTask": {
+      "required": [
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI类型\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nRemoveNodesTask"
+        },
+        "spec": {
+          "description": "**参数解释**:\n配置信息\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/RemoveNodesSpec"
+        },
+        "status": {
+          "description": "**参数解释**:\n任务状态\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/TaskStatus"
+        }
+      }
+    },
+    "TaskStatus": {
+      "properties": {
+        "jobID": {
+          "type": "string",
+          "description": "**参数解释**:\n任务ID,供调用者查询任务进度。获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "Login": {
+      "properties": {
+        "sshKey": {
+          "type": "string",
+          "description": "选择密钥对方式登录时的密钥对名称。"
+        },
+        "userPassword": {
+          "description": "选择密码方式登录时的帐号密码信息,之后可通过此帐号密码登录节点。",
+          "$ref": "#/definitions/UserPassword",
+          "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs"
+        },
+        "removeUserPassword": {
+          "type": "boolean",
+          "description": "**参数解释**:\n更新节点池时,移除当前节点池密码方式登录的配置\n**约束限制**:\n仅更新节点池场景支持该参数,设置为true时不允许设置userPassword\n**取值范围**:\n不涉及\n**默认取值**:\nfalse"
+        },
+        "removeSSHKey": {
+          "type": "boolean",
+          "description": "**参数解释**:\n更新节点池时,移除当前节点池密钥对方式登录的配置\n**约束限制**:\n仅更新节点池场景支持该参数,设置为true时不允许设置sshKey\n**取值范围**:\n不涉及\n**默认取值**:\nfalse"
+        }
+      }
+    },
+    "RemoveNodesSpec": {
+      "required": [
+        "nodes"
+      ],
+      "properties": {
+        "login": {
+          "description": "**参数解释**:\n节点的登录方式。密钥对和密码登录方式二者必选其一。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/Login"
+        },
+        "nodes": {
+          "type": "array",
+          "description": "**参数解释**:\n待操作节点列表,当前最多支持同时移除200个节点。\n**约束限制**:\n不涉及",
+          "items": {
+            "$ref": "#/definitions/NodeItem"
+          }
+        }
+      }
+    },
+    "UserPassword": {
+      "required": [
+        "password"
+      ],
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "登录帐号,默认为“root”",
+          "default": "root"
+        },
+        "password": {
+          "type": "string",
+          "description": "登录密码,若创建节点通过用户名密码方式,即使用该字段,则响应体中该字段作屏蔽展示。\n密码复杂度要求:\n- 长度为8-26位。\n- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?~#*)中的三种。\n- 密码不能包含用户名或用户名的逆序。\n创建节点时password字段需要加盐加密,具体方法请参见[创建节点时password字段加盐加密](add-salt.xml)。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

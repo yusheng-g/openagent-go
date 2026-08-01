@@ -1,0 +1,117 @@
+{
+  "name": "ShowAvailableVersion",
+  "summary": "查询实例可升级的目标版本",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/major-version/available-version": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口仅支持PostgreSQL引擎。\n- 实例在创建、变更规格、修改端口、冻结、异常等状态下不能执行该操作。\n",
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/3aa441c4c98a4b36b100a7e3e87d17cein03/major-version/available-version",
+        "x-request-examples-description-1": "查询实例3aa441c4c98a4b36b100a7e3e87d17cein03可大版本升级的目标版本。",
+        "tags": [
+          "实例管理"
+        ],
+        "description": "查询实例可升级的目标版本",
+        "operationId": "ShowAvailableVersion",
+        "summary": "查询实例可升级的目标版本",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/PostgresqlQueryAvailableVersionResponse"
+            },
+            "examples": {
+              "application/json": {
+                "available_versions": [
+                  "13.9.1",
+                  "14.4.6"
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PostgresqlQueryAvailableVersionResponse": {
+      "type": "object",
+      "required": [
+        "available_versions"
+      ],
+      "properties": {
+        "available_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "可选版本列表。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

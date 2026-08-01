@@ -1,0 +1,214 @@
+{
+  "name": "NovaShowVersion",
+  "summary": "查询指定API版本信息",
+  "tags": "查询API版本信息",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/{api_version}": {
+      "get": {
+        "tags": [
+          "查询API版本信息"
+        ],
+        "summary": "查询指定API版本信息",
+        "description": "返回指定版本的信息。\n为了支持功能不断扩展,Nova API支持版本号区分。Nova中有两种形式的版本号:\n\n- \"主版本号\": 具有独立的url。\n- \"微版本号\": 通过Http请求头X-OpenStack-Nova-API-Version来使用,从2.27版本后更改为OpenStack-API-Version。",
+        "operationId": "NovaShowVersion",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "api_version",
+            "in": "path",
+            "description": "API版本号。例如: v2",
+            "required": true,
+            "type": "string",
+            "x-example": "v2.1",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "version": {
+                  "min_version": "2.1",
+                  "media-types": [
+                    {
+                      "type": "application/vnd.openstack.compute+json;version=2.1",
+                      "base": "application/json"
+                    }
+                  ],
+                  "links": [
+                    {
+                      "rel": "self",
+                      "href": "https://ecs.cn-north-1.myhuaweicloud.com/v2.1/"
+                    },
+                    {
+                      "rel": "describedby",
+                      "href": "http://docs.openstack.org/",
+                      "type": "text/html"
+                    }
+                  ],
+                  "id": "v2.1",
+                  "updated": "2013-07-23T11:33:21Z",
+                  "version": "2.60",
+                  "status": "CURRENT"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaShowVersionResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询指定API版本信息",
+        "x-constraint": "无",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1",
+        "x-registered_to": "apicom",
+        "x-api_level": "2",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "有三种取值。self:自助链接包含版本链接的资源。立即链接后使用这些链接。bookmark:书签链接提供了一个永久资源的永久链接,该链接适合于长期存储。alternate:备用链接可以包含资源的替换表示形式。例如,OpenStack计算映像可能在OpenStack映像服务中有一个替代表示。",
+          "enum": [
+            "self",
+            "bookmark",
+            "alternate",
+            "describedby"
+          ]
+        }
+      },
+      "description": " "
+    },
+    "NovaVersionMediaType": {
+      "required": [
+        "base",
+        "type"
+      ],
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "基础类型。"
+        },
+        "type": {
+          "type": "string",
+          "description": "媒体类型。"
+        }
+      },
+      "description": ""
+    },
+    "NovaVersionDetail": {
+      "required": [
+        "id",
+        "links",
+        "media-types",
+        "min_version",
+        "status",
+        "updated",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "所讨论的版本的通用名称。仅仅是信息性的,它没有真正的语义。"
+        },
+        "links": {
+          "type": "array",
+          "description": "链接到资源的问题。有关更多信息,请参见[OpenStack Documentation](http://developer.openstack.org/api-guide/compute/links_and_references.html)。",
+          "items": {
+            "$ref": "#/definitions/NovaLink"
+          }
+        },
+        "media-types": {
+          "type": "array",
+          "description": "媒体类型。",
+          "items": {
+            "$ref": "#/definitions/NovaVersionMediaType"
+          }
+        },
+        "min_version": {
+          "type": "string",
+          "description": "如果API的这个版本支持微版本,则支持最小的微版本。如果不支持微版本,这将是空字符串。"
+        },
+        "status": {
+          "type": "string",
+          "description": "这个是API版本的状态。\n\n可以是:\n\n- CURRENT这是使用的API的首选版本;\n- SUPPORTED:这是一个较老的,但仍然支持的API版本;\n- DEPRECATED:一个被废弃的API版本,该版本将被删除",
+          "enum": [
+            "CURRENT",
+            "SUPPORTED",
+            "DEPRECATED"
+          ]
+        },
+        "updated": {
+          "type": "string",
+          "description": "一个有特定值的字符串。API版本为2.0时,值为'2011-01-21T11:33:21Z' ,API版本是2.1时,值为' 2013-07-23T11:33:21Z'。"
+        },
+        "version": {
+          "type": "string",
+          "description": "如果API的这个版本支持微版本,则支持最大的微版本。如果不支持微版本,这将是空字符串。"
+        }
+      },
+      "description": " "
+    },
+    "NovaShowVersionResponseBody": {
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "description": "指定版本的信息",
+          "$ref": "#/definitions/NovaVersionDetail"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

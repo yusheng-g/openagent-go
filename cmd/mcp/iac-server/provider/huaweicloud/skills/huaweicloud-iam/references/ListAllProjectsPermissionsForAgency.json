@@ -1,0 +1,172 @@
+{
+  "name": "ListAllProjectsPermissionsForAgency",
+  "summary": "查询委托下的所有项目服务权限列表",
+  "tags": "委托管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-INHERIT/domains/{domain_id}/agencies/{agency_id}/roles/inherited_to_projects": {
+      "get": {
+        "tags": [
+          "委托管理"
+        ],
+        "summary": "查询委托下的所有项目服务权限列表",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询委托所有项目服务权限列表。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ListAllProjectsPermissionsForAgency",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "agency_id",
+            "in": "path",
+            "description": "委托ID,获取方式请参见:[获取委托名、委托ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "账号ID,获取方式请参见:[获取账号ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "examples": {
+              "application/json": {
+                "roles": [
+                  {
+                    "name": "system_all_154",
+                    "links": {
+                      "self": "https://internal.iam.ctcclouddev.com/v3/roles/04570dfe267c45a3940e1ae9de868282"
+                    },
+                    "id": "04570dfe267c45a3940e1ae9de868282"
+                  },
+                  {
+                    "name": "test1_admin",
+                    "links": {
+                      "self": "https://internal.iam.ctcclouddev.com/v3/roles/1bf20f1adba94747a6e02e1be3810067"
+                    },
+                    "id": "1bf20f1adba94747a6e02e1be3810067"
+                  }
+                ],
+                "links": {
+                  "self": "https://internal.iam.ctcclouddev.com/v3.0/OS-INHERIT/domains/05b09b4723001dc90f27c0008f8b15a0/agencies/08c6652e86801d234f01c00078308dd7/roles/inherited_to_projects"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListAgencyWithAllProjectsPermissionsResponseBody"
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询委托下的所有项目服务权限列表",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-INHERIT/domains/{domain_id}/agencies/{agency_id}/roles/inherited_to_projects",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-INHERIT/domains/{domain_id}/agencies/{agency_id}/roles/inherited_to_projects",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AgencyAllProjectRole": {
+      "required": [
+        "id",
+        "links",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "04570dfe267c45a3940e1ae9de868282",
+          "description": "权限ID。"
+        },
+        "links": {
+          "description": "权限的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "name": {
+          "type": "string",
+          "example": "system_all_154",
+          "description": "权限名。"
+        }
+      },
+      "description": ""
+    },
+    "ListAgencyWithAllProjectsPermissionsResponseBody": {
+      "required": [
+        "links",
+        "roles"
+      ],
+      "properties": {
+        "roles": {
+          "type": "array",
+          "description": "权限信息列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AgencyAllProjectRole"
+          }
+        },
+        "links": {
+          "description": "资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

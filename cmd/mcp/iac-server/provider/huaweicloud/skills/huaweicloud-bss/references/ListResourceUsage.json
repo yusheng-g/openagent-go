@@ -1,0 +1,252 @@
+{
+  "name": "ListResourceUsage",
+  "summary": "查询95计费资源用量明细",
+  "tags": "管理账单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/customer-bills/resources/usage/details": {
+      "get": {
+        "summary": "查询95计费资源用量明细",
+        "description": "客户在自建平台查询自己的资源使用量明细。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>当前仅支持查询CDN、OBS、IEC和VPC四种云服务类型的资源用量明细,仅针对95计费场景。",
+        "tags": [
+          "管理账单(客户)"
+        ],
+        "operationId": "ListResourceUsage",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/bills/customer-bills/resources/usage/details",
+        "x-open-region-cloud": "hc",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-08-16",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言,字段预留。默认zh_CN,枚举:zh_CN:中文 en_US:英文",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "bill_cycle",
+            "in": "query",
+            "required": true,
+            "description": "账期,东八区时间,格式为yyyy-MM。",
+            "x-maxLength": 7,
+            "x-minLength": 7,
+            "type": "string",
+            "x-example": "2021-07",
+            "x-allowNull": false
+          },
+          {
+            "name": "service_type_code",
+            "in": "query",
+            "required": true,
+            "description": "云服务类型,当前仅支持:hws.service.type.cdn:内容分发网络,hws.service.type.obs:对象存储服务,hws.service.type.vpc:虚拟私有云,hws.service.type.iec:智能边缘云",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "hws.service.type.cdn",
+            "x-allowNull": false
+          },
+          {
+            "name": "resource_type_code",
+            "in": "query",
+            "required": true,
+            "description": "资源类型编码,当前仅支持:hws.resource.type.cdn:CDN,hws.resource.type.obs:云存储,hws.resource.type.bandwidth:固定带宽资源,hws.resource.type.edgebandwidth:边缘固定带宽。资源类型和云服务类型的对应关系可调用[根据云服务类型查询资源列表](https://support.huaweicloud.com/api-oce/qct_00003.html)接口获取。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "hws.resource.type.cdn",
+            "x-allowNull": false
+          },
+          {
+            "name": "usage_type",
+            "in": "query",
+            "required": true,
+            "description": "使用量类型编码,当前仅支持:95Peak:中国大陆月95峰值带宽_1024进制,95peak_1000:中国大陆月95峰值带宽_1000进制,bandwidth95peak:95峰值带宽,95peak_plus:增强型95峰值.资源类型和使用量类型的对应关系可调用[查询使用量类型列表](https://support.huaweicloud.com/api-oce/qct_00004.html)接口获取。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "95Peak",
+            "x-allowNull": false
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "required": true,
+            "description": "资源ID,您可以调用[查询资源用量汇总](https://support.huaweicloud.com/api-oce/zh-cn_topic_0000001144806706.html)接口获取。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "resourceinstanceid-00-000-0001",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 0,
+            "default": 0,
+            "x-allowNull": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量限制。默认值为10。",
+            "maximum": 1000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "default": 10,
+            "x-allowNull": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询95计费资源用量明细响应",
+            "schema": {
+              "$ref": "#/definitions/ListResourceUsageDetailsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "actual_days": "0.1",
+                "band_width": "66.56",
+                "monthly_guaranteed_band_width": null,
+                "monthly_peak_band_width": null,
+                "band_width_measure_id": 51,
+                "total_count": 2,
+                "usage_info_list": [
+                  {
+                    "stat_time": "2021-07-01T00:00:00Z",
+                    "guaranteed_band_width": null,
+                    "usage": "0",
+                    "measure_id": 51
+                  },
+                  {
+                    "stat_time": "2021-07-01T00:05:00Z",
+                    "guaranteed_band_width": null,
+                    "usage": "0",
+                    "measure_id": 51
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理账单(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/bills/customer-bills/resources/usage/details?bill_cycle=2021-07&service_type_code=hws.service.type.cdn&resource_type_code=hws.resource.type.cdn&usage_type=95Peak&offset=0&limit=10&resource_id=resourceinstanceid-00-000-0001"
+      }
+    }
+  },
+  "definitions": {
+    "StatUsageInfo": {
+      "properties": {
+        "stat_time": {
+          "type": "string",
+          "description": "统计时间点,UTC时间,格式为YYYY-MM-DDTHH:MM:SSZ。",
+          "example": "2021-08-01T00:00:00Z"
+        },
+        "guaranteed_band_width": {
+          "type": "string",
+          "description": "保底带宽。  说明: 该字段为预留值,当前始终为空;当场景为95增强时才返回数值。",
+          "example": "100.01"
+        },
+        "usage": {
+          "type": "string",
+          "description": "用量。",
+          "example": "5.10"
+        },
+        "measure_id": {
+          "description": "单位,您可以调用查询度量单位列表接口获取。带宽和用量使用相同的计量单位。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 51
+        }
+      }
+    },
+    "ListResourceUsageDetailsRsp": {
+      "properties": {
+        "actual_days": {
+          "type": "string",
+          "description": "有效天数,精度最高返回小数点后20位。  说明: 计算方式为上报的点数/288所得出的值。其中288为一天的点数,5分钟为一个点数单位。计算95费用时,因95费用是按月定价,若实际不足月,则是使用官网价*折扣*actual_days/当月天数,来计算费用明细。",
+          "example": "0.1"
+        },
+        "band_width": {
+          "type": "string",
+          "description": "计费带宽的按月汇总。 说明: 每月2日20点后可查询上月数据;若查询当月数据,则为空。",
+          "example": "66.56Mbps"
+        },
+        "monthly_guaranteed_band_width": {
+          "type": "string",
+          "description": "月保底带宽的按月汇总。 说明: 每月2日20点后可查询上月数据;若查询当月数据,则为空。该字段为预留值,当前始终为空;当场景为95增强时才返回数值。",
+          "example": "10.05Mbps"
+        },
+        "monthly_peak_band_width": {
+          "type": "string",
+          "description": "月峰值带宽。 说明: 每月2日20点后可查询上月数据;若查询当月数据,则为空。该字段为预留值,当前始终为空;当场景为95增强时才返回数值。",
+          "example": "100.0Mbps"
+        },
+        "band_width_measure_id": {
+          "description": "带宽单位,您可以调用查询度量单位列表接口获取。若所有带宽为空,则该字段为空。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "51"
+        },
+        "total_count": {
+          "description": "总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "usage_info_list": {
+          "description": "使用量明细(5分钟统计值)。具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StatUsageInfo"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

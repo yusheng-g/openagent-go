@@ -1,0 +1,213 @@
+{
+  "name": "RestoreObject",
+  "summary": "取回归档对象",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "post": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "RestoreObject",
+        "summary": "取回归档对象",
+        "description": "如果要获取归档存储对象的内容,需要先将对象取回,然后再执行下载数据的操作。对象取回后,会产生一个标准存储类型的对象副本,也就是说会同时存在标准存储类型的对象副本和归档存储类型的对象,在取回对象的保存时间到期后标准存储类型的对象副本会自动删除。\n#### 多版本 #### 默认情况下,取回的是最新版本的对象。如果最新版本的对象是删除标记,则返回404。如果要取回指定版本的对象,请求可携带versionId消息参数。\n",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "POST /object?restore HTTP/1.1",
+        "x-request-examples-1": "POST /object?restore HTTP/1.1\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:39:46 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:kaEwOixnSVuS6If3Q0Lnd6kxm5A=\nContent-Length: 183\n\n<RestoreRequest>\n   <Days>2</Days>\n   <RestoreJob>\n     <Tier>Expedited</Tier>\n   </RestoreJob>\n</RestoreRequest>\n",
+        "parameters": [
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "获取归档存储对象的内容\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "description": "待取回归档存储对象的版本号。\n",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "RestoreObjectRequestBody",
+            "required": true,
+            "description": "取回信息的容器\n",
+            "schema": {
+              "$ref": "#/definitions/RestoreObjectRequestBody"
+            }
+          },
+          {
+            "name": "restore",
+            "in": "query",
+            "description": "restore表示请求取回归档对象API。\n",
+            "required": true,
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|MalformedXML|Days字段不合法(不为整数)ErrorMessage: The XML you provided was not well-formed or did not validate against our published schema|400 Bad Request|\n|InvalidArgument|  Days字段取值超出范围(1<=days<=30)。ErrorMessage: restoration days should be at least 1 and at most 30|400 Bad Request|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|InvalidObjectState|取回对象不是归档存储对象。ErrorMessage: Restore is not allowed, as object's storage class is not COLD|403 Forbidden|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|RestoreAlreadyInProgress|对象正在取回,请求冲突。ErrorMessage: Object restore is already in progress|409 Conflict|\n|ObjectHasAlreadyRestored|已经取回的对象,禁止缩短取回保存时间。ErrorMessage:After restoring an archived object, you cannot shorten the restoration period of the archived object|409 Conflict|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "RestoreJob": {
+      "description": "取回选项的容器\n",
+      "properties": {
+        "Tier": {
+          "description": "取回选项,支持两种取值:[Expedited|Standard]。\nExpedited表示快速取回对象,取回耗时1~5 min,\nStandard表示标准取回对象,取回耗时3~5 h,\n默认取值为Standard。\n",
+          "enum": [
+            "Expedited",
+            "Standard"
+          ],
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "RestoreObjectRequestBody": {
+      "xml": {
+        "name": "RestoreRequest"
+      },
+      "description": "取回信息的容器",
+      "required": [
+        "Days",
+        "RestoreRequest"
+      ],
+      "properties": {
+        "RestoreRequest": {
+          "description": "恢复信息的容器。",
+          "type": "container"
+        },
+        "Days": {
+          "description": "取回对象的保存时间,最小值为1,最大值为30。",
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "RestoreJob": {
+          "$ref": "#/definitions/RestoreJob"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

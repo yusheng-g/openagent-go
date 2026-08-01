@@ -1,0 +1,451 @@
+{
+  "name": "UpdateSubNetworkInterface",
+  "summary": "更新辅助弹性网卡",
+  "tags": "辅助弹性网卡",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/sub-network-interfaces/{sub_network_interface_id}": {
+      "put": {
+        "tags": [
+          "辅助弹性网卡"
+        ],
+        "summary": "更新辅助弹性网卡",
+        "description": "更新辅助弹性网卡",
+        "operationId": "UpdateSubNetworkInterface",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateSubNetworkInterfaceRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSubNetworkInterfaceRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "sub_network_interface_id",
+            "in": "path",
+            "description": "辅助弹性网卡的唯一标识",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "sub_network_interface": {
+                  "id": "2be868f2-f7c9-48db-abc0-eea0b9105b0d",
+                  "project_id": "8c6fb137a48a428aaf9a0229dca4edb3",
+                  "virsubnet_id": "08278e6c-61ca-46c1-9fc3-0d4f6c12f193",
+                  "private_ip_address": "10.0.0.225",
+                  "ipv6_ip_address": null,
+                  "mac_address": "fa:16:3e:48:f8:6f",
+                  "parent_device_id": "1ab01f1d-4ef7-4d83-82be-802b3aca0223",
+                  "security_groups": [
+                    "6727c950-9f01-47a2-a7aa-7d3686c4c95b"
+                  ],
+                  "vpc_id": "63b97e6b-3598-430f-9eb8-1caf06937be8",
+                  "description": null,
+                  "parent_id": "637748df-2986-4350-8303-95d259580fb3",
+                  "vlan_id": 2787,
+                  "tags": [],
+                  "created_at": "2020-05-19T01:16:25"
+                },
+                "request_id": "ceb6273e-1ec9-4168-ac11-3dfeaacfc889"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateSubNetworkInterfaceResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新辅助弹性网卡",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 28,
+        "x-request-examples-description-1": "更新辅助弹性网卡的安全组",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/8c6fb137a48a428aaf9a0229dca4edb3/vpc/sub-network-interfaces/2be868f2-f7c9-48db-abc0-eea0b9105b0d",
+        "x-request-examples-1": {
+          "sub_network_interface": {
+            "security_groups": [
+              "6727c950-9f01-47a2-a7aa-7d3686c4c95b"
+            ]
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"sub_network_interface\": {\n        \"security_groups\": [\n            \"6727c950-9f01-47a2-a7aa-7d3686c4c95b\"\n        ]\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateSubNetworkInterfaceOption": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "功能说明:安全组的ID列表;例如:\"security_groups\": [\"a0608cbf-d047-4f54-8b28-cd7b59853fff\"]",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "1. 扩展属性:IP/Mac对列表,allowed_address_pair参见“allowed_address_pair对象”\n2. 使用说明: IP地址不允许为 “0.0.0.0”如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组硬件SDN环境不支持ip_address属性配置为CIDR格式。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowedAddressPair"
+          }
+        }
+      },
+      "description": ""
+    },
+    "UpdateSubNetworkInterfaceRequestBody": {
+      "required": [
+        "sub_network_interface"
+      ],
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "description": "功能说明:是否只预检此次请求\n取值范围:\n-true:发送检查请求,不会更新辅助弹性网卡。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应码202。\n-false(默认值):发送正常请求,并直接更新辅助弹性网卡。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "sub_network_interface": {
+          "description": "更新辅助弹性网卡请求体",
+          "$ref": "#/definitions/UpdateSubNetworkInterfaceOption",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "AllowedAddressPair": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "功能说明:IP地址约束:不支持0.0.0.0如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组。"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "功能说明:MAC地址"
+        }
+      },
+      "description": ""
+    },
+    "UpdateSubNetworkInterfaceResponseBody": {
+      "required": [
+        "request_id",
+        "sub_network_interface"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "sub_network_interface": {
+          "description": "更新辅助弹性网卡的响应体",
+          "$ref": "#/definitions/SubNetworkInterface",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "SubNetworkInterface": {
+      "required": [
+        "created_at",
+        "description",
+        "id",
+        "ipv6_ip_address",
+        "mac_address",
+        "parent_device_id",
+        "parent_id",
+        "private_ip_address",
+        "project_id",
+        "security_groups",
+        "tags",
+        "virsubnet_id",
+        "vlan_id",
+        "vpc_id",
+        "security_enabled",
+        "allowed_address_pairs",
+        "state",
+        "instance_id",
+        "instance_type",
+        "scope"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡的唯一标识\n取值范围:带(-)的标准UUID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "功能说明:虚拟子网ID\n取值范围:标准UUID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "private_ip_address": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡的私有IPv4地址\n取值范围:必须在虚拟子网的网段内,不填则随机在虚拟子网网段内随机分配",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "ipv6_ip_address": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡的IPv6地址",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡的mac地址\n取值范围:合法的mac地址,系统随机分配",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "parent_device_id": {
+          "type": "string",
+          "description": "功能说明:设备ID\n取值范围:标准UUID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "parent_id": {
+          "type": "string",
+          "description": "功能说明:宿主网络接口的ID\n取值范围:标准UUID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡所属的VPC_ID\n取值范围:标准UUID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "vlan_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:辅助弹性网卡的VLAN ID\n取值范围:1-4094\n约束:同一个宿主网络接口下唯一",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "功能说明:安全组的ID列表;例如:\"security_groups\": [\"a0608cbf-d047-4f54-8b28-cd7b59853fff\"]\n取值范围:默认值为系统默认安全组",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tags": {
+          "type": "array",
+          "description": "功能说明:辅助弹性网卡的标签列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡所属项目ID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:辅助弹性网卡的创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "1. 扩展属性:IP/Mac对列表,allowed_address_pair参见“allowed_address_pair对象”\n2. 使用说明: IP地址不允许为 “0.0.0.0”如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组硬件SDN环境不支持ip_address属性配置为CIDR",
+          "items": {
+            "$ref": "#/definitions/AllowedAddressPair"
+          }
+        },
+        "state": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡当前状态"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡所属实例ID,例如RDS实例ID"
+        },
+        "instance_type": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡所属实例类型,例如“RDS”"
+        },
+        "scope": {
+          "type": "string",
+          "description": "功能说明:辅助弹性网卡所在站点的公网出口信息"
+        },
+        "security_enabled": {
+          "type": "boolean",
+          "description": "功能说明:辅助弹性网卡安全使能标记,如果不使能则安全组不生效。\n取值范围:true(使能),false(不使能)",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

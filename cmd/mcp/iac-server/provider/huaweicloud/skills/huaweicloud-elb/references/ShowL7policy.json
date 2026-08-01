@@ -1,0 +1,272 @@
+{
+  "name": "ShowL7policy",
+  "summary": "查询转发策略详情",
+  "tags": "转发策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/l7policies/{l7policy_id}": {
+      "get": {
+        "tags": [
+          "转发策略"
+        ],
+        "summary": "查询转发策略详情",
+        "description": "根据指定ID查询转发策略详情。",
+        "operationId": "ShowL7policy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "l7policy_id",
+            "in": "path",
+            "description": "转发策略id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "l7policy": {
+                  "redirect_pool_id": "431a03eb-81bb-408e-ae37-7ce19023692b",
+                  "redirect_listener_id": null,
+                  "description": "",
+                  "admin_state_up": true,
+                  "rules": [
+                    {
+                      "id": "67d8a8fa-b0dd-4bd4-a85b-671db19b2ef3"
+                    },
+                    {
+                      "id": "f02b3bca-69d2-4335-a3fa-a8054e996213"
+                    }
+                  ],
+                  "tenant_id": "a31d2bdcf7604c0faaddb058e1e08819",
+                  "project_id": "a31d2bdcf7604c0faaddb058e1e08819",
+                  "listener_id": "26058b64-6185-4e06-874e-4bd68b7633d0",
+                  "redirect_url": null,
+                  "action": "REDIRECT_TO_POOL",
+                  "position": 1,
+                  "provisioning_status": "ACTIVE",
+                  "id": "5ae0e1e7-5f0f-47a1-b39f-5d4c428a1586",
+                  "name": "l7policy-garry-1"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowL7policyResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询转发策略详情",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 52,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/cf024846-7516-4e3a-b0fb-6590322c836f",
+        "x-request-examples-text-1": "GET https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/cf024846-7516-4e3a-b0fb-6590322c836f",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ShowL7policyResponseBody": {
+      "required": [
+        "l7policy"
+      ],
+      "properties": {
+        "l7policy": {
+          "description": "转发策略对象",
+          "$ref": "#/definitions/L7policyResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "L7policyResp": {
+      "required": [
+        "action",
+        "admin_state_up",
+        "description",
+        "id",
+        "listener_id",
+        "name",
+        "position",
+        "project_id",
+        "provisioning_status",
+        "redirect_listener_id",
+        "redirect_pool_id",
+        "redirect_url",
+        "rules",
+        "tenant_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "转发策略ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "转发策略名称",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "rules": {
+          "type": "array",
+          "description": "转发策略关联的转发规则列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "action": {
+          "type": "string",
+          "description": "转发策略的转发动作;取值:REDIRECT_TO_POOL:转发到后端云服务器组;REDIRECT_TO_LISTENER:重定向到监听器",
+          "enum": [
+            "REDIRECT_TO_POOL",
+            "REDIRECT_TO_LISTENER"
+          ]
+        },
+        "provisioning_status": {
+          "type": "string",
+          "description": "健康检查的配置状态;该字段为预留字段,暂未启用。默认为ACTIVE。"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "转发策略所在的项目ID。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "project_id": {
+          "type": "string",
+          "description": "转发策略所在的项目ID。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "转发策略的管理状态;该字段为预留字段,暂未启用。默认为true。"
+        },
+        "description": {
+          "type": "string",
+          "description": "转发策略额描述信息",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "转发策略对应的监听器ID"
+        },
+        "redirect_pool_id": {
+          "type": "string",
+          "description": "转发到pool的ID。转发到pool的ID。当action为REDIRECT_TO_POOL时生效。"
+        },
+        "redirect_listener_id": {
+          "type": "string",
+          "description": "转发到的listener的ID,当action为REDIRECT_TO_LISTENER时生效。"
+        },
+        "redirect_url": {
+          "type": "string",
+          "description": "转发到的url。该字段未启用。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "position": {
+          "type": "integer",
+          "format": "int32",
+          "description": "转发策略的优先级,从1递增,最高100。该字段为预留字段,暂未启用。",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "description": "转发策略对象"
+    },
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "ResourceList": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "资源ID"
+        }
+      },
+      "description": "资源对象id列表。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,350 @@
+{
+  "name": "ListFreeResourceInfos",
+  "summary": "查询资源包列表",
+  "tags": "管理资源包(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v3/payments/free-resources/query": {
+      "post": {
+        "summary": "查询资源包列表",
+        "description": "客户在伙伴销售平台查询客户的资源包列表。",
+        "tags": [
+          "管理资源包(客户)"
+        ],
+        "operationId": "ListFreeResourceInfos",
+        "x-constraint": "该接口只允许客户的AK/SK或者Token调用。",
+        "x-externalURL": "/v3/payments/free-resources/query",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-08-26",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。中文:zh_CN英文:en_US缺省为zh_CN。",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_CN"
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询资源包列表请求",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ListFreeResourceInfosReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询资源包列表响应",
+            "schema": {
+              "$ref": "#/definitions/ListFreeResourceInfosRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "free_resource_packages": [
+                  {
+                    "order_instance_id": "01154-228300268-0",
+                    "order_id": "CS21043011259RWXXTA",
+                    "product_id": "90301-296014-0--0",
+                    "product_name": "华为云WeLink",
+                    "enterprise_project_id": null,
+                    "enterprise_project_scope": 0,
+                    "effective_time": "2021-04-30T03:30:56Z",
+                    "expire_time": "2021-05-31T15:59:59Z",
+                    "status": 1,
+                    "service_type_code": "hws.service.type.cpts",
+                    "region_code": "cn-north-7",
+                    "source_type": 0,
+                    "bundle_type": "ATOMIC_PKG",
+                    "quota_reuse_mode": 2,
+                    "free_resources": [
+                      {
+                        "free_resource_id": "d4463497-991b-439d-9ab6-23f9ed197fe9",
+                        "usage_type_name": "时长",
+                        "amount": "100",
+                        "original_amount": "100",
+                        "measure_id": 34
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理资源包(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v3/payments/free-resources/query",
+        "x-request-examples-1": {
+          "region_code": "cn-north-7",
+          "order_id": "CS21043011259RWXXTA",
+          "product_id": "90301-296014-0--0",
+          "product_name": "华为云WeLink",
+          "enterprise_project_id": null,
+          "status": 1,
+          "offset": 0,
+          "limit": 10,
+          "service_type_code_list": [
+            "hws.service.type.obs"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "FreeResourceV3": {
+      "properties": {
+        "free_resource_id": {
+          "type": "string",
+          "description": "资源项ID,一个资源包中会含有多个资源项,一个使用量类型对应一个资源项。",
+          "example": ""
+        },
+        "usage_type_name": {
+          "type": "string",
+          "description": "使用量类型名称。",
+          "example": ""
+        },
+        "amount": {
+          "type": "string",
+          "description": "资源剩余额度,针对可重置资源包,是指当前重置周期内的剩余量。",
+          "example": ""
+        },
+        "original_amount": {
+          "type": "string",
+          "description": "资源原始额度,针对可重置资源包,是指每个重置周期内的总量。",
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位,免费资源套餐额度度量单位。您可以调用查询度量单位列表接口获取。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        }
+      }
+    },
+    "FreeResourcePackageV3": {
+      "properties": {
+        "order_instance_id": {
+          "type": "string",
+          "description": "订购资源包产品后,系统生成的ID,是这个资源包列表的标识字段。",
+          "example": "01154-244800315-0"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID,如果source_type为“1:软开云赠送”,该字段为空。",
+          "example": "TCB0701025VC5DIOIA7U7A9DLO0A1"
+        },
+        "product_id": {
+          "type": "string",
+          "description": "产品ID,即资源包ID。",
+          "example": "00301-46032-0--0_merge"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "产品名称,即资源包名称。",
+          "example": "OBS存储包 100GB_包月"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。",
+          "example": "0"
+        },
+        "enterprise_project_scope": {
+          "description": "企业项目应用范围: 0:应用所有1:应用到具体企业项目",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 0
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效时间,购买资源包的时间,格式UTC。",
+          "example": "2021-07-31T07:20:47Z"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效时间,资源包到期时间,格式UTC。",
+          "example": "2021-08-31T15:59:59Z"
+        },
+        "status": {
+          "description": "状态: 0:未生效1:生效中2:已用完3:已失效4:已退订",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 1
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": "hws.service.type.obs"
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "region_code": {
+          "type": "string",
+          "description": "云服务区编码,例如:“cn-north-1”。具体请参见地区和终端节点对应云服务的“区域”列的值。",
+          "example": "global-cbc-1"
+        },
+        "source_type": {
+          "description": "资源包的来源类型: 0:订单1:软开云赠送",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 0
+        },
+        "bundle_type": {
+          "type": "string",
+          "description": "套餐绑定类型: ATOMIC_PKG:原子套餐BUNDLE_PKG:组合套餐",
+          "example": "ATOMIC_PKG"
+        },
+        "quota_reuse_mode": {
+          "description": "使用模式。 1:可重置表示购买的资源包能够按照一定的周期恢复使用量。例如购买一个1年的按需资源包,使用量是40G,可重置,重置周期为1个月,表示1年内每个月会给予40G的使用量。 2:不可重置表示购买的资源包的使用量不会恢复。例如购买一个1年的按需资源包,使用量是40G,不可重置,表示1年内一共给予40G的使用量。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 1
+        },
+        "free_resources": {
+          "description": "资源套餐内的资源项信息(资源项ID级的详情),具体参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FreeResourceV3"
+          }
+        }
+      }
+    },
+    "ListFreeResourceInfosRsp": {
+      "properties": {
+        "free_resource_packages": {
+          "description": "资源包信息列表,具体参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FreeResourcePackageV3"
+          }
+        },
+        "total_count": {
+          "description": "总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        }
+      }
+    },
+    "ListFreeResourceInfosReq": {
+      "properties": {
+        "region_code": {
+          "type": "string",
+          "description": "云服务区编码,例如:“cn-north-1”。具体请参见地区和终端节点对应云服务的“区域”列的值。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "cn-north-1"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "TCB0701025VC5DIOIA7U7A9DLO0A1"
+        },
+        "product_id": {
+          "type": "string",
+          "description": "产品ID,即资源包ID。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "00301-46032-0--0_merge"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "产品名称,即资源包名称。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 256,
+          "example": "OBS存储包 100GB_包月"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": 0
+        },
+        "status": {
+          "description": "状态: 0:未生效1:生效中2:已用完3:已失效4:已退订 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1,
+          "maximum": 4,
+          "minimum": 0
+        },
+        "offset": {
+          "description": "偏移量,从0开始,默认为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 0,
+          "maximum": 999999,
+          "minimum": 0,
+          "default": 0
+        },
+        "limit": {
+          "description": "每次查询的记录数,默认为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 10,
+          "maximum": 1000,
+          "minimum": 1,
+          "default": 10
+        },
+        "service_type_code_list": {
+          "description": "云服务类型编码列表,大小写不敏感。 例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。 此参数不携带或携带值为空列表或携带值为null时,不作为筛选条件,返回其他条件匹配的记录。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 10,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

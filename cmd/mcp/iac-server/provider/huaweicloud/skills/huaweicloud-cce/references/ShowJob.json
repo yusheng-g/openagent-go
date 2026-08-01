@@ -1,0 +1,255 @@
+{
+  "name": "ShowJob",
+  "summary": "获取任务信息",
+  "tags": "集群管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "集群管理"
+        ],
+        "summary": "获取任务信息",
+        "description": "该API用于获取任务信息。通过某一任务请求下发后返回的jobID来查询指定任务的进度。\n> - 集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径\n> - 该接口通常使用场景为:\n>   - 创建、删除集群时,查询相应任务的进度。\n>   - 创建、删除节点时,查询相应任务的进度。",
+        "operationId": "ShowJob",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_jobid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取任务信息成功。",
+            "examples": {
+              "application/json": {
+                "kind": "Job",
+                "apiVersion": "v3",
+                "metadata": {
+                  "uid": "354331b2c-229a-11e8-9c75-0255ac100ceb",
+                  "creationTimestamp": "2018-08-02 08:12:40.672772389 +0000 UTC",
+                  "updateTimestamp": "2018-08-02 08:21:50.478108569 +0000 UTC"
+                },
+                "spec": {
+                  "type": "CreateCluster",
+                  "clusterUID": "4d1ecb2c-229a-11e8-9c75-0255ac100ceb",
+                  "resourceID": "6f4dcb2c-229a-11e8-9c75-0255ac100ceb",
+                  "resourceName": "cluster-name",
+                  "extendParam": {
+                    "serverID": "bc467e3a-2338-11e8-825b-0255ac100c13"
+                  },
+                  "subJobs": [
+                    {
+                      "kind": "Job",
+                      "apiVersion": "v3",
+                      "metadata": {
+                        "uid": "fd474fab-9606-11e8-baa9-0255ac10215d",
+                        "creationTimestamp": "2018-08-02 03:52:34.615819618 +0000 UTC",
+                        "updateTimestamp": "2018-08-02 04:05:29.196243031 +0000 UTC"
+                      },
+                      "spec": {
+                        "type": "InstallMaster",
+                        "clusterUID": "fcc72de0-9606-11e8-baa8-0255ac10215d",
+                        "resourceID": "fd3b4ac0-9606-11e8-baa8-0255ac10215d",
+                        "extendParam": {
+                          "serverID": "fd3b4ac0-9606-11e8-baa8-0255ac10215d"
+                        }
+                      },
+                      "status": {
+                        "phase": "Success"
+                      }
+                    },
+                    {
+                      "kind": "Job",
+                      "apiVersion": "v3",
+                      "metadata": {
+                        "uid": "fd474f82-9606-11e8-baa8-0255ac10215d",
+                        "creationTimestamp": "2018-08-02 03:52:33.859150791 +0000 UTC",
+                        "updateTimestamp": "2018-08-02 03:52:34.615655429 +0000 UTC"
+                      },
+                      "spec": {
+                        "type": "CreatePSMCert",
+                        "clusterUID": "fcc72de0-9606-11e8-baa8-0255ac10215d"
+                      },
+                      "status": {
+                        "phase": "Success"
+                      }
+                    }
+                  ]
+                },
+                "status": {
+                  "phase": "Running",
+                  "reason": ""
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Job"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取任务信息",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 22,
+        "x-publishpath": "cce_02_0247",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-cpp-exclude": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs,ocb,hws_ocb,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "JobSpec": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:\n任务的类型。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "clusterUID": {
+          "type": "string",
+          "description": "**参数解释**:\n任务所在的集群的ID。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "resourceID": {
+          "type": "string",
+          "description": "**参数解释**:\n任务操作的资源ID。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "resourceName": {
+          "type": "string",
+          "description": "**参数解释**:\n任务操作的资源名称。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "extendParam": {
+          "type": "object",
+          "description": "**参数解释**:\n扩展参数\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "subJobs": {
+          "type": "array",
+          "description": "**参数解释**:\n子任务的列表。\n- 包含了所有子任务的详细信息\n- 在创建集群、节点等场景下,通常会由多个子任务共同组成创建任务,在子任务都完成后,任务才会完成\n\n**约束限制**:\n不涉及",
+          "items": {
+            "description": "子任务的详细信息",
+            "$ref": "#/definitions/Job"
+          }
+        }
+      },
+      "description": ""
+    },
+    "JobMetadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n任务的ID\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "description": "**参数解释**:\n任务的创建时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "description": "**参数解释**:\n任务的更新时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": ""
+    },
+    "Job": {
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI类型\n**约束限制**:\n该值不可修改\n**取值范围**:\n不涉及\n**默认取值**:\nJob",
+          "default": "Job"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n该值不可修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3",
+          "default": "v3"
+        },
+        "metadata": {
+          "description": "**参数解释**:\n任务元数据\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/JobMetadata"
+        },
+        "spec": {
+          "description": "**参数解释**:\n任务详细参数\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/JobSpec"
+        },
+        "status": {
+          "description": "**参数解释**:\n任务状态信息\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/JobStatus"
+        }
+      },
+      "description": ""
+    },
+    "JobStatus": {
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "**参数解释**:\n任务的状态\n**约束限制**:\n不涉及\n**取值范围**:\n- Initializing:初始化\n- Running:运行中\n- Failed:失败\n- Success:成功\n\n**默认取值**:\n不涉及"
+        },
+        "reason": {
+          "type": "string",
+          "description": "**参数解释**:\n任务变为当前状态的原因\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_jobid": {
+      "name": "job_id",
+      "in": "path",
+      "description": "**参数解释**:\n任务ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 5
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

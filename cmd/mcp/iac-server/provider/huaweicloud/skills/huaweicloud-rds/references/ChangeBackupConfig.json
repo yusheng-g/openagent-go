@@ -1,0 +1,141 @@
+{
+  "name": "ChangeBackupConfig",
+  "summary": "切换实例备份方式(PostgreSQL)",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/backups/config": {
+      "put": {
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "tags": [
+          "备份与恢复"
+        ],
+        "x-api-type": "open-api",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/cb57216ffa904c7daa032c1d174f83bbin03/backups/config",
+        "x-request-examples-description-1": "切换实例备份方式(PostgreSQL)",
+        "x-request-examples-text-1": {
+          "default_backup_method": "EBACKUP"
+        },
+        "x-request-examples-1": {
+          "default_backup_method": "EBACKUP"
+        },
+        "x-sec-parameter-to-agent": "N",
+        "x-sec-parameter-check": "字符串",
+        "x-sec-sensitive-info": "否",
+        "x-sec-command-exec": "N",
+        "x-sec-command-exec-parameter": "无",
+        "x-sec-sql-exec": "N",
+        "x-sec-sql-exec-parameter": "无",
+        "x-sec-unserializie": "N",
+        "x-sec-unserializie-parameter": "无",
+        "x-sec-xxe": "N",
+        "x-sec-xxe-parameter": "无",
+        "x-sec-file-upload": "N",
+        "x-sec-file-upload-parameter": "无",
+        "x-sec-file-download": "N",
+        "x-sec-file-download-parameter": "无",
+        "x-sec-xss": "N",
+        "x-sec-xss-parameter": "无",
+        "x-sec-redos": "N",
+        "x-sec-redos-parameter": "无",
+        "x-sec-ssrf": "N",
+        "x-sec-ssrf-parameter": "无",
+        "x-sec-downtime": "N",
+        "x-sec-individual-data": "N",
+        "x-sec-sensitive-log": "N",
+        "x-sec-wushan": "N",
+        "x-sec-risk-operate": "无",
+        "operationId": "ChangeBackupConfig",
+        "summary": "切换实例备份方式(PostgreSQL)",
+        "description": "备份管理通用配置接口,目前支持切换备份方式",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n实例ID,此参数是实例的唯一标识。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n只能由英文字母、数字组成,长度为36个字符。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8076
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "in": "body",
+            "name": "SetConfigurationRequestBody",
+            "description": "备份配置请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetConfigurationRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/SetConfigurationResponseBody"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SetConfigurationRequestBody": {
+      "type": "object",
+      "properties": {
+        "default_backup_method": {
+          "type": "string",
+          "description": "备份方式\n- EBACKUP\n- PHYSICALBACKUP",
+          "minLength": 0,
+          "maxLength": 36
+        }
+      },
+      "required": [
+        "default_backup_method"
+      ]
+    },
+    "SetConfigurationResponseBody": {
+      "type": "string"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

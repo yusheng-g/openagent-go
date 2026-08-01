@@ -1,0 +1,346 @@
+{
+  "name": "ListSecurityPolicies",
+  "summary": "查询自定义安全策略列表",
+  "tags": "安全策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/security-policies": {
+      "get": {
+        "tags": [
+          "安全策略"
+        ],
+        "summary": "查询自定义安全策略列表",
+        "description": "查询自定义安全策略列表。",
+        "operationId": "ListSecurityPolicies",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:自定义安全策略的ID。\n\n支持多值查询,查询条件格式:*id=xxx&id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:自定义安全策略的名称。\n\n支持多值查询,查询条件格式:*name=xxx&name=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "**参数解释**:自定义安全策略的描述信息。\n\n支持多值查询,查询条件格式:*description=xxx&description=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "protocols",
+            "in": "query",
+            "description": "**参数解释**:空格分隔的自定义安全策略的TLS协议。\n\n支持多值查询,查询条件格式:*protocols=xxx&protocols=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 9
+          },
+          {
+            "name": "ciphers",
+            "in": "query",
+            "description": "**参数解释**:冒号分隔的自定义安全策略的加密套件。\n\n支持多值查询,查询条件格式:*ciphers=xxx&ciphers=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "88424a61-6fa1-4850-aa8b-ce31d78abcf2",
+                "security_policies": [
+                  {
+                    "id": "03cf511a-d130-445e-9b02-12d7049ddabf",
+                    "name": "test_security_policy",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "description": "",
+                    "protocols": [
+                      "TLSv1",
+                      "TLSv1.3"
+                    ],
+                    "ciphers": [
+                      "AES128-SHA",
+                      "TLS_AES_128_GCM_SHA256",
+                      "TLS_AES_256_GCM_SHA384",
+                      "TLS_CHACHA20_POLY1305_SHA256",
+                      "TLS_AES_128_CCM_SHA256",
+                      "TLS_AES_128_CCM_8_SHA256"
+                    ],
+                    "listeners": [
+                      {
+                        "id": "6f7c0d75-81c4-4735-87a0-dc5df0f27f5a"
+                      }
+                    ],
+                    "created_at": "2021-02-06T10:07:10Z",
+                    "updated_at": "2021-02-06T10:07:10Z",
+                    "enterprise_project_id": "0"
+                  },
+                  {
+                    "id": "04e5d426-628c-42db-867c-fcaefbed2cab",
+                    "name": "update_securitypolicy",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "description": "",
+                    "protocols": [
+                      "TLSv1.2",
+                      "TLSv1.1",
+                      "TLSv1.3"
+                    ],
+                    "ciphers": [
+                      "CAMELLIA128-SHA",
+                      "TLS_AES_256_GCM_SHA384",
+                      "TLS_CHACHA20_POLY1305_SHA256",
+                      "TLS_AES_128_CCM_SHA256",
+                      "TLS_AES_128_CCM_8_SHA256"
+                    ],
+                    "listeners": [
+                      {
+                        "id": "e19b7379-807e-47fb-b53d-46aff540580c"
+                      }
+                    ],
+                    "created_at": "2021-02-06T10:01:58Z",
+                    "updated_at": "2021-03-20T07:18:59Z",
+                    "enterprise_project_id": "0"
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "04e5d426-628c-42db-867c-fcaefbed2cab",
+                  "previous_marker": "03cf511a-d130-445e-9b02-12d7049ddabf",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListSecurityPoliciesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询自定义安全策略列表",
+        "x-constraint": "- 分页查询使用的参数为marker、limit、page_reverse。\n\n- marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "分页查询自定义安全策略列表",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/7a9941d34fc1497d8d0797429ecfd354/elb/security-policies?limit=2",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "SecurityPolicy": {
+      "required": [
+        "id",
+        "project_id",
+        "name",
+        "description",
+        "listeners",
+        "protocols",
+        "ciphers",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的ID。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的名称。\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的描述。\n\n**取值范围**:不涉及"
+        },
+        "listeners": {
+          "description": "**参数解释**:关联的监听器。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          },
+          "type": "array"
+        },
+        "protocols": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的TLS协议列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ciphers": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的加密套件列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        }
+      },
+      "description": "**参数解释**:自定义安全策略信息。"
+    },
+    "ListSecurityPoliciesResponseBody": {
+      "required": [
+        "request_id",
+        "security_policies"
+      ],
+      "properties": {
+        "security_policies": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略列表返回对象。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/SecurityPolicy"
+          }
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

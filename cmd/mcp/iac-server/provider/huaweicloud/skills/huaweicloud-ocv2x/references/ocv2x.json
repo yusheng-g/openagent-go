@@ -1,0 +1,70 @@
+{
+  "product": "ocv2x",
+  "count": 4,
+  "apis": [
+    {
+      "id": "351687bf418f42c299ca353301f1d92d",
+      "name": "getDataAgingConfig",
+      "summary": "查询老化时间配置",
+      "tags": "APIG-SN-DataAgingConfig",
+      "productshort": "ocv2x",
+      "region_id": "cn-north-4",
+      "group_id": "8a8235026cfe46468988dd6f15198c06",
+      "online_cli": true,
+      "info_version": "20.1.3",
+      "is_multiple_version": false,
+      "description": "查询老化时间配置。",
+      "method": "GET",
+      "uri": "/v1/{project_id}/v2x/{v2x_id}/aging-config",
+      "is_support_sdk": false
+    },
+    {
+      "id": "fdf9014ba9564a23b2c9f7cafe38306c",
+      "name": "getHistoryTrafficEvents",
+      "summary": "条件查询交通事件",
+      "tags": "APIG-SN-HistoryTrafficEvents",
+      "productshort": "ocv2x",
+      "region_id": "cn-north-4",
+      "group_id": "8a8235026cfe46468988dd6f15198c06",
+      "online_cli": true,
+      "info_version": "20.1.3",
+      "is_multiple_version": false,
+      "description": "条件查询交通事",
+      "method": "GET",
+      "uri": "/v1/{project_id}/v2x/{v2x_id}/history-traffic-events",
+      "is_support_sdk": false
+    },
+    {
+      "id": "9f066403a33b44d0be1e57838f9d886e",
+      "name": "getVehicleHistory",
+      "summary": "条件查询车辆数据",
+      "tags": "APIG-SN-VehicleHistory",
+      "productshort": "ocv2x",
+      "region_id": "cn-north-4",
+      "group_id": "8a8235026cfe46468988dd6f15198c06",
+      "online_cli": true,
+      "info_version": "20.1.3",
+      "is_multiple_version": false,
+      "description": "条件查询车辆数据",
+      "method": "GET",
+      "uri": "/v1/{project_id}/v2x/{v2x_id}/vehicle-safety-data",
+      "is_support_sdk": false
+    },
+    {
+      "id": "1d3e672e4674488a93704b0e5a4e98ee",
+      "name": "putDataAgingConfig",
+      "summary": "修改历史数据老化时间",
+      "tags": "APIG-SN-DataAgingConfig",
+      "productshort": "ocv2x",
+      "region_id": "cn-north-4",
+      "group_id": "8a8235026cfe46468988dd6f15198c06",
+      "online_cli": true,
+      "info_version": "20.1.3",
+      "is_multiple_version": false,
+      "description": "修改历史数据老化时间。",
+      "method": "PUT",
+      "uri": "/v1/{project_id}/v2x/{v2x_id}/aging-config",
+      "is_support_sdk": false
+    }
+  ]
+}

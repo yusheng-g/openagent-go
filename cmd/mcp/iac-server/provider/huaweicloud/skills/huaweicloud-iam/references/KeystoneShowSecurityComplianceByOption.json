@@ -1,0 +1,149 @@
+{
+  "name": "KeystoneShowSecurityComplianceByOption",
+  "summary": "按条件查询账号密码强度策略",
+  "tags": "账号管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/domains/{domain_id}/config/security_compliance/{option}": {
+      "get": {
+        "tags": [
+          "账号管理"
+        ],
+        "summary": "按条件查询账号密码强度策略",
+        "description": "该接口可以用于按条件查询账号密码强度策略,查询结果包括密码强度策略的正则表达式及其描述。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneShowSecurityComplianceByOption",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "URL中domain_id所对应账号中IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "待查询的账号ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "d78cbac186b744899480f25bd022f468",
+            "x-order": 2
+          },
+          {
+            "name": "option",
+            "in": "path",
+            "description": "查询条件。该字段内容为:password_regex或password_regex_description。\n\npassword_regex:密码强度策略的正则表达式;password_regex_description:密码强度策略的描述。",
+            "required": true,
+            "type": "string",
+            "x-example": "password_regex",
+            "enum": [
+              "password_regex",
+              "password_regex_description"
+            ],
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。\n示例1:option为password_regex。\n示例2:option为password_regex_description。",
+            "examples": {
+              "application/json": {
+                "config": {
+                  "password_regex": "^(?![A-Z]*$)(?![a-z]*$)(?![\\d]*$)(?![^\\W]*$)\\S{6,32}$"
+                }
+              },
+              "application/json-1": {
+                "config": {
+                  "password_regex_description": "The password must contain at least two of the following character types: uppercase letters, lowercase letters, digits, and special characters, and be a length between 6 and 32."
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneShowSecurityComplianceByOptionResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "按条件查询账号密码强度策略",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 14,
+        "x-request-examples-description-1": "option为password_regex。",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/domains/{domain_id}/config/security_compliance/password_regex",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/domains/{domain_id}/config/security_compliance/password_regex",
+        "x-request-examples-description-2": "option为password_regex_description。",
+        "x-request-examples-url-2": "",
+        "x-request-examples-2": "GET https://iam.myhuaweicloud.com/v3/domains/{domain_id}/config/security_compliance/password_regex_description",
+        "x-request-examples-text-2": "GET https://iam.myhuaweicloud.com/v3/domains/{domain_id}/config/security_compliance/password_regex_description",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneShowSecurityComplianceByOptionResponseBody": {
+      "required": [
+        "config"
+      ],
+      "properties": {
+        "config": {
+          "description": "配置信息。",
+          "$ref": "#/definitions/ConfigByOption"
+        }
+      },
+      "description": ""
+    },
+    "ConfigByOption": {
+      "properties": {
+        "password_regex": {
+          "type": "string",
+          "example": "^(?![A-Z]*$)(?![a-z]*$)(?![\\\\d]*$)(?![^\\\\W]*$)\\\\S{6,32}$",
+          "description": "密码强度策略的正则表达式。(当option为password_regex时返回)"
+        },
+        "password_regex_description": {
+          "type": "string",
+          "example": "The password must contain at least two of the following character types: uppercase letters, lowercase letters, digits, and special characters, and be a length between 6 and 32.",
+          "description": "密码强度策略的描述。(当option为password_regex_description时返回)"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

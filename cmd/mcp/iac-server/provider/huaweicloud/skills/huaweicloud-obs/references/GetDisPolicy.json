@@ -1,0 +1,232 @@
+{
+  "name": "GetDisPolicy",
+  "summary": "获取DIS通知策略",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "summary": "获取DIS通知策略",
+        "description": "本接口用于查询指定桶的DIS通知策略信息。若策略存在,则返回成功,status code返回值为200。",
+        "operationId": "GetDisPolicy",
+        "produces": [
+          "application/json"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Content-Length",
+            "in": "header",
+            "description": "RFC 2616中定义的消息(不包含消息头)长度。\n默认值:无。\n条件:PUT操作和加载XML的操作必须带。",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "资源内容的类型,例如: text/plain。\n默认值:无。",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "disPolicy",
+            "in": "query",
+            "required": false,
+            "description": "disPolicy表示请求DIS通知策略API。",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "Host",
+            "in": "header",
+            "required": false,
+            "description": "参数解释:桶的访问域名,格式为桶名.终端节点,即BucketName.Endpoint 如examplebucketname.obs.cn-north-4.myhuaweicloud.com。",
+            "type": "string"
+          }
+        ],
+        "x-request-examples-url-1": "/?disPolicy",
+        "x-request-examples-description-1": "获取DIS通知策略\n",
+        "x-request-examples-1": "GET /?disPolicy HTTP/1.1\nHost: bucketname.obs.region.myhuaweicloud.com\nAuthorization: authorization\nDate: date\n",
+        "x-request-examples-text-1": "GET /?disPolicy HTTP/1.1\nHost: bucketname.obs.region.myhuaweicloud.com\nAuthorization: authorization\nDate: date\n",
+        "responses": {
+          "200": {
+            "description": "成功响应消息",
+            "schema": {
+              "$ref": "#/definitions/GetBucketDisPolicyResponseBody"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。"
+              },
+              "ETag": {
+                "description": "对象的base64编码的128位MD5摘要。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-order": 1
+      }
+    }
+  },
+  "definitions": {
+    "GetBucketDisPolicyResponseBody": {
+      "$ref": "#/definitions/SetBucketDisPolicyRequestBody"
+    },
+    "SetBucketDisPolicyRequestBody": {
+      "type": "object",
+      "description": "策略规则数组。\n类型:Container\n取值范围:[1, 10]",
+      "properties": {
+        "rules": {
+          "items": {
+            "properties": {
+              "id": {
+                "description": "规则ID。当前桶上配置的DIS策略规则的唯一标识。\n类型:String\n取值范围:[1, 256],满足“^[a-zA-Z0-9_-]{1, 256}$”",
+                "type": "string",
+                "example": "rule_id"
+              },
+              "stream": {
+                "description": "DIS服务通道名称。需要先在DIS服务创建此通道。\n类型:String",
+                "type": "string",
+                "example": "stream_name"
+              },
+              "project": {
+                "description": "DIS服务通道所属的项目ID。\n类型:String",
+                "type": "string",
+                "example": "project_id"
+              },
+              "events": {
+                "description": "OBS事件列表。\n有效值:长度[0, 1023],值允许为任意字符,支持如下事件类型:ObjectCreated:* (所有上传操作)ObjectCreated:Put (上传对象)ObjectCreated:Post (使用浏览器上传对象)ObjectCreated:Copy (拷贝对象)ObjectCreated:CompleteMultipartUpload (合并段)ObjectRemoved:* (所有删除操作)ObjectRemoved:Delete (指定对象版本号删除对象)ObjectRemoved:DeleteMarkerCreated (不指定对象版本号删除对象)",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "ObjectCreated:*",
+                  "ObjectRemoved:*"
+                ]
+              },
+              "prefix": {
+                "description": "对象名前缀,用于指定的对象名关键字,根据定义的前缀,输入需要过滤的对象的关键字信息,字符越长匹配精度越高,最大可支持1024个字符,最小可为空。同时,prefix和suffix加起来长度最大为1024个字符。\n类型:String\n取值范围:[0, 1024]",
+                "type": "string",
+                "example": 1,
+                "minLength": 0,
+                "maxLength": 1024
+              },
+              "suffix": {
+                "description": "对象名后缀。用于指定的对象名关键字,根据定义的后缀,输入需要过滤的对象的关键字信息,字符越长匹配精度越高,最大可支持1024个字符,最小可为空。同时,prefix和suffix加起来长度最大为1024个字符。\n类型:String\n取值范围:[0, 1024]",
+                "type": "string",
+                "example": 2,
+                "minLength": 0,
+                "maxLength": 1024
+              },
+              "agency": {
+                "description": "IAM委托名,被委托方必须包含OBS服务,赋予的权限必须是DIS服务的DIS Administrator或DIS User。\n类型:String",
+                "type": "string",
+                "example": "agency_name"
+              }
+            },
+            "required": [
+              "id",
+              "stream",
+              "project",
+              "events",
+              "agency"
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "rules"
+      ]
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

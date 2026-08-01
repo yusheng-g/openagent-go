@@ -1,0 +1,621 @@
+{
+  "name": "ListPreCheckTasks",
+  "summary": "获取集群升级前检查任务详情列表",
+  "tags": "集群升级",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/operation/precheck/tasks": {
+      "get": {
+        "tags": [
+          "集群升级"
+        ],
+        "operationId": "ListPreCheckTasks",
+        "summary": "获取集群升级前检查任务详情列表",
+        "description": "获取集群升级前检查任务详情列表",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取集群升级前检查任务详情列表成功。",
+            "examples": {
+              "application/json": {
+                "kind": "List",
+                "apiVersion": "v3",
+                "metadata": {},
+                "items": [
+                  {
+                    "kind": "PreCheckTask",
+                    "apiVersion": "v3",
+                    "metadata": {
+                      "uid": "10b52d23-080a-4b7d-bf83-64b4687ca786",
+                      "creationTimestamp": "2023-12-16 07:07:11.099111 +0000 UTC",
+                      "updateTimestamp": "2023-12-16 07:09:10.425622 +0000 UTC"
+                    },
+                    "spec": {
+                      "clusterVersion": "v1.23.5-r0",
+                      "targetVersion": "v1.23.11-r0"
+                    },
+                    "status": {
+                      "phase": "Failed",
+                      "clusterCheckStatus": {
+                        "phase": "Success",
+                        "itemsStatus": [
+                          {
+                            "name": "DeprecatedApiCheck",
+                            "kind": "Risk",
+                            "group": "LimitCheck",
+                            "level": "Info",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          },
+                          {
+                            "name": "BlackLimit",
+                            "kind": "Exception",
+                            "group": "LimitCheck",
+                            "level": "Fatal",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          },
+                          {
+                            "name": "MasterSSH",
+                            "kind": "Exception",
+                            "group": "LimitCheck",
+                            "level": "Fatal",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          },
+                          {
+                            "name": "ReleaseLimit",
+                            "kind": "Exception",
+                            "group": "LimitCheck",
+                            "level": "Warning",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          },
+                          {
+                            "name": "ClusterNoArm",
+                            "kind": "Exception",
+                            "group": "LimitCheck",
+                            "level": "Warning",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          }
+                        ]
+                      },
+                      "addonCheckStatus": {
+                        "phase": "Failed",
+                        "itemsStatus": [
+                          {
+                            "name": "AddonLimit",
+                            "kind": "Exception",
+                            "group": "AddonCheck",
+                            "level": "Warning",
+                            "phase": "Failed",
+                            "message": "addon [ CoreDNS,CCE Container Storage (Everest) ] status is abnormal, check and try again",
+                            "riskSource": {
+                              "addonRisks": [
+                                {
+                                  "addonTemplateName": "coredns",
+                                  "alias": "CoreDNS"
+                                },
+                                {
+                                  "addonTemplateName": "everest",
+                                  "alias": "CCE Container Storage (Everest)"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "CoreDNSConfLimit",
+                            "kind": "Exception",
+                            "group": "AddonCheck",
+                            "level": "Fatal",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          },
+                          {
+                            "name": "EverestLimitHungVersion",
+                            "kind": "Risk",
+                            "group": "AddonCheck",
+                            "level": "Fatal",
+                            "phase": "Success",
+                            "message": "check item succeed",
+                            "riskSource": {}
+                          }
+                        ]
+                      },
+                      "nodeCheckStatus": {
+                        "phase": "Success"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PrecheckClusterTaskListResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "获取集群升级前检查任务详情列表",
+        "x-order": 9,
+        "x-publishpath": "",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "resourceSelector": {
+      "description": "资源标签选择器,匹配Kubernetes中node资源",
+      "required": [
+        "key",
+        "operator"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "标签键值,取值如下\n- node.uid:节点UID。",
+          "enum": [
+            "node.uid"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "description": "标签值列表",
+          "items": {
+            "type": "string",
+            "description": "标签值"
+          }
+        },
+        "operator": {
+          "type": "string",
+          "description": "标签逻辑运算符,当前支持如下取值\n- In",
+          "enum": [
+            "In"
+          ]
+        }
+      }
+    },
+    "addonCheckStatus": {
+      "description": "插件限制检查状态",
+      "properties": {
+        "phase": {
+          "description": "状态,取值如下\n- Init: 初始化\n- Running 运行中\n- Success 成功\n- Failed 失败",
+          "type": "string"
+        },
+        "itemsStatus": {
+          "type": "array",
+          "description": "检查项状态集合",
+          "items": {
+            "$ref": "#/definitions/PreCheckItemStatus"
+          }
+        }
+      }
+    },
+    "addonRisks": {
+      "description": "节点风险来源",
+      "properties": {
+        "addonTemplateName": {
+          "type": "string",
+          "description": "插件模板名称"
+        },
+        "alias": {
+          "type": "string",
+          "description": "插件别名"
+        }
+      }
+    },
+    "skippedCheckItemList": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "跳过的检查项名称"
+        },
+        "resourceSelector": {
+          "description": "资源标签选择器,仅节点检查涉及该参数,集群检查和插件检查不涉及。",
+          "$ref": "#/definitions/resourceSelector"
+        }
+      }
+    },
+    "PrecheckTaskMetadata": {
+      "description": "升级前检查任务元数据",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "任务ID"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "description": "任务创建时间"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "description": "任务更新时间"
+        }
+      }
+    },
+    "nodeRisks": {
+      "description": "节点风险来源",
+      "properties": {
+        "NodeID": {
+          "type": "string",
+          "description": "用户节点ID"
+        }
+      }
+    },
+    "clusterCheckStatus": {
+      "description": "集群限制检查状态",
+      "properties": {
+        "phase": {
+          "description": "状态,取值如下\n- Init: 初始化\n- Running 运行中\n- Success 成功\n- Failed 失败",
+          "type": "string"
+        },
+        "itemsStatus": {
+          "type": "array",
+          "description": "检查项状态集合",
+          "items": {
+            "$ref": "#/definitions/PreCheckItemStatus"
+          }
+        }
+      }
+    },
+    "NodeInfo": {
+      "description": "节点检查状态",
+      "properties": {
+        "uid": {
+          "description": "节点UID",
+          "type": "string"
+        },
+        "name": {
+          "description": "节点名称",
+          "type": "string"
+        },
+        "status": {
+          "description": "**参数解释**:\n节点状态\n**取值范围**:\n- Build:创建中,表示节点正处于创建过程中。\n- Installing:安装中,表示节点正处于纳管过程中。\n- Upgrading:升级中,表示节点正处于升级过程中。\n- Active:运行中,表示节点处于正常状态。\n- Abnormal:不可用,表示节点处于异常状态。\n- Deleting: 删除中,表示节点正处于删除过程中。\n- Error:错误,表示节点处于故障状态。\n**默认取值**:\n不涉及",
+          "type": "string"
+        },
+        "nodeType": {
+          "description": "**参数解释**:\n节点类型\n**取值范围**:\n- master:控制面节点\n- node:数据面节点\n**默认取值**:\n不涉及",
+          "type": "string"
+        }
+      }
+    },
+    "PrecheckStatus": {
+      "description": "升级前检查状态",
+      "properties": {
+        "phase": {
+          "description": "状态,取值如下\n- Init: 初始化\n- Running 运行中\n- Success 成功\n- Failed 失败\n- Error 错误",
+          "type": "string"
+        },
+        "expireTimeStamp": {
+          "description": "检查结果过期时间",
+          "type": "string"
+        },
+        "message": {
+          "description": "信息,一般是执行错误的日志信息",
+          "type": "string"
+        },
+        "clusterCheckStatus": {
+          "description": "集群限制检查状态",
+          "$ref": "#/definitions/clusterCheckStatus"
+        },
+        "addonCheckStatus": {
+          "description": "插件检查状态",
+          "$ref": "#/definitions/addonCheckStatus"
+        },
+        "nodeCheckStatus": {
+          "description": "节点检查状态",
+          "$ref": "#/definitions/nodeCheckStatus"
+        }
+      }
+    },
+    "Metadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n唯一id标识\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n资源名称\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "labels": {
+          "type": "object",
+          "description": "**参数解释**:\n资源标签,key/value对格式,接口保留字段,填写不会生效\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "description": "**参数解释**:\n资源注解,由key/value组成\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n更新时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n创建时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": "**参数解释**:\n资源描述基本信息,集合类的元素类型,包含一组由不同名称定义的属性。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+    },
+    "NodeStageStatus": {
+      "description": "节点检查状态",
+      "properties": {
+        "nodeInfo": {
+          "description": "节点信息",
+          "$ref": "#/definitions/NodeInfo",
+          "type": "string"
+        },
+        "itemsStatus": {
+          "type": "array",
+          "description": "检查项状态集合",
+          "items": {
+            "$ref": "#/definitions/PreCheckItemStatus"
+          }
+        }
+      }
+    },
+    "riskSource": {
+      "description": "风险项来源",
+      "properties": {
+        "configurationRisks": {
+          "type": "array",
+          "description": "配置风险项",
+          "items": {
+            "$ref": "#/definitions/configurationRisks"
+          }
+        },
+        "deprecatedAPIRisks": {
+          "type": "array",
+          "description": "废弃API风险",
+          "items": {
+            "$ref": "#/definitions/deprecatedAPIRisks"
+          }
+        },
+        "nodeRisks": {
+          "type": "array",
+          "description": "节点风险",
+          "items": {
+            "$ref": "#/definitions/nodeRisks"
+          }
+        },
+        "addonRisks": {
+          "type": "array",
+          "description": "插件风险",
+          "items": {
+            "$ref": "#/definitions/addonRisks"
+          }
+        }
+      }
+    },
+    "PrecheckClusterTask": {
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "api版本,默认为v3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型,默认为PreCheckTask"
+        },
+        "metadata": {
+          "description": "升级前检查任务元数据信息",
+          "$ref": "#/definitions/PrecheckTaskMetadata"
+        },
+        "spec": {
+          "description": "升级前检查任务信息",
+          "$ref": "#/definitions/PrecheckSpec"
+        },
+        "status": {
+          "description": "升级前检查任务状态",
+          "$ref": "#/definitions/PrecheckStatus"
+        }
+      }
+    },
+    "PreCheckItemStatus": {
+      "description": "检查项状态信息",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "检查项名称"
+        },
+        "kind": {
+          "type": "string",
+          "description": "检查项类型,取值如下\n- Exception: 异常类,需要用户解决\n- Risk:风险类,用户确认后可选择跳过"
+        },
+        "group": {
+          "type": "string",
+          "description": "检查项分组,取值如下\n- LimitCheck: 集群限制检查\n- MasterCheck:控制节点检查\n- NodeCheck:用户节点检查\n- AddonCheck:插件检查\n- ExecuteException:检查流程错误"
+        },
+        "level": {
+          "type": "string",
+          "description": "检查项风险级别,取值如下\n- Info: 提示级别\n- Warning:风险级别\n- Fatal:严重级别"
+        },
+        "phase": {
+          "description": "状态,取值如下\n- Init: 初始化\n- Running 运行中\n- Success 成功\n- Failed 失败",
+          "type": "string"
+        },
+        "message": {
+          "type": "string",
+          "description": "提示信息"
+        },
+        "riskSource": {
+          "description": "风险项",
+          "$ref": "#/definitions/riskSource"
+        },
+        "errorCodes": {
+          "type": "array",
+          "description": "错误码集合",
+          "items": {
+            "type": "string",
+            "description": "错误码"
+          }
+        }
+      }
+    },
+    "deprecatedAPIRisks": {
+      "description": "废弃API风险来源",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "请求路径,如/apis/policy/v1beta1/podsecuritypolicies"
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "客户端信息"
+        }
+      }
+    },
+    "PrecheckClusterTaskListResponseBody": {
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "api版本,默认为v3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "类型"
+        },
+        "metadata": {
+          "description": "基本信息,为集合类的元素类型,包含一组由不同名称定义的属性",
+          "$ref": "#/definitions/Metadata"
+        },
+        "items": {
+          "type": "array",
+          "description": "集群检查任务列表",
+          "items": {
+            "$ref": "#/definitions/PrecheckClusterTask"
+          }
+        }
+      }
+    },
+    "PrecheckSpec": {
+      "properties": {
+        "clusterID": {
+          "type": "string",
+          "description": "**参数解释:**\n集群ID\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及"
+        },
+        "clusterVersion": {
+          "type": "string",
+          "description": "**参数解释:**\n集群版本,请填写当前集群的补丁版本,可登录控制台在总览页面进行查看\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及"
+        },
+        "targetVersion": {
+          "type": "string",
+          "description": "**参数解释:**\n升级目标版本,如果填写大版本,则自动选择最新补丁版本\n**约束限制:**\n不涉及\n**取值范围:**\n高于集群当前版本的可用集群版本"
+        },
+        "skippedCheckItemList": {
+          "type": "array",
+          "description": "**参数解释:**\n跳过检查的项目列表\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及",
+          "items": {
+            "$ref": "#/definitions/skippedCheckItemList"
+          }
+        }
+      }
+    },
+    "nodeCheckStatus": {
+      "description": "节点限制检查状态",
+      "properties": {
+        "phase": {
+          "description": "状态,取值如下\n- Init: 初始化\n- Running 运行中\n- Success 成功\n- Failed 失败",
+          "type": "string"
+        },
+        "nodeStageStatus": {
+          "type": "array",
+          "description": "节点检查状态",
+          "items": {
+            "$ref": "#/definitions/NodeStageStatus"
+          }
+        }
+      }
+    },
+    "configurationRisks": {
+      "description": "配置风险项来源",
+      "properties": {
+        "package": {
+          "type": "string",
+          "description": "组件名称"
+        },
+        "sourceFile": {
+          "type": "string",
+          "description": "涉及文件路径"
+        },
+        "nodeMsg": {
+          "type": "string",
+          "description": "节点信息"
+        },
+        "field": {
+          "type": "string",
+          "description": "参数值"
+        },
+        "operation": {
+          "type": "string",
+          "description": "修改操作类型"
+        },
+        "originalValue": {
+          "type": "string",
+          "description": "原始值"
+        },
+        "value": {
+          "type": "string",
+          "description": "当前值"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

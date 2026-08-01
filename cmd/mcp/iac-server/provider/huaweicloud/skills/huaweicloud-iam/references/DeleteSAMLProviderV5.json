@@ -1,0 +1,70 @@
+{
+  "name": "DeleteSAMLProviderV5",
+  "summary": "删除指定SAML提供商",
+  "tags": "SAML身份提供商管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/saml-providers/{provider_id}": {
+      "delete": {
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "tags": [
+          "SAMLIdentityProvider"
+        ],
+        "summary": "删除指定SAML提供商",
+        "description": "该接口可以用于删除 IAM 中的一个 SAML 2.0 的身份提供商 (IdP)。IAM 在删除 SAML 提供商时不会更新在信任策略中引用该提供商作为主体的任何信任委托,删除之后任何尝试切换代入引用已删除提供商的信任委托的操作都将失败。",
+        "operationId": "DeleteSAMLProviderV5",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProviderId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求成功。"
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "delete",
+  "uri": null
+}

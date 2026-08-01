@@ -1,0 +1,201 @@
+{
+  "name": "SetBucketObjectLock",
+  "summary": "配置桶级默认WORM策略",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketObjectLock",
+        "consumes": [
+          "application/xml"
+        ],
+        "summary": "配置桶级默认WORM策略",
+        "description": "本接口用于为指定桶配置默认保护策略和保护期限。 当您在桶内配置了桶级默认WORM策略以后,如果您在上传对象时没有指定保护策略和保护期限,则新上传的对象会自动应用桶级默认WORM策略。和配置对象级WORM保护策略不同的地方在于,对象级WORM保护策略需要您提供一个明确的时间,在这个时间之前对象都会受到保护,桶级默认WORM策略则要求您提供一个保护期限,实际上对象受到保护的时间点为其上传时间+您指定的保护期限。 要正确执行此操作,需要确保执行者有 \"PutBucketObjectLockConfiguration\"权限。默认情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n说明: 1. 您可以修改甚至清空桶级默认WORM策略,但这仅对修改后上传的对象生效,修改前上传的对象的保护状态不受影响。 2. 多段上传的对象在合并前不受保护,合并后受桶级默认对象策略保护,您可以在其合并后单独为其配置对象级WORM保护策略。\n其它约束如下: 1. 策略目前仅支持设置为合规模式\"COMPLIANCE\" 2. 支持设置的保留期限为1天-100*365天或1年~100年。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/xml"
+        ],
+        "x-request-examples-url-1": "/?object-lock",
+        "x-request-examples-1": "PUT /?object-lock HTTP/1.1 \nHost: bucketname.obs.cn-north-4.myhuaweicloud.com \nDate: date\nAuthorization: authorization\nContent-Type: application/xml\nContent-Length: length\n\n<ObjectLockConfiguration xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n    <ObjectLockEnabled>Enabled</ObjectLockEnabled>\n    <Rule>\n        <DefaultRetention>\n            <Days>integer</Days>\n            <Mode>COMPLIANCE</Mode>\n            <Years>integer</Years>\n        </DefaultRetention>\n    </Rule>\n</ObjectLockConfiguration>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object-lock",
+            "in": "query",
+            "required": true,
+            "description": "object-lock表示请求配置桶级默认WORM策略API。",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "ObjectLockConfiguration",
+            "in": "body",
+            "description": "桶级WORM配置。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketObjectLockRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功请求响应。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "SetBucketObjectLockDefaultRetention": {
+      "xml": {
+        "name": "DefaultRetention"
+      },
+      "description": "桶级WORM策略的容器,DefaultRetention是Mode、Days、Years的父节点。\n如果有Rule容器则必选\n",
+      "required": [
+        "Mode"
+      ],
+      "properties": {
+        "Mode": {
+          "description": "参数解释:\n桶的WORM保护策略。\n约束限制:\n不涉及\n取值范围:\nCOMPLIANCE:合规模式。\n默认取值:\n不涉及\n",
+          "type": "string",
+          "enum": [
+            "COMPLIANCE"
+          ]
+        },
+        "Days": {
+          "description": "参数解释:\n保护天数。单位:天。\n约束限制:\nDays和Years只能有一个不为0,并且在规定取值范围内。\n取值范围:\n1~36500\n默认取值:\n不涉及\n",
+          "type": "integer"
+        },
+        "Years": {
+          "description": "参数解释:\n默认的保护年数,单位:年。\n约束限制:\n一年实际上视为保护365天,不考虑闰年。\nDays和Years只能有一个不为0,并且在规定取值范围内。\n取值范围:\n1~100\n默认取值:\n不涉及\n",
+          "type": "integer"
+        }
+      }
+    },
+    "SetBucketObjectLockRule": {
+      "xml": {
+        "name": "Rule"
+      },
+      "description": "桶级WORM策略的规则容器,Rule是DefaultRetention的父节点。\nObjectLockEnabled为Enabled时必选,不携带则会清空当前配置的桶级默认WORM策略。\n",
+      "properties": {
+        "DefaultRetention": {
+          "$ref": "#/definitions/SetBucketObjectLockDefaultRetention"
+        }
+      }
+    },
+    "SetBucketObjectLockRequestBody": {
+      "xml": {
+        "name": "ObjectLockConfiguration"
+      },
+      "description": "桶级WORM配置的根节点。\n",
+      "properties": {
+        "ObjectLockEnabled": {
+          "description": "参数解释:\n桶级WORM开关状态。\n约束限制:\n不涉及\n取值范围:\nEnabled:启用桶级WORM功能。\n默认取值:\n不涉及\n",
+          "type": "string",
+          "enum": [
+            "Enabled"
+          ]
+        },
+        "Rule": {
+          "$ref": "#/definitions/SetBucketObjectLockRule"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

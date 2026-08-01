@@ -1,0 +1,141 @@
+{
+  "name": "ListWarmPoolInstances",
+  "summary": "查询暖池内实例信息",
+  "tags": "弹性伸缩组管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/{project_id}/scaling-groups/{scaling_group_id}/warm-pool-instances": {
+      "get": {
+        "tags": [
+          "弹性伸缩组管理"
+        ],
+        "description": "查询暖池内实例信息",
+        "summary": "查询暖池内实例信息",
+        "operationId": "ListWarmPoolInstances",
+        "parameters": [
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "租户ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询的记录条数,不传默认20,最大可传入100",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "查询暖池实例的分页marker",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "examples": {
+              "application/json": {
+                "page_info": {
+                  "next_marker": "xxxx"
+                },
+                "warm_pool_instances": [
+                  {
+                    "id": "xxxx",
+                    "instance_id": "xxxxx",
+                    "name": "xxxx",
+                    "status": "PENDING"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/WarmPoolInstancesResult"
+            }
+          }
+        },
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": false,
+        "x-request-examples-url-1": "GET https://{Endpoint}/autoscaling-api/{project_id}/scaling-groups/5bc3aa02-b83e-454c-aba1-4d2095c68f8b/warm-pool-instances"
+      }
+    }
+  },
+  "definitions": {
+    "PageInfo": {
+      "type": "object",
+      "properties": {
+        "next_marker": {
+          "type": "string",
+          "description": "下一页的marker",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      }
+    },
+    "WarmPoolInstancesResult": {
+      "type": "object",
+      "properties": {
+        "page_info": {
+          "description": "分页信息",
+          "$ref": "#/definitions/PageInfo"
+        },
+        "warm_pool_instances": {
+          "type": "array",
+          "description": "暖池实例列表",
+          "items": {
+            "$ref": "#/definitions/WarmPoolInstance"
+          }
+        }
+      }
+    },
+    "WarmPoolInstance": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "暖池实例ID"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "对应的虚拟机ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "暖池实例的名称"
+        },
+        "status": {
+          "type": "string",
+          "description": "暖池实例的状态"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,183 @@
+{
+  "name": "ListPostgresqlHbaInfoHistory",
+  "summary": "查询实例的pg_hba.conf文件修改历史",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/hba-info/history": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "x-file": "Y",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/e28979107ed04d3b8b2f1b819b8d2be3in03/hba-info/history?start_time=2023-08-01 00:00:00&end_time=2023-08-03 00:00:00",
+        "description": "查询实例的pg_hba.conf文件修改历史",
+        "summary": "查询实例的pg_hba.conf文件修改历史",
+        "operationId": "ListPostgresqlHbaInfoHistory",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": false,
+            "description": "开始时间,不传默认当天0点(UTC时区)",
+            "type": "string",
+            "default": "",
+            "format": "date-time"
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false,
+            "description": "结束时间,不传默认当前时间(UTC时区)",
+            "type": "string",
+            "default": "",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/PostgresqlHbaHistory"
+              },
+              "type": "array"
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "status": "successs",
+                  "time": "2023-08-01 09:00:00",
+                  "fail_reason": "",
+                  "before_confs": [
+                    {
+                      "type": "host",
+                      "database": "all",
+                      "user": "all",
+                      "address": "0.0.0.0/0",
+                      "mask": "",
+                      "method": "md5",
+                      "priority": 0
+                    }
+                  ],
+                  "after_confs": [
+                    {
+                      "type": "hostssl",
+                      "database": "all",
+                      "user": "all",
+                      "address": "0.0.0.0/0",
+                      "mask": "",
+                      "method": "md5",
+                      "priority": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PostgresqlHbaHistory": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "修改结果,    success:已生效\n    failed:未生效\n    setting:设置中\","
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "修改时间"
+        },
+        "fail_reason": {
+          "type": "string",
+          "description": "修改失败原因"
+        },
+        "before_confs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PostgresqlHbaConf"
+          },
+          "description": "修改之前的值"
+        },
+        "after_confs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PostgresqlHbaConf"
+          },
+          "description": "修改之后的值"
+        }
+      }
+    },
+    "PostgresqlHbaConf": {
+      "type": "object",
+      "required": [
+        "type",
+        "database",
+        "user",
+        "address",
+        "method",
+        "priority"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "连接类型,枚举,host、hostssl、hostnossl"
+        },
+        "database": {
+          "type": "string",
+          "description": "数据库名,除template0,template1的数据库名,多个以逗号隔开"
+        },
+        "user": {
+          "type": "string",
+          "description": "用户名,all,除内置用户(rdsAdmin, rdsMetric, rdsBackup, rdsRepl, rdsProxy)以外,多个以逗号隔开"
+        },
+        "address": {
+          "type": "string",
+          "description": "客户端IP地址。0.0.0.0/0表示允许用户从任意IP地址访问数据库"
+        },
+        "mask": {
+          "type": "string",
+          "description": "掩码,默认为空字符串"
+        },
+        "method": {
+          "type": "string",
+          "description": "认证方式。枚举:reject、md5、scram-sha-256"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "优先级,表示配置的先后"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

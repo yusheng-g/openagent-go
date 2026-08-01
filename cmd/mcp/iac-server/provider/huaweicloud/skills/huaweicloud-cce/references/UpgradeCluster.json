@@ -1,0 +1,363 @@
+{
+  "name": "UpgradeCluster",
+  "summary": "集群升级",
+  "tags": "集群升级",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/operation/upgrade": {
+      "post": {
+        "tags": [
+          "集群升级"
+        ],
+        "operationId": "UpgradeCluster",
+        "summary": "集群升级",
+        "description": "集群升级。\n> - 集群升级涉及多维度的组件升级操作,强烈建议统一通过CCE控制台执行交互式升级,降低集群升级过程的业务意外受损风险;\n> - 当前集群升级相关接口受限开放。",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "in": "body",
+            "name": "UpgradeClusterRequestBody",
+            "description": "集群升级请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpgradeClusterRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示集群升级任务下发成功。",
+            "examples": {
+              "application/json": {
+                "metadata": {
+                  "uid": "976a33e2-f545-11ed-87af-0255ac1002c2"
+                },
+                "spec": {
+                  "clusterUpgradeAction": {
+                    "version": "v1.19.16-r20",
+                    "targetVersion": "v1.23.8-r0",
+                    "targetPlatformVersion": "cce.10",
+                    "strategy": {
+                      "type": "inPlaceRollingUpdate",
+                      "inPlaceRollingUpdate": {
+                        "userDefinedStep": 20
+                      }
+                    },
+                    "config": {}
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpgradeClusterResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "集群升级",
+        "x-order": 1,
+        "x-publishpath": "",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-request-examples-description-1": "升级集群至v1.23版本,并设置节点升级步长为20。",
+        "x-request-examples-url-1": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/operation/upgrade",
+        "x-request-examples-1": {
+          "metadata": {
+            "apiVersion": "v3",
+            "kind": "UpgradeTask"
+          },
+          "spec": {
+            "clusterUpgradeAction": {
+              "strategy": {
+                "type": "inPlaceRollingUpdate",
+                "inPlaceRollingUpdate": {
+                  "userDefinedStep": 20
+                }
+              },
+              "targetVersion": "v1.23"
+            }
+          }
+        },
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "UpgradeCluserResponseMetadata": {
+      "description": "升级任务元数据",
+      "properties": {
+        "uid": {
+          "description": "升级任务ID,可通过调用获取集群升级任务详情API查询进展",
+          "type": "string"
+        }
+      }
+    },
+    "ClusterUpgradeAction": {
+      "required": [
+        "strategy",
+        "targetVersion"
+      ],
+      "properties": {
+        "addons": {
+          "description": "插件配置列表",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UpgradeAddonConfig"
+          }
+        },
+        "nodeOrder": {
+          "description": "节点池内节点升级顺序配置。\n> key表示节点池ID,默认节点池取值为\"DefaultPool\"",
+          "type": "object",
+          "additionalProperties": {
+            "description": "对应节点池内的节点升级顺序配置",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/NodePriority"
+            }
+          }
+        },
+        "nodePoolOrder": {
+          "description": "节点池升级顺序配置,key/value对格式。\n> key表示节点池ID,默认节点池取值为\"DefaultPool\"\n> value表示对应节点池的优先级,默认值为0,优先级最低,数值越大优先级越高",
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "default": 0,
+            "description": "节点池的优先级,默认值为0,优先级最低,数值越大优先级越高"
+          }
+        },
+        "strategy": {
+          "description": "升级策略",
+          "$ref": "#/definitions/UpgradeStrategy"
+        },
+        "targetVersion": {
+          "description": "目标集群版本,例如\"v1.23\"",
+          "type": "string"
+        },
+        "isOnlyUpgrade": {
+          "description": "是否在集群升级流程中执行升级前检查。默认为false,表示会执行升级前检查,如果您在集群升级编排中调用了升级前检查的API,则升级时可用将该字段置为false,不再额外执行一次检查",
+          "type": "boolean"
+        }
+      }
+    },
+    "UpgradeResponseSpec": {
+      "description": "升级任务元数据",
+      "properties": {
+        "clusterUpgradeAction": {
+          "description": "集群升级配置",
+          "$ref": "#/definitions/ClusterUpgradeResponseAction"
+        }
+      }
+    },
+    "UpgradeAddonConfig": {
+      "required": [
+        "addonTemplateName",
+        "operation",
+        "version"
+      ],
+      "properties": {
+        "addonTemplateName": {
+          "description": "插件名称",
+          "type": "string"
+        },
+        "operation": {
+          "description": "执行动作,当前升级场景支持操作为\"patch\"",
+          "type": "string"
+        },
+        "version": {
+          "description": "目标插件版本号",
+          "type": "string"
+        },
+        "values": {
+          "type": "object",
+          "description": "插件参数列表,Key:Value格式"
+        }
+      }
+    },
+    "ClusterUpgradeResponseAction": {
+      "properties": {
+        "version": {
+          "description": "当前集群版本",
+          "type": "string"
+        },
+        "targetVersion": {
+          "description": "目标集群版本,例如\"v1.23\"",
+          "type": "string"
+        },
+        "targetPlatformVersion": {
+          "description": "目标集群的平台版本号,表示集群版本(version)下的内部版本,不支持用户指定。",
+          "type": "string"
+        },
+        "strategy": {
+          "description": "升级策略",
+          "$ref": "#/definitions/UpgradeStrategy"
+        },
+        "config": {
+          "description": "升级过程中指定的集群配置",
+          "type": "object"
+        }
+      }
+    },
+    "UpgradeClusterResponseBody": {
+      "description": "原地升级配置",
+      "properties": {
+        "metadata": {
+          "description": "升级任务元数据信息",
+          "$ref": "#/definitions/UpgradeCluserResponseMetadata"
+        },
+        "spec": {
+          "description": "升级配置信息",
+          "$ref": "#/definitions/UpgradeResponseSpec"
+        }
+      }
+    },
+    "UpgradeClusterRequestMetadata": {
+      "required": [
+        "apiVersion",
+        "kind"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "api版本,默认为v3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型,默认为UpgradeTask"
+        }
+      }
+    },
+    "UpgradeSpec": {
+      "properties": {
+        "clusterUpgradeAction": {
+          "description": "集群升级配置",
+          "$ref": "#/definitions/ClusterUpgradeAction"
+        }
+      }
+    },
+    "NodePriority": {
+      "required": [
+        "nodeSelector",
+        "priority"
+      ],
+      "description": "节点优先级批量配置",
+      "properties": {
+        "nodeSelector": {
+          "description": "节点标签选择器,选择一批节点",
+          "$ref": "#/definitions/NodeSelector"
+        },
+        "priority": {
+          "type": "integer",
+          "default": 0,
+          "description": "该批次节点的优先级,默认值为0,优先级最低,数值越大优先级越高"
+        }
+      }
+    },
+    "UpgradeClusterRequestBody": {
+      "required": [
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "metadata": {
+          "description": "升级元数据",
+          "$ref": "#/definitions/UpgradeClusterRequestMetadata"
+        },
+        "spec": {
+          "description": "升级配置信息",
+          "$ref": "#/definitions/UpgradeSpec"
+        }
+      }
+    },
+    "NodeSelector": {
+      "description": "节点标签选择器,匹配Kubernetes中nodeSelector相关约束",
+      "required": [
+        "key",
+        "operator"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "标签键"
+        },
+        "value": {
+          "type": "array",
+          "description": "标签值列表",
+          "items": {
+            "type": "string",
+            "description": "标签值"
+          }
+        },
+        "operator": {
+          "type": "string",
+          "description": "标签逻辑运算符"
+        }
+      }
+    },
+    "InPlaceRollingUpdate": {
+      "description": "原地升级配置",
+      "properties": {
+        "userDefinedStep": {
+          "type": "integer",
+          "description": "节点升级步长,取值范围为[1, 40],建议取值20"
+        },
+        "scope": {
+          "type": "string",
+          "description": "**参数解释:**\n节点升级批次作用域\n**约束限制:**\n不涉及\n**取值范围:**\n\"Cluster\":节点升级批次配置应用到整个集群,整个升级过程不重置升级批次\n\"NodePool\":节点升级批次配置应用到节点池,升级每个节点池都会重置升级批次\n**默认取值:**\n\"Cluster\""
+        }
+      }
+    },
+    "UpgradeStrategy": {
+      "required": [
+        "type"
+      ],
+      "description": "升级配置",
+      "properties": {
+        "type": {
+          "description": "升级策略类型,当前仅支持原地升级类型\"inPlaceRollingUpdate\"",
+          "type": "string"
+        },
+        "inPlaceRollingUpdate": {
+          "description": "原地升级配置,指定原地升级策略类型时必选。",
+          "$ref": "#/definitions/InPlaceRollingUpdate"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,176 @@
+{
+  "name": "GetBucketCustomdomain",
+  "summary": "获取桶的自定义域名",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "GetBucketCustomdomain",
+        "summary": "获取桶的自定义域名",
+        "description": "OBS使用GET操作来获取桶的自定义域名。\n\n要正确执行此操作,需要确保执行者有GetBucketcustomdomainConfiguration权限。桶拥有者默认具有此权限,并且可以将此权限授予其他人。\n\n有关权限控制的更多信息请参考《对象存储服务权限配置指南》的[OBS权限控制概述](https://support.huaweicloud.com/perms-cfg-obs/obs_40_0001.html)章节。\n\nOBS自定义域名配置暂不支持HTTPS访问,只支持HTTP访问自定义域名。如需导入证书使用HTTPS协议访问,请[提交工单](https://support.huaweicloud.com/usermanual-ticket/zh-cn_topic_0127038618.html)。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "/?customdomain",
+        "x-request-examples-1": "GET /?customdomain HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Mon, 14 Jan 2019 08:31:45 +0000\nAuthorization: OBS UDSIAMSTUBTEST000094:veTm8B18MPLFqNyGh2wmQqovZ2U=\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "customdomain",
+            "in": "query",
+            "required": true,
+            "description": "customdomain表示请求桶的自定义域名API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 000001697693130C80E9D2D29FA84FC2\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSM80AI9weqGUsIFJScVxSKlG4DmypX9\nContent-Type: application/xml\nDate: Wed, 13 Mar 2019 10:22:24 GMT\nContent-Length: 272\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ListBucketCustomDomainsResult xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n  <Domains>\n    <DomainName>obs.ccc.com</DomainName>\n    <CreateTime>2019-03-13T10:22:05.912Z</CreateTime>\n    <CertificateId>string</CertificateId>  // Certificate exist\n  </Domains>\n</ListBucketCustomDomainsResult>\n"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListBucketCustomDomainsResult"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Domains": {
+      "required": [
+        "DomainName",
+        "CreateTime"
+      ],
+      "description": "自定义域名元素。\n",
+      "properties": {
+        "DomainName": {
+          "description": "自定义域名。\n",
+          "type": "string"
+        },
+        "CreateTime": {
+          "description": "自定义域名创建时间。\n",
+          "type": "string"
+        },
+        "CertificateId": {
+          "type": "string",
+          "description": "自定义域名证书ID。\n"
+        }
+      }
+    },
+    "ListBucketCustomDomainsResult": {
+      "description": "自定义域名返回结果容器。\n",
+      "properties": {
+        "Domains": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Domains"
+          },
+          "description": "自定义域名元素。\n"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

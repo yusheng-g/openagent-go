@@ -1,0 +1,201 @@
+{
+  "name": "GetBucketTagging",
+  "summary": "获取桶标签",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "GetBucketTagging",
+        "summary": "获取桶标签",
+        "description": "OBS使用GET操作来获取指定桶的标签。\n\n要正确执行此操作,需要确保执行者有GetBucketTagging权限。缺省情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?tagging",
+        "x-request-examples-1": "GET /?tagging HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Wed, 27 Jun 2018 13:25:44 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:H1INcyc5i0XlHqYTfuzkPxLZUPM=\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "tagging",
+            "in": "query",
+            "required": true,
+            "description": "tagging表示请求桶标签API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nx-obs-request-id: 0002B7532E0000015BEB35330C5884X1\nx-obs-id-2: s12w20LYNQqSb7moq4ibgJwmQRSmVQV+rFBqplOGYkXUpXeS/nOmbkyD+E35K79j\nContent-Type: application/xml\nDate: Wed, 27 Jun 2018 13:25:44 GMT\nContent-Length: 441\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<Tagging xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n  <TagSet>\n    <Tag>\n      <Key>TagName1</Key>\n      <Value>TageSetVaule1</Value>\n    </Tag>\n  </TagSet>\n</Tagging>\n"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetBucketTaggingResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|NoSuchTagSet|指定的桶没有设置标签。|404 Not Found|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "description": "Tag信息的元素\n",
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "properties": {
+        "Key": {
+          "description": "Tag的名字\n",
+          "type": "string"
+        },
+        "Value": {
+          "description": "Tag的值\n",
+          "type": "string"
+        }
+      }
+    },
+    "GetBucketTaggingResponseBody": {
+      "properties": {
+        "Tagging": {
+          "$ref": "#/definitions/SetBucketTaggingRequestBody"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "SetBucketTaggingRequestBody": {
+      "xml": {
+        "name": "Tagging"
+      },
+      "description": "TagSet和Tag的元素\n",
+      "required": [
+        "TagSet"
+      ],
+      "properties": {
+        "TagSet": {
+          "description": "Tag的集合元素\n",
+          "required": [
+            "Tag"
+          ],
+          "properties": {
+            "Tag": {
+              "description": "Tag信息的元素\n",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Tag"
+              },
+              "minItems": 1,
+              "maxItems": 10
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

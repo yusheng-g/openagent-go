@@ -1,0 +1,136 @@
+{
+  "name": "ReclaimSubEnterpriseAmount",
+  "summary": "企业主账号从企业子账号回收拨款",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/retrieve-amount": {
+      "post": {
+        "summary": "企业主账号从企业子账号回收拨款",
+        "description": "企业主账号在自建平台回收给企业子账号的拨款。\n\n如果回收的是企业子账户的信用账户,可以回收所有额度;如果回收金额大于子账户信用余额的时候,可能会导致子账户欠费,请慎重选择。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "ReclaimSubEnterpriseAmount",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/retrieve-amount",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-04-28",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "企业主账号从企业子账号回收拨款请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RetrieveEnterpriseMultiAccountReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/retrieve-amount",
+        "x-request-examples-1": {
+          "customer_id": "e8a*****b9c",
+          "amount": "10",
+          "trans_id": "333333",
+          "balance_type": "BALANCE_TYPE_DEBIT",
+          "expire_time": "2020-12-31T15:59:59Z"
+        },
+        "responses": {
+          "204": {
+            "description": "默认返回:no content"
+          },
+          "400": {
+            "description": "|CBC.99007004:发起的业务操作存在不满足的业务检查项。SUB_CUSTOMER_NO_OWN_CREDIT企业子账号自己已有信用额度,不允许划拨信用额度 NO_SHARE_CREDIT_TO_SUB_PERMISSION子账号没有授予主账号“子账号共享主账号信用额度”权限,不能划拨或回收信用额度。TRANS_CREDIT_EXT_PRI_MUST_POSTPAY外部客户的主账号必须是后付费才能划拨信用额度给子账号 PRI_RESALE_BP_SUB_CUST_NOT_TRANS_CREDIT企业主账号是分销商转售模式的子客户,不允许给子账号划拨信用额度||CBC.99007181:划拨或回收的信用额度的有效期已过期。||CBC.99007009:交易事务ID重复。||CBC.99007001:企业主账号与子账号不存在关联,不能直接向企业子账号拨款/回收。||CBC.0100:parameter error|",
+            "schema": {
+              "$ref": "#/definitions/FailCheckItems"
+            }
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "FailCheckItems": {
+      "properties": {
+        "fail_check_items": {
+          "description": "不满足的业务规则检查项。 当错误码为CBC.99007004时返回。具体检查项参见”表1”。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RetrieveEnterpriseMultiAccountReq": {
+      "required": [
+        "customer_id",
+        "amount"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "企业子账号的客户ID。您可以调用查询企业子账号列表接口,获取响应参数“id”的返回值。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "e8a*****b9c"
+        },
+        "amount": {
+          "type": "string",
+          "description": "总回收金额。 金额单位为货币标准单位,如人民币则单位为元。取值大于0且精确到小数点后2位。",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": "10"
+        },
+        "trans_id": {
+          "type": "string",
+          "description": "交易序列号,用于防止重复提交。 如果接口调用方不传,则企业管理微服务后台生成如果接口调用方传入,则请采用UUID保证全局唯一",
+          "minLength": 0,
+          "maxLength": 32,
+          "example": "333333"
+        },
+        "balance_type": {
+          "type": "string",
+          "description": "账户类型: BALANCE_TYPE_DEBIT:余额账户(默认)BALANCE_TYPE_CREDIT:信用账户",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "BALANCE_TYPE_DEBIT"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "账户到期时间,UTC时间,格式为:2016-03-28T14:45:38Z。 暂只对信用账户有效,用于限制针对有效期到期时间等于该时间的信用账户余额进行回收。如果查询信用账户可回收余额的查询结果没有失效时间,表示永久有效,对于这种账本回收的情况无需填写。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2020-12-31T15:59:59Z"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

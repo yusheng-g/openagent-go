@@ -1,0 +1,197 @@
+{
+  "name": "BatchUpdatePublicRecordsetsTask",
+  "summary": "批量修改公网记录集",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/operation-task/batch-update-recordset": {
+      "post": {
+        "tags": [
+          "批量操作"
+        ],
+        "operationId": "BatchUpdatePublicRecordsetsTask",
+        "summary": "批量修改公网记录集",
+        "description": "提交批量修改公网记录集任务,返回任务ID。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "x-constraint": "仅支持公网域名。\n每个任务最多支持10000个记录集。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-enable-auth-anno": {
+          "type": "iam-token"
+        },
+        "x-iam-auth-meta-anno": {
+          "authLevel": "token",
+          "abacAction": "dns:recordset:batchUpdatePublicZoneRecordsets"
+        },
+        "x-cts-meta-anno": {
+          "resourceType": "publicRecordSet",
+          "traceName": "batchUpdatePublicRecordsetsTask",
+          "operationId": "BatchUpdatePublicRecordsetsTask"
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BatchUpdatePublicRecordsetsTaskRequestBody",
+            "in": "body",
+            "description": "批量修改公网记录集请求。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchUpdatePublicRecordsetsTaskRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量修改公网记录集响应。",
+            "examples": {
+              "application/json": {
+                "task_id": "97a820bba45f04abba75f9f82525fb11"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchOperationTaskResponseBody"
+            }
+          }
+        },
+        "x-request-examples-description-1": "批量修改公网记录集。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/operation-task/batch-update-recordset",
+        "x-request-examples-1": {
+          "zone_names": [
+            "example.com."
+          ],
+          "filter": {
+            "relation": "OR",
+            "conditions": [
+              {
+                "condition": "host_name",
+                "value": "www"
+              }
+            ]
+          },
+          "update_info": {
+            "key": "host_name",
+            "values": [
+              "www",
+              "api"
+            ]
+          }
+        },
+        "x-order": 9
+      }
+    }
+  },
+  "definitions": {
+    "BatchUpdatePublicRecordsetsTaskRequestBody": {
+      "required": [
+        "zone_names",
+        "filter",
+        "update_info"
+      ],
+      "type": "object",
+      "properties": {
+        "zone_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          },
+          "description": "**参数解释:**\n托管该记录的域名。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "minItems": 1,
+          "maxItems": 10000
+        },
+        "filter": {
+          "$ref": "#/definitions/BatchUpdatePublicRecordsetsFilter",
+          "description": "**参数解释:**\n过滤条件。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        },
+        "update_info": {
+          "$ref": "#/definitions/BatchUpdatePublicRecordsetsUpdateValue",
+          "description": "**参数解释:**\n待修改的信息。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        }
+      }
+    },
+    "BatchUpdatePublicRecordsetsFilter": {
+      "required": [
+        "relation",
+        "conditions"
+      ],
+      "properties": {
+        "relation": {
+          "type": "string",
+          "description": "**参数解释:**\n过滤条件之间的关系。\n**约束限制:**\n不涉及。\n**取值范围:**\n- OR:或\n- AND:与\n\n**默认取值:**\n不涉及。",
+          "pattern": "OR|AND"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BatchUpdatePublicRecordsetsConditionvalue"
+          },
+          "description": "**参数解释:**\n条件列表。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "minItems": 1,
+          "maxItems": 5
+        }
+      }
+    },
+    "BatchOperationTaskResponseBody": {
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "**参数解释:**\n批量操作任务的ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    },
+    "BatchUpdatePublicRecordsetsUpdateValue": {
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释:**\n待修改信息的键。\n**约束限制:**\n不涉及。\n**取值范围:**\n- host_name:主机记录。\n- rr_value: 记录值。\n\n**默认取值:**\n不涉及。",
+          "pattern": "host_name|rr_value"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 4096
+          },
+          "description": "**参数解释:**\n待修改信息的值。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "minItems": 1,
+          "maxItems": 50
+        }
+      }
+    },
+    "BatchUpdatePublicRecordsetsConditionvalue": {
+      "required": [
+        "condition"
+      ],
+      "properties": {
+        "condition": {
+          "type": "string",
+          "description": "**参数解释:**\n条件信息的键。\n**约束限制:**\n不涉及。\n**取值范围:**\n- host_name:主机记录。\n\n**默认取值:**\n不涉及。",
+          "pattern": "host_name"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释:**\n条件信息的值。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "minLength": 0,
+          "maxLength": 254
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,99 @@
+{
+  "name": "DeleteAutopilotAddonInstance",
+  "summary": "删除AddonInstance",
+  "tags": "插件管理(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/addons/{id}": {
+      "delete": {
+        "tags": [
+          "插件管理(Autopilot)"
+        ],
+        "summary": "删除AddonInstance",
+        "description": "删除插件实例的功能。",
+        "operationId": "DeleteAutopilotAddonInstance",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "插件实例id",
+            "required": true,
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "x-order": 1
+          },
+          {
+            "name": "cluster_id",
+            "in": "query",
+            "description": "集群 ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)",
+            "required": false,
+            "type": "string",
+            "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": "success"
+            },
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除AddonInstance",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

@@ -1,0 +1,216 @@
+{
+  "name": "NovaCreateKeypair",
+  "summary": "创建和导入SSH密钥",
+  "tags": "密钥密码管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/os-keypairs": {
+      "post": {
+        "tags": [
+          "密钥密码管理"
+        ],
+        "summary": "创建和导入SSH密钥",
+        "description": "创建SSH密钥,或把公钥导入系统,生成密钥对。\n\n创建SSH密钥成功后,请把响应数据中的私钥内容保存到本地文件,用户使用该私钥登录云服务器云主机。为保证云服务器云主机器安全,私钥数据只能读取一次,请妥善保管。",
+        "operationId": "NovaCreateKeypair",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "NovaCreateKeypairRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NovaCreateKeypairRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "keypair": {
+                  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWNgTxQYeBzK9LYy4IakX7IsIl5j5zqR6BU2GJaEg3RK6dlS7rKFQhvy/V/1emK+GT/7P8up9VsMZ9Dx6PBOLow5p+2/wGsMlwDJpWiQ8zNnEMg+u/Ar/ZhYHAMyKEAOOJxIcnPoUgxfNdj/eiXV98AabsBdUA7QD30Og8F4Bmn2lii/WD9KbQQVjb7kbB3gNIJpGTUcoX73arorqkq/ppaLRmmwMJ7bTIGl8/0MWU2Dy+eTByOaDMb2htbB+j8ZXyEu7Oooy0NaSd+PNHv3PZ9OIVO7gd1lyoTRvCMK/F346+zmZtk5EASSOx5RifnSwk3NtugVjXs9GMJfFLBRib Generated-by-Nova\n",
+                  "private_key": "-----BEGIN RSA PRIVATE KEY-----\n******\n-----END RSA PRIVATE KEY-----\n",
+                  "user_id": "6fc0d2cbbfab40b199874b97097e913d",
+                  "type": "ssh",
+                  "name": "demo",
+                  "fingerprint": "fc:47:b5:c3:7d:25:32:d5:d2:0c:19:f9:62:ac:8c:5a"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaCreateKeypairResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建和导入SSH密钥",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 65,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/{project_id}/os-keypairs",
+        "x-request-examples-1": {
+          "keypair": {
+            "public_key": "ssh-rsaAAAAB3NzaC1yc2EAAAADAQABAAABAQDWNgTxQYeBzK9LYy4IakX7IsIl5j5zqR6BU2GJaEg3RK6dlS7rKFQhvy/V/1emK+GT/7P8up9VsMZ9Dx6PBOLow5p+2/wGsMlwDJpWiQ8zNnEMg+u/Ar/ZhYHAMyKEAOOJxIcnPoUgxfNdj/eiXV98AabsBdUA7QD30Og8F4Bmn2lii/WD9KbQQVjb7kbB3gNIJpGTUcoX73arorqkq/ppaLRmmwMJ7bTIGl8/0MWU2Dy+eTByOaDMb2htbB+j8ZXyEu7Oooy0NaSd+PNHv3PZ9OIVO7gd1lyoTRvCMK/F346+zmZtk5EASSOx5RifnSwk3NtugVjXs9GMJfFLBRibGenerated-by-Nova\\n\n",
+            "type": "ssh",
+            "name": "demo1",
+            "user_id": "fake"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"keypair\": {\n        \"public_key\": \"ssh-rsaAAAAB3NzaC1yc2EAAAADAQABAAABAQDWNgTxQYeBzK9LYy4IakX7IsIl5j5zqR6BU2GJaEg3RK6dlS7rKFQhvy/V/1emK+GT/7P8up9VsMZ9Dx6PBOLow5p+2/wGsMlwDJpWiQ8zNnEMg+u/Ar/ZhYHAMyKEAOOJxIcnPoUgxfNdj/eiXV98AabsBdUA7QD30Og8F4Bmn2lii/WD9KbQQVjb7kbB3gNIJpGTUcoX73arorqkq/ppaLRmmwMJ7bTIGl8/0MWU2Dy+eTByOaDMb2htbB+j8ZXyEu7Oooy0NaSd+PNHv3PZ9OIVO7gd1lyoTRvCMK/F346+zmZtk5EASSOx5RifnSwk3NtugVjXs9GMJfFLBRibGenerated-by-Nova\\\\n\\n\",\n        \"type\": \"ssh\",\n        \"name\": \"demo1\",\n        \"user_id\": \"fake\"\n    }\n}",
+        "x-registered_to": "nova",
+        "x-support_json": "是",
+        "x-api_level": "2",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaCreateKeypairRequestBody": {
+      "required": [
+        "keypair"
+      ],
+      "properties": {
+        "keypair": {
+          "description": "创建或导入的SSH密钥信息。",
+          "$ref": "#/definitions/NovaCreateKeypairOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "NovaCreateKeypairOption": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "example": "ssh-rsaAAAAB3NzaC1yc2EAAAADAQABAAABAQDWNgTxQYeBzK9LYy4IakX7IsIl5j5zqR6BU2GJaEg3",
+          "description": "导入的公钥信息。\n\n建议导入的公钥长度不大于1024字节。\n\n说明:\n\n- 长度超过1024字节会导致云服务器注入该密钥失败。",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "type": {
+          "type": "string",
+          "example": "ssh",
+          "description": "密钥类型,值为“ssh”或“x509”。\n\n说明:\n\n- 微版本2.2支持。",
+          "enum": [
+            "ssh",
+            "x509"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "example": "test",
+          "description": "密钥名称。\n\n新创建的密钥名称不能和已有密钥名称相同。"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "62e37fbbbd6242739996b0792df66666",
+          "description": "密钥的用户ID。\n\n说明:\n\n- 微版本2.10支持。"
+        }
+      },
+      "description": " "
+    },
+    "NovaCreateKeypairResponseBody": {
+      "required": [
+        "keypair"
+      ],
+      "properties": {
+        "keypair": {
+          "description": "SSH密钥信息。",
+          "$ref": "#/definitions/NovaKeypair"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaKeypair": {
+      "required": [
+        "fingerprint",
+        "name",
+        "private_key",
+        "public_key",
+        "user_id"
+      ],
+      "properties": {
+        "fingerprint": {
+          "type": "string",
+          "description": "密钥对应指纹信息。"
+        },
+        "name": {
+          "type": "string",
+          "description": "密钥名称。"
+        },
+        "public_key": {
+          "type": "string",
+          "description": "密钥对应publicKey信息。"
+        },
+        "private_key": {
+          "type": "string",
+          "description": "密钥对应privateKey信息。\n\n- 创建SSH密钥时,响应中包括private_key的信息。\n- 导入SSH密钥时,响应中不包括private_key的信息。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "密钥所属用户ID。"
+        },
+        "type": {
+          "type": "string",
+          "description": "密钥类型,默认“ssh”\n\n微版本2.2以上支持"
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

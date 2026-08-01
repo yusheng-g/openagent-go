@@ -1,0 +1,801 @@
+{
+  "name": "ListPools",
+  "summary": "查询后端服务器组列表",
+  "tags": "后端服务器组",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/pools": {
+      "get": {
+        "x-request-examples-description-1": "后端服务器组列表",
+        "tags": [
+          "后端服务器组"
+        ],
+        "summary": "查询后端服务器组列表",
+        "description": "查询后端服务器组列表。",
+        "operationId": "ListPools",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组的描述信息\n支持多值查询,查询条件格式:*description=xxx&description=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组的管理状态。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 7
+          },
+          {
+            "name": "healthmonitor_id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组关联的健康检查的ID。\n支持多值查询,查询条件格式:*healthmonitor_id=xxx&healthmonitor_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组的ID。\n支持多值查询,查询条件格式:*id=xxx&id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 9
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组的名称。\n支持多值查询,查询条件格式:*name=xxx&name=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 10
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组绑定的负载均衡器ID。\n支持多值查询,查询条件格式:*loadbalancer_id=xxx&loadbalancer_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 11
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组的后端协议。\n支持多值查询,查询条件格式:*protocol=xxx&protocol=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:TCP、UDP、IP、TLS、HTTP、HTTPS、QUIC和GRPC。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 12
+          },
+          {
+            "name": "lb_algorithm",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组的负载均衡算法。\n支持多值查询,查询条件格式:*lb_algorithm=xxx&lb_algorithm=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- ROUND_ROBIN:加权轮询算法。\n- LEAST_CONNECTIONS:加权最少连接算法。\n- SOURCE_IP:源IP算法。\n- QUIC_CID:连接ID算法。\n- 2_TUPLE_HASH:二元组hash算法,仅IP类型的pool支持。\n- 3_TUPLE_HASH:三元组hash算法,仅IP类型的pool支持。\n- 5_TUPLE_HASH:五元组hash算法,仅IP类型的pool支持。\n- IP型pool不指定该字段时,默认设置为5_TUPLE_HASH。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 13
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:资源所属的企业项目ID。\n支持多值查询,查询条件格式:\n*enterprise_project_id=xxx&enterprise_project_id=xxx*。\n\n**约束限制**:\n如果enterprise_project_id不传值,默认查询所有企业项目下的资源,鉴权按照细粒度权限鉴权,必须在用户组下分配elb:pools:list权限。\n如果enterprise_project_id传值,鉴权按照企业项目权限鉴权,分为传入具体eps_id和all_granted_eps两种场景,前者查询指定eps_id的eps下的资源,后者查询的是所有有list权限的eps下的资源。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 14
+          },
+          {
+            "name": "ip_version",
+            "in": "query",
+            "description": "**参数解释**:后端服务器组支持的IP版本。\n支持多值查询,查询条件格式:*ip_version=xxx&ip_version=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 15
+          },
+          {
+            "name": "member_address",
+            "in": "query",
+            "description": "**参数解释**:后端服务器的IP地址。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*member_address=xxx&member_address=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 16
+          },
+          {
+            "name": "member_device_id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器对应的弹性云服务器的ID。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*member_device_id=xxx&member_device_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 17
+          },
+          {
+            "name": "member_deletion_protection_enable",
+            "in": "query",
+            "description": "**参数解释**:是否开启删除保护。\n\n**约束限制**:不涉及\n\n**取值范围**:false 不开启,true 开启,不传查询全部。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 18
+          },
+          {
+            "name": "listener_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:关联的监听器ID,包括通过l7policy关联的。\n支持多值查询,查询条件格式:*listener_id=xxx&listener_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "member_instance_id",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "**参数解释**:后端服务器ID。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*member_instance_id=xxx&member_instance_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "vpc_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:后端服务器组关联的虚拟私有云的ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:后端服务器组的类型。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- instance:允许任意类型的后端,type指定为该类型时,vpc_id是必选字段。\n- ip:只能添加IP类型后端,type指定为该类型时,vpc_id不允许指定。\n- 空字符串(\"\"):允许任意类型的后端\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "protection_status",
+            "in": "query",
+            "description": "**参数解释**:修改保护状态,\n\n**约束限制**:不涉及\n\n**取值范围**:\n- nonProtection: 不保护,默认值为nonProtection\n- consoleProtection: 控制台修改保护\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "connection_drain",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "**参数解释**:查询是否开启延迟注销的功能,查询条件格式:*connection_drain=true或者*connection_drain=false\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "x-open-region-cloud": "hc,hk,ocb"
+          },
+          {
+            "name": "pool_health",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:查询是否开启后端全下线转发功能,查询条件格式:*pool_health=minimum_healthy_member_count=0或者*pool_health=minimum_healthy_member_count=1\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string",
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "any_port_enable",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:后端是否开启全端口转发。开启后,后端服务器端口与前端监听器端口保持一致。\n\n**约束限制**:不涉及\n\n**取值范围**:false 不开启,true 开启。\n\n**默认取值**:不涉及",
+            "type": "boolean",
+            "x-open-region-cloud": "hc,hk,fcs"
+          },
+          {
+            "name": "public_border_group",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:公网边界组。\n支持多值查询,查询条件格式:*public_border_group=xxx&public_border_group=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组\n\n**默认取值**:不涉及",
+            "type": "string",
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "quic_cid_len",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:查询相同QUIC CID策略配置的后端服务器组,仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*quic_cid_len=3&quic_cid_len=5*\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "quic_cid_offset",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:查询相同QUIC CID策略配置的后端服务器组,仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*quic_cid_offset=1&quic_cid_offset=3*\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "az_affinity",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:查询后端服务器组可用区亲和性策略是否开启。示例如下:\n\"az_affinity\": {\n            \"enable\": \"true\"\n        }\n支持多值查询,查询条件格式:\n*az_affinity=enable=true&az_affinity=enable=false*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "cc07698a1f12dd65c7d70bf1c56e62e8",
+                "pools": [
+                  {
+                    "name": "server_group-0149",
+                    "id": "00ed68a5-8784-424e-8936-8dbb7a9d41e9",
+                    "description": "",
+                    "lb_algorithm": "ROUND_ROBIN",
+                    "protocol": "TCP",
+                    "admin_state_up": true,
+                    "loadbalancers": [],
+                    "type": "instance",
+                    "project_id": "0c1503d710984bad92306faea3654dfd",
+                    "enterprise_project_id": "0",
+                    "session_persistence": null,
+                    "slow_start": null,
+                    "healthmonitor_id": "a5f47d4c-1187-402f-849c-c0a7767e36f5",
+                    "listeners": [],
+                    "members": [
+                      {
+                        "id": "87b1130c-80dc-493d-b98a-add98ea4c6a2"
+                      }
+                    ],
+                    "ip_version": "dualstack",
+                    "member_deletion_protection_enable": false,
+                    "created_at": "2024-08-19T17:49:53Z",
+                    "updated_at": "2024-09-09T09:21:05Z",
+                    "protection_status": "nonProtection",
+                    "protection_reason": "",
+                    "vpc_id": "651594cf-18a0-4a77-942f-1a4ae216c123",
+                    "connection_drain": {
+                      "enable": true,
+                      "timeout": 300
+                    },
+                    "pool_health": {
+                      "minimum_healthy_member_count": 0
+                    },
+                    "az_affinity": {
+                      "enable": true,
+                      "az_minimum_healthy_member_percentage": -1,
+                      "az_minimum_healthy_member_count": 1,
+                      "az_unhealthy_fallback_strategy": "forward_to_all_member_of_local_az"
+                    },
+                    "quic_cid_hash_strategy": null,
+                    "public_border_group": "center",
+                    "any_port_enable": false
+                  },
+                  {
+                    "name": "server_group-9930-jpp",
+                    "id": "0149afd9-18b8-444f-ae7c-87f1b0ddacde",
+                    "description": "",
+                    "lb_algorithm": "ROUND_ROBIN",
+                    "protocol": "HTTP",
+                    "admin_state_up": true,
+                    "loadbalancers": [],
+                    "type": "instance",
+                    "project_id": "0c1503d710984bad92306faea3654dfd",
+                    "enterprise_project_id": "0",
+                    "session_persistence": null,
+                    "slow_start": {
+                      "enable": false,
+                      "duration": 30
+                    },
+                    "healthmonitor_id": "9e48250b-4e2a-402a-bc3d-e0c431e82d63",
+                    "listeners": [],
+                    "members": [
+                      {
+                        "id": "bd1500d4-a06d-47d9-bed7-2454b716f63e"
+                      }
+                    ],
+                    "ip_version": "v4",
+                    "member_deletion_protection_enable": false,
+                    "created_at": "2024-04-29T08:21:47Z",
+                    "updated_at": "2024-07-23T03:41:03Z",
+                    "protection_status": "nonProtection",
+                    "protection_reason": "",
+                    "vpc_id": "60cb5110-771b-4459-89cd-becb303263fc",
+                    "connection_drain": null,
+                    "pool_health": {
+                      "minimum_healthy_member_count": 0
+                    },
+                    "az_affinity": null,
+                    "quic_cid_hash_strategy": null,
+                    "public_border_group": "center",
+                    "any_port_enable": false
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "0149afd9-18b8-444f-ae7c-87f1b0ddacde",
+                  "previous_marker": "00ed68a5-8784-424e-8936-8dbb7a9d41e9",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListPoolsResponseBody"
+            }
+          }
+        },
+        "x-name": "查询后端服务器组列表",
+        "x-constraint": "- 分页查询使用的参数为marker、limit、page_reverse。\n\n- marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/pools?limit=2",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "AzAffinity": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:后端服务器组是否开启可用区亲和。开启后,负载均衡器会按照配置的亲和策略进行转发。\n\n**约束限制**:\n- 仅IP,TCP,UDP的pool支持。\n- TLS监听器绑定的pool不支持。\n- 开启后,原本的pool_health配置失效。\n\n**取值范围**:false不开启,true开启。\n\n**默认取值**:不涉及"
+        },
+        "az_minimum_healthy_member_percentage": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器组单可用区百分比健康度最小阈值,当“后端服务器组单可用区百分比健康度”小于该阈值时,触发可用区异常退避策略。“后端服务器组单可用区百分比健康度”是指在一个后端服务器组中,同可用区中健康检查结果正常的服务器数量与该后端服务器组中属于该可用区的后端服务器总数量的比值,百分比结果向上取整。例如:后端服务器组中属于可用区A的后端服务器总数量为3,设置后端服务器组单可用区百分比健康度最小阈值为66时,3x0.66=1.98向上取整为数量阈值2台,即属于可用区A的健康后端数小于2台时触发退避策略;设置后端服务器组单可用区百分比健康度最小阈值为67时,3x0.67=2.01向上取整为数量阈值3台,即属于可用区A的健康后端数小于3台时触发退避策略。\n\n**约束限制**:\n- enable为true时,az_minimum_healthy_member_percentage与az_minimum_healthy_member_count不能同时为-1\n- enable为true时,az_minimum_healthy_member_percentage与az_minimum_healthy_member_count不能同时不为-1\n\n**取值范围**:-1至100的整数,0-100为百分比范围,-1表示采用数量阈值。\n\n**默认取值**:不涉及"
+        },
+        "az_minimum_healthy_member_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器组单可用区中数量健康度最小阈值,当“后端服务器组单可用区中数量健康度”小于该阈值时,触发可用区异常退避策略。“后端服务器组单可用区中数量健康度”是指在一个后端服务器组中,属于同一个可用区的健康检查结果正常的服务器数量。\n\n**约束限制**:\n- enable为true时,az_minimum_healthy_member_percentage与az_minimum_healthy_member_count不能同时为-1\n- enable为true时,az_minimum_healthy_member_percentage与az_minimum_healthy_member_count不能同时不为-1\n\n**取值范围**:-1至10000的整数,0-10000为数量范围,-1表示采用百分比阈值。\n\n**默认取值**:不涉及"
+        },
+        "az_unhealthy_fallback_strategy": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组单可用区异常退避策略。后端服务器组的健康度小于所配置的最小阈值时,触发该退避策略。forward_to_all_member_of_local_az:转发至同可用区的所有后端服务器,无论健康检查结果是否正常;forward_to_healthy_member_of_remote_az:转发至非同可用区中所有健康检查结果正常的后端服务器;forward_to_all_healthy_member:转发至所有可用区中健康检查结果正常的后端服务器;forward_to_all_member:转发至所有可用区中的所有后端服务器,无论健康检查结果是否正常\n\n**约束限制**:不涉及\n\n**取值范围**:forward_to_all_member_of_local_az,forward_to_healthy_member_of_remote_az,forward_to_all_healthy_member,forward_to_all_member。\n\n**默认取值**:forward_to_all_member_of_local_az"
+        }
+      },
+      "required": [
+        "enable"
+      ]
+    },
+    "MemberRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": ""
+    },
+    "SlowStart": {
+      "required": [
+        "duration",
+        "enable"
+      ],
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:慢启动的开关。\n\n**取值范围**:\n- true:开启。\n- false:关闭。",
+          "default": false,
+          "x-huawei-extraAnnotation": ""
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:慢启动的持续时间。\n\n**取值范围**:30-1200,单位:秒。",
+          "minimum": 30,
+          "maximum": 1200,
+          "default": 30,
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "ConnectionDrain": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:延迟注销功能开关。\n\n**约束限制**:不涉及\n\n**取值范围**:true 开启,false 关闭。\n\n**默认取值**:不涉及"
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:延迟注销时间。\n\n**约束限制**:不涉及\n\n**取值范围**:10~4000,单位:秒。\n\n**默认取值**:不涉及"
+        }
+      }
+    },
+    "ListPoolsResponseBody": {
+      "required": [
+        "page_info",
+        "pools",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "pools": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组列表。",
+          "items": {
+            "$ref": "#/definitions/Pool"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "PoolHealth": {
+      "type": "object",
+      "properties": {
+        "minimum_healthy_member_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当健康检查在线的member个数小于该个数,判定pool的state为不健康。\n\n**取值范围**:\n- 0:默认值,不生效。\n- 1:全下线转发生效。"
+        }
+      }
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    },
+    "LoadBalancerRef": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器ID。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "Pool": {
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:后端服务器组的管理状态。只支持设置为true。\n\n**取值范围**:true 启用。"
+        },
+        "az_affinity": {
+          "description": "**参数解释**:后端服务器组的可用区亲和策略配置。",
+          "$ref": "#/definitions/AzAffinity"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的描述信息。\n\n**取值范围**:不涉及"
+        },
+        "healthmonitor_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组关联的健康检查的ID。\n\n**取值范围**:不涉及"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的ID。\n\n**取值范围**:不涉及"
+        },
+        "lb_algorithm": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的负载均衡算法。\n\n**取值范围**:\n- ROUND_ROBIN:加权轮询算法。\n- LEAST_CONNECTIONS:加权最少连接算法。\n- SOURCE_IP:源IP算法。\n- QUIC_CID:连接ID算法。\n- 2_TUPLE_HASH:二元组hash算法,仅IP类型的pool支持。\n- 3_TUPLE_HASH:三元组hash算法,仅IP类型的pool支持。\n- 5_TUPLE_HASH:五元组hash算法,仅IP类型的pool支持。\n- IP型pool不指定该字段时,默认设置为5_TUPLE_HASH。"
+        },
+        "listeners": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组关联的监听器ID列表。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          }
+        },
+        "loadbalancers": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组关联的负载均衡器ID列表。",
+          "items": {
+            "$ref": "#/definitions/LoadBalancerRef"
+          }
+        },
+        "members": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组中的后端服务器ID列表。",
+          "items": {
+            "$ref": "#/definitions/MemberRef"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的名称。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的后端协议。\n\n**取值范围**:TCP、UDP、IP、TLS、GRPC、HTTP、HTTPS和QUIC。"
+        },
+        "session_persistence": {
+          "description": "**参数解释**:会话持久性对象。",
+          "$ref": "#/definitions/SessionPersistence"
+        },
+        "ip_version": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组支持的IP版本。\n\n**取值范围**:\n- 共享型:固定为v4;\n- 独享型:取值dualstack、v4。当协议为TCP/UDP时,ip_version为dualstack,表示双栈。当协议为HTTP时,ip_version为v4。"
+        },
+        "slow_start": {
+          "description": "**参数解释**:慢启动信息。开启慢启动后,将会在设定的时间段(duration)内对新添加到后端服务器组的后端服务器进行预热,转发到该服务器的请求数量线性增加。",
+          "$ref": "#/definitions/SlowStart"
+        },
+        "member_deletion_protection_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否开启后端服务器移除保护。开关开启后,不允许从该ELB后端服务器组下移除后端服务器。\n\n**取值范围**:false不开启,true开启。\n\n> 退场时需要先关闭所有资源的删除保护开关。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组关联的虚拟私有云的ID。\n\n**取值范围**:不涉及"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的类型。\n\n**取值范围**:\n- instance:允许任意类型的后端,type指定为该类型时,vpc_id是必选字段。\n- ip:只能添加IP类型后端,type指定为该类型时,vpc_id不允许指定。pool的protocol为IP时,type不允许设置为ip。]\n- 空字符串(\"\"):允许任意类型的后端"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "**参数解释**:修改保护状态,。\n\n**取值范围**:\n- nonProtection: 不保护。\n- consoleProtection: 控制台修改保护。",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ],
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "**参数解释**:设置保护的原因。作为protection_status的转态设置的原因。\n\n**取值范围**:除'<'和'>'外通用Unicode字符集字符,最大255个字符。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk"
+        },
+        "any_port_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:后端是否开启全端口转发。开启后,后端服务器端口与前端监听器端口保持一致。关闭后,请求会转发给后端服务器protocol_port字段指定端口。\n\n**取值范围**:false 不开启,true 开启。"
+        },
+        "connection_drain": {
+          "description": "**参数解释**:后端服务器的延迟注销的功能配置(只针对TCP、UDP、QUIC协议类型的后端服务器组和TCP、UDP协议类的监听器)。\n以下场景会触发:\n- 后端服务器从后端服务器组中移除。\n- 后端服务器健康检查状态异常。\n- 后端服务器权重修改为0。",
+          "$ref": "#/definitions/ConnectionDrain"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "pool_health": {
+          "$ref": "#/definitions/PoolHealth",
+          "description": "**参数解释**:后端全下线转发配置。"
+        },
+        "public_border_group": {
+          "type": "string",
+          "description": "**参数解释**:公网边界组。\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组"
+        },
+        "quic_cid_hash_strategy": {
+          "description": "**参数解释**:后端服务器组基于部分DST CID的多径分发策略配置。",
+          "$ref": "#/definitions/QuicCidHashStrategy"
+        }
+      },
+      "description": "**参数解释**:后端服务器组对象。",
+      "required": [
+        "admin_state_up",
+        "description",
+        "healthmonitor_id",
+        "id",
+        "lb_algorithm",
+        "listeners",
+        "loadbalancers",
+        "members",
+        "name",
+        "project_id",
+        "protocol",
+        "session_persistence",
+        "ip_version",
+        "slow_start",
+        "member_deletion_protection_enable",
+        "vpc_id",
+        "type"
+      ],
+      "type": "object"
+    },
+    "QuicCidHashStrategy": {
+      "type": "object",
+      "required": [
+        "len",
+        "offset"
+      ],
+      "properties": {
+        "len": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:表示hash的时候取CID的长度。\n\n**约束限制**:仅当负载均衡算法为QUIC_CID的时候才生效。\n\n**取值范围**:1-20\n\n**默认取值**:3"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:表示hash的时候取CID的偏移量。\n\n**约束限制**:仅当负载均衡算法为QUIC_CID的时候才生效。\n\n**取值范围**:0-19\n\n**默认取值**:1"
+        }
+      }
+    },
+    "SessionPersistence": {
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "cookie_name": {
+          "type": "string",
+          "description": "**参数解释**:cookie名称。\n\n**取值范围**:最大长度1024个字符。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:会话保持类型。\n\n**取值范围**:\n- SOURCE_IP:基于源IP地址的会话保持,也就是根据客户端的源IP地址将流量持续转发到同一后端服务器(member)。\n- HTTP_COOKIE:通过在HTTP响应中插入一个特殊的Cookie,实现会话保持。负载均衡会在后续请求中识别该Cookie,并将请求转发到对应的后端服务器。\n- APP_COOKIE:基于应用层Cookie的会话保持。与HTTP_COOKIE不同的是,APP_COOKIE要求后端服务在响应中插入一个指定名称的Cookie,负载均衡器识别后,将后续请求转发到相同后端member。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "persistence_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:会话保持的时间。当type为APP_COOKIE时不生效。\n\n**取值范围**:\n- 若pool的protocol为TCP、UDP和QUIC则范围为[1,60](分钟),默认值1。\n- 若pool的protocol为HTTP和HTTPS则范围为[1,1440](分钟),默认值1440。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

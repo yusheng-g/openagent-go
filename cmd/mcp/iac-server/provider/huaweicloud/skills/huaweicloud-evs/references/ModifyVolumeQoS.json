@@ -1,0 +1,206 @@
+{
+  "name": "ModifyVolumeQoS",
+  "summary": "修改云硬盘QoS",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/{project_id}/cloudvolumes/{volume_id}/qos": {
+      "put": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "修改云硬盘QoS",
+        "description": "调整云硬盘的iops或者吞吐量。",
+        "operationId": "ModifyVolumeQoS",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ModifyVolumeQoSRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModifyVolumeQoSRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-admin": false,
+            "x-internal": false,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "volume_id",
+            "in": "path",
+            "description": "云硬盘ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-admin": false,
+            "x-internal": false,
+            "x-open-region-cloud": ""
+          }
+        ],
+        "deprecated": false,
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JobResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": "XXXX",
+                  "message": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "x-name": "修改云硬盘QoS",
+        "x-constraint": "云硬盘状态是available、in-use。\nGPSSD2类型云硬盘允许修改iops和吞吐量,ESSD2类型云硬盘允许修改iops,其他类型云硬盘不支持。",
+        "x-version": "v5",
+        "x-scope": "Commercial",
+        "x-order": 19,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v5/{project_id}/cloudvolumes/{volume_id}/qos",
+        "x-request-examples-1": {
+          "qos_modify": {
+            "iops": 10000,
+            "throughput": 200
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"qos_modify\": {\n        \"iops\":10000,\n       \"throughput\": 200\n    }\n}",
+        "x-publishpath": "evs_04_3006",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "EVS.2234",
+            "httpStatus": "400",
+            "errorMessage": "only ESSD2 and GPSSD2 can modify qos.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ic75c90b8abd4869bd479e8b5861273a"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ModifyVolumeQoSOption": {
+      "required": [
+        "iops"
+      ],
+      "properties": {
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "修改后的云硬盘iops,只支持GPSSD2、ESSD2类型的云硬盘。\n\n说明:\n了解GPSSD2、ESSD2类型的iops大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。",
+          "x-admin": false,
+          "x-internal": false
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "修改后的云硬盘吞吐量,单位是MiB/s,GPSSD2类型云盘必须填写,其他类型不能填写。\n\n说明:\n了解GPSSD2类型的吞吐量大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。",
+          "x-admin": false,
+          "x-internal": false
+        }
+      },
+      "description": ""
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "JobResponseBody": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string"
+        }
+      },
+      "description": ""
+    },
+    "ModifyVolumeQoSRequestBody": {
+      "required": [
+        "qos_modify"
+      ],
+      "properties": {
+        "qos_modify": {
+          "description": "标记修改云硬盘QoS操作。",
+          "$ref": "#/definitions/ModifyVolumeQoSOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

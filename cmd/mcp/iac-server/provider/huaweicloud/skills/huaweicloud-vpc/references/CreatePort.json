@@ -1,0 +1,671 @@
+{
+  "name": "CreatePort",
+  "summary": "创建端口",
+  "tags": "端口",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/ports": {
+      "post": {
+        "tags": [
+          "端口"
+        ],
+        "summary": "创建端口",
+        "description": "创建端口。",
+        "operationId": "CreatePort",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "port",
+            "description": "创建端口对象",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePortRequestBody"
+            },
+            "x-order": 3,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "port": {
+                  "id": "d00f9c13-412f-4855-8af3-de5d8c24cd60",
+                  "name": "test",
+                  "status": "DOWN",
+                  "admin_state_up": "true",
+                  "fixed_ips": [
+                    {
+                      "subnet_id": "70f2e74b-e660-410a-b754-0ca46744348a",
+                      "ip_address": "10.128.1.10"
+                    }
+                  ],
+                  "dns_name": "",
+                  "mac_address": "fa:16:3e:d7:f2:6c",
+                  "network_id": "5b808927-13c9-4e60-a4f4-ed6ffe225167",
+                  "tenant_id": "43f2d1cca56a40729dcb17212482f34d",
+                  "device_id": "",
+                  "device_owner": "",
+                  "security_groups": [
+                    "02b4e8ee-74fa-4a31-802e-5490df11245e"
+                  ],
+                  "extra_dhcp_opts": [],
+                  "allowed_address_pairs": [],
+                  "binding:vnic_type": "normal",
+                  "enable_efi": "false"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PortResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建端口",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 20,
+        "x-request-examples-description-1": "创建VIP",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v1/{project_id}/ports",
+        "x-request-examples-1": {
+          "port": {
+            "network_id": "28a1c93c-9a5e-4a9f-813b-e495bdef7d34",
+            "device_owner": "neutron:VIP_PORT",
+            "security_groups": [
+              "f2c5b3fc-b971-4a86-87b9-032586260e3e"
+            ]
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"port\": {\n        \"network_id\": \"28a1c93c-9a5e-4a9f-813b-e495bdef7d34\",\n        \"device_owner\": \"neutron:VIP_PORT\",\n        \"security_groups\": [\n            \"f2c5b3fc-b971-4a86-87b9-032586260e3e\"\n        ]\n    }\n}",
+        "x-request-examples-description-2": "指定IP创建端口",
+        "x-request-examples-url-2": "POST https://{Endpoint}/v1/{project_id}/ports",
+        "x-request-examples-2": {
+          "port": {
+            "fixed_ips": [
+              {
+                "ip_address": "192.168.0.38",
+                "subnet_id": "06bc2359-d75e-4f96-82f4-313e39c7148c"
+              }
+            ],
+            "network_id": "28a1c93c-9a5e-4a9f-813b-e495bdef7d34",
+            "security_groups": [
+              "f2c5b3fc-b971-4a86-87b9-032586260e3e"
+            ]
+          }
+        },
+        "x-request-examples-text-2": "{\n    \"port\": {\n        \"fixed_ips\": [\n            {\n                \"ip_address\": \"192.168.0.38\",\n                \"subnet_id\": \"06bc2359-d75e-4f96-82f4-313e39c7148c\"\n            }\n        ],\n        \"network_id\": \"28a1c93c-9a5e-4a9f-813b-e495bdef7d34\",\n        \"security_groups\": [\n            \"f2c5b3fc-b971-4a86-87b9-032586260e3e\"\n        ]\n    }\n}",
+        "x-request-examples-description-3": "自动分配IP创建端口",
+        "x-request-examples-url-3": "POST https://{Endpoint}/v1/{project_id}/ports",
+        "x-request-examples-3": {
+          "port": {
+            "network_id": "28a1c93c-9a5e-4a9f-813b-e495bdef7d34",
+            "security_groups": [
+              "f2c5b3fc-b971-4a86-87b9-032586260e3e"
+            ]
+          }
+        },
+        "x-request-examples-text-3": "{\n    \"port\": {\n        \"network_id\": \"28a1c93c-9a5e-4a9f-813b-e495bdef7d34\",\n        \"security_groups\": [\n            \"f2c5b3fc-b971-4a86-87b9-032586260e3e\"\n        ]\n    }\n}",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-07-01",
+        "x-open-region-cloud": "hc,hk,hcso",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreatePortRequestBody": {
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "port": {
+          "description": "端口对象",
+          "$ref": "#/definitions/CreatePortOption",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "CreatePortOption": {
+      "required": [
+        "network_id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:端口名称\n取值范围:0~255个字符,支持中文、英文、字母、_(下划线)、-(中划线),默认为空",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "功能说明:端口所属网络的ID\n约束:必须是存在的网络ID",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "fixed_ips": {
+          "type": "array",
+          "description": "功能说明:端口IP\n例如:\"fixed_ips\": [{\"subnet_id\": \"4dc70db6-cb7f-4200-9790-a6a910776bba\", \"ip_address\": \"192.169.25.79\"}]\n约束:ipv4场景下一个端口只支持一个fixed_ip,且不支持更新",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/FixedIp"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "device_owner": {
+          "type": "string",
+          "description": "功能说明:端口设备所属\n取值范围:目前只支持指定\"\"和\"neutron:VIP_PORT\";neutron:VIP_PORT表示创建的是VIP",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "功能说明:安全组的ID列表;例如:\"security_groups\": [\"a0608cbf-d047-4f54-8b28-cd7b59853fff\"]\n取值范围:默认值为系统默认安全组",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:管理状态\n取值范围:只支持true,默认为true",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "功能说明:IP/Mac对列表\n约束:IP地址不允许为 “0.0.0.0/0”\n如果配置的地址池较大(CIDR掩码小于24位),建议为该port配置一个单独的安全组。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowedAddressPair"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "extra_dhcp_opts": {
+          "type": "array",
+          "description": "功能说明:DHCP的扩展Option(扩展属性)",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ExtraDhcpOpt"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "功能说明:端口所属项目ID",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "FixedIp": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "example": "192.168.0.24",
+          "description": "功能说明:端口IP地址,如果同时指定子网ID和IP地址,会尝试将该子网上的IP地址分配给该端口。\n如果仅指定子网ID,会将该子网中的可用IP分配给该端口。\n如果仅指定IP地址,会尝试分配IP地址(如果该地址是指定网络上任何子网的有效IP)",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "功能说明:端口所属子网ID,如果同时指定子网ID和IP地址,会尝试将该子网上的IP地址分配给该端口。\n如果仅指定子网ID,会将该子网中的可用IP分配给该端口。\n如果仅指定IP地址,会尝试分配IP地址(如果该地址是指定网络上任何子网的有效IP)",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ExtraDhcpOpt": {
+      "properties": {
+        "opt_name": {
+          "type": "string",
+          "description": "Option名称",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "opt_value": {
+          "type": "string",
+          "description": "Option值",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "Port": {
+      "required": [
+        "admin_state_up",
+        "allowed_address_pairs",
+        "binding:profile",
+        "binding:vif_details",
+        "binding:vnic_type",
+        "device_id",
+        "device_owner",
+        "dns_assignment",
+        "dns_name",
+        "enable_efi",
+        "extra_dhcp_opts",
+        "fixed_ips",
+        "id",
+        "instance_id",
+        "instance_type",
+        "ipv6_bandwidth_id",
+        "mac_address",
+        "name",
+        "network_id",
+        "port_security_enabled",
+        "security_groups",
+        "status",
+        "tenant_id",
+        "zone_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "端口ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:端口名称\n取值范围:0~255个字符,支持中文、英文、字母、_(下划线)、-(中划线)",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "端口所属网络的ID",
+          "x-admin": "False"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:管理状态\n约束:只支持true,默认为true"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "功能描述:端口MAC地址\n约束:由系统分配,不支持指定",
+          "x-admin": "False"
+        },
+        "fixed_ips": {
+          "type": "array",
+          "description": "功能说明:端口IP\n例如:\"fixed_ips\": [{\"subnet_id\": \"4dc70db6-cb7f-4200-9790-a6a910776bba\", \"ip_address\": \"192.169.25.79\"}]\n约束:一个端口只支持一个fixed_ip,且不支持更新。",
+          "items": {
+            "$ref": "#/definitions/FixedIp"
+          },
+          "x-admin": "False"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "功能说明:端口所属设备ID\n约束:不支持设置和更新,由系统自动维护",
+          "x-admin": "False"
+        },
+        "device_owner": {
+          "type": "string",
+          "description": "功能说明:设备所属\n取值范围:合法设备所属,如network:dhcp、neutron:VIP_PORT、network:router_interface_distributed、network:router_centralized_snat\n约束:不支持设置和更新,由系统自动维护",
+          "enum": [
+            "network:dhcp",
+            "neutron:VIP_PORT",
+            "network:router_interface_distributed",
+            "network:router_centralized_snat"
+          ]
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "x-admin": "False"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:端口状态,Hana硬直通虚拟机端口状态总为DOWN\n取值范围:ACTIVE、BUILD、DOWN",
+          "enum": [
+            "ACTIVE",
+            "BUILD",
+            "DOWN"
+          ],
+          "x-admin": "False"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "安全组的ID列表",
+          "items": {
+            "type": "string"
+          },
+          "x-admin": "False"
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "功能说明:IP/Mac对列表\n约束:IP地址不允许为 “0.0.0.0”\n如果配置地址池较大(CIDR掩码小于24位),建议为该port配置一个单独的安全组。",
+          "items": {
+            "$ref": "#/definitions/AllowedAddressPair"
+          },
+          "x-admin": "False"
+        },
+        "extra_dhcp_opts": {
+          "type": "array",
+          "description": "功能说明:DHCP的扩展Option(扩展属性)",
+          "items": {
+            "$ref": "#/definitions/ExtraDhcpOpt"
+          },
+          "x-admin": "False"
+        },
+        "binding:vnic_type": {
+          "type": "string",
+          "description": "功能说明:绑定的vNIC类型\n取值范围:\n - normal(软交换)\n - direct: SRIOV硬直通(不支持)",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "dns_assignment": {
+          "type": "array",
+          "description": "功能说明:主网卡默认内网域名信息\n约束:不支持设置和更新,由系统自动维护",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/DnsAssignMent"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "dns_name": {
+          "type": "string",
+          "description": "功能说明:主网卡默认内网DNS名称\n约束:不支持设置和更新,由系统自动维护"
+        },
+        "binding:vif_details": {
+          "description": "功能说明:vif的详细信息。",
+          "$ref": "#/definitions/BindingVifDetails",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "binding:profile": {
+          "type": "object",
+          "description": "功能说明:提供用户设置自定义信息(扩展属性)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "功能说明:端口所属实例ID,例如RDS实例ID\n约束:不支持设置和更新,由系统自动维护",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "instance_type": {
+          "type": "string",
+          "description": "功能说明:端口所属实例类型,例如“RDS”\n约束:不支持设置和更新,由系统自动维护",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "port_security_enabled": {
+          "type": "boolean",
+          "description": "功能说明:端口安全使能标记,如果不使能则安全组和dhcp防欺骗不生效\n取值范围:启用(true)或禁用(false)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "zone_id": {
+          "type": "string",
+          "description": "功能说明:port所属的可用分区",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "enable_efi": {
+          "type": "boolean",
+          "description": "功能说明:是否使能efi,使能则表示端口支持vRoCE能力,默认为false",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "ipv6_bandwidth_id": {
+          "type": "string",
+          "description": "功能说明:IPv6网卡绑定的共享带宽ID\n约束:只有IPv6网卡绑定了共享带宽,才会显示此参数",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": ""
+    },
+    "AllowedAddressPair": {
+      "required": [
+        "ip_address"
+      ],
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "功能说明:IP地址\n取值范围:可以是IP地址或CIDR\n约束:不支持0.0.0.0/0如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组。\n如果填写allowed_address_pairs参数,则ip_address是必选参数。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "mac地址",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        }
+      },
+      "description": ""
+    },
+    "PortResponseBody": {
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "port": {
+          "description": "端口对象",
+          "$ref": "#/definitions/Port",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "DnsAssignMent": {
+      "properties": {
+        "hostname": {
+          "type": "string",
+          "description": "端口hostname",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "ip_address": {
+          "type": "string",
+          "description": "端口IP地址",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "fqdn": {
+          "type": "string",
+          "description": "端口内网fqdn",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "BindingVifDetails": {
+      "properties": {
+        "primary_interface": {
+          "type": "boolean",
+          "description": "是否为虚拟机的主网卡。"
+        },
+        "port_filter": {
+          "type": "boolean",
+          "description": "是否提供端口过滤特性, 如安全组和反MAC/IP欺骗。"
+        },
+        "ovs_hybrid_plug": {
+          "type": "boolean",
+          "description": "是否为ovs/bridge混合模式。"
+        },
+        "vlan_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "辅助弹性网卡的vlan ID。"
+        },
+        "parent_id": {
+          "type": "string",
+          "description": "辅助弹性网卡的宿主网卡ID。"
+        },
+        "parent_device_id": {
+          "type": "string",
+          "description": "辅助弹性网卡的宿主网卡所属的设备ID。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,225 @@
+{
+  "name": "ListTemplates",
+  "summary": "查询模板列表",
+  "tags": "模板",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/launch-templates": {
+      "get": {
+        "tags": [
+          "模板"
+        ],
+        "summary": "查询模板列表",
+        "description": "根据用户请求条件从数据库筛选、查询启动模板相关信息。",
+        "operationId": "ListTemplates",
+        "x-huawei-security": {
+          "policyCheck": {
+            "adminRule": "rule:context_is_admin",
+            "authRule": "rule:all_roles or rule:normal_admin_rst_spd_user_t"
+          },
+          "pdpKey": "ecs:launchTemplates:list"
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "max number of resources to return",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "next page resource index id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "launch_template_id",
+            "in": "query",
+            "description": "模板ID",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "模板名称",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "headers": {
+              "X-Request-Id": {
+                "type": "string",
+                "description": "请求id"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListTemplatesResponseBody"
+            }
+          }
+        },
+        "x-name": "查询模板列表",
+        "x-constraint": "无",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 108,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/{project_id}/launch-templates",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2025-6-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ResponsePageInfoV3": {
+      "type": "object",
+      "properties": {
+        "next_marker": {
+          "x-ifnull": "show-provided",
+          "type": "string"
+        },
+        "previous_marker": {
+          "x-ifnull": "show-provided",
+          "type": "string"
+        }
+      }
+    },
+    "ListTemplatesResponseBody": {
+      "required": [
+        "launch_templates",
+        "page_info"
+      ],
+      "type": "object",
+      "properties": {
+        "launch_templates": {
+          "type": "array",
+          "description": "模板列表",
+          "items": {
+            "$ref": "#/definitions/LaunchTemplate"
+          }
+        },
+        "page_info": {
+          "x-ifnull": "show-provided",
+          "$ref": "#/definitions/ResponsePageInfoV3"
+        }
+      }
+    },
+    "LaunchTemplate": {
+      "required": [
+        "id",
+        "name",
+        "description",
+        "created_at",
+        "updated_at",
+        "default_version",
+        "latest_version",
+        "enterprise_project_id"
+      ],
+      "type": "object",
+      "x-data-category": [
+        "db"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "模板id",
+          "x-data-category-db": "ID",
+          "example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67",
+          "x-ifnull": "hide"
+        },
+        "name": {
+          "type": "string",
+          "description": "模板名称",
+          "x-data-category-db": "NAME",
+          "example": "my-template",
+          "x-ifnull": "hide"
+        },
+        "description": {
+          "type": "string",
+          "description": "模板描述",
+          "x-data-category-db": "DESCRIPTION",
+          "example": "this template is used for XXXXXX",
+          "x-ifnull": "hide"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "创建时间",
+          "x-data-category-db": "CREATED_AT",
+          "example": "XXXXX-XX-XX",
+          "x-ifnull": "hide"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "更新时间",
+          "x-data-category-db": "UPDATED_AT",
+          "example": "XXXXX-XX-XX",
+          "x-ifnull": "hide"
+        },
+        "default_version": {
+          "type": "integer",
+          "description": "模板默认版本号",
+          "x-data-category-db": "DEFAULT_VERSION",
+          "example": 2,
+          "x-ifnull": "hide"
+        },
+        "latest_version": {
+          "type": "integer",
+          "description": "模板最新版本号",
+          "x-data-category-db": "LATEST_VERSION",
+          "example": 3,
+          "x-ifnull": "hide"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

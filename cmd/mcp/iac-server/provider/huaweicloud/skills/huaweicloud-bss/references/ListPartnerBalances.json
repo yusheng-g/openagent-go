@@ -1,0 +1,167 @@
+{
+  "name": "ListPartnerBalances",
+  "summary": "查询云经销商账户余额",
+  "tags": "管理客户账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/partner-accounts/balances": {
+      "get": {
+        "summary": "查询云经销商账户余额",
+        "description": "华为云总经销商(一级经销商)可以查询关联的云经销商(二级经销商)的账户余额;云经销商伙伴可以查询自己的账户余额。",
+        "tags": [
+          "管理客户账户(伙伴)"
+        ],
+        "operationId": "ListPartnerBalances",
+        "x-externalURL": "/v2/accounts/partner-accounts/balances",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-flowControl": 20,
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。华为云总经销商(一级经销商)查询云经销商(二级经销商)余额时,需要携带该参数;除此之外,此参数不做处理。否则只能查询自己的账户余额。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "64*****d5a",
+            "x-site": "HC"
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/accounts/partner-accounts/balances?indirect_partner_id=0977ffa9f20010790f0fc003f6900520",
+        "responses": {
+          "200": {
+            "description": "查询伙伴账户余额响应",
+            "schema": {
+              "$ref": "#/definitions/QueryPartnerAccountBalancesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "account_balances": [
+                  {
+                    "account_id": "AT0010169C22C887F8",
+                    "account_type": 1,
+                    "amount": 100,
+                    "currency": "CNY",
+                    "designated_amount": 0.0,
+                    "credit_amount": 0.0,
+                    "measure_id": 1,
+                    "memo": null
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理客户账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryPartnerAccountBalancesRsp": {
+      "properties": {
+        "account_balances": {
+          "description": "账户余额列表。 具体请参见表2",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountBalanceV2"
+          }
+        }
+      }
+    },
+    "AccountBalanceV2": {
+      "required": [
+        "account_id",
+        "account_type",
+        "amount",
+        "currency",
+        "measure_id"
+      ],
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "description": "账户标识。",
+          "example": ""
+        },
+        "account_type": {
+          "description": "账户类型: 1:余额2:信用5:奖励7:保证金8:可拨款",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "amount": {
+          "description": "账户余额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币。",
+          "example": "",
+          "default": "CNY"
+        },
+        "designated_amount": {
+          "description": "专款专用余额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "credit_amount": {
+          "description": "总信用额度。只有account_type取值为2时,该字段才有效。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位。 1:元。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "memo": {
+          "type": "string",
+          "description": "备注。",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

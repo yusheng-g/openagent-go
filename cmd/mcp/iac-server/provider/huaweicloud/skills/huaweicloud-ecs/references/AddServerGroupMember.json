@@ -1,0 +1,128 @@
+{
+  "name": "AddServerGroupMember",
+  "summary": "添加云服务器组成员",
+  "tags": "云服务器组管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/os-server-groups/{server_group_id}/action": {
+      "post": {
+        "tags": [
+          "云服务器组管理"
+        ],
+        "summary": "添加云服务器组成员",
+        "description": "将云服务器加入云服务器组。添加成功后,如果该云服务器组是反亲和性策略的,则该云服务器与云服务器组中的其他成员尽量分散地创建在不同主机上。如果该云服务器时故障域类型的,则该云服务器会拥有故障域属性。",
+        "operationId": "AddServerGroupMember",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "server_group_id",
+            "in": "path",
+            "description": "云服务器组ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "5bbcc3c4-1da2-4437-a48a-66f15b1b13f9",
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "AddServerGroupMemberRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddServerGroupMemberRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "x-name": "添加云服务器组成员",
+        "x-constraint": "- 待添加的弹性云服务器已关机。\n\n- 仅支持添加虚拟化类型为KVM的弹性云服务器。\n\n- 当前只支持反亲和性策略,即同一云服务器组中的弹性云服务器分散地创建在不同的主机上,提高业务的可靠性。",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 63,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/os-server-groups/{server_group_id}/action",
+        "x-request-examples-1": {
+          "add_member": {
+            "instance_uuid": "34dac9a0-c4a7-457b-bab2-e2c696e0e401"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"add_member\": {\n        \"instance_uuid\": \"34dac9a0-c4a7-457b-bab2-e2c696e0e401\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-9-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "tlf,hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ServerGroupMember": {
+      "required": [
+        "instance_uuid"
+      ],
+      "properties": {
+        "instance_uuid": {
+          "type": "string",
+          "example": "34dac9a0-c4a7-457b-bab2-e2c696e0e401",
+          "description": "云服务器UUID。"
+        }
+      },
+      "description": "云服务器组添加、删除成员列表"
+    },
+    "AddServerGroupMemberRequestBody": {
+      "required": [
+        "add_member"
+      ],
+      "properties": {
+        "add_member": {
+          "description": "待添加进云服务器组的云服务器信息。",
+          "$ref": "#/definitions/ServerGroupMember",
+          "x-obc": "",
+          "x-admin": "",
+          "x-internal": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

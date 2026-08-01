@@ -1,0 +1,350 @@
+{
+  "name": "ShowDomainRoleAssignments",
+  "summary": "查询指定账号中的授权记录",
+  "tags": "权限管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-PERMISSION/role-assignments": {
+      "get": {
+        "tags": [
+          "权限管理"
+        ],
+        "operationId": "ShowDomainRoleAssignments",
+        "summary": "查询指定账号中的授权记录",
+        "description": "该接口用于查询指定账号中的授权记录。\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "query",
+            "required": true,
+            "description": "待查询账号ID。",
+            "type": "string"
+          },
+          {
+            "name": "role_id",
+            "in": "query",
+            "required": false,
+            "description": "策略ID。",
+            "type": "string"
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "required": false,
+            "description": "授权主体,取值范围:user、group、agency。该参数与subject.user_id、subject.group_id、subject.agency_id只能选择一个。",
+            "type": "string"
+          },
+          {
+            "name": "subject.user_id",
+            "in": "query",
+            "required": false,
+            "description": "授权的IAM用户ID。",
+            "type": "string"
+          },
+          {
+            "name": "subject.group_id",
+            "in": "query",
+            "required": false,
+            "description": "授权的用户组ID。",
+            "type": "string"
+          },
+          {
+            "name": "subject.agency_id",
+            "in": "query",
+            "required": false,
+            "description": "授权的委托ID。",
+            "type": "string"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "description": "授权范围,取值范围:project、domain、enterprise_project。该参数与scope.project_id、scope.domain_id、scope.enterprise_projects_id只能选择一个。\n> - 如需查看全局服务授权记录,scope取值domain或填写scope.domain_id。\n> - 如需查看基于所有资源的授权记录,scope取值为domain,且is_inherited取值为true\n> - 如需查看基于项目的授权记录,scope取值为project或填写scope.project_id。\n> - 如需查看基于企业项目的授权记录,scope取值为enterprise_project或填写scope.enterprise_project_id。",
+            "type": "string"
+          },
+          {
+            "name": "scope.project_id",
+            "in": "query",
+            "required": false,
+            "description": "授权的项目ID。",
+            "type": "string"
+          },
+          {
+            "name": "scope.domain_id",
+            "in": "query",
+            "required": false,
+            "description": "待查询账号ID。",
+            "type": "string"
+          },
+          {
+            "name": "scope.enterprise_projects_id",
+            "in": "query",
+            "required": false,
+            "description": "授权的企业项目ID。",
+            "type": "string"
+          },
+          {
+            "name": "is_inherited",
+            "in": "query",
+            "required": false,
+            "description": "是否包含基于所有项目授权的记录,默认为false。当参数scope=domain或者scope.domain_id存在时生效。true:查询基于所有项目授权的记录。 false:查询基于全局服务授权的记录。",
+            "type": "boolean"
+          },
+          {
+            "name": "include_group",
+            "in": "query",
+            "required": false,
+            "description": "是否包含基于IAM用户所属用户组授权的记录,默认为true。当参数subject=user或者subject.user_id存在时生效。true:查询基于IAM用户授权、IAM用户所属用户组授权的记录。 false:仅查询基于IAM用户授权的记录。",
+            "type": "boolean"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "分页查询时数据的页数,查询值最小为1。需要与per_page同时存在。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "分页查询时每页的数据个数,取值范围为[1,50]。需要与page同时存在。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "拥有Security Administrator或iam:permissions:listRoleAssignments权限的token。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "role_assignments": {
+                  "group": {
+                    "id": "07609e7eb200250a3f7dc003cb7a4e2d"
+                  },
+                  "is_inherited": true,
+                  "role": {
+                    "id": "11e5c42d20cc349a2b9e2f8afd253f50c"
+                  },
+                  "scope": {
+                    "domain": {
+                      "id": "d78cbac186b744899480f25bd022f468"
+                    }
+                  }
+                },
+                "total_num": 1
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowRoleAssignmentResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          }
+        },
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0072",
+            "httpStatus": "400",
+            "errorMessage": "'%(key)s' is a required property.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0073",
+            "httpStatus": "400",
+            "errorMessage": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "RoleGroupAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "用户组ID。"
+        }
+      }
+    },
+    "RoleProjectAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "IAM项目ID。"
+        }
+      }
+    },
+    "RoleAssignmentScope": {
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/RoleProjectAssignmentId",
+          "description": "基于IAM项目授权的信息。"
+        },
+        "domain": {
+          "$ref": "#/definitions/RoleDomainAssignmentId",
+          "description": "基于全局服务或所有项目授权的信息。"
+        },
+        "enterprise_project": {
+          "$ref": "#/definitions/RoleEnterpriseProjectAssignmentId",
+          "description": "基于企业项目授权的信息。"
+        }
+      }
+    },
+    "RoleUserAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "IAM用户ID。"
+        }
+      }
+    },
+    "RoleAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "权限ID。"
+        }
+      }
+    },
+    "RoleAssignmentBody": {
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/RoleUserAssignmentId",
+          "description": "授权用户信息。"
+        },
+        "role": {
+          "$ref": "#/definitions/RoleAssignmentId",
+          "description": "授权策略信息。"
+        },
+        "group": {
+          "$ref": "#/definitions/RoleGroupAssignmentId",
+          "description": "授权用户组信息。"
+        },
+        "agency": {
+          "$ref": "#/definitions/RoleAgencyAssignmentId",
+          "description": "授权委托信息。"
+        },
+        "scope": {
+          "$ref": "#/definitions/RoleAssignmentScope",
+          "description": "授权作用的范围。"
+        },
+        "is_inherited": {
+          "type": "boolean",
+          "description": "是否基于所有项目授权。"
+        }
+      }
+    },
+    "RoleAgencyAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "委托ID。"
+        }
+      }
+    },
+    "ShowRoleAssignmentResponseBody": {
+      "properties": {
+        "total_num": {
+          "type": "integer",
+          "format": "int64",
+          "description": "返回授权记录的总条数。"
+        },
+        "role_assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleAssignmentBody",
+            "description": "授权记录详情。"
+          }
+        }
+      }
+    },
+    "RoleDomainAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "全局服务ID。"
+        }
+      }
+    },
+    "RoleEnterpriseProjectAssignmentId": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "企业项目ID。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

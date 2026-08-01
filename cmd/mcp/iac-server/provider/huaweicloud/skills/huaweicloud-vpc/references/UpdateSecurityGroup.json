@@ -1,0 +1,525 @@
+{
+  "name": "UpdateSecurityGroup",
+  "summary": "更新安全组",
+  "tags": "安全组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/security-groups/{security_group_id}": {
+      "put": {
+        "tags": [
+          "安全组"
+        ],
+        "summary": "更新安全组",
+        "description": "更新安全组",
+        "operationId": "UpdateSecurityGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateSecurityGroupRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSecurityGroupRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID\n获取项目ID,请参见获取项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "security_group_id",
+            "in": "path",
+            "description": "安全组ID",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "security_group": {
+                  "id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                  "name": "security_group_2",
+                  "project_id": "060576782980d5762f9ec014dd2f1148",
+                  "description": "modified description",
+                  "enterprise_project_id": "0",
+                  "security_group_rules": [
+                    {
+                      "id": "f11a3824-ac19-4fad-b4f1-c5f4a6dd0a80",
+                      "project_id": "060576782980d5762f9ec014dd2f1148",
+                      "security_group_id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                      "remote_group_id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                      "direction": "ingress",
+                      "protocol": null,
+                      "description": "",
+                      "created_at": "2020-07-09T05:56:27Z",
+                      "updated_at": "2020-07-09T05:56:27Z",
+                      "ethertype": "IPv6",
+                      "remote_ip_prefix": null,
+                      "multiport": null,
+                      "remote_address_group_id": null,
+                      "action": "allow",
+                      "priority": 100,
+                      "enabled": true
+                    },
+                    {
+                      "id": "3d6480e8-9ea4-46dc-bb1b-8db190cd5677",
+                      "project_id": "060576782980d5762f9ec014dd2f1148",
+                      "security_group_id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                      "remote_group_id": null,
+                      "direction": "egress",
+                      "protocol": null,
+                      "description": "",
+                      "created_at": "2020-07-09T05:56:27Z",
+                      "updated_at": "2020-07-09T05:56:27Z",
+                      "ethertype": "IPv6",
+                      "remote_ip_prefix": null,
+                      "multiport": null,
+                      "remote_address_group_id": null,
+                      "action": "allow",
+                      "priority": 100,
+                      "enabled": true
+                    },
+                    {
+                      "id": "9581f18c-1fdd-43da-ace9-7758a56ef28a",
+                      "project_id": "060576782980d5762f9ec014dd2f1148",
+                      "security_group_id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                      "remote_group_id": null,
+                      "direction": "egress",
+                      "protocol": null,
+                      "description": "",
+                      "created_at": "2020-07-09T05:56:27Z",
+                      "updated_at": "2020-07-09T05:56:27Z",
+                      "ethertype": "IPv4",
+                      "remote_ip_prefix": null,
+                      "multiport": null,
+                      "remote_address_group_id": null,
+                      "action": "allow",
+                      "priority": 100,
+                      "enabled": true
+                    },
+                    {
+                      "id": "a3ba270e-e58b-432d-a912-aeb7eace9fb8",
+                      "project_id": "060576782980d5762f9ec014dd2f1148",
+                      "security_group_id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                      "remote_group_id": "69c999ad-d9ef-4d79-94fd-35e6ceb75325",
+                      "direction": "ingress",
+                      "protocol": null,
+                      "description": "",
+                      "created_at": "2020-07-09T05:56:27Z",
+                      "updated_at": "2020-07-09T05:56:27Z",
+                      "ethertype": "IPv4",
+                      "remote_ip_prefix": null,
+                      "multiport": null,
+                      "remote_address_group_id": null,
+                      "action": "allow",
+                      "priority": 100,
+                      "enabled": true
+                    }
+                  ],
+                  "created_at": "2020-07-09T05:56:27Z",
+                  "updated_at": "2020-07-09T05:56:27Z"
+                },
+                "request_id": "a8cf4f79ca3c22ca685e7e8872e8c20b"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateSecurityGroupResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新安全组",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 17,
+        "x-request-examples-description-1": "更新安全组的名称和描述",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/{project_id}/vpc/security-groups/1d8b19c7-7c56-48f7-a99b-4b40eb390967",
+        "x-request-examples-1": {
+          "security_group": {
+            "name": "security_group_2",
+            "description": "modified description"
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"security_group\": {\n\t\t\"name\": \"security_group_2\",\n\t\t\"description\": \"modified description\"\n\t}\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SecurityGroupInfo": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/SecurityGroup"
+        },
+        {
+          "required": [
+            "security_group_rules"
+          ],
+          "properties": {
+            "security_group_rules": {
+              "type": "array",
+              "description": "安全组规则",
+              "items": {
+                "description": "",
+                "$ref": "#/definitions/SecurityGroupRule"
+              },
+              "x-admin": "False",
+              "x-internal": "False",
+              "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+            }
+          }
+        }
+      ],
+      "description": ""
+    },
+    "UpdateSecurityGroupResponseBody": {
+      "required": [
+        "request_id",
+        "security_group"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "security_group": {
+          "description": "更新安全组的响应体",
+          "$ref": "#/definitions/SecurityGroupInfo",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "UpdateSecurityGroupOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:安全组名称\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:安全组描述\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "UpdateSecurityGroupRequestBody": {
+      "required": [
+        "security_group"
+      ],
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "description": "功能说明:是否只预检此次请求\n取值范围:\n-true:发送检查请求,不会更新安全组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应码202。\n-false(默认值):发送正常请求,并直接更新安全组。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "security_group": {
+          "description": "更新安全组的请求体",
+          "$ref": "#/definitions/UpdateSecurityGroupOption",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "SecurityGroupRule": {
+      "required": [
+        "action",
+        "created_at",
+        "description",
+        "direction",
+        "enabled",
+        "ethertype",
+        "id",
+        "multiport",
+        "priority",
+        "project_id",
+        "protocol",
+        "remote_address_group_id",
+        "remote_group_id",
+        "remote_ip_prefix",
+        "security_group_id",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能描述:安全组规则对应的唯一标识\n取值范围:带“-”的标准UUID格式",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:安全组的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "功能说明:安全组规则所属的安全组ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "direction": {
+          "type": "string",
+          "description": "功能说明:安全组规则的出入控制方向\n取值范围:ingress 表示入方向;egress 表示出方向",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:协议类型\n取值范围:icmp、tcp、udp、icmpv6或IP协议号\n约束:为空表示支持所有协议。协议为icmpv6时,网络类型应该为IPv6;协议为icmp时,网络类型应该为IPv4",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "ethertype": {
+          "type": "string",
+          "description": "功能说明:IP地址协议类型\n取值范围:IPv4,IPv6\n约束:不填默认值为IPv4",
+          "default": "IPv4",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "multiport": {
+          "type": "string",
+          "description": "功能说明:端口取值范围\n取值范围:支持单端口(80),连续端口(1-30)以及不连续端口(22,3389,80)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "action": {
+          "type": "string",
+          "description": "功能说明:安全组规则生效策略\n取值范围:allow 允许,deny 拒绝\n约束:默认值为deny",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:优先级\n取值范围:1~100,1代表最高优先级",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "remote_group_id": {
+          "type": "string",
+          "description": "功能说明:远端安全组ID,表示该安全组内的流量允许或拒绝\n取值范围:租户下存在的安全组ID\n约束:与remote_ip_prefix,remote_address_group_id功能互斥",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "remote_ip_prefix": {
+          "type": "string",
+          "description": "功能说明:远端IP地址,当direction是egress时为虚拟机访问端的地址,当direction是ingress时为访问虚拟机的地址\n取值范围:IP地址,或者cidr格式\n约束:与remote_group_id、remote_address_group_id互斥",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "remote_address_group_id": {
+          "type": "string",
+          "description": "功能说明:远端地址组ID\n取值范围:租户下存在的地址组ID\n约束:与remote_ip_prefix,remote_group_id功能互斥",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:安全组规则创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:安全组规则更新时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:安全组规则所属项目ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "功能说明:是否启用安全组规则。\n取值范围:true, false。\n约束:默认值为true。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": ""
+    },
+    "SecurityGroup": {
+      "required": [
+        "created_at",
+        "description",
+        "enterprise_project_id",
+        "id",
+        "name",
+        "project_id",
+        "updated_at",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能描述:安全组对应的唯一标识\n取值范围:带“-”的标准UUID格式",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:安全组名称\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:安全组的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:安全组所属的项目ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:安全组创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:安全组更新时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "功能说明:安全组所属的企业项目ID。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "tags": {
+          "type": "array",
+          "description": "功能描述:安全组的标签信息",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          }
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

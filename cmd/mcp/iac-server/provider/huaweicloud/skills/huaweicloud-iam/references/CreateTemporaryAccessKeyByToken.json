@@ -1,0 +1,340 @@
+{
+  "name": "CreateTemporaryAccessKeyByToken",
+  "summary": "通过token获取临时访问密钥",
+  "tags": "Credential管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-CREDENTIAL/securitytokens": {
+      "post": {
+        "tags": [
+          "Credential管理"
+        ],
+        "summary": "通过token获取临时访问密钥",
+        "description": "该接口可以用于通过token来获取临时AK/SK和securitytoken。\n\n临时AK/SK和securitytoken是系统颁发给IAM用户的临时访问令牌,有效期为15分钟至24小时,过期后需要重新获取。临时AK/SK和securitytoken遵循权限最小化原则。鉴权时,临时AK/SK和securitytoken必须同时使用,请求头中需要添加“x-security-token”字段,使用方法详情请参考:[API签名参考](https://support.huaweicloud.com/devg-apisign/api-sign-provide.html)。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "CreateTemporaryAccessKeyByToken",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "IAM用户token或联邦用户的token或委托token,该参数与请求体中的“auth.token.id“含义相同,建议使用X-Auth-Token。",
+            "required": false,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "CreateTemporaryAccessKeyByTokenRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTemporaryAccessKeyByTokenRequestBody"
+            },
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。",
+            "examples": {
+              "application/json": {
+                "credential": {
+                  "access": "NZFAT5VNWEJDGZ4PZ8CG",
+                  "expires_at": "2020-01-08T03:50:07.574000Z",
+                  "secret": "riEoWsy3qO0BvgwfkoLVgCUvzgpjBBcvdqM0hbk0",
+                  "securitytoken": "gQpjbi1ub3J0aC00jD4Ej..."
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateTemporaryAccessKeyByTokenResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "通过token获取临时访问密钥",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "填写\"policy\"参数。",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens",
+        "x-request-examples-1": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "token"
+              ],
+              "policy": {
+                "Version": "1.1",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                      "obs:object:*"
+                    ],
+                    "Resource": [
+                      "obs:*:*:object:*"
+                    ],
+                    "Condition": {
+                      "StringEquals": {
+                        "obs:prefix": [
+                          "public"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "token": {
+                "duration_seconds": 900
+              }
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"token\"\n            ],\n            \"policy\": {\n                \"Version\": \"1.1\",\n                \"Statement\": [\n                    {\n                        \"Effect\": \"Allow\",\n                        \"Action\": [\n                            \"obs:object:*\"\n                        ],\n                        \"Resource\": [\n                            \"obs:*:*:object:*\"\n                        ],\n                        \"Condition\": {\n                            \"StringEquals\": {\n                                \"obs:prefix\": [\n                                    \"public\"\n                                ]\n                            }\n                        }\n                    }\n                ]\n            },\n            \"token\": {\n                \"duration_seconds\": 900\n            }\n        }\n    }\n}",
+        "x-request-examples-description-2": "填写\"token\"参数。",
+        "x-request-examples-url-2": "POST https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens",
+        "x-request-examples-2": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "token"
+              ],
+              "token": {
+                "duration_seconds": 900
+              }
+            }
+          }
+        },
+        "x-request-examples-text-2": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"token\"\n            ],\n            \"token\": {\n                \"duration_seconds\": 900\n            }\n        }\n    }\n}",
+        "x-request-examples-description-3": "不填写“token”参数。",
+        "x-request-examples-url-3": "POST https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens",
+        "x-request-examples-3": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "token"
+              ]
+            }
+          }
+        },
+        "x-request-examples-text-3": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"token\"\n            ]\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ConditionAdditional": {
+      "type": "array",
+      "description": "",
+      "items": {
+        "type": "string"
+      }
+    },
+    "CreateTemporaryAccessKeyByTokenRequestBody": {
+      "required": [
+        "auth"
+      ],
+      "properties": {
+        "auth": {
+          "description": "认证信息。",
+          "$ref": "#/definitions/TokenAuth"
+        }
+      },
+      "description": ""
+    },
+    "ServiceStatement": {
+      "required": [
+        "Action",
+        "Effect"
+      ],
+      "properties": {
+        "Action": {
+          "type": "array",
+          "description": "授权项,指对资源的具体操作权限。\n> - 格式为:服务名:资源类型:操作,例:vpc:ports:create。\n> - 服务名为产品名称,例如ecs、evs和vpc等,服务名仅支持小写。 资源类型和操作没有大小写,要求支持通配符号*,无需罗列全部授权项。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Effect": {
+          "type": "string",
+          "example": "Allow",
+          "description": "作用。包含两种:允许(Allow)和拒绝(Deny),既有Allow又有Deny的授权语句时,遵循Deny优先的原则。",
+          "enum": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "Condition": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "",
+            "additionalProperties": {
+              "description": "",
+              "$ref": "#/definitions/ConditionAdditional"
+            }
+          }
+        },
+        "Resource": {
+          "type": "array",
+          "description": "资源。规则如下:\n> - 可填 * 的五段式:<service-name>:<region>:<account-id>:<resource-type>:<resource-path>,例:\"obs:*:*:bucket:*\"。\n> - region字段为*或用户可访问的region。service必须存在且resource属于对应service。",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": ""
+    },
+    "TokenAuth": {
+      "required": [
+        "identity"
+      ],
+      "properties": {
+        "identity": {
+          "description": "认证参数。",
+          "$ref": "#/definitions/TokenAuthIdentity"
+        }
+      },
+      "description": ""
+    },
+    "TokenAuthIdentity": {
+      "required": [
+        "methods"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "description": "认证方法,该字段内容为[\"token\"]。",
+          "items": {
+            "type": "string",
+            "enum": [
+              "token"
+            ]
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "token": {
+          "description": "IAM用户token或联邦用户的token或委托token,该参数中的“id”与请求头中的X-Auth-Token含义相同,待废弃。",
+          "$ref": "#/definitions/IdentityToken"
+        },
+        "policy": {
+          "description": "自定义策略的具体内容。",
+          "$ref": "#/definitions/ServicePolicy"
+        }
+      },
+      "description": ""
+    },
+    "ServicePolicy": {
+      "required": [
+        "Statement",
+        "Version"
+      ],
+      "properties": {
+        "Version": {
+          "type": "string",
+          "example": "1.1",
+          "description": "权限版本号,创建自定义策略时,该字段值填为“1.1”。\n> - 1.0:系统预置的角色。以服务为粒度,提供有限的服务相关角色用于授权。\n> - 1.1:策略。IAM最新提供的一种细粒度授权的能力,可以精确到具体服务的操作、资源以及请求条件等。",
+          "default": "1.1"
+        },
+        "Statement": {
+          "type": "array",
+          "description": "授权语句,描述自定义策略的具体内容。",
+          "items": {
+            "$ref": "#/definitions/ServiceStatement"
+          }
+        }
+      },
+      "description": ""
+    },
+    "Credential": {
+      "required": [
+        "access",
+        "expires_at",
+        "secret",
+        "securitytoken"
+      ],
+      "properties": {
+        "expires_at": {
+          "type": "string",
+          "example": "2020-01-08T03:16:01.599000Z",
+          "description": "AK/SK和securitytoken的过期时间。"
+        },
+        "access": {
+          "type": "string",
+          "example": "WX99FNBSHCNPG9EV3T6S",
+          "description": "获取的AK。"
+        },
+        "secret": {
+          "type": "string",
+          "example": "G8jME3FdItroUAxevyZy5EJJ00lJj6Y52NtVSMzr",
+          "description": "获取的SK。"
+        },
+        "securitytoken": {
+          "type": "string",
+          "example": "gQpjbi1ub3J0aC00jN8BogWJ6OgFkxd_e---9bY_7QIw-92jIFQQ-A9RdR...",
+          "description": "securitytoken是将所获的AK、SK等信息进行加密后的字符串。"
+        }
+      },
+      "description": ""
+    },
+    "CreateTemporaryAccessKeyByTokenResponseBody": {
+      "required": [
+        "credential"
+      ],
+      "properties": {
+        "credential": {
+          "description": "认证结果信息。",
+          "$ref": "#/definitions/Credential"
+        }
+      },
+      "description": ""
+    },
+    "IdentityToken": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+          "description": "token的ID。与请求头中的X-Auth-Token含义相同,待废弃。"
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3600,
+          "description": "AK/SK和securitytoken的有效期,时间单位为秒。取值范围:15min ~ 24h ,默认为15min。",
+          "minimum": 900,
+          "maximum": 86400,
+          "default": 900
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,319 @@
+{
+  "name": "UpdateOpenIdConnectConfig",
+  "summary": "修改OpenId Connect身份提供商配置",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-FEDERATION/identity-providers/{idp_id}/openid-connect-config": {
+      "put": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "修改OpenId Connect身份提供商配置",
+        "description": "修改OpenId Connect身份提供商配置",
+        "operationId": "UpdateOpenIdConnectConfig",
+        "parameters": [
+          {
+            "name": "idp_id",
+            "in": "path",
+            "description": "身份提供商ID",
+            "required": true,
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "x-order": 3
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "UpdateOpenIDConnectConfigRequestBody",
+            "description": "修改身份提供商的信息",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateOpenIdConnectConfigRequestBody"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "openid_connect_config": {
+                  "access_mode": "program_console",
+                  "idp_url": "https://accounts.example.com",
+                  "client_id": "client_id_example",
+                  "authorization_endpoint": "https://accounts.example.com/o/oauth2/v2/auth",
+                  "scope": "openid",
+                  "response_type": "id_token",
+                  "response_mode": "form_post",
+                  "signing_key": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"use\":\"sig\",\"n\":\"example\",\"kid\":\"kid_example\",\"alg\":\"RS256\"}]}"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/OpenIdConnectConfigResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。",
+            "examples": {
+              "application/json": {
+                "error_msg": "Request body is invalid.",
+                "error_code": "IAM.0011"
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。",
+            "examples": {
+              "application/json": {
+                "error_msg": "The request you have made requires authentication.",
+                "error_code": "IAM.0001"
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error_msg": "You are not authorized to perform the requested action.",
+                "error_code": "IAM.0002"
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "examples": {
+              "application/json": {
+                "error_msg": "Could not find %(target)s: %(target_id)s.",
+                "error_code": "IAM.0004"
+              }
+            }
+          },
+          "500": {
+            "description": "系统内部错误。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改OpenId Connect身份提供商配置",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "TechnicalPreview",
+        "x-order": 7,
+        "x-request-examples-description-1": "修改编程访问配置",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-FEDERATION/identity-providers/{idp_id}/openid-connect-config",
+        "x-request-examples-1": {
+          "openid_connect_config": {
+            "access_mode": "program",
+            "idp_url": "https://accounts.example.com",
+            "client_id": "client_id_example",
+            "signing_key": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"use\":\"sig\",\"n\":\"example\",\"kid\":\"kid_example\",\"alg\":\"RS256\"}]}"
+          }
+        },
+        "x-request-examples-text-1": {
+          "openid_connect_config": {
+            "access_mode": "program",
+            "idp_url": "https://accounts.example.com",
+            "client_id": "client_id_example",
+            "signing_key": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"use\":\"sig\",\"n\":\"example\",\"kid\":\"kid_example\",\"alg\":\"RS256\"}]}"
+          }
+        },
+        "x-request-examples-description-2": "修改编程访问和管理控制台访问配置",
+        "x-request-examples-url-2": "PUT https://iam.myhuaweicloud.com/v3.0/OS-FEDERATION/identity-providers/{idp_id}/openid-connect-config",
+        "x-request-examples-2": {
+          "openid_connect_config": {
+            "access_mode": "program_console",
+            "idp_url": "https://accounts.example.com",
+            "client_id": "client_id_example",
+            "authorization_endpoint": "https://accounts.example.com/o/oauth2/v2/auth",
+            "scope": "openid",
+            "response_type": "id_token",
+            "response_mode": "form_post",
+            "signing_key": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"use\":\"sig\",\"n\":\"example\",\"kid\":\"kid_example\",\"alg\":\"RS256\"}]}"
+          }
+        },
+        "x-request-examples-text-2": {
+          "openid_connect_config": {
+            "access_mode": "program_console",
+            "idp_url": "https://accounts.example.com",
+            "client_id": "client_id_example",
+            "authorization_endpoint": "https://accounts.example.com/o/oauth2/v2/auth",
+            "scope": "openid",
+            "response_type": "id_token",
+            "response_mode": "form_post",
+            "signing_key": "{\"keys\":[{\"kty\":\"RSA\",\"e\":\"AQAB\",\"use\":\"sig\",\"n\":\"example\",\"kid\":\"kid_example\",\"alg\":\"RS256\"}]}"
+          }
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "OpenIdConnectConfig": {
+      "required": [
+        "access_mode",
+        "idp_url",
+        "client_id",
+        "authorization_endpoint",
+        "scope",
+        "response_type",
+        "response_mode",
+        "signing_key"
+      ],
+      "properties": {
+        "access_mode": {
+          "type": "string",
+          "description": "访问方式:\nprogram_console: 支持编程访问和管理控制台访问方式;\nprogram: 支持编程访问方式"
+        },
+        "idp_url": {
+          "type": "string",
+          "description": "OpenID Connect身份提供商标识, 对应ID token 中 iss",
+          "minLength": 10,
+          "maxLength": 255
+        },
+        "client_id": {
+          "type": "string",
+          "description": "在OpenID Connect身份提供商注册的客户端ID",
+          "minLength": 5,
+          "maxLength": 255
+        },
+        "authorization_endpoint": {
+          "type": "string",
+          "description": "OpenID Connect身份提供商授权地址; 编程访问和管理控制台访问方式值不为空,编程访问方式值可为空",
+          "minLength": 10,
+          "maxLength": 255
+        },
+        "scope": {
+          "type": "string",
+          "example": "\"openid\", \"openid email\", \"openid profile\", \"openid email profile\"",
+          "description": "授权请求信息范围,编程访问和管理控制台访问方式必选,编程访问方式不可选,可选值:openid 、email、profile,IDP自定义scope,字符集a-zA-Z_0-9 ,1-10个可选值组合空格分割,至少包括openid,顺序无关,总长度最长255字符,例如:\"openid\"、\"openid email\"、\"openid profile\" 、\"openid email profile\"",
+          "minLength": 6,
+          "maxLength": 20
+        },
+        "response_type": {
+          "type": "string",
+          "description": "授权请求返回的类型;id_token ;编程访问和管理控制台访问方式值不为空,编程访问方式值可为空\n",
+          "enum": [
+            "id_token"
+          ]
+        },
+        "response_mode": {
+          "type": "string",
+          "description": "授权请求返回方式, form_post 或 fragment ;编程访问和管理控制台访问方式值不为空,编程访问方式值可为空",
+          "enum": [
+            "fragment",
+            "form_post"
+          ]
+        },
+        "signing_key": {
+          "type": "string",
+          "description": "OpenID Connect身份提供商ID Token签名的公钥",
+          "minLength": 10,
+          "maxLength": 30000
+        }
+      },
+      "description": "oidc配置详细信息"
+    },
+    "UpdateOpenIdConnectConfigRequestBody": {
+      "required": [
+        "openid_connect_config"
+      ],
+      "properties": {
+        "openid_connect_config": {
+          "$ref": "#/definitions/UpdateOpenIdConnectConfig"
+        }
+      },
+      "description": ""
+    },
+    "UpdateOpenIdConnectConfig": {
+      "properties": {
+        "access_mode": {
+          "type": "string",
+          "description": "访问方式:\nprogram_console: 支持编程访问和管理控制台访问方式;\nprogram: 支持编程访问方式"
+        },
+        "idp_url": {
+          "type": "string",
+          "description": "OpenID Connect身份提供商标识,对应ID token 中 iss",
+          "minLength": 10,
+          "maxLength": 255
+        },
+        "client_id": {
+          "type": "string",
+          "description": "在OpenID Connect身份提供商注册的客户端ID",
+          "minLength": 5,
+          "maxLength": 255
+        },
+        "authorization_endpoint": {
+          "type": "string",
+          "description": "OpenID Connect身份提供商授权地址;编程访问和管理控制台访问方式值不可为空,编程访问方式值可为空",
+          "minLength": 10,
+          "maxLength": 255
+        },
+        "scope": {
+          "type": "string",
+          "example": "\"openid\", \"openid email\", \"openid profile\", \"openid email profile\"",
+          "description": "授权请求信息范围,编程访问和管理控制台访问方式必选,编程访问方式不可选,可选值:openid 、email、profile,IDP自定义scope,字符集a-zA-Z_0-9 ,1-10个可选值组合空格分割,至少包括openid,顺序无关,总长度最长255字符,例如:\"openid\"、\"openid email\"、\"openid profile\" 、\"openid email profile\""
+        },
+        "response_type": {
+          "type": "string",
+          "description": "授权请求返回的类型;值为id_token ;编程访问和管理控制台访问方式值不可为空,编程访问方式值可为空\n",
+          "enum": [
+            "id_token"
+          ]
+        },
+        "response_mode": {
+          "type": "string",
+          "description": "授权请求返回方式,可选值 form_post 或 fragment ;编程访问和管理控制台访问方式值为可选值,编程访问方式值可为空",
+          "enum": [
+            "fragment",
+            "form_post"
+          ]
+        },
+        "signing_key": {
+          "type": "string",
+          "description": "OpenID Connect身份提供商ID Token签名的公钥",
+          "minLength": 10,
+          "maxLength": 30000
+        }
+      },
+      "description": "oidc详细信息"
+    },
+    "OpenIdConnectConfigResponseBody": {
+      "required": [
+        "openid_connect_config"
+      ],
+      "properties": {
+        "openid_connect_config": {
+          "$ref": "#/definitions/OpenIdConnectConfig"
+        }
+      },
+      "description": "返回体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

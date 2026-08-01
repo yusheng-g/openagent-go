@@ -1,0 +1,239 @@
+{
+  "name": "ListSlowLogsNew",
+  "summary": "查询数据库慢日志",
+  "tags": "获取日志信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.1/{project_id}/instances/{instance_id}/slowlog": {
+      "get": {
+        "tags": [
+          "获取日志信息"
+        ],
+        "operationId": "ListSlowLogsNew",
+        "summary": "查询数据库慢日志",
+        "description": "查询数据库慢日志。(与原v3接口相比修改offset,符合华为云服务开放 API遵从性规范3.0)",
+        "x-support-sdk": "Y",
+        "x-constraint": "该接口仅支持MySQL数据库引擎。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "type": "string",
+            "description": "开始日期,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+            "required": true,
+            "x-example": "2018-08-06T10:41:14+0800"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "type": "string",
+            "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。只能查询当前时间前一个月内的慢日志。",
+            "required": true,
+            "x-example": "2018-08-07T10:41:14+0800"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "integer",
+            "format": "int64",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "format": "int64",
+            "description": "每页多少条记录,取值范围是1~100,不填时默认为10。"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "type": "string",
+            "description": "语句类型,取空值,表示查询所有语句类型。",
+            "enum": [
+              "INSERT",
+              "UPDATE",
+              "SELECT",
+              "DELETE",
+              "CREATE"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListSlowLogResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "total_record": 1,
+                "slow_log_list": [
+                  {
+                    "count": "1",
+                    "time": "1.04899 s",
+                    "lock_time": "0.00003 s",
+                    "rows_sent": "0",
+                    "rows_examined": "0",
+                    "database": "mysql",
+                    "users": "root",
+                    "query_sample": "INSERT INTO time_zone_name (Name, Time_zone_id) VALUES (N, @time_zone_id);",
+                    "type": "INSERT",
+                    "start_time": "2018-08-06T10:41:14",
+                    "client_ip": "192.*.*.1"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3.1/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/slowlog?start_date=2018-08-06T10:41:14+0800&end_date=2018-08-07T10:41:14+0800"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "SlowLog": {
+      "description": "慢日志信息。",
+      "required": [
+        "count",
+        "time",
+        "lock_time",
+        "rows_sent",
+        "rows_examined",
+        "database",
+        "users",
+        "query_sample",
+        "type",
+        "start_time",
+        "client_ip"
+      ],
+      "properties": {
+        "count": {
+          "type": "string",
+          "description": "执行次数。"
+        },
+        "time": {
+          "type": "string",
+          "description": "平均执行时间。"
+        },
+        "lock_time": {
+          "type": "string",
+          "description": "平均等待锁时间。"
+        },
+        "rows_sent": {
+          "type": "string",
+          "description": "平均结果行数量。"
+        },
+        "rows_examined": {
+          "type": "string",
+          "description": "平均扫描的行数量。"
+        },
+        "database": {
+          "type": "string",
+          "description": "所属数据库。"
+        },
+        "users": {
+          "type": "string",
+          "description": "帐号。"
+        },
+        "query_sample": {
+          "type": "string",
+          "description": "执行语法。"
+        },
+        "type": {
+          "type": "string",
+          "description": "语句类型。"
+        },
+        "start_time": {
+          "type": "string",
+          "description": "发生时间,UTC时间。"
+        },
+        "client_ip": {
+          "type": "string",
+          "description": "IP地址。"
+        }
+      }
+    },
+    "ListSlowLogResponseBody": {
+      "required": [
+        "slow_log_list",
+        "total_record"
+      ],
+      "properties": {
+        "slow_log_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SlowLog"
+          }
+        },
+        "total_record": {
+          "type": "integer",
+          "description": "总记录数。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

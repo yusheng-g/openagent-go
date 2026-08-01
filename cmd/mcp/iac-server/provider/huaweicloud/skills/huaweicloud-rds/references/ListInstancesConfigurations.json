@@ -1,0 +1,171 @@
+{
+  "name": "ListInstancesConfigurations",
+  "summary": "查询应用参数模版的实例列表",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations/{config_id}/query-instances": {
+      "get": {
+        "x-request-examples-url-1": "https://{endpoint}/v3/54623db08b174c858ba779d2aa7923a3/configurations/0fb680b064cb496ca7acc7634070a652pr01/query-instances",
+        "x-api-type": "open-api",
+        "x-publishpath": 20250804,
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "tags": [
+          "参数配置"
+        ],
+        "summary": "查询应用参数模版的实例列表",
+        "description": "查询应用参数模版的实例列表",
+        "operationId": "ListInstancesConfigurations",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "config_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n参数组ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 64
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "**参数解释**:\n\n索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n大于等于0\n\n**默认取值**:\n\n0",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n查询记录数。默认为10,不能为负数,最小值为1,最大值为100。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n[1, 100]\n\n**默认取值**:\n\n10",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 100
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 10000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "**参数解释**:\n\n应用参数模板的实例列表\n\n**约束限制**:\n\n不涉及。",
+            "schema": {
+              "$ref": "#/definitions/ApplicableInstanceResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "entities": [
+                  {
+                    "entity_id": "70308e5ca5dd4555be02a596ecd3e5acin01",
+                    "entity_name": "lixu"
+                  }
+                ],
+                "instance_count_limit": 1000,
+                "total_count": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ApplicableInstanceInfo": {
+      "type": "object",
+      "description": "**参数解释**:\n\n可应用参数模板的实例详情\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+      "required": [
+        "entity_id",
+        "entity_name"
+      ],
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n实例id\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 64
+        },
+        "entity_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n实例名称\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 64
+        }
+      }
+    },
+    "ApplicableInstanceResponseBody": {
+      "type": "object",
+      "description": "**参数解释**:\n\n查询应用参数模板的实例列表响应体\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+      "required": [
+        "entities",
+        "instance_count_limit",
+        "total_count"
+      ],
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ApplicableInstanceInfo"
+          },
+          "description": "**参数解释**:\n\n实例列表\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "instance_count_limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n实例的限制数量\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n应用参数模板的实例总数\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 1000
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

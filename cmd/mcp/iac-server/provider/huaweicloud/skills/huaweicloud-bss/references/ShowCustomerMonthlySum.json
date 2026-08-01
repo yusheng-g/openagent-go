@@ -1,0 +1,431 @@
+{
+  "name": "ShowCustomerMonthlySum",
+  "summary": "查询汇总账单",
+  "tags": "管理账单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/customer-bills/monthly-sum": {
+      "get": {
+        "summary": "查询汇总账单",
+        "description": "客户在自建平台查询自身的消费汇总账单,此账单按月汇总消费数据。\n\n客户登录费用中心查询自身的消费汇总账单请参见[这里](https://support.huaweicloud.com/usermanual-billing/bills-topic_80000101.html)的“查看汇总”。",
+        "tags": [
+          "管理账单(客户)"
+        ],
+        "operationId": "ShowCustomerMonthlySum",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用",
+        "x-externalURL": "/v2/bills/customer-bills/monthly-sum",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-07-07",
+        "x-operation-data-level": "L3",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "bill_cycle",
+            "in": "query",
+            "required": true,
+            "description": "查询消费汇总数据所在的账期,东八区时间,格式为YYYY-MM。",
+            "x-maxLength": 8,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "2020-06",
+            "x-allowNull": false
+          },
+          {
+            "name": "service_type_code",
+            "in": "query",
+            "required": false,
+            "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用[查询云服务类型列表](https://support.huaweicloud.com/api-oce/zh-cn_topic_0000001256679455.html)接口获取。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "hws.service.type.ec2",
+            "x-allowNull": false
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "required": false,
+            "description": "企业项目标识(企业项目ID)。default项目对应ID:0未归集(表示该云服务不支持企业项目管理能力)项目对应ID:-1其余项目对应ID获取方法请参见[如何获取企业项目ID](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0126101490.html)。此参数不携带或携带值为空时,不作为筛选条件。携带值为null时,作为筛选条件。不支持携带值为空串。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "6fbcf2f3-3164-4d32-9a3e-a8886dc38c24",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "x-allowNull": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量。默认值为10。",
+            "maximum": 1000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "x-allowNull": true
+          },
+          {
+            "name": "method",
+            "in": "query",
+            "required": false,
+            "description": "查询方式。oneself:自身sub_customer:企业子客户all:自己和企业子客户 此参数不携带或携带值为空时,默认值为“all”,如果没有企业子客户,all的时候也是查询客户自己的数据。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "all",
+            "x-allowNull": false
+          },
+          {
+            "name": "sub_customer_id",
+            "in": "query",
+            "required": false,
+            "description": "企业子客户的账号ID。 说明: 如果method取值不为sub_customer,则该参数无效。如果method取值为sub_customer,则该参数不能为空。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "053a48736500d5f40ffec01689b88480",
+            "x-allowNull": false
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/bills/customer-bills/monthly-sum?bill_cycle=2020-07&method=sub_customer&sub_customer_id=05b5fef62300d2ad0f98c00befba72c0&offset=0&limit=10",
+        "responses": {
+          "200": {
+            "description": "查询汇总账单响应",
+            "schema": {
+              "$ref": "#/definitions/QueryCustomerMonthlySumRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 2,
+                "bill_sums": [
+                  {
+                    "bill_cycle": "2020-07",
+                    "bill_type": 1,
+                    "customer_id": "05b5fef62300d2ad0f98c00befba72c0",
+                    "resource_type_code": "hws.resource.type.bandwidth",
+                    "service_type_code": "hws.service.type.vpc",
+                    "resource_type_name": "固定带宽",
+                    "service_type_name": "虚拟私有云",
+                    "charging_mode": 3,
+                    "official_amount": 7.0,
+                    "official_discount_amount": 0.0,
+                    "truncated_amount": 2.363856,
+                    "consume_amount": 7.0,
+                    "coupon_amount": 0.0,
+                    "flexipurchase_coupon_amount": 0.0,
+                    "stored_value_card_amount": 0.0,
+                    "debt_amount": 0.0,
+                    "writeoff_amount": 0.0,
+                    "cash_amount": 0.0,
+                    "credit_amount": 7.0,
+                    "measure_id": 1
+                  },
+                  {
+                    "bill_cycle": "2020-07",
+                    "bill_type": 1,
+                    "customer_id": "05b5fef62300d2ad0f98c00befba72c0",
+                    "resource_type_code": "hws.resource.type.kms",
+                    "service_type_code": "hws.service.type.kms",
+                    "resource_type_name": "用户主密钥资源",
+                    "service_type_name": "数据加密服务",
+                    "charging_mode": 3,
+                    "official_amount": 3524.424,
+                    "official_discount_amount": 0.0,
+                    "truncated_amount": 1244.424,
+                    "consume_amount": 2280.0,
+                    "coupon_amount": 0.0,
+                    "flexipurchase_coupon_amount": 0.0,
+                    "stored_value_card_amount": 0.0,
+                    "debt_amount": 0.0,
+                    "writeoff_amount": 0.0,
+                    "cash_amount": 0.0,
+                    "credit_amount": 2280.0,
+                    "measure_id": 1
+                  }
+                ],
+                "consume_amount": 16964.0,
+                "debt_amount": 0.0,
+                "coupon_amount": 464.0,
+                "flexipurchase_coupon_amount": 0.0,
+                "stored_value_card_amount": 0.0,
+                "cash_amount": 1306.0,
+                "credit_amount": 15194.0,
+                "writeoff_amount": 0.0,
+                "measure_id": 1,
+                "currency": "CNY"
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理账单(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryCustomerMonthlySumRsp": {
+      "properties": {
+        "total_count": {
+          "description": "总条数,必须大于等于0。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "10"
+        },
+        "bill_sums": {
+          "description": "账单记录,具体参考表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BillSumRecordInfoV2"
+          }
+        },
+        "consume_amount": {
+          "description": "总金额(包含退订)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "100"
+        },
+        "debt_amount": {
+          "description": "总欠费金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "10"
+        },
+        "coupon_amount": {
+          "description": "代金券金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "20"
+        },
+        "flexipurchase_coupon_amount": {
+          "description": "现金券金额,预留。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "30"
+        },
+        "stored_value_card_amount": {
+          "description": "储值卡金额,预留。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "40"
+        },
+        "cash_amount": {
+          "description": "现金账户金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "50"
+        },
+        "credit_amount": {
+          "description": "信用账户金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "60"
+        },
+        "writeoff_amount": {
+          "description": "欠费核销金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "70"
+        },
+        "measure_id": {
+          "description": "金额单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "80"
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币。",
+          "example": "CNY"
+        }
+      }
+    },
+    "BillSumRecordInfoV2": {
+      "properties": {
+        "bill_cycle": {
+          "type": "string",
+          "description": "消费汇总数据所在账期,东八区时间,格式:YYYY-MM。",
+          "example": "2020-06"
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用查询资源类型列表接口获取。",
+          "example": "hws.resource.type.vm"
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": "hws.service.type.ec2"
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        },
+        "charging_mode": {
+          "description": "计费模式。 1:包年/包月3:按需10:预留实例",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "official_amount": {
+          "description": "官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "200"
+        },
+        "official_discount_amount": {
+          "description": "折扣金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "25"
+        },
+        "truncated_amount": {
+          "description": "抹零金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "5"
+        },
+        "consume_amount": {
+          "description": "应付金额。 应付金额=官网价-折扣金额-抹零金额",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "170"
+        },
+        "coupon_amount": {
+          "description": "代金券金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "15"
+        },
+        "flexipurchase_coupon_amount": {
+          "description": "现金券金额,预留。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "35"
+        },
+        "stored_value_card_amount": {
+          "description": "储值卡金额,预留。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "45"
+        },
+        "debt_amount": {
+          "description": "欠费金额。即伙伴从客户账户扣费时,客户账户金额不足,欠费的金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "55"
+        },
+        "writeoff_amount": {
+          "description": "欠费核销金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "65"
+        },
+        "cash_amount": {
+          "description": "现金账户金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "75"
+        },
+        "credit_amount": {
+          "description": "信用账户金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "85"
+        },
+        "measure_id": {
+          "description": "金额单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "bill_type": {
+          "description": "账单类型。 1:消费2:退款3:调账",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "消费的客户账号ID。 如果是普通客户或者企业子客户查询消费记录,只能查询到客户自己的消费记录,且此处显示的是客户自己的客户ID。如果是企业主查询消费记录,可以查询到企业主以及企业子客户的消费记录,此处为消费的实际客户ID。如果是企业主自己的消费记录,则为企业主ID;如果是某个企业子客户的消费记录,则此处为企业子账号ID。",
+          "example": "c9e731c4663646988ef4cdb3122837b6"
+        },
+        "account_name": {
+          "type": "string",
+          "description": "|参数名称:消费的客户登录名称。| |参数约束及描述:范围限制:0-128,如果是普通客户或者企业子客户查询消费记录,只能查询到客户自己的消费记录,且此处显示的是客户自己的客户登录名称。 如果是企业主查询消费记录,可以查询到企业主以及企业子客户的消费记录,此处为消费的实际客户登录名称。如果是企业主自己的消费记录,则为企业主的客户登录名称;如果是某个企业子客户的消费记录,则此处为企业子的客户登录名称。|",
+          "example": "be******7"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,104 @@
+{
+  "name": "ShowZoneNameServer",
+  "summary": "查询公网域名的DNS服务器地址",
+  "tags": "公网域名检测",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/public-zones/dns-servers/{domain_name}": {
+      "get": {
+        "tags": [
+          "公网域名检测"
+        ],
+        "summary": "查询公网域名的DNS服务器地址",
+        "description": "查询域名当前DNS服务器地址及华为云提供的DNS服务器地址。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "operationId": "ShowZoneNameServer",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "domain_name",
+            "in": "path",
+            "description": "**参数解释:**\n待查询的公网域名。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询公网域名的DNS服务器地址响应。",
+            "examples": {
+              "application/json": {
+                "all_hw_dns": true,
+                "include_hw_dns": true,
+                "dns_servers": [],
+                "expected_dns_servers": [],
+                "domain_name": "example.com."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowZoneNameServerResponseBody"
+            }
+          }
+        },
+        "x-request-examples-description-1": "查询域名当前DNS服务器地址及华为云提供的DNS服务器地址。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/public-zones/dns-servers/example.com",
+        "x-order": 3
+      }
+    }
+  },
+  "definitions": {
+    "ShowZoneNameServerResponseBody": {
+      "properties": {
+        "all_hw_dns": {
+          "type": "boolean",
+          "description": "**参数解释:**\n是否全部为华为云DNS服务器地址。\n**取值范围:**\n不涉及。"
+        },
+        "include_hw_dns": {
+          "type": "boolean",
+          "description": "**参数解释:**\n是否包含华为云DNS服务器地址。 \n**取值范围:**\n不涉及。"
+        },
+        "dns_servers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释:**\nDNS服务器地址。\n**取值范围:**\n不涉及。"
+        },
+        "expected_dns_servers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释:**\n期望的DNS服务器地址。\n**取值范围:**\n不涉及。"
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释:**\n公网域名。\n**取值范围:**\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

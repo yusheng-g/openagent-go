@@ -1,0 +1,400 @@
+{
+  "name": "ListCosts",
+  "summary": "查询成本数据",
+  "tags": "管理成本(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v4/costs/cost-analysed-bills/query": {
+      "post": {
+        "summary": "查询成本数据",
+        "description": "客户在自建平台查询成本分析数据。",
+        "tags": [
+          "管理成本(客户)"
+        ],
+        "operationId": "ListCosts",
+        "x-constraint": "该接口只允许客户的AK/SK或者Token调用",
+        "x-externalURL": "/v4/costs/cost-analysed-bills/query",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2022-06-23",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言,字段预留。默认zh_cn,枚举:zh_cn:中文 en_us:英文",
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "|参数名称:查询成本数据请求| |参数的约束及描述:|",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListCostsReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询资源内使用量响应| |成功:成功| |参数约束及描述: 查询资源内使用量响应|",
+            "schema": {
+              "$ref": "#/definitions/ListCostsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "currency": "CNY",
+                "total_count": 1,
+                "cost_data": [
+                  {
+                    "dimensions": [
+                      {
+                        "key": "tag",
+                        "value": "Group:noTagKey"
+                      }
+                    ],
+                    "costs": [
+                      {
+                        "time_dimension_value": "2021-08",
+                        "time_measure_id": 2,
+                        "amount": "13225.00",
+                        "official_amount": "13225.00"
+                      }
+                    ],
+                    "amount_by_costs": "13225.00",
+                    "official_amount_by_costs": "13225.00"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理成本(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v4/costs/cost-analysed-bills/query",
+        "x-request-examples-1": {
+          "amount_type": "PAYMENT_AMOUNT",
+          "offset": 0,
+          "cost_type": "ORIGINAL_COST",
+          "limit": 10,
+          "groupby": [
+            {
+              "type": "dimension",
+              "key": "CLOUD_SERVICE_TYPE"
+            }
+          ],
+          "filters": [
+            {
+              "filter_factor": {
+                "value": [
+                  "cn-north-1"
+                ],
+                "key": "REGION_CODE"
+              },
+              "operator": 0
+            }
+          ],
+          "time_condition": {
+            "end_time": "2021-07-15",
+            "begin_time": "2021-07-14",
+            "time_measure_id": 1
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListCostsRsp": {
+      "properties": {
+        "currency": {
+          "type": "string",
+          "description": "货币。 CNY:人民币",
+          "example": ""
+        },
+        "total_count": {
+          "description": "总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "cost_data": {
+          "description": "按天或按月的明细金额,具体请参见表 CostDataByDimension。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CostDataByDimension"
+          }
+        }
+      }
+    },
+    "Cost": {
+      "properties": {
+        "time_dimension_value": {
+          "type": "string",
+          "description": "时间维度值。 如按天维度,该值为yyyy-mm-dd如按月维度,该值为yyyy-mm",
+          "example": ""
+        },
+        "time_measure_id": {
+          "description": "时间单位。 1:天2:月",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amount": {
+          "type": "string",
+          "description": "应付或实付的成本金额或均摊金额,具体取决于请求参数。",
+          "example": ""
+        },
+        "official_amount": {
+          "type": "string",
+          "description": "官网价金额。",
+          "example": ""
+        }
+      }
+    },
+    "ListCostsReq": {
+      "required": [
+        "time_condition",
+        "groupby",
+        "cost_type",
+        "amount_type"
+      ],
+      "properties": {
+        "time_condition": {
+          "description": "时间条件",
+          "$ref": "#/definitions/TimeCondition"
+        },
+        "groupby": {
+          "description": "查询维度,具体请参见表 GroupBy。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "x-minLength": 1,
+          "x-maxLength": 3,
+          "items": {
+            "$ref": "#/definitions/GroupBy"
+          }
+        },
+        "cost_type": {
+          "type": "string",
+          "description": "成本类型。ORIGINAL_COST:原始成本AMORTIZED_COST:摊销成本",
+          "minLength": 1,
+          "maxLength": 256,
+          "example": ""
+        },
+        "amount_type": {
+          "type": "string",
+          "description": "展示的金额类型。PAYMENT_AMOUNT:应付NET_AMOUNT:实付",
+          "minLength": 1,
+          "maxLength": 256,
+          "example": ""
+        },
+        "offset": {
+          "description": "偏移量。从0开始,默认为0",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "default": 0,
+          "maximum": 200000,
+          "minimum": 0
+        },
+        "limit": {
+          "description": "每次查询的记录数,默认为10",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "default": 10,
+          "maximum": 1000,
+          "minimum": 0
+        },
+        "filters": {
+          "description": "过滤条件,具体请参见表 过滤条件。此参数不携带或携带值为空列表或携带值为null时,不作为筛选条件。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 1024,
+          "x-minLength": 0,
+          "x-maxLength": 1024,
+          "items": {
+            "$ref": "#/definitions/FilterV2"
+          }
+        }
+      }
+    },
+    "FilterV2": {
+      "required": [
+        "operator",
+        "filter_factor"
+      ],
+      "properties": {
+        "operator": {
+          "description": "运算符。0:仅包含1:仅排除 此参数不携带或携带值为null时,不作为筛选条件。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 1,
+          "minimum": 0
+        },
+        "filter_factor": {
+          "description": "过滤器因子",
+          "$ref": "#/definitions/FilterFactor"
+        }
+      }
+    },
+    "TimeCondition": {
+      "required": [
+        "time_measure_id",
+        "begin_time",
+        "end_time"
+      ],
+      "properties": {
+        "time_measure_id": {
+          "description": "时间单位。1:天2:月",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 2,
+          "minimum": 1
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "查询开始时间,必须是日期格式。当time_measure_id值为1或为空时,格式为YYYY-MM-DD当time_measure_id值为2时,格式为YYYY-MM",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": ""
+        },
+        "end_time": {
+          "type": "string",
+          "description": "查询结束时间:必须是日期格式。当time_measure_id值为1或为空时,格式为YYYY-MM-DD当time_measure_id值为2时,格式为YYYY-MM",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": ""
+        }
+      }
+    },
+    "GroupBy": {
+      "required": [
+        "type",
+        "key"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "tag:按照成本标签过滤cost_unit:按照成本分组过滤dimension:默认取值",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        },
+        "key": {
+          "type": "string",
+          "description": "如果type为tag,此处取值为tag的key。如果type为cost_unit,此处取值为cost_unit的key。如果type为dimension,此处取值如下:CLOUD_SERVICE_TYPE 产品类型RESOURCE_TYPE 产品ASSOCIATED_ACCOUNT 关联账号(企业主名下的所有企业子账号)REGION_CODE 区域AZ_CODE 可用区ENTERPRISE_PROJECT_ID 企业项目RES_SPEC_CODE 产品规格CHARGING_MODE 计费模式USAGE_TYPE 使用量类型BILL_TYPE 账单大类(billtype,前台需转换billdetailtype)BE_ID 运营实体(beid)PAYER_ACCOUNT_ID 支付账号RESOURCE_ID 资源",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        }
+      }
+    },
+    "FilterFactor": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "维度分组条件。CLOUD_SERVICE_TYPE:产品类型ASSOCIATED_ACCOUNT:关联账号REGION_CODE:区域RES_SPEC_CODE:规格编码USAGE_TYPE:使用量类型ENTERPRISE_PROJECT_ID:企业项目RESOURCE_ID:资源CHARGING_MODE:计费模式BILL_TYPE:账单类型RESOURCE_TYPE:产品AZ_CODE:可用区BE_ID:运营实体(beid)PAYER_ACCOUNT_ID:交易账号RESOURCE_TAG:成本标签COST_UNIT:成本分组",
+          "minLength": 1,
+          "maxLength": 256,
+          "example": ""
+        },
+        "value": {
+          "description": "过滤器值",
+          "type": "array",
+          "maxItems": 100,
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "example": ""
+        }
+      }
+    },
+    "CostDataByDimension": {
+      "properties": {
+        "dimensions": {
+          "description": "维度列表,具体请参见表 DimensionGroup。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DimensionGroup"
+          }
+        },
+        "costs": {
+          "description": "成本值,具体请参见表 Cost。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Cost"
+          }
+        },
+        "amount_by_costs": {
+          "type": "string",
+          "description": "此维度值对应整个时间跨度的成本汇总金额。",
+          "example": ""
+        },
+        "official_amount_by_costs": {
+          "type": "string",
+          "description": "此维度值对应整个时间跨度的官网价汇总金额。",
+          "example": ""
+        }
+      }
+    },
+    "DimensionGroup": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "分组条件。 产品类型:CLOUD_SERVICE_TYPE企业项目:ENTERPRISE_PROJECT_ID使用量类型:USAGE_TYPE产品:RESOURCE_TYPE可用区:AZ_CODE账单类型:BILL_TYPE关联账号:ASSOCIATED_ACCOUNT规格编码:RES_SPEC_CODE运营实体:BE_ID区域:REGION_CODE计费模式:CHARGING_MODE交易账号:PAYER_ACCOUNT_ID资源tag:RESOURCE_TAG资源id:RESOURCE_ID成本分组:COST_UNIT分拆项:SPLIT_ITEM_NAME",
+          "example": ""
+        },
+        "value": {
+          "type": "string",
+          "description": "维度值。",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

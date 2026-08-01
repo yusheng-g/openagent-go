@@ -1,0 +1,216 @@
+{
+  "name": "ModifyRdSforMySqlProxyRouteMode",
+  "summary": "设置读写分离路由模式",
+  "tags": "数据库代理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/proxy/{proxy_id}/route-mode": {
+      "post": {
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/23a50154cf494ec9ad6883979a12db0a/instances/ba0fd7c13cca4655820e0f858d5d467bin01/proxy/4e2a0c70f70f4807940db73a30b5b522po01/route-mode",
+        "x-request-examples-description-1": "设置读写分离路由模式。",
+        "x-request-examples-text-1": {
+          "master_weight": 0,
+          "readonly_nodes": [
+            {
+              "id": "2edc88e921bb4129bb4d9b76be66811dno07",
+              "weight": 1
+            }
+          ],
+          "route_mode": 2
+        },
+        "x-request-examples-1": {
+          "master_weight": 0,
+          "readonly_nodes": [
+            {
+              "id": "2edc88e921bb4129bb4d9b76be66811dno07",
+              "weight": 1
+            }
+          ],
+          "route_mode": 2
+        },
+        "tags": [
+          "数据库代理"
+        ],
+        "summary": "设置读写分离路由模式",
+        "description": "设置读写分离路由模式。",
+        "operationId": "ModifyRdSforMySqlProxyRouteMode",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "type": "string",
+            "default": "application/json"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一Region下的project ID。\n\n获取方法请参见[获取项目ID](https://support.huaweicloud.com/api-rds/rds_03_0002.html)。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID,严格匹配UUID规则。"
+          },
+          {
+            "name": "proxy_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "数据库代理ID,严格匹配UUID规则。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "ModifyRDSforMySqlProxyRouteModeRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "请求体。",
+            "schema": {
+              "$ref": "#/definitions/ModifyMySqlProxyRouteModeRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ModifyMysqlProxyRouteModeResponse"
+            },
+            "examples": {
+              "application/json": {
+                "result": "success"
+              }
+            }
+          },
+          "400": {
+            "description": "Client error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ModifyMysqlProxyRouteModeResponse": {
+      "type": "object",
+      "description": "修改数据库代理路由模式返回体。",
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "type": "string",
+          "description": "修改数据库代理路由模式结果。\n取值:\n    failed 失败\n    success 成功",
+          "example": "success"
+        }
+      }
+    },
+    "MysqlErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ModifyMySqlProxyRouteModeRequest": {
+      "type": "object",
+      "properties": {
+        "master_weight": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "数据库主实例读权重。\n    - 当route_mode选择0(权重负载)时,该字段取值范围为0~1000。\n    - 当route_mode选择1或2(负载均衡)时,该字段不生效。"
+        },
+        "readonly_instances": {
+          "items": {
+            "required": [
+              "id",
+              "weight"
+            ],
+            "$ref": "#/definitions/InstancesWeight"
+          },
+          "description": "数据库节点的读权重设置。\n\n    - 只能为只读实例选择权重。\n    - 该列表可以为空列表。",
+          "type": "array"
+        },
+        "route_mode": {
+          "type": "integer",
+          "format": "int32",
+          "example": 0,
+          "description": "数据库代理路由模式。\n取值范围:\n    0:表示权重负载模式。\n    1:表示负载均衡模式(数据库主实例不接受读请求)。\n    2:表示负载均衡模式(数据库主实例接受读请求)。\n\n    - 如需使用负载均衡模式,请联系客服申请"
+        }
+      },
+      "required": [
+        "master_weight",
+        "readonly_instances",
+        "route_mode"
+      ],
+      "description": "修改数据库代理路由模式请求体。"
+    },
+    "InstancesWeight": {
+      "type": "object",
+      "description": "数据库节点的读权重设置。\n\n在proxy_mode为readonly时,只能为只读节点选择权重。",
+      "required": [
+        "instance_id",
+        "weight"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "数据库实例ID。",
+          "example": "ba0fd7c13cca4655820e0f858d5d467bin01"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "数据库代理读权重。",
+          "example": 1
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

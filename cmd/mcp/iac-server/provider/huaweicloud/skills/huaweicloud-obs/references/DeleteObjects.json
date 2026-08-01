@@ -1,0 +1,259 @@
+{
+  "name": "DeleteObjects",
+  "summary": "批量删除对象",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "post": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "DeleteObjects",
+        "summary": "批量删除对象",
+        "description": "批量删除对象特性用于将一个桶内的部分对象一次性删除,删除后不可恢复。批量删除对象要求返回结果里包含每个对象的删除结果。OBS的批量删除对象使用同步删除对象的方式,每个对象的删除结果返回给请求用户。\n\n批量删除对象支持两种响应方式:verbose和quiet。Verbose是指在返回响应时,不管对象是否删除成功都将删除结果包含在XML响应里;quiet是指在返回响应时,只返回删除失败的对象结果,没有返回的认为删除成功。OBS默认使用verbose模式,如果用户在请求消息体中指定quiet模式的话, 使用quiet模式。\n\n批量删除的请求消息头中必须包含Content-MD5以及Content-Length,用以保证请求的消息体在服务端检测到网络传输如果有错,则可以检测出来。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "/?delete",
+        "x-request-examples-1": "POST /test333?delete HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: 127.0.0.1\nAccept: */*\nDate: WED, 01 Jul 2015 04:34:21 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:8sjZWJlWmYmYnK5JqXaFFQ+vHEg=\nContent-MD5: ZPzz8L+hdRJ6qCqYbU/pCw==\nContent-Length: 188\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Delete>\n  <Quiet>true</Quiet>\n  <Object>\n    <Key>obja02</Key>\n  </Object>\n  <Object>\n    <Key>obja02</Key>\n  </Object>\n</Delete>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "description": "按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "in": "body",
+            "name": "DeleteObjectsRequestBody",
+            "description": "该请求通过在请求消息的消息元素中指定要批量删除的对象列表。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteObjectsRequestBody"
+            }
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "delete",
+            "in": "query",
+            "required": true,
+            "description": "delete表示请求批量删除对象API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/DeleteResult"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|-|超过1000个对象。|400 Bad Request|\n|-|对象Key不合法|400 Bad Request|\n|-|请求消息头中不包含Content-MD5|400 Bad Request|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DeleteObjectsRequestBody": {
+      "xml": {
+        "name": "Delete"
+      },
+      "description": "待删除的对象列表。\n",
+      "properties": {
+        "Quiet": {
+          "description": "用于指定使用quiet模式,只返回删除失败的对象结果;如果有此字段,则必被置为True,如果为False则被系统忽略掉。\n",
+          "type": "boolean"
+        },
+        "EncodingType": {
+          "description": "用于指定待删除的对象Key和响应中的对象Key的编码类型。如果Key包含xml 1.0标准不支持的控制字符,可通过设置该元素指定对象Key的编码类型。\n",
+          "type": "string"
+        },
+        "Object": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeleteObject"
+          },
+          "maxItems": 1000
+        }
+      }
+    },
+    "DeleteResultDeleted": {
+      "description": "删除成功结果的Container。\n",
+      "properties": {
+        "Key": {
+          "description": "每个删除结果的对象名。\n",
+          "type": "string"
+        },
+        "VersionId": {
+          "description": "删除对象的版本号\n",
+          "type": "string"
+        },
+        "DeleteMarker": {
+          "description": "当批量删除请求访问的桶是多版本桶时,如果创建或删除一个删除标记,返回消息中该元素的值为true。\n",
+          "type": "boolean",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "DeleteMarkerVersionId": {
+          "description": "请求创建或删除的删除标记版本号。\n\n当批量删除请求访问的桶是多版本桶时,如果创建或删除一个删除标记,响应消息会返回该元素。该元素在以下两种情况中会出现:\n\n用户发送不带版本删除请求,即请求只有对象名,无版本号。这种情况下,系统会创建一个删除标记,并在响应中返回该删除标记的版本号。\n用户发送带版本删除请求,即请求同时包含对象名以及版本号,但是该版本号标识一个删除标记。这种情况下,系统会删除此删除标记,并在响应中返回该删除标记的版本号。\n",
+          "type": "boolean",
+          "enum": [
+            true,
+            false
+          ]
+        }
+      }
+    },
+    "DeleteResult": {
+      "description": "批删响应的根节点。\n",
+      "properties": {
+        "EncodingType": {
+          "description": "对响应中的Key进行指定类型的编码。如果请求消息中设置了EncodingType,那响应中的Key会被编码。\n",
+          "type": "string"
+        },
+        "Deleted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeleteResultDeleted"
+          }
+        },
+        "Error": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeleteResultError"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "DeleteResultError": {
+      "description": "删除失败结果。\n",
+      "properties": {
+        "Key": {
+          "description": "每个删除结果的对象名。\n",
+          "type": "string"
+        },
+        "Code": {
+          "description": "删除失败结果的错误码。\n",
+          "type": "string"
+        },
+        "Message": {
+          "description": "删除失败结果的错误消息。\n",
+          "type": "string"
+        }
+      }
+    },
+    "DeleteObject": {
+      "description": "待删除的对象。\n",
+      "properties": {
+        "Key": {
+          "description": "待删除的对象Key。如果设置了EncodingType元素,对象Key需要按照对应的编码类型进行编码。\n",
+          "type": "string"
+        },
+        "VersionId": {
+          "description": "待删除的对象版本号。\n",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

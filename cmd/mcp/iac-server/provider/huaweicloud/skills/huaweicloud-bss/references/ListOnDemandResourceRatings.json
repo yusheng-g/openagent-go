@@ -1,0 +1,466 @@
+{
+  "name": "ListOnDemandResourceRatings",
+  "summary": "查询按需产品价格",
+  "tags": "购买云服务(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/ratings/on-demand-resources": {
+      "post": {
+        "summary": "查询按需产品价格",
+        "description": "伙伴在销售平台按照条件查询按需产品的价格。\n\n如果购买该产品的租户享受折扣,可以在查询结果中返回折扣金额以及扣除折扣后的最后成交价。\n\n如果该租户享受多种折扣,系统会优先返回客户享受的商务折扣的折扣金额和最终成交价。\n\n>![](public_sys-resources/icon-caution.gif) **注意:** \n>华为云根据云服务类型、资源类型、云服务区和资源规格四个条件来查询产品,查询时请确认这4个查询条件均输入正确,否则该接口会返回无法找到产品的错误。",
+        "tags": [
+          "购买云服务(公共)"
+        ],
+        "operationId": "ListOnDemandResourceRatings",
+        "x-externalURL": "/v2/bills/ratings/on-demand-resources",
+        "x-open-region-cloud": "hc,hk",
+        "x-constraint": "该接口可以使用客户AK/SK或者Token调用伙伴置换子客户的token调用。",
+        "x-flowControl": 20,
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-lastAnalysisDate": "2020-03-30",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询按需产品价格请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RateOnDemandReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/bills/ratings/on-demand-resources",
+        "x-request-examples-1": {
+          "project_id": "06488a********832f55c016b0e337d7",
+          "product_infos": [
+            {
+              "id": "1",
+              "cloud_service_type": "hws.service.type.ec2",
+              "resource_type": "hws.resource.type.vm",
+              "resource_spec": "c3.3xlarge.2.linux",
+              "region": "cn-east-3",
+              "usage_factor": "Duration",
+              "usage_value": 2,
+              "usage_measure_id": 4,
+              "subscription_num": 1,
+              "available_zone": null
+            },
+            {
+              "id": "2",
+              "cloud_service_type": "hws.service.type.ebs",
+              "resource_type": "hws.resource.type.volume",
+              "resource_spec": "SSD",
+              "region": "cn-north-1",
+              "usage_factor": "Duration",
+              "usage_value": 2,
+              "usage_measure_id": 4,
+              "subscription_num": 1,
+              "resource_size": 10,
+              "size_measure_id": 17
+            },
+            {
+              "id": "3",
+              "cloud_service_type": "hws.service.type.vpc",
+              "resource_type": "hws.resource.type.ip",
+              "resource_spec": "5_bgp",
+              "region": "cn-east-3",
+              "usage_factor": "Duration",
+              "usage_value": 3,
+              "usage_measure_id": 4,
+              "subscription_num": 1,
+              "available_zone": null
+            },
+            {
+              "id": "4",
+              "cloud_service_type": "hws.service.type.vpc",
+              "resource_type": "hws.resource.type.bandwidth",
+              "resource_spec": "12_sbgp",
+              "region": "cn-north-1",
+              "usage_factor": "upflow",
+              "usage_value": 4,
+              "usage_measure_id": 10,
+              "subscription_num": 1,
+              "available_zone": "cn-north-1a",
+              "resource_size": 1,
+              "size_measure_id": 15
+            }
+          ],
+          "inquiry_precision": 1
+        },
+        "responses": {
+          "200": {
+            "description": "查询按需产品价格响应",
+            "schema": {
+              "$ref": "#/definitions/RateOnDemandRsp"
+            },
+            "examples": {
+              "application/json": {
+                "amount": 8.128,
+                "discount_amount": 0.0,
+                "official_website_amount": 8.128,
+                "measure_id": 1,
+                "currency": "CNY",
+                "product_rating_results": [
+                  {
+                    "id": "1",
+                    "product_id": "00301-243025-0--0_merge",
+                    "amount": 5.48,
+                    "discount_amount": 0.0,
+                    "official_website_amount": 5.48,
+                    "measure_id": 1,
+                    "discount_rating_results": []
+                  },
+                  {
+                    "id": "2",
+                    "product_id": "00301-290407774-0--1",
+                    "amount": 0.028,
+                    "discount_amount": 0.0,
+                    "official_website_amount": 0.028,
+                    "measure_id": 1,
+                    "discount_rating_results": []
+                  },
+                  {
+                    "id": "3",
+                    "product_id": "00301-238601-0--0_merge",
+                    "amount": 0.06,
+                    "discount_amount": 0.0,
+                    "official_website_amount": 0.06,
+                    "measure_id": 1,
+                    "discount_rating_results": []
+                  },
+                  {
+                    "id": "4",
+                    "product_id": "00301-290407706-0--1",
+                    "amount": 2.56,
+                    "discount_amount": 0.0,
+                    "official_website_amount": 2.56,
+                    "measure_id": 1,
+                    "discount_rating_results": []
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "购买云服务(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RateOnDemandReq": {
+      "required": [
+        "project_id",
+        "product_infos"
+      ],
+      "properties": {
+        "project_id": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "项目ID。  说明: 使用客户Token,可以调用[通过assume_role方式获取用户token](https://support.huaweicloud.com/api-iam/iam_30_0003.html)接口获取“regionId”的取值对应的“project id”。具体请参见[如何将合作伙伴Token置换为客户Token](https://support.huaweicloud.com/bpconsole_faq/bpconsole_apifaq_00001.html)的步骤2。IAM子用户调用此接口,需要IAM主账号授权,具体请参考[创建用户组并授权](https://support.huaweicloud.com/usermanual-iam/iam_03_0001.html)。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "inquiry_precision": {
+          "description": "查询价格结果的精度模式。 0:询价结果默认精度截取,即最长保留到元后6位小数点,如0.000001元1:询价结果保留10位精度,即最长保留到元后10位小数点,如1.0000000001元  说明: 如果询价结果只到元后2位或者3位,那么价格也只到元后2位或者3位,不管传0或者传1都一样,只有询价结果到了小数点后面6位以上,传0和传1才有区别。",
+          "type": "integer",
+          "maximum": 1,
+          "minimum": 0,
+          "default": 0,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "product_infos": {
+          "description": "产品信息列表,询价时要询价产品的信息的列表,具体参见表1。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "x-maxLength": 100,
+          "x-minLength": 1,
+          "items": {
+            "$ref": "#/definitions/DemandProductInfo"
+          }
+        }
+      }
+    },
+    "RateOnDemandRsp": {
+      "required": [
+        "project_id",
+        "product_infos"
+      ],
+      "properties": {
+        "amount": {
+          "description": "折扣的金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "discount_amount": {
+          "description": "优惠额(官网价和总价的差)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "official_website_amount": {
+          "description": "按需产品的官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "measure_id": {
+          "description": "度量单位标识。 1:元",
+          "type": "integer",
+          "maximum": 4,
+          "minimum": 1,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "currency": {
+          "description": "币种。 CNY:人民币。 值为空代表人民币。",
+          "minLength": 0,
+          "maxLength": 20,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "product_rating_results": {
+          "description": "产品询价结果,具体参见表2。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/definitions/DemandProductRatingResult"
+          }
+        }
+      }
+    },
+    "DemandDiscountRatingResult": {
+      "properties": {
+        "discount_id": {
+          "description": "优惠标识ID。",
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "discount_type": {
+          "description": "折扣优惠类型。商务授权折扣:605(华为云BE场景下的合同商务折扣)、伙伴授予折扣:606(分销商BE场景下的合同商务折扣)、伙伴设置折扣:607(合作伙伴设置折扣-折扣率)",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "amount": {
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "description": "折扣的金额。"
+        },
+        "measure_id": {
+          "description": "度量单位标识。 1:元",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "discount_name": {
+          "description": "折扣名称。",
+          "minLength": 0,
+          "maxLength": 256,
+          "type": "string",
+          "example": "xxxxx"
+        }
+      }
+    },
+    "DemandProductInfo": {
+      "required": [
+        "id",
+        "cloud_service_type",
+        "resource_type",
+        "resource_spec",
+        "region",
+        "usage_factor",
+        "usage_value",
+        "usage_measure_id",
+        "subscription_num"
+      ],
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "ID标识,同一次询价中不能重复,用于标识返回询价结果和请求的映射关系。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "cloud_service_type": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。",
+          "type": "string",
+          "example": "hws.service.type.obs"
+        },
+        "resource_type": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。 ResourceType是CloudServiceType中的一种资源,CloudServiceType由多种ResourceType组合提供。",
+          "type": "string",
+          "example": "hws.resource.type.vm"
+        },
+        "resource_spec": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "云服务类型的资源规格,部分云服务类型和资源规格举例如下: 弹性云服务器:根据操作系统类型在云服务器规格的ID后添加“.win”或“.linux”,例如“s2.small.1.linux”。云服务器规格的ID字段,您可以调用查询规格详情和规格扩展信息列表接口获取。 带宽:12_bgp:动态BGP按流量计费带宽12_sbgp:静态BGP按流量计费带宽19_bgp:动态BGP按带宽计费带宽19_sbgp:静态BGP按带宽计费带宽19_share:按带宽计费共享带宽 IP:5_bgp:动态BGP公网IP5_sbgp:静态BGP公网IP 云硬盘:SATA:普通IO云硬盘SAS:高IO云硬盘GPSSD:通用型SSD云硬盘SSD:超高IO云硬盘",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "region": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "云服务区编码,例如:“cn-north-1”。",
+          "type": "string",
+          "example": "cn-north-1"
+        },
+        "available_zone": {
+          "minLength": 0,
+          "maxLength": 64,
+          "description": "可用区标识。此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "resource_size": {
+          "description": "资源容量大小,例如购买的卷大小或带宽大小。 线性产品时该参数不能为空。线性产品为包括硬盘,带宽等在订购时需要指定大小的产品。例如硬盘在订购时需选择10G、20G等不同大小。非线性产品时此参数不携带或者携带值为null时,不作为筛选条件。",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 214783647,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "size_measure_id": {
+          "description": "资源容量度量标识,枚举值如下: 15:Mbps(购买带宽时使用)17:GB(购买云硬盘时使用)14:个(次) 线性产品时该参数不能为空。线性产品为包括硬盘,带宽等在订购时需要指定大小的产品。例如硬盘在订购时需选择10G、20G等不同大小。非线性产品时此参数不携带或者携带值为null时,不作为筛选条件。",
+          "type": "integer",
+          "maximum": 214783647,
+          "minimum": 0,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 14
+        },
+        "usage_factor": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "使用量因子编码,大小写不敏感,取值和话单中的使用量因子一致,云服务和使用量因子对应关系举例如下: 云服务器:Duration云硬盘:Duration弹性IP:Duration带宽:Duration或upflow市场镜像:Duration 您可以调用查询使用量类型列表接口获取响应参数表3中参数code的取值,即每种云服务对应的计费因子。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "usage_value": {
+          "description": "使用量值。 例如按小时询价,使用量值为1,使用量单位为小时。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "usage_measure_id": {
+          "description": "使用量度量单位, 例如按小时询价,使用量值为1,使用量单位为小时。",
+          "type": "integer",
+          "maximum": 9999,
+          "minimum": 0,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "subscription_num": {
+          "description": "订购数量。",
+          "type": "integer",
+          "maximum": 10000,
+          "minimum": 1,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        }
+      }
+    },
+    "DemandProductRatingResult": {
+      "properties": {
+        "id": {
+          "description": "同一次询价中不能重复,用于标识返回询价结果和请求的映射关系。",
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "product_id": {
+          "description": "按需产品的ID。",
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "amount": {
+          "description": "折扣的金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "discount_amount": {
+          "description": "优惠额(官网价和总价的差)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "official_website_amount": {
+          "description": "按需产品的官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "measure_id": {
+          "description": "度量单位标识。 1:元",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "discount_rating_results": {
+          "description": "折扣优惠明细,包含产品本身的促销信息,同时包含商务或者伙伴折扣的优惠信息,具体参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DemandDiscountRatingResult"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

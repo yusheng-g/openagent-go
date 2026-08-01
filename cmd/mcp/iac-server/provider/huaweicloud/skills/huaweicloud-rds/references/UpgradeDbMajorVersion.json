@@ -1,0 +1,111 @@
+{
+  "name": "UpgradeDbMajorVersion",
+  "summary": "PostgreSQL数据库升级大版本",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/major-version/upgrade": {
+      "post": {
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/3aa441c4c98a4b36b100a7e3e87d17cein03/major-version/upgrade",
+        "x-request-examples-description-1": "升级实例3aa441c4c98a4b36b100a7e3e87d17cein03内核版本到14.6.1,升级后切换原实例私有IP到大版本实例,并在切换私有IP前收集统计信息。",
+        "x-request-examples-text-1": {
+          "target_version": "14.6.1",
+          "is_change_private_ip": true,
+          "statistics_collection_mode": " before_change_private_ip "
+        },
+        "x-request-examples-1": {
+          "target_version": "14.6.1",
+          "is_change_private_ip": true,
+          "statistics_collection_mode": " before_change_private_ip "
+        },
+        "tags": [
+          "实例管理"
+        ],
+        "description": "PostgreSQL数据库升级大版本。",
+        "operationId": "UpgradeDbMajorVersion",
+        "summary": "PostgreSQL数据库升级大版本",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "UpgradePgMajorVersion",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpgradePgMajorVersion"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/UpgradePgMajorVersionResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": " 3afe25b7-4523-4d3b-8236-7121be922691"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpgradePgMajorVersionResponse": {
+      "type": "object",
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。"
+        }
+      }
+    },
+    "UpgradePgMajorVersion": {
+      "type": "object",
+      "required": [
+        "target_version",
+        "is_change_private_ip"
+      ],
+      "properties": {
+        "target_version": {
+          "type": "string",
+          "description": "目标版本。\n高于实例当前的大版本,如当前为12,目标版本需要是13或14。"
+        },
+        "is_change_private_ip": {
+          "type": "boolean",
+          "description": "是否将实例内网IP切换到大版本实例\n\ttrue:升级后切换当前实例的内网IP到大版本实例\nfalse:升级后当前实例的内网IP不变,大版本实例使用新的内网IP"
+        },
+        "statistics_collection_mode": {
+          "type": "string",
+          "description": "统计信息收集方式。is_change_private_ip为true时必选\n\tbefore_change_private_ip:将实例内网IP切换到大版本实例前收集\n\tafter_change_private_ip:将实例内网IP切换到大版本实例后收集"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

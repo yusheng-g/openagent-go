@@ -1,0 +1,118 @@
+{
+  "name": "DeleteLoadBalancerCascade",
+  "summary": "级联删除负载均衡器及关联EIP",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/delete-cascade": {
+      "post": {
+        "tags": [
+          "负载均衡器"
+        ],
+        "summary": "级联删除负载均衡器及关联EIP",
+        "description": "删除负载均衡器且级联删除其下子资源(删除负载均衡器及其绑定的监听器、后端服务器等一系列资源)。以及根据需要删除或解绑后端服务器组和LB关联的EIP。",
+        "operationId": "DeleteLoadBalancerCascade",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "in": "body",
+            "name": "DeleteLoadBalancerCascadeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteLoadBalancerCascadeRequestBody"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "操作正常返回。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "级联删除负载均衡器及关联EIP",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 8,
+        "x-request-examples-description-1": "级联删除负载均衡器及关联EIP",
+        "x-request-examples-1": {
+          "loadbalancer": {
+            "unbounded_pool": true,
+            "public_ip": true
+          }
+        },
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/060576782980d5762f9ec014dd2f1148/elb/loadbalancers/32c1057f-74a1-42d6-9b20-d55b80ab89c4/delete-cascade",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2022-10-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "DeleteLoadBalancerCascadeRequestBody": {
+      "required": [
+        "loadbalancer"
+      ],
+      "properties": {
+        "loadbalancer": {
+          "$ref": "#/definitions/DeleteLoadBalancerCascadeOption",
+          "description": "**参数解释**:级联删除负载均衡器参数对象。\n\n**约束限制**:不涉及"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "DeleteLoadBalancerCascadeOption": {
+      "properties": {
+        "unbounded_pool": {
+          "type": "boolean",
+          "description": "**参数解释**:是否删除关联的后端服务器组。\n\n**约束限制**:\n- 共享型负载均衡器仅支持传参为true。\n\n\n**取值范围**:\n- true:删除该后端服务器组。\n- false:仅解绑后端服务器组,不删除。\n\n**默认取值**:true",
+          "default": true
+        },
+        "public_ip": {
+          "type": "boolean",
+          "description": "**参数解释**:删除负载均衡器后是否删除关联的公网IP。\n\n**约束限制**:不涉及        \n\n**取值范围**:\n- true:删除关联的EIP。\n- false:仅解绑关联的EIP,不删除。\n\n**默认取值**:false",
+          "default": true
+        }
+      },
+      "description": "**参数解释**:级联删除负载均衡器参数对象。\n\n**约束限制**:不涉及"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

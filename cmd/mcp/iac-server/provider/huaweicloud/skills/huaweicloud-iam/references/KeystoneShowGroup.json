@@ -1,0 +1,179 @@
+{
+  "name": "KeystoneShowGroup",
+  "summary": "查询用户组详情",
+  "tags": "用户组管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/groups/{group_id}": {
+      "get": {
+        "tags": [
+          "用户组管理"
+        ],
+        "summary": "查询用户组详情",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询用户组详情。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneShowGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "待查询的用户组ID,获取方式请参见:[获取用户组ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "ab9f261180d746ef8624beb5ae39b5aa",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "group": {
+                  "domain_id": "d78cbac186b744899480f25bd022f468",
+                  "create_time": 1578107542861,
+                  "name": "IAMGroup",
+                  "description": "",
+                  "links": {
+                    "next": null,
+                    "previous": null,
+                    "self": "https://iam.huaweicloud.com/v3/groups/07609e7eb200250a3f7dc003cb7a4e2d"
+                  },
+                  "id": "07609e7eb200250a3f7dc003cb7a4e2d"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneShowGroupResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询用户组详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 24,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/groups/{group_id}",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/groups/{group_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneShowGroupResponseBody": {
+      "required": [
+        "group"
+      ],
+      "properties": {
+        "group": {
+          "description": "用户组信息。",
+          "$ref": "#/definitions/KeystoneGroupResult"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneGroupResult": {
+      "required": [
+        "create_time",
+        "description",
+        "domain_id",
+        "id",
+        "links",
+        "name"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "用户组描述信息。"
+        },
+        "id": {
+          "type": "string",
+          "example": "07609e7eb200250a3f7dc003cb7a4e2d",
+          "description": "用户组ID。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "用户组所属账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMGroup",
+          "description": "用户组名称。"
+        },
+        "links": {
+          "description": "用户组的资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1578107542861,
+          "description": "用户组创建时间。"
+        }
+      },
+      "description": ""
+    },
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

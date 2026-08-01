@@ -1,0 +1,114 @@
+{
+  "name": "DeleteL7policy",
+  "summary": "删除转发策略",
+  "tags": "转发策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/l7policies/{l7policy_id}": {
+      "delete": {
+        "tags": [
+          "转发策略"
+        ],
+        "summary": "删除转发策略",
+        "description": "删除转发策略",
+        "operationId": "DeleteL7policy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "l7policy_id",
+            "in": "path",
+            "description": "转发策略id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除操作正常返回"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除转发策略",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 55,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "DELETE https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/cf024846-7516-4e3a-b0fb-6590322c836f",
+        "x-request-examples-text-1": "DELETE https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/cf024846-7516-4e3a-b0fb-6590322c836f",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

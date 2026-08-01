@@ -1,0 +1,282 @@
+{
+  "name": "ShowDomainApiAclPolicy",
+  "summary": "查询账号接口访问策略",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/api-acl-policy": {
+      "get": {
+        "tags": [
+          "安全设置"
+        ],
+        "summary": "查询账号接口访问策略",
+        "description": "该接口可以用于查询账号接口访问控制策略。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ShowDomainApiAclPolicy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "待查询的账号ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "api_acl_policy": {
+                  "allow_ip_ranges": [
+                    {
+                      "ip_range": "0.0.0.0-255.255.255.255",
+                      "description": ""
+                    },
+                    {
+                      "ip_range": "0.0.0.0-255.255.255.255",
+                      "description": ""
+                    }
+                  ],
+                  "allow_address_netmasks": [
+                    {
+                      "address_netmask": "192.168.0.1/24",
+                      "description": ""
+                    },
+                    {
+                      "address_netmask": "192.168.0.1/24",
+                      "description": ""
+                    }
+                  ],
+                  "allow_vpc_endpoints": [
+                    {
+                      "vpc_endpoint_id": "8di3jdu38d7jhfa7df68adyfiadfia6d",
+                      "description": ""
+                    },
+                    {
+                      "vpc_endpoint_id": "23i3jdu38d7jhfa7df68adyfiadfia8j",
+                      "description": ""
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowDomainApiAclPolicyResponseBody"
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error_msg": "You are not authorized to perform the requested action.",
+                "error_code": "IAM.0002"
+              },
+              "application/json-1": {
+                "error_msg": "Policy doesn't allow %(actions)s to be performed.",
+                "error_code": "IAM.0003"
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "examples": {
+              "application/json": {
+                "error_msg": "Could not find %(target)s: %(target_id)s.",
+                "error_code": "IAM.0004"
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务错误。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询账号接口访问策略",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 19,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/api-acl-policy",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/api-acl-policy",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0004",
+            "httpStatus": "404",
+            "errorMessage": "Could not find %(target)s: %(target_id)s.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AllowVpcEndpointsResult": {
+      "required": [
+        "description",
+        "vpc_endpoint_id"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        },
+        "vpc_endpoint_id": {
+          "type": "string",
+          "example": "8di3jdu38d7jhfa7df68adyfiadfia6d",
+          "description": "VPC端点,例如:8di3jdu38d7jhfa7df68adyfiadfia6d。"
+        }
+      },
+      "description": ""
+    },
+    "ShowDomainApiAclPolicyResponseBody": {
+      "properties": {
+        "api_acl_policy": {
+          "description": "接口访问控制策略。",
+          "$ref": "#/definitions/AclPolicyResult"
+        }
+      },
+      "description": ""
+    },
+    "AclPolicyResult": {
+      "properties": {
+        "allow_address_netmasks": {
+          "type": "array",
+          "example": "[{\"address_netmask\":\"192.168.0.1/24\",\"description\":\"\"},{\"address_netmask\":\"192.168.0.1/24\",\"description\":\"\"}]",
+          "description": "允许访问的IP地址或网段。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowAddressNetmasksResult"
+          }
+        },
+        "allow_ip_ranges": {
+          "type": "array",
+          "example": "[{\"ip_range\":\"0.0.0.0-255.255.255.255\",\"description\":\"\"},{\"ip_range\":\"0.0.0.0-255.255.255.255\",\"description\":\"\"}]",
+          "description": "允许访问的IP地址区间。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowIpRangesResult"
+          }
+        },
+        "allow_vpc_endpoints": {
+          "type": "array",
+          "example": "[{\"vpc_endpoint_id\":\"8di3jdu38d7jhfa7df68adyfiadfia6d\",\"description\":\"\"},{\"vpc_endpoint_id\":\"23i3jdu38d7jhfa7df68adyfiadfia8j\",\"description\":\"\"}]",
+          "description": "允许访问的VPC端点。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowVpcEndpointsResult"
+          }
+        }
+      }
+    },
+    "AllowIpRangesResult": {
+      "required": [
+        "description",
+        "ip_range"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        },
+        "ip_range": {
+          "type": "string",
+          "example": "0.0.0.0-255.255.255.255",
+          "description": "IP地址区间,例如:0.0.0.0-255.255.255.255。"
+        }
+      },
+      "description": ""
+    },
+    "AllowAddressNetmasksResult": {
+      "required": [
+        "address_netmask",
+        "description"
+      ],
+      "properties": {
+        "address_netmask": {
+          "type": "string",
+          "example": "192.168.0.1/24",
+          "description": "IP地址或网段,例如:192.168.0.1/24。"
+        },
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

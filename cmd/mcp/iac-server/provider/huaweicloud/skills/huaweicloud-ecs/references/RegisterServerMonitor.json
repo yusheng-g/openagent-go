@@ -1,0 +1,106 @@
+{
+  "name": "RegisterServerMonitor",
+  "summary": "注册云服务器监控",
+  "tags": "状态管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1.0/servers/{server_id}/action": {
+      "post": {
+        "tags": [
+          "状态管理"
+        ],
+        "summary": "注册云服务器监控",
+        "description": "将云服务器添加到监控表中。\n\n注册到监控表中的云服务会被ceilometer周期性采集监控数据,包括平台的版本、cpu信息、内存、网卡、磁盘、硬件平台等信息,这些数据上报给云监控。例如SAP云服务器内部的插件会周期性从云监控中查询监控数据,以报表形式呈现给SAP。",
+        "operationId": "RegisterServerMonitor",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "RegisterServerMonitorRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterServerMonitorRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "x-name": "注册云服务器监控",
+        "x-constraint": "无",
+        "x-version": "v1.0",
+        "x-scope": "Commercial",
+        "x-order": 68,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1.0/servers/{server_id}/action",
+        "x-request-examples-1": {
+          " monitorMetrics": null
+        },
+        "x-request-examples-text-1": "{\n    \" monitorMetrics\": null\n}",
+        "x-registered_to": "nova-ext",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RegisterServerMonitorRequestBody": {
+      "required": [
+        "monitorMetrics"
+      ],
+      "properties": {
+        "monitorMetrics": {
+          "type": "string",
+          "enum": [
+            ""
+          ],
+          "default": "",
+          "description": "注册云服务器监控。"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

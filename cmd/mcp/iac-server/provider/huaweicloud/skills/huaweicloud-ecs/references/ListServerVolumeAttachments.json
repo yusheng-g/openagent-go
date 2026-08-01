@@ -1,0 +1,144 @@
+{
+  "name": "ListServerVolumeAttachments",
+  "summary": "查询弹性云服务器挂载磁盘列表信息",
+  "tags": "磁盘管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/os-volume_attachments": {
+      "get": {
+        "tags": [
+          "磁盘管理"
+        ],
+        "summary": "查询弹性云服务器挂载磁盘列表信息",
+        "description": "查询弹性云服务器挂载的磁盘信息。",
+        "operationId": "ListServerVolumeAttachments",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "volumeAttachments": [
+                  {
+                    "device": "/dev/sdd",
+                    "id": "a26887c6-c47b-4654-abb5-dfadf7d3f803",
+                    "serverId": "4d8c3732-a248-40ed-bebc-539a6ffd25c0",
+                    "volumeId": "a26887c6-c47b-4654-abb5-dfadf7d3f803"
+                  },
+                  {
+                    "device": "/dev/sdc",
+                    "id": "a26887c6-c47b-4654-abb5-dfadf7d3f804",
+                    "serverId": "4d8c3732-a248-40ed-bebc-539a6ffd25c0",
+                    "volumeId": "a26887c6-c47b-4654-abb5-dfadf7d3f804"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListServerVolumeAttachmentsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询弹性云服务器挂载磁盘列表信息",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 33,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1/cloudservers/4d8c3732-a248-40ed-bebc-539a6ffd25c0/os-volume_attachments",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1/cloudservers/4d8c3732-a248-40ed-bebc-539a6ffd25c0/os-volume_attachments",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-7-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListServerVolumeAttachmentsResponseBody": {
+      "required": [
+        "volumeAttachments"
+      ],
+      "properties": {
+        "volumeAttachments": {
+          "type": "array",
+          "example": "[{\"device\":\"/dev/sdd\",\"id\":\"a26887c6-c47b-4654-abb5-dfadf7d3f803\",\"serverId\":\"4d8c3732-a248-40ed-bebc-539a6ffd25c0\",\"volumeId\":\"a26887c6-c47b-4654-abb5-dfadf7d3f803\"},{\"device\":\"/dev/sdc\",\"id\":\"a26887c6-c47b-4654-abb5-dfadf7d3f804\",\"serverId\":\"4d8c3732-a248-40ed-bebc-539a6ffd25c0\",\"volumeId\":\"a26887c6-c47b-4654-abb5-dfadf7d3f804\"}]",
+          "description": "云服务器挂载信息列表",
+          "items": {
+            "$ref": "#/definitions/ServerVolumeAttachment"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ServerVolumeAttachment": {
+      "properties": {
+        "device": {
+          "type": "string",
+          "description": "云硬盘挂载盘符,即磁盘挂载点。"
+        },
+        "id": {
+          "type": "string",
+          "description": "挂载ID,与云硬盘ID相同,UUID格式。"
+        },
+        "serverId": {
+          "type": "string",
+          "description": "弹性云服务器ID,UUID格式。"
+        },
+        "volumeId": {
+          "type": "string",
+          "description": "云硬盘ID,UUID格式。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

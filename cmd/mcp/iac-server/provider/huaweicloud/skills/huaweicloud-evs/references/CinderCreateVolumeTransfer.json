@@ -1,0 +1,246 @@
+{
+  "name": "CinderCreateVolumeTransfer",
+  "summary": "创建云硬盘过户",
+  "tags": "云硬盘过户",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/os-volume-transfer": {
+      "post": {
+        "tags": [
+          "云硬盘过户"
+        ],
+        "summary": "创建云硬盘过户",
+        "description": "指定云硬盘来创建云硬盘过户记录,创建成功后,会返回过户记录ID以及身份认证密钥。\n云硬盘在过户过程中的状态变化如下:创建云硬盘过户后,云硬盘状态由“available”变为“awaiting-transfer”。当云硬盘过户被接收后,云硬盘状态变为“available”。",
+        "operationId": "CinderCreateVolumeTransfer",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CinderCreateVolumeTransferRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CinderCreateVolumeTransferRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "transfer": {
+                  "id": "1a7059f5-8ed7-45b7-8d05-2811e5d09f24",
+                  "created_at": "2015-02-25T03:56:53.081642",
+                  "name": "first volume",
+                  "volume_id": "c86b9af4-151d-4ead-b62c-5fb967af0e37",
+                  "auth_key": "9266c59563c84664",
+                  "links": [
+                    {
+                      "href": "https://localhost/v2/firstproject/os-volume-transfer/3",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "https://localhost/firstproject/os-volume-transfer/3",
+                      "rel": "bookmark"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CinderCreateVolumeTransferResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建云硬盘过户",
+        "x-constraint": "只有当云硬盘状态为available时,支持创建过户,其他不支持过户的约束如下:\n\n包周期的云硬盘不支持过户。\n冻结的云硬盘不支持过户。\n加密的云硬盘不支持过户。\n云硬盘有对应的备份和快照时不支持过户。\n云硬盘有备份策略时不支持过户。\nDSS专属存储的云硬盘不支持过户。\nDESS专属存储的云硬盘不支持过户。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 28,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/{project_id}/os-volume-transfer",
+        "x-request-examples-1": {
+          "transfer": {
+            "volume_id": "c86b9af4-151d-4ead-b62c-5fb967af0e37",
+            "name": "first volume"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"transfer\": {\n        \"volume_id\": \"c86b9af4-151d-4ead-b62c-5fb967af0e37\", \n        \"name\": \"first volume\"\n    }\n}\n",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018/1/30",
+        "x-open-region-cloud": "hc,hws,hk,otc,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateVolumeTransferOption": {
+      "required": [
+        "name",
+        "volume_id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "云硬盘过户记录的名称。最大支持255个字节。"
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘ID。\n\n通过[查询所有云硬盘详情](https://support.huaweicloud.com/api-evs/evs_04_3033.html)获取。"
+        }
+      }
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "Link": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应的快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        }
+      },
+      "description": "云硬盘uri自描述信息。"
+    },
+    "CinderCreateVolumeTransferResponseBody": {
+      "required": [
+        "transfer"
+      ],
+      "properties": {
+        "transfer": {
+          "description": "云硬盘过户信息,请参见•[transfer参数说明](https://support.huaweicloud.com/api-evs/evs_04_3069.html#evs_04_3069__evs_04_2106_li32419762111447)。",
+          "$ref": "#/definitions/CreateVolumeTransferDetail"
+        }
+      },
+      "description": ""
+    },
+    "CinderCreateVolumeTransferRequestBody": {
+      "required": [
+        "transfer"
+      ],
+      "properties": {
+        "transfer": {
+          "example": "{ \"transfer\": { \"volume_id\": \"c86b9af4-151d-4ead-b62c-5fb967af0e37\", \"name\": \"first volume\" } }",
+          "description": "标记创建云硬盘过户操作",
+          "$ref": "#/definitions/CreateVolumeTransferOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "CreateVolumeTransferDetail": {
+      "required": [
+        "auth_key",
+        "created_at",
+        "id",
+        "links",
+        "name",
+        "volume_id"
+      ],
+      "properties": {
+        "auth_key": {
+          "type": "string",
+          "description": "云硬盘过户的身份认证密钥。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "云硬盘过户记录的创建时间。\n\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "id": {
+          "type": "string",
+          "description": "云硬盘过户记录的ID。"
+        },
+        "links": {
+          "type": "array",
+          "description": "云硬盘过户记录的链接。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘过户记录的名称。"
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘ID。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

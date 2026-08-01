@@ -1,0 +1,295 @@
+{
+  "name": "CreateCloudPersistentVolumeClaims",
+  "summary": "创建PVC(待废弃)",
+  "tags": "存储管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v1/namespaces/{namespace}/cloudpersistentvolumeclaims": {
+      "post": {
+        "tags": [
+          "存储管理"
+        ],
+        "summary": "创建PVC(待废弃)",
+        "description": "该API用于在指定的Namespace下通过云存储服务中的云存储(EVS、SFS、OBS)去创建PVC(PersistentVolumeClaim)。该API待废弃,请使用Kubernetes PVC相关接口。\n\n\n>存储管理的URL格式为:https://{clusterid}.Endpoint/uri。其中{clusterid}为集群ID,uri为资源路径,也即API访问的路径。如果使用https://Endpoint/uri,则必须指定请求header中的X-Cluster-ID参数。",
+        "operationId": "CreateCloudPersistentVolumeClaims",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "path",
+            "description": "指定PersistentVolumeClaim所在的命名空间。\n\n使用namespace有如下约束:\n\n- 用户自定义的namespace,使用前必须先在集群中创建namespace\n\n- 系统自带的namespace:default\n\n- 不能使用kube-system与kube-public",
+            "required": true,
+            "type": "string",
+            "pattern": "[a-z0-9]([-a-z0-9]*[a-z0-9])?",
+            "maxLength": 63,
+            "minLength": 1,
+            "x-order": 1
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_cluster_id"
+          },
+          {
+            "in": "body",
+            "name": "CreateCloudPersistentVolumeClaimsRequestBody",
+            "description": "请求body参数说明;非单个参数名称",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PersistentVolumeClaim"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建PersistentVolumeClaim作业下发成功。",
+            "examples": {
+              "application/json": {
+                "kind": "PersistentVolumeClaim",
+                "apiVersion": "v1",
+                "metadata": {
+                  "name": " csms-dev-create ",
+                  "namespace": "default",
+                  "selfLink": "/api/v1/namespaces/default/persistentvolumeclaims/db-mysql-0",
+                  "uid": "86b29e16-23db-11e7-9c83-fa163ec08232",
+                  "resourceVersion": "1793115",
+                  "creationTimestamp": "2017-04-18T02:05:42Z"
+                },
+                "spec": {
+                  "volumeName": "csms-dev-create ",
+                  "accessModes": [
+                    "ReadWriteMany"
+                  ],
+                  "resources": {
+                    "requests": {
+                      "storage": "1Gi"
+                    }
+                  }
+                },
+                "status": {
+                  "phase": "Pending",
+                  "accessModes": [
+                    "ReadWriteMany"
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PersistentVolumeClaim"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建PersistentVolumeClaim",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "指定EVS云硬盘ID创建PersistentVolumeClaim",
+        "x-request-examples-url-1": "POST /api/v1/namespaces/default/cloudpersistentvolumeclaims",
+        "x-request-examples-1": {
+          "apiVersion": "v1",
+          "kind": "PersistentVolumeClaim",
+          "metadata": {
+            "name": "csms-dev-create",
+            "namespace": "default"
+          },
+          "spec": {
+            "volumeID": "86b29e16-23db-11e7-9c83-fa163ec08232",
+            "storageType": "bs",
+            "accessModes": [
+              "ReadWriteMany"
+            ]
+          }
+        },
+        "x-publishpath": "cce_02_0252",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,hk_g42,tm,hk_tm,hcso,hcs,ocb,hws_ocb,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "PersistentVolumeClaimStatus": {
+      "properties": {
+        "accessModes": {
+          "type": "array",
+          "description": "显示volume实际具有的访问模式。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "capacity": {
+          "type": "string",
+          "description": "底层卷的实际资源"
+        },
+        "phase": {
+          "type": "string",
+          "description": "PersistentVolumeClaim当前所处的状态"
+        }
+      },
+      "description": ""
+    },
+    "PersistentVolumeClaim": {
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值**v1**",
+          "default": "v1"
+        },
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值**PersistentVolumeClaim**",
+          "default": "PersistentVolumeClaim"
+        },
+        "metadata": {
+          "description": "metadata是集群对象的元数据定义,是集合类的元素类型,包含一组由不同名称定义的属性。",
+          "$ref": "#/definitions/PersistentVolumeClaimMetadata"
+        },
+        "spec": {
+          "description": "spec是集合类的元素类型,用户对需要管理的集群对象进行详细描述的主体部分都在spec中给出。系统通过spec的描述来创建或更新对象。",
+          "$ref": "#/definitions/PersistentVolumeClaimSpec"
+        },
+        "status": {
+          "description": "status是当前PersistentVolumeClaim的状态信息,创建时不需要添加status参数。",
+          "$ref": "#/definitions/PersistentVolumeClaimStatus"
+        }
+      },
+      "description": ""
+    },
+    "PersistentVolumeClaimMetadata": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "例:my-pvc",
+          "description": "PersistentVolumeClaim名称,可以包含小写字母、数字、连字符和点,开头和结尾必须是字母或数字,最长253个字符,同一namespace下name不能重复。"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "PersistentVolumeClaim标签,key/value对格式。\n\n\n- Key:必须以字母或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符;另外可以使用DNS子域作为前缀,例如example.com/my-key,DNS子域最长253个字符。\n\n- Value:可以为空或者非空字符串,非空字符串必须以字符或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符。"
+        }
+      },
+      "description": "metadata是集群对象的元数据定义,是集合类的元素类型,包含一组由不同名称定义的属性。"
+    },
+    "PersistentVolumeClaimSpec": {
+      "required": [
+        "accessModes",
+        "storageType",
+        "volumeID"
+      ],
+      "properties": {
+        "volumeID": {
+          "type": "string",
+          "description": "资源需为已经存在的存储资源\n- 如果存储资源类型是SFS、EVS、SFS-Turbo,本参数需要填入对应资源的ID\n- 如果资源类型为OBS,本参数填入OBS名称"
+        },
+        "storageType": {
+          "type": "string",
+          "description": "云存储的类型,和volumeID搭配使用。即volumeID和storageType必须同时被配置。\n\n- bs:EVS云存储\n- nfs:SFS1.0弹性文件存储\n- obs:OBS对象存储\n- efs:SFS Turbo极速文件存储"
+        },
+        "accessModes": {
+          "type": "array",
+          "description": "指定volume应该具有的访问模式,列表中仅第一个配置参数有效。\n- ReadWriteOnce:该卷可以被单个节点以读/写模式挂载\n  >集群版本为v1.13.10且storage-driver版本为1.0.19时,才支持此功能。\n- ReadOnlyMany:该卷可以被多个节点以只读模式挂载(默认)\n- ReadWriteMany:该卷可以被多个节点以读/写模式挂载",
+          "items": {
+            "type": "string",
+            "description": "",
+            "enum": [
+              "ReadOnlyMany",
+              "ReadWriteMany"
+            ]
+          }
+        },
+        "storageClassName": {
+          "type": "string",
+          "description": "PVC的StorageClass名称"
+        },
+        "volumeName": {
+          "type": "string",
+          "description": "PVC绑定的PV名称"
+        },
+        "resources": {
+          "description": "资源需求和限制",
+          "$ref": "#/definitions/ResourceRequirements"
+        },
+        "volumeMode": {
+          "type": "string",
+          "description": "PVC指定的PV类型"
+        }
+      },
+      "description": ""
+    },
+    "ResourceRequirements": {
+      "properties": {
+        "limits": {
+          "description": "资源限制,创建时指定无效",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "requests": {
+          "description": "资源需求,创建时指定无效",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_header_x_cluster_id": {
+      "name": "X-Cluster-ID",
+      "in": "header",
+      "description": "集群ID,使用**https://Endpoint/uri**这种URL格式时必须指定此参数。获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": false,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 53
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

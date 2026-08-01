@@ -1,0 +1,125 @@
+{
+  "name": "DeleteServerGroupMember",
+  "summary": "删除云服务器组成员",
+  "tags": "云服务器组管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/os-server-groups/{server_group_id}/action": {
+      "post": {
+        "tags": [
+          "云服务器组管理"
+        ],
+        "summary": "删除云服务器组成员",
+        "description": "将弹性云服务器移出云服务器组。移出后,该云服务器与云服务器组中的成员不再遵从反亲和策略。",
+        "operationId": "DeleteServerGroupMember",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "server_group_id",
+            "in": "path",
+            "description": "云服务器组ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "5bbcc3c4-1da2-4437-a48a-66f15b1b13f9",
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "DeleteServerGroupMemberRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteServerGroupMemberRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除云服务器组成员",
+        "x-constraint": "当前只支持反亲和性策略。即同一云服务器组中的弹性云服务器分散地创建在不同的主机上,提高业务的可靠性。",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 64,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/os-server-groups/{server_group_id}/action",
+        "x-request-examples-1": {
+          "remove_member": {
+            "instance_uuid": "34dac9a0-c4a7-457b-bab2-e2c696e0e401"
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"remove_member\": {\n\t\t\"instance_uuid\": \"34dac9a0-c4a7-457b-bab2-e2c696e0e401\"\n\t}\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-09-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "tlf,hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "DeleteServerGroupMemberRequestBody": {
+      "required": [
+        "remove_member"
+      ],
+      "properties": {
+        "remove_member": {
+          "description": "待移出组的云服务器信息。",
+          "$ref": "#/definitions/ServerGroupMember"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ServerGroupMember": {
+      "required": [
+        "instance_uuid"
+      ],
+      "properties": {
+        "instance_uuid": {
+          "type": "string",
+          "example": "34dac9a0-c4a7-457b-bab2-e2c696e0e401",
+          "description": "云服务器UUID。"
+        }
+      },
+      "description": "云服务器组添加、删除成员列表"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,233 @@
+{
+  "name": "ListEngineFlavors",
+  "summary": "查询实例可变更规格",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/available-flavors": {
+      "get": {
+        "x-request-examples-url-1": "https://{Endpoint}/v3/{project_id}/instances/{instance_id}/available-flavors?ha_mode=replica&availability_zone_ids=cn-southwest-244a&flavor_category_type=simple&is_rha_flavor=true",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "查询实例可变更规格",
+        "x-support-sdk": "Y",
+        "description": "查询实例可变更规格",
+        "operationId": "ListEngineFlavors",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "availability_zone_ids",
+            "in": "query",
+            "required": true,
+            "description": "可用区,多个用\",\"分割,如cn-southwest-244a,cn-southwest-244b",
+            "type": "string"
+          },
+          {
+            "name": "ha_mode",
+            "in": "query",
+            "required": true,
+            "description": "模式,包括如下类型:\nha:主备实例。\nreplica:只读实例。\nsingle:单实例。",
+            "type": "string"
+          },
+          {
+            "name": "spec_code_like",
+            "in": "query",
+            "required": false,
+            "description": "性能规格,如rds.dec.pg.s1.medium,模糊匹配该规格类型",
+            "type": "string"
+          },
+          {
+            "name": "flavor_category_type",
+            "in": "query",
+            "required": false,
+            "description": "规格类型,包括如下类型:simple、dec",
+            "type": "string"
+          },
+          {
+            "name": "is_rha_flavor",
+            "in": "query",
+            "required": false,
+            "description": "是否显示高可用只读类型",
+            "type": "boolean"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "索引位置,偏移量。\n从第一条数据偏移offset条数据后开始查询,默认为0。\n取值必须为数字,且不能为负数。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询个数上限值。\n取值范围:1~100。\n不传该参数时,默认查询前100条信息。",
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "响应",
+            "schema": {
+              "$ref": "#/definitions/EngineFlavorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "optional_flavors": [
+                  {
+                    "vcpus": "2",
+                    "ram": "4",
+                    "spec_code": "rds.mysql.sld2.large.rha.rr",
+                    "type_code": "hws.resource.type.rds.vm",
+                    "supported_ipv6": false,
+                    "az_status": {
+                      "cn-southwest-244a": "abandon"
+                    },
+                    "group_type": "normalLocalssd"
+                  },
+                  {
+                    "vcpus": "2",
+                    "ram": "8",
+                    "spec_code": "rds.mysql.sld4.large.rha.rr",
+                    "type_code": "hws.resource.type.rds.vm",
+                    "supported_ipv6": false,
+                    "tps": "662",
+                    "qps": "13237",
+                    "max_connection": "2500",
+                    "az_status": {
+                      "cn-southwest-244a": "abandon"
+                    },
+                    "group_type": "normalLocalssd"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EngineFlavorResponse": {
+      "type": "object",
+      "properties": {
+        "optional_flavors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EngineFlavorData"
+          },
+          "description": "可用的规格列表信息"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "可用的规格总数"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "EngineFlavorData": {
+      "type": "object",
+      "properties": {
+        "vcpus": {
+          "type": "string",
+          "description": "CPU大小。例如:1表示1U。"
+        },
+        "ram": {
+          "type": "string",
+          "description": "内存大小,单位为GB。"
+        },
+        "spec_code": {
+          "type": "string",
+          "description": "资源规格编码。例如:rds.mysql.m1.xlarge.rr。\n\n更多规格说明请参考数据库实例规格。\n\n“rds”代表RDS产品。\n“mysql”代表数据库引擎。\n“m1.xlarge”代表性能规格,为高内存类型。\n“rr”表示只读实例(“.ha”表示主备实例)。\n“rha.rr”表示高可用只读实例,规格编码示例:rds.mysql.n1.large.4.rha.rr。\n具有公测权限的用户才可选择高可用,您可联系华为云客服人员申请。\n高可用只读功能介绍请参见高可用只读简介。"
+        },
+        "is_ipv6_supported": {
+          "type": "boolean",
+          "description": "是否支持ipv6。"
+        },
+        "type_code": {
+          "type": "string",
+          "description": "资源类型"
+        },
+        "az_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "规格所在az的状态,包含以下状态:\nnormal:在售。\nunsupported:暂不支持该规格。\nsellout:售罄。\nabandon:未启用"
+        },
+        "group_type": {
+          "type": "string",
+          "description": "性能规格,包含以下状态:\nnormal:通用增强型。\nnormal2:通用增强II型。\narmFlavors:鲲鹏通用增强型。\ndedicicateNormal(dedicatedNormalLocalssd):x86独享型。\narmLocalssd:鲲鹏通用型。\nnormalLocalssd:x86通用型。\ngeneral:通用型。\ndedicated\n对于MySQL引擎:独享型。\n对于PostgreSQL和SQL Server引擎:独享型,仅云盘SSD支持。\nrapid\n对于MySQL引擎:独享型(已下线)。\n对于PostgreSQL和SQL Server引擎:独享型,仅极速型SSD支持。\nbigmem:超大内存型。\nhighPerformancePrivilegeEdition:超高IO 尊享版"
+        },
+        "max_connection": {
+          "type": "string",
+          "description": "最大连接数"
+        },
+        "tps": {
+          "type": "string",
+          "description": "数据库每秒执行的事务数,每个事务中包含18条SQL语句。"
+        },
+        "qps": {
+          "type": "string",
+          "description": "数据库每秒执行的SQL数,包含insert、select、update、delete等。"
+        },
+        "min_volume_size": {
+          "type": "string",
+          "description": "最小磁盘容量,单位G"
+        },
+        "max_volume_size": {
+          "type": "string",
+          "description": "最大磁盘容量,单位G"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

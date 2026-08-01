@@ -1,0 +1,191 @@
+{
+  "name": "StartInstanceReduceVolumeAction",
+  "summary": "数据库实例的磁盘空间缩容",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/action": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "StartInstanceReduceVolumeAction",
+        "summary": "数据库实例的磁盘空间缩容",
+        "description": "数据库实例的磁盘空间缩容。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口仅支持MySQL和PostgreSQL引擎。\n- 如需开通磁盘缩容功能,请联系客服申请。\n- 备实例磁盘容量和主实例磁盘容量一致,当主实例缩容时,会同时对备实例缩容。\n- 支持缩容的磁盘类型包括:本地SSD盘(仅MySQL实例支持)、SSD云盘、超高IO、Flexible SSD和极速SSD V2。\n- 实例状态为“正常”时可以进行缩容。\n- 根据当前磁盘的使用量情况存在磁盘容量下限,当缩容后目标磁盘容量小于磁盘容量下限时,缩容会下发失败。\n- 若实例开启了自动扩容,在缩容完成后,满足自动扩容条件会触发自动扩容。 \n- 缩容后,使用该实例之前的产生的备份恢复当前实例时,可能存在空间不足的问题。\n- 使用缩容前的备份进行恢复时,请选择大于等于缩容前磁盘大小的实例。\n- 磁盘缩容会造成短暂的业务中断,并且如果在业务高峰期缩容,可能会使磁盘空间被耗尽,导致磁盘缩容失败。请选择在业务低峰期进行磁盘缩容。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "ReduceVolumeRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReduceVolumeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "实例磁盘缩容",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/action",
+        "x-request-examples-1": {
+          "reduce_volume": {
+            "size": 100
+          }
+        },
+        "x-request-examples-description-2": "磁盘类型为Flexible SSD的实例磁盘缩容",
+        "x-request-examples-url-2": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/f1ff1896bac1402f91b13f3d8938d0bdin01/action",
+        "x-request-examples-2": {
+          "reduce_volume": {
+            "size": 100,
+            "iops": 4000,
+            "throughput": 200
+          }
+        },
+        "x-request-examples-description-3": "实例磁盘缩容,并在可维护时间窗内变更",
+        "x-request-examples-url-3": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/action",
+        "x-request-examples-3": {
+          "reduce_volume": {
+            "size": 100,
+            "is_delay": true
+          }
+        },
+        "x-order": 4
+      }
+    }
+  },
+  "definitions": {
+    "ReduceVolumeRequestBody": {
+      "required": [
+        "reduce_volume"
+      ],
+      "properties": {
+        "reduce_volume": {
+          "type": "object",
+          "$ref": "#/definitions/ReduceVolumeObject"
+        }
+      }
+    },
+    "JobId": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ReduceVolumeObject": {
+      "description": "实例磁盘缩容时必填。",
+      "required": [
+        "size",
+        "is_delay"
+      ],
+      "properties": {
+        "size": {
+          "type": "integer",
+          "description": "缩容后实例磁盘的目标大小。每次缩容至少缩小10GB;目标大小必须为10的整数倍。\n为确保实例的正常使用,根据当前磁盘的使用量情况存在磁盘容量下限,当此参数小于磁盘容量下限时,缩容会下发失败,此时请适当调大此参数。",
+          "example": 100
+        },
+        "is_delay": {
+          "type": "boolean",
+          "description": "是否定时变更。\n- true,为定时在运维时间窗做变更。\n- false,为立即变更,默认该方式。",
+          "example": "true"
+        },
+        "iops": {
+          "type": "integer",
+          "description": "该参数只有磁盘类型为Flexible SSD(GPSSD2)和极速型SSDV2(ESSD2)的磁盘必填。\n对于Flexible SSD类型的磁盘,IOPS值配置的范围为3000~128000,具体可配置值受磁盘大小限制,需要小于等于500*磁盘容量。\n对于极速型SSDV2类型的磁盘,IOPS值配置的范围为100~256000,具体可配置值受磁盘大小限制,需要小于等于1000*磁盘容量。",
+          "example": 3000
+        },
+        "throughput": {
+          "type": "integer",
+          "description": "该参数只有磁盘类型为Flexible SSD(GPSSD2)的磁盘必填。\n对于Flexible SSD类型的磁盘,throughput值配置的范围为125~1000 MiB/s,具体可配置值受IOPS大小限制,需要小于等于IOPS/4。",
+          "example": 125
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

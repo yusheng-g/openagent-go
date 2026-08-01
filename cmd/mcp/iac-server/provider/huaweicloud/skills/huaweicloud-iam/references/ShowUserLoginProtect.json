@@ -1,0 +1,198 @@
+{
+  "name": "ShowUserLoginProtect",
+  "summary": "查询指定IAM用户的登录保护状态信息",
+  "tags": "IAM用户管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-USER/users/{user_id}/login-protect": {
+      "get": {
+        "tags": [
+          "IAM用户管理"
+        ],
+        "summary": "查询指定IAM用户的登录保护状态信息",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询指定IAM用户的登录保护状态信息,或IAM用户查询自己的登录保护状态信息。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ShowUserLoginProtect",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "待查询的IAM用户ID,获取方式请参见:[获取用户ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户的登录保护状态信息:拥有Security Administrator权限的token。\n\nIAM用户查询自己的登录保护状态信息:URL中user_id所对应IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "login_protect": {
+                  "user_id": "16b26081f43d4c628c4bb88cf32e9f9b",
+                  "enabled": true,
+                  "verification_method": "vmfa"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowUserLoginProtectResponseBody"
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error_msg": "You are not authorized to perform the requested action.",
+                "error_code": "IAM.0002"
+              },
+              "application/json-1": {
+                "error_msg": "Policy doesn't allow %(actions)s to be performed.",
+                "error_code": "IAM.0003"
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "examples": {
+              "application/json": {
+                "error_msg": "Could not find %(target)s: %(target_id)s.",
+                "error_code": "Iam.0004"
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务错误。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询指定IAM用户的登录保护状态信息",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-USER/users/{user_id}/login-protect",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-USER/users/{user_id}/login-protect",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0004",
+            "httpStatus": "404",
+            "errorMessage": "Could not find %(target)s: %(target_id)s.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "LoginProtectResult": {
+      "required": [
+        "enabled",
+        "user_id",
+        "verification_method"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "IAM用户是否开启登录保护,开启为\"true\",未开启为\"false\"。"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "75226081f43d4c628c4bb88cf32e9f9b",
+          "description": "IAM用户ID。"
+        },
+        "verification_method": {
+          "type": "string",
+          "example": "email",
+          "description": "IAM用户登录验证方式。"
+        }
+      },
+      "description": ""
+    },
+    "ShowUserLoginProtectResponseBody": {
+      "required": [
+        "login_protect"
+      ],
+      "properties": {
+        "login_protect": {
+          "description": "登录状态保护信息。",
+          "$ref": "#/definitions/LoginProtectResult"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

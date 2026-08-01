@@ -1,0 +1,91 @@
+{
+  "name": "DisableMfaDeviceV5",
+  "summary": "禁用MFA设备",
+  "tags": "MFA设备管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/mfa-devices/disable": {
+      "post": {
+        "tags": [
+          "MfaDevice"
+        ],
+        "operationId": "DisableMfaDeviceV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "禁用MFA设备",
+        "description": "该接口可以用于禁用指定的MFA设备并删除其与对应IAM用户的关联。",
+        "requestBody": {
+          "required": true,
+          "description": "禁止MFA设备接口请求体",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableMfaDeviceReqBody"
+              },
+              "example": {
+                "user_id": "xxx",
+                "serial_number": "iam::accountid:mfa:name"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "禁用序列号为iam::accountid:mfa:name的MFA设备并删除其与IAM用户xxx的关联。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v5/mfa-devices/disable",
+        "x-request-examples-1": {
+          "user_id": "xxx",
+          "serial_number": "iam::accountid:mfa:name"
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。"
+          },
+          "400": {
+            "description": "请求体异常。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResp"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,208 @@
+{
+  "name": "ListServerInterfaces",
+  "summary": "查询云服务器网卡信息",
+  "tags": "网卡管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/os-interface": {
+      "get": {
+        "tags": [
+          "网卡管理"
+        ],
+        "summary": "查询云服务器网卡信息",
+        "description": "查询云服务器网卡信息。",
+        "operationId": "ListServerInterfaces",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "attachableQuantity": {
+                  "free_nic": 11
+                },
+                "interfaceAttachments": [
+                  {
+                    "port_state": "ACTIVE",
+                    "fixed_ips": [
+                      {
+                        "subnet_id": "ba31e1f5-fa76-4530-862c-5176fad033cf",
+                        "ip_address": "192.168.0.33"
+                      }
+                    ],
+                    "net_id": "610a4af2-1d90-4d2b-8057-dc238b26febf",
+                    "port_id": "04819c0a-6a07-44b6-945e-fb932071888e",
+                    "mac_addr": "fa:16:3e:45:65:c4",
+                    "delete_on_termination": false,
+                    "driver_mode": null,
+                    "min_rate": null,
+                    "multiqueue_num": null
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListServerInterfacesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云服务器网卡信息",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 29,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1/9c53a566cb3443ab910cf0daebca90c4/cloudservers/0f58c8dc-4a78-42e6-9811-565679de8e9e/os-interface",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1/9c53a566cb3443ab910cf0daebca90c4/cloudservers/0f58c8dc-4a78-42e6-9811-565679de8e9e/os-interface",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-7-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "InterfaceAttachableQuantity": {
+      "properties": {
+        "free_nic": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云服务器剩余可挂载网卡数量"
+        }
+      }
+    },
+    "InterfaceAttachment": {
+      "properties": {
+        "fixed_ips": {
+          "type": "array",
+          "description": "网卡私网IP信息列表。",
+          "items": {
+            "$ref": "#/definitions/ServerInterfaceFixedIp"
+          }
+        },
+        "mac_addr": {
+          "type": "string",
+          "description": "网卡Mac地址信息。"
+        },
+        "net_id": {
+          "type": "string",
+          "description": "网卡端口所属网络ID。"
+        },
+        "port_id": {
+          "type": "string",
+          "description": "网卡端口ID。"
+        },
+        "port_state": {
+          "type": "string",
+          "description": "网卡端口状态。"
+        },
+        "delete_on_termination": {
+          "type": "boolean",
+          "description": "卸载网卡时,是否删除网卡。"
+        },
+        "driver_mode": {
+          "type": "string",
+          "description": "从guest os中,网卡的驱动类型。可选值为virtio和hinic,默认为virtio"
+        },
+        "min_rate": {
+          "type": "integer",
+          "format": "int32",
+          "description": "网卡带宽下限。"
+        },
+        "multiqueue_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "网卡多队列个数。"
+        },
+        "pci_address": {
+          "type": "string",
+          "description": "弹性网卡在Linux GuestOS里的BDF号"
+        }
+      }
+    },
+    "ListServerInterfacesResponseBody": {
+      "required": [
+        "attachableQuantity",
+        "interfaceAttachments"
+      ],
+      "properties": {
+        "attachableQuantity": {
+          "description": "云服务器可挂载网卡数。",
+          "$ref": "#/definitions/InterfaceAttachableQuantity"
+        },
+        "interfaceAttachments": {
+          "type": "array",
+          "example": "[{\"port_state\":\"ACTIVE\",\"fixed_ips\":[{\"subnet_id\":\"f8a6e8f8-c2ec-497c-9f23-da9616de54ef\",\"ip_address\":\"192.168.1.3\"}],\"net_id\":\"3cb9bc59-5699-4588-a4b1-b87f96708bc6\",\"port_id\":\"ce531f90-199f-48c0-816c-13e38010b442\",\"mac_addr\":\"fa:16:3e:4c:2c:30\"}]",
+          "description": "云服务器网卡信息列表",
+          "items": {
+            "$ref": "#/definitions/InterfaceAttachment"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ServerInterfaceFixedIp": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "网卡私网IP信息。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "网卡私网IP对应子网信息。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

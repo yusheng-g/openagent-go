@@ -1,0 +1,178 @@
+{
+  "name": "ReclaimCouponQuotas",
+  "summary": "回收云经销商的代金券额度",
+  "tags": "管理云经销商优惠券(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/coupon-quotas/indirect-partner-reclaim": {
+      "post": {
+        "summary": "回收云经销商的代金券额度",
+        "description": "华为云总经销商(一级经销商)可以回收已发放给云经销商(二级经销商)的代金券额度。\n\n一级经销商在伙伴中心回收已发放给二级经销商的代金券额度请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/dp_120206.html)。",
+        "tags": [
+          "管理云经销商优惠券(伙伴)"
+        ],
+        "operationId": "ReclaimCouponQuotas",
+        "x-low-frequency-scene": "Operation",
+        "x-constraint": "该接口只允许使用华为云伙伴能力中心的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/partners/coupon-quotas/indirect-partner-reclaim",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-06-03",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "回收云经销商的代金券额度请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReclaimCouponQuotasReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/coupon-quotas/indirect-partner-reclaim",
+        "x-request-examples-1": {
+          "quota_ids": [
+            "2020061902584509"
+          ],
+          "remark": "回收代金券额度"
+        },
+        "responses": {
+          "200": {
+            "description": "回收云经销商的代金券额度响应",
+            "schema": {
+              "$ref": "#/definitions/ReclaimCouponQuotasRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_details": [],
+                "simple_quota_infos": [
+                  {
+                    "quota_id": "2020061902584509",
+                    "quota_balance": "100"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败。||CBC.99000037:您没有操作该云经销商的权限。||CBC.99000012:额度不存在或者额度状态不正确。(如果出现在ErrorDetail的时候,HTTP STATUS是200)||CBC.99000017:额度未生效或者已过期。(如果出现在ErrorDetail的时候,HTTP STATUS是200)||CBC.99000013:优惠券额度不足。(如果出现在ErrorDetail的时候,HTTP STATUS是200)|"
+          }
+        },
+        "x-category": "管理云经销商优惠券(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ReclaimCouponQuotasRsp": {
+      "properties": {
+        "error_details": {
+          "description": "回收失败的云经销商额度信息,具体参见表1,只有HTTP STATUS 200的时候才有这个结构体。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ErrorDetail"
+          }
+        },
+        "simple_quota_infos": {
+          "description": "回收成功的云经销商额度信息,具体参见表2,只有HTTP STATUS 200的时候才有这个结构体。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QuotaReclaim"
+          }
+        }
+      }
+    },
+    "QuotaReclaim": {
+      "properties": {
+        "quota_id": {
+          "type": "string",
+          "description": "被回收的云经销商的代金券额度ID。",
+          "example": ""
+        },
+        "quota_balance": {
+          "description": "被回收额度后的代金券额度余额。单位:元。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        }
+      }
+    },
+    "ErrorDetail": {
+      "properties": {
+        "error_code": {
+          "description": "状态码。",
+          "type": "string",
+          "maxLength": 16,
+          "minLength": 0,
+          "example": "CBC.5024"
+        },
+        "error_msg": {
+          "description": "错误描述信息。",
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 0,
+          "example": "subcustomers are not resale customers"
+        },
+        "id": {
+          "description": "出现错误的客户ID或批量处理消息的ID。",
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0,
+          "example": "f8231a7d11484dfaaea8b70755680c7e"
+        }
+      }
+    },
+    "ReclaimCouponQuotasReq": {
+      "required": [
+        "quota_ids"
+      ],
+      "properties": {
+        "quota_ids": {
+          "description": "被回收的云经销商的代金券额度ID。获取方法请参见查询优惠券额度。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "x-maxLength": 10,
+          "x-minLength": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "remark": {
+          "type": "string",
+          "description": "回收时的备注。 此参数不携带或携带值为null时,不赋值;携带值为空串时,赋值空串。",
+          "minLength": 0,
+          "maxLength": 256,
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

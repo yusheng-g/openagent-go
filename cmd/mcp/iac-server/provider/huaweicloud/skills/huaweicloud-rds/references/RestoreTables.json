@@ -1,0 +1,190 @@
+{
+  "name": "RestoreTables",
+  "summary": "表级时间点恢复(MySQL)",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/restore/tables": {
+      "post": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "RestoreTables",
+        "summary": "表级时间点恢复(MySQL)",
+        "description": "表级时间点恢复(MySQL)。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "RestoreTablesRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RestoreTablesRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/OldJobId"
+            },
+            "examples": {
+              "application/json": {
+                "jobId": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "MySQL实例",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/d8e6ca5a624745bcb546a227aa3ae1cfin01/restore/tables",
+        "x-request-examples-1": {
+          "restoreTime": 1532001446987,
+          "restoreTables": [
+            {
+              "tableone": {
+                "newName": "newTable",
+                "oldName": "oldTable"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "RestoreTableInfo": {
+      "required": [
+        "oldName",
+        "newName"
+      ],
+      "properties": {
+        "oldName": {
+          "description": "旧表名",
+          "type": "string"
+        },
+        "newName": {
+          "description": "新表名",
+          "type": "string"
+        }
+      }
+    },
+    "RestoreTablesRequestBody": {
+      "required": [
+        "restoreTime",
+        "restoreTables"
+      ],
+      "properties": {
+        "restoreTime": {
+          "description": "恢复时间戳",
+          "type": "integer",
+          "format": "int64"
+        },
+        "restoreTables": {
+          "description": "表信息",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RestoreDatabasesInfo"
+          }
+        },
+        "is_fast_restore": {
+          "description": "是否使用极速恢复,可先根据”获取实例是否能使用极速恢复“接口判断本次恢复是否能使用极速恢复。\n如果实例使用了XA事务,采用极速恢复的方式会导致恢复失败!",
+          "type": "boolean"
+        }
+      }
+    },
+    "OldJobId": {
+      "required": [
+        "jobId"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "RestoreDatabasesInfo": {
+      "required": [
+        "database",
+        "tables"
+      ],
+      "properties": {
+        "database": {
+          "description": "库名",
+          "type": "string"
+        },
+        "tables": {
+          "description": "表信息",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RestoreTableInfo"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

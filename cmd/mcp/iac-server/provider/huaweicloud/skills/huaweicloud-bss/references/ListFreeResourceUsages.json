@@ -1,0 +1,203 @@
+{
+  "name": "ListFreeResourceUsages",
+  "summary": "查询资源包使用量",
+  "tags": "管理资源包(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/payments/free-resources/usages/details/query": {
+      "post": {
+        "summary": "查询资源包使用量",
+        "description": "客户在伙伴销售平台根据资源项维度查询客户的资源包使用量。",
+        "tags": [
+          "管理资源包(客户)"
+        ],
+        "operationId": "ListFreeResourceUsages",
+        "x-constraint": "该接口只允许客户的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/payments/free-resources/usages/details/query",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-05-08",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。中文:zh_CN英文:en_US缺省为zh_CN。",
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "default": "zh_CN"
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询资源包使用量请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListFreeResourceUsagesReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询资源包使用量响应",
+            "schema": {
+              "$ref": "#/definitions/ListFreeResourceUsagesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "free_resources": [
+                  {
+                    "free_resource_id": "d4463497-991b-439d-9ab6-23f9ed197fe9",
+                    "free_resource_type_name": "test1",
+                    "quota_reuse_cycle": 4,
+                    "quota_reuse_cycle_type": 1,
+                    "usage_type_name": "时长",
+                    "start_time": "2021-04-30T03:30:56Z",
+                    "end_time": "2021-05-31T15:59:59Z",
+                    "amount": 100,
+                    "original_amount": 100,
+                    "measure_id": 37
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理资源包(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/payments/free-resources/usages/details/query",
+        "x-request-examples-1": {
+          "free_resource_ids": [
+            "d4463497-991b-439d-9ab6-23f9ed197fe9"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "FreeResourceDetail": {
+      "properties": {
+        "free_resource_id": {
+          "type": "string",
+          "description": "资源项ID,一个资源包中会含有多个资源项,一个使用量类型对应一个资源项。",
+          "example": ""
+        },
+        "free_resource_type_name": {
+          "type": "string",
+          "description": "资源项类型名称。",
+          "example": ""
+        },
+        "quota_reuse_cycle": {
+          "description": "重置周期,只有quota_reuse_mode为可重置,该字段才有意义。 1:小时2:天3:周4:月5:年",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "quota_reuse_cycle_type": {
+          "description": "重置周期类别,只有quota_reuse_mode为可重置,该字段才有意义。 1:按自然周期重置是指重置周期是按照自然月/年来重置,例如如果周期是月,按自然周期重置,表示每个月的1号重置。 2:按订购周期重置。是指重置周期是按照订购时间来重置,例如如果周期是月,按订购周期重置,15号订购了该套餐,表示每个月的15号重置。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "usage_type_name": {
+          "type": "string",
+          "description": "使用量类型名称。",
+          "example": ""
+        },
+        "start_time": {
+          "type": "string",
+          "description": "开始时间,格式UTC。 如果quota_reuse_mode为可重置,则此时间为当前时间所在的重置周期的开始时间。如果quota_reuse_mode为不可重置,则此时间为订购实例的生效时间。",
+          "example": ""
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间,格式UTC。 如果quota_reuse_mode为可重置,则此时间为当前时间所在的重置周期的结束时间。如果quota_reuse_mode为不可重置,则此时间为订购实例的失效时间。",
+          "example": ""
+        },
+        "amount": {
+          "description": "资源剩余额度,针对可重置资源包,是指当前重置周期内的剩余量。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "100.0"
+        },
+        "original_amount": {
+          "description": "资源原始额度,针对可重置资源包,是指每个重置周期内的总量。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位,免费资源套餐额度度量单位。您可以调用查询度量单位列表接口获取。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        }
+      }
+    },
+    "ListFreeResourceUsagesReq": {
+      "required": [
+        "free_resource_ids"
+      ],
+      "properties": {
+        "free_resource_ids": {
+          "description": "资源项ID列表,每个最大64字节。 资源项ID,一个资源包中会含有多个资源项,一个使用量类型对应一个资源项。资源项ID来自查询资源包列表接口的响应。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "x-minLength": 1,
+          "x-maxLength": 100,
+          "items": {
+            "type": "string"
+          },
+          "example": ""
+        }
+      }
+    },
+    "ListFreeResourceUsagesRsp": {
+      "properties": {
+        "free_resources": {
+          "description": "资源套餐内的资源项信息(资源项ID级的详情),具体参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FreeResourceDetail"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

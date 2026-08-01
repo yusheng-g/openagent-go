@@ -1,0 +1,171 @@
+{
+  "name": "UnsubscribePostpaidVolume",
+  "summary": "退订包周期计费模式的云硬盘",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/cloudvolumes/unsubscribe": {
+      "post": {
+        "x-request-examples-url-1": "POST /v2/{project_id}/cloudvolumes/unsubscribe",
+        "x-request-examples-description-1": "退订包周期云硬盘8739ca48-1b86-46aa-9059-38623ee1346c和fc7d594d-e78f-49a8-ab6e-90ee6b560cb0",
+        "x-request-examples-text-1": {
+          "volume_ids": [
+            "fc7d594d-e78f-49a8-ab6e-90ee6b560cb0",
+            "8739ca48-1b86-46aa-9059-38623ee1346c"
+          ]
+        },
+        "x-request-examples-1": {
+          "volume_ids": [
+            "fc7d594d-e78f-49a8-ab6e-90ee6b560cb0",
+            "8739ca48-1b86-46aa-9059-38623ee1346c"
+          ]
+        },
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "退订包周期计费模式的云硬盘",
+        "description": "退订包周期计费模式的云硬盘,有如下约束:\n-  系统盘、启动盘不可使用当前接口退订,必须和弹性云服务器一起退订\n-  接口的请求body体最多可以传60个云硬盘id",
+        "operationId": "UnsubscribePostpaidVolume",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。 获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。 通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "type": "string"
+          },
+          {
+            "name": "UnsubscribePostpaidVolumeRequestBody",
+            "in": "body",
+            "description": "要退订的包周期云硬盘列表",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UnsubscribeVolumeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "请求响应体",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UnsubscribeVolumeResponseBody"
+              }
+            },
+            "examples": {
+              "application/json": {
+                "results": [
+                  {
+                    "volume_id": "8739ca48-1b86-46aa-9059-38623ee1346c",
+                    "order_id": "CS23021116385NAOR",
+                    "result": "SUCCESS"
+                  },
+                  {
+                    "volume_id": "fc7d594d-e78f-49a8-ab6e-90ee6b560cb0",
+                    "result": "FAIL",
+                    "fail_reason": "INTERNAL ERROR, please contact customer service"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-publishpath": "evs_04_2005",
+        "x-open-region-cloud": "hc,hk",
+        "x-order": 13,
+        "x-scope": "Commercial",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UnsubscribeVolumeResponseBody": {
+      "type": "object",
+      "required": [
+        "results"
+      ],
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "退订包周期云硬盘的结果。",
+          "items": {
+            "$ref": "#/definitions/UnsubscribeVolume"
+          }
+        }
+      },
+      "description": "退订包周期云硬盘的响应body体"
+    },
+    "UnsubscribeVolume": {
+      "type": "object",
+      "required": [
+        "result",
+        "volume_id"
+      ],
+      "properties": {
+        "volume_id": {
+          "type": "string",
+          "example": "8739ca48-1b86-46aa-9059-38623ee1346c",
+          "description": "卷id对应的结果",
+          "x-admin": "N",
+          "x-internal": "False"
+        },
+        "order_id": {
+          "type": "string",
+          "example": "CS23021116385NAOR",
+          "description": "卷id对应的退订订单id,如果是已到期的云硬盘退订,则不显示此字段。",
+          "x-internal": "False"
+        },
+        "result": {
+          "type": "string",
+          "example": "SUCCESS",
+          "description": "volume_id对应的退订结果,只有SUCCESS 和 FAIL两种结果。",
+          "x-internal": "False"
+        },
+        "fail_reason": {
+          "type": "string",
+          "example": "INTERNAL ERROR",
+          "description": "当result为FAIL时,此字段显示具体的失败原因。 result为SUCCESS时,不显示此字段。",
+          "x-internal": "False"
+        }
+      },
+      "description": "包周期云硬盘退订的结果"
+    },
+    "UnsubscribeVolumeRequestBody": {
+      "type": "object",
+      "required": [
+        "volume_ids"
+      ],
+      "properties": {
+        "volume_ids": {
+          "type": "array",
+          "description": "退订包周期云硬盘的结果。",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "退订包周期云硬盘的请求body体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

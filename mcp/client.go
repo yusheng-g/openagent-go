@@ -8,6 +8,9 @@ import (
 	"io"
 	"log/slog"
 	"os/exec"
+	"strconv"
+	"sync"
+	"sync/atomic"
 
 	openagent "github.com/yusheng-g/openagent-go"
 	mcpsdk "github.com/modelcontextprotocol/go-sdk/mcp"
@@ -26,13 +29,43 @@ type Client struct {
 	inner *mcpsdk.Client
 }
 
+// progress tracking: maps a progress token (generated per CallTool) to the
+// tool name so the ProgressNotificationHandler can log which tool is reporting.
+var (
+	progressMu  sync.Mutex
+	progressLog = make(map[string]string) // token → tool name
+	progressCtr int64                  // monotonic token counter
+)
+
 // NewClient creates an MCP [Client] with the given implementation identity.
 // MCP protocol logging is written to slog.Default().
+//
+// A ProgressNotificationHandler is registered so progress notifications from
+// the server are logged via slog at Info level. Each [Session.Tools] adapter
+// generates a unique progressToken per CallTool so the handler can attribute
+// progress to the originating tool.
 func NewClient(name, version string) *Client {
 	return &Client{
 		inner: mcpsdk.NewClient(&mcpsdk.Implementation{
 			Name: name, Version: version,
-		}, &mcpsdk.ClientOptions{Logger: slog.Default()}),
+		}, &mcpsdk.ClientOptions{
+			Logger: slog.Default(),
+			ProgressNotificationHandler: func(_ context.Context, req *mcpsdk.ProgressNotificationClientRequest) {
+				token, _ := req.Params.ProgressToken.(string)
+				progressMu.Lock()
+				toolName := progressLog[token]
+				progressMu.Unlock()
+				if toolName == "" {
+					return // token unknown — stale or from another client
+				}
+				slog.Info("mcp progress",
+					"tool", toolName,
+					"message", req.Params.Message,
+					"progress", req.Params.Progress,
+					"total", req.Params.Total,
+				)
+			},
+		}),
 	}
 }
 
@@ -206,9 +239,24 @@ func (a *mcpToolAdapter) Execute(ctx context.Context, args json.RawMessage) (str
 		}
 	}
 
+	// Generate a progress token so the server can stream progress back.
+	// The token is mapped to the tool name for the ProgressNotificationHandler.
+	// Use a string token — JSON round-trips preserve strings exactly, unlike
+	// integers which become float64 on the wire and break map lookups.
+	token := strconv.FormatInt(atomic.AddInt64(&progressCtr, 1), 10)
+	progressMu.Lock()
+	progressLog[token] = a.def.Name
+	progressMu.Unlock()
+	defer func() {
+		progressMu.Lock()
+		delete(progressLog, token)
+		progressMu.Unlock()
+	}()
+
 	result, err := a.session.CallTool(ctx, &mcpsdk.CallToolParams{
 		Name:      a.def.Name,
 		Arguments: v,
+		Meta:      mcpsdk.Meta{"progressToken": token},
 	})
 	if err != nil {
 		return "", fmt.Errorf("mcp call tool %q: %w", a.def.Name, err)

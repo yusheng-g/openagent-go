@@ -1,0 +1,319 @@
+{
+  "name": "NeutronAddFirewallRule",
+  "summary": "插入网络ACL规则",
+  "tags": "OpenStack - 网络ACL",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/fwaas/firewall_policies/{firewall_policy_id}/insert_rule": {
+      "put": {
+        "tags": [
+          "OpenStack - 网络ACL"
+        ],
+        "summary": "插入网络ACL规则",
+        "description": "插入一条网络ACL规则到某一网络ACL策略中。",
+        "operationId": "NeutronAddFirewallRule",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "name": "firewall_policy_id",
+            "in": "path",
+            "description": "网络ACL防火墙策略ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "InsertFirewallRule",
+            "description": "插入ACL规则请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NeutronInsertFirewallRuleRequestBody"
+            },
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "description": "",
+                "firewall_rules": [
+                  "b8243448-cb3c-496e-851c-dadade4c161b",
+                  "0f82b221-8cd6-44bd-9dfc-0e118fa7b6b1"
+                ],
+                "tenant_id": "23c8a121505047b6869edf39f3062712",
+                "public": false,
+                "id": "afc52ce9-5305-4ec9-9feb-44feb8330341",
+                "audited": false,
+                "name": "test-policy",
+                "project_id": "23c8a121505047b6869edf39f3062712"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/InsertOrRemoveFirewallRuleResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "插入网络ACL规则",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 109,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v2.0/fwaas/firewall_policies/{firewall_policy_id}/insert_rule",
+        "x-request-examples-1": {
+          "insert_after": "b8243448-cb3c-496e-851c-dadade4c161b",
+          "firewall_rule_id": "0f82b221-8cd6-44bd-9dfc-0e118fa7b6b1",
+          "insert_before": ""
+        },
+        "x-request-examples-text-1": "{\n\t\"insert_after\": \"b8243448-cb3c-496e-851c-dadade4c161b\",\n\t\"firewall_rule_id\": \"0f82b221-8cd6-44bd-9dfc-0e118fa7b6b1\",\n\t\"insert_before\": \"\"\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronInsertFirewallRuleRequestBody": {
+      "required": [
+        "firewall_rule_id"
+      ],
+      "properties": {
+        "firewall_rule_id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "功能说明:网络ACL规则ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "insert_after": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "insert_after参数表示已经和某个policy关联的rule,新的rule将会直接被插入到insert_after参数指定的rule后面。如果insert_after和insert_before都被指定了,insert_after参数值将被忽略。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "insert_before": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "insert_before参数表示已经和某个policy关联的rule,新的firewall rule将会直接被插入到insert_ before参数指定的firewall rule前面。如果insert_after和insert_before都被指定了,insert_after参数值将被忽略。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        }
+      },
+      "description": ""
+    },
+    "InsertOrRemoveFirewallRuleResponseBody": {
+      "required": [
+        "audited",
+        "description",
+        "firewall_rules",
+        "id",
+        "name",
+        "project_id",
+        "public",
+        "tenant_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "功能说明:网络ACL策略ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "name": {
+          "type": "string",
+          "example": "name-01",
+          "description": "功能说明:网络ACL策略名称",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "description": {
+          "type": "string",
+          "example": "description-01",
+          "description": "功能说明:网络ACL策略的描述信息\n取值范围:0-255个字符",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "firewall_rules": {
+          "type": "array",
+          "description": "功能说明:网络ACL策略关联的规则的ID列表",
+          "items": {
+            "type": "string",
+            "description": "",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+          },
+          "minItems": 0,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "audited": {
+          "type": "boolean",
+          "example": false,
+          "description": "功能说明:每次policy或者它相关的rule有变动,该参数将会被置为False",
+          "default": false,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "public": {
+          "type": "boolean",
+          "example": false,
+          "description": "功能说明:网络ACL策略是否对其他网络ACL策略可见\n取值范围:true(可见)、false(不可见)",
+          "default": false,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "b433fedb577940bfa59abff86482ed1a",
+          "description": "功能说明:网络ACL策略所属项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:网络ACL策略所属项目ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

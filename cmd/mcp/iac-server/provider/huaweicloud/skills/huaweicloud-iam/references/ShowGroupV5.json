@@ -1,0 +1,83 @@
+{
+  "name": "ShowGroupV5",
+  "summary": "查询用户组详情",
+  "tags": "用户组管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/groups/{group_id}": {
+      "get": {
+        "tags": [
+          "Group"
+        ],
+        "operationId": "ShowGroupV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "查询用户组详情",
+        "description": "该接口可以用于查询用户组详情。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GroupId"
+          }
+        ],
+        "x-request-examples-description-1": "查询用户组详情。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v5/groups/{group_id}",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShowGroupResp"
+                },
+                "example": {
+                  "group": {
+                    "group_id": "string",
+                    "group_name": "name",
+                    "created_at": "2023-09-11T10:13:25.414Z",
+                    "urn": "iam::accountid:group:name",
+                    "description": "description"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

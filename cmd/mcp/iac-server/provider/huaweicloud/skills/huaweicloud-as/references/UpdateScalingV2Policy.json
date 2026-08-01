@@ -1,0 +1,356 @@
+{
+  "name": "UpdateScalingV2Policy",
+  "summary": "修改弹性伸缩策略(V2版本)",
+  "tags": "弹性伸缩策略管理V2",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v2/{project_id}/scaling_policy/{scaling_policy_id}": {
+      "put": {
+        "tags": [
+          "弹性伸缩策略管理V2"
+        ],
+        "summary": "修改弹性伸缩策略(V2版本)",
+        "description": "修改指定弹性伸缩策略。修改弹性伸缩策略V2版本与V1版本的区别在于,V2版本支持修改伸缩资源类型。",
+        "operationId": "UpdateScalingV2Policy",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "租户标识。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "Token认证。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_policy_id",
+            "in": "path",
+            "description": "伸缩策略ID。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 3,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateScalingV2PolicyOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常。",
+            "examples": {
+              "application/json": {
+                "scaling_policy_id": "0h327883-324n-4dzd-9c61-68d03ee191dd"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ScalingPolicyId"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了修改一个ID为0h327883-324n-4dzd-9c61-68d03ee191dd的伸缩策略,策略名称修改为hth_aspolicy_1,告警ID修改为al1513822380493GvlJKZwA8,冷却时间修改为900秒,策略执行具体动作修改为增加1Mbit/s,且上限为10Mbit/s。",
+        "x-support-sdk": "Y",
+        "x-name": "修改弹性伸缩策略(V2版本)",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 4,
+        "x-request-examples-url-1": "PUT https://{Endpoint}/autoscaling-api/v2/{project_id}/scaling_policy/0h327883-324n-4dzd-9c61-68d03ee191dd",
+        "x-request-examples-1": {
+          "alarm_id": "al1513822380493GvlJKZwA8",
+          "cool_down_time": 900,
+          "scaling_policy_action": {
+            "size": 1,
+            "operation": "ADD",
+            "limits": 10
+          },
+          "scaling_policy_name": "hth_aspolicy_1",
+          "scaling_policy_type": "ALARM"
+        },
+        "x-request-examples-text-1": {
+          "alarm_id": "al1513822380493GvlJKZwA8",
+          "cool_down_time": 900,
+          "scaling_policy_action": {
+            "size": 1,
+            "operation": "ADD",
+            "limits": 10
+          },
+          "scaling_policy_name": "hth_aspolicy_1",
+          "scaling_policy_type": "ALARM"
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2018-09-30",
+        "x-tenant_flow_value": "52",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "520",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "UpdateScalingV2PolicyOption": {
+      "properties": {
+        "scaling_policy_name": {
+          "type": "string",
+          "example": "hth_aspolicy_1\"",
+          "description": "策略名称(1-64)字符,可以用中文、字母、数字、下划线、中划线的组合。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "scaling_resource_id": {
+          "type": "string",
+          "example": "8ade64b5-d685-40b8-8582-4ce306ea37a6",
+          "description": "伸缩资源ID,伸缩组唯一标识或带宽唯一标识。如果scaling_resource_type为SCALING_GROUP,对应伸缩组唯一标识。如果scaling_resource_type为BANDWIDTH,对应带宽唯一标识。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_resource_type": {
+          "type": "string",
+          "example": "BANDWIDTH",
+          "description": "伸缩资源类型。伸缩组:SCALING_GROUP。带宽:BANDWIDTH。",
+          "enum": [
+            "SCALING_GROUP",
+            "BANDWIDTH"
+          ]
+        },
+        "scaling_policy_type": {
+          "type": "string",
+          "example": "ALARM",
+          "description": "策略类型。告警策略:ALARM(与alarm_id对应);定时策略:SCHEDULED(与scheduled_policy对应);周期策略:RECURRENCE(与scheduled_policy对应)",
+          "enum": [
+            "ALARM",
+            "SCHEDULED",
+            "RECURRENCE",
+            "INTERVAL_ALARM"
+          ]
+        },
+        "alarm_id": {
+          "type": "string",
+          "description": "告警ID,即告警规则的ID,当scaling_policy_type为ALARM时该项必选,此时scheduled_policy不生效。创建告警策略成功后,会自动为该告警ID对应的告警规则的alarm_actions字段增加类型为autoscaling的告警触发动作。告警ID通过查询云监控告警规则列表获取,详见《云监控API参考》的“查询告警规则列表”。"
+        },
+        "scheduled_policy": {
+          "$ref": "#/definitions/ScheduledPolicy"
+        },
+        "scaling_policy_action": {
+          "$ref": "#/definitions/ScalingPolicyActionV2"
+        },
+        "interval_alarm_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IntervalAlarmActionsV2"
+          }
+        },
+        "cool_down_time": {
+          "type": "integer",
+          "example": 900,
+          "description": "冷却时间,取值范围0-86400,默认为300,单位是秒。",
+          "maximum": 86400
+        },
+        "description": {
+          "type": "string",
+          "description": "伸缩策略描述(1-256个字符)"
+        }
+      },
+      "description": "修改伸缩策略"
+    },
+    "ScalingPolicyActionV2": {
+      "properties": {
+        "operation": {
+          "type": "string",
+          "example": "ADD",
+          "description": "操作选项,默认为ADD。\n当scaling_resource_type为SCALING_GROUP,支持如下操作:\n- ADD:增加\n- REMOVE/REDUCE:减少\n- SET:设置为\n当scaling_resource_type为BANDWIDTH,支持如下操作:\n- ADD:增加\n- REDUCE:减少\n- SET:设置为",
+          "enum": [
+            "ADD",
+            "REMOVE",
+            "REDUCE",
+            "SET"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "example": 1,
+          "description": "操作大小,取值范围为0到300的整数,默认为1。当scaling_resource_type为SCALING_GROUP时,size为实例个数,取值范围为0-300的整数,默认为1。当scaling_resource_type为BANDWIDTH时,size表示带宽大小,单位为Mbit/s,取值范围为1到300的整数,默认为1。当scaling_resource_type为SCALING_GROUP时,size和percentage参数只能选其中一个进行配置。",
+          "minimum": 0,
+          "maximum": 300
+        },
+        "percentage": {
+          "type": "integer",
+          "description": "操作百分比,取值为0到20000的整数。当scaling_resource_type为SCALING_GROUP时,size和instance_percentage参数均无配置,则size默认为1。当scaling_resource_type为BANDWIDTH时,不支持配置instance_percentage参数。",
+          "minimum": 0,
+          "maximum": 20000
+        },
+        "limits": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "操作限制。当scaling_resource_type为BANDWIDTH,且operation不为SET时,limits参数生效,单位为Mbit/s。此时,当operation为ADD时,limits表示带宽可调整的上限;当operation为REDUCE时,limits表示带宽可调整的下限。"
+        }
+      },
+      "description": "策略执行具体动作。"
+    },
+    "IntervalAlarmActionsV2": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "description": "操作选项,默认为ADD。\n当scaling_resource_type为SCALING_GROUP,支持如下操作:\nADD:增加\nREMOVE/REDUCE:减少\nSET:设置为\n当scaling_resource_type为BANDWIDTH,支持如下操作:\nADD:增加\nREDUCE:减少"
+        },
+        "limits": {
+          "type": "integer",
+          "format": "int32",
+          "description": "操作限制。当scaling_resource_type为BANDWIDTH,且operation不为SET时,limits参数生效,单位为Mbit/s。此时,当operation为ADD时,limits表示带宽可调整的上限;当operation为REDUCE时,limits表示带宽可调整的下限。"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "操作大小,取值范围为0到300的整数,默认为1。当scaling_resource_type为SCALING_GROUP时,size为实例个数,取值范围为0-300的整数,默认为1。当scaling_resource_type为BANDWIDTH时,size表示带宽大小,单位为Mbit/s,取值范围为1到300的整数,默认为1。当scaling_resource_type为SCALING_GROUP时,size和percentage参数只能选其中一个进行配置。"
+        },
+        "lower_bound": {
+          "type": "number",
+          "format": "double"
+        },
+        "upper_bound": {
+          "type": "number",
+          "format": "double"
+        },
+        "percentage": {
+          "type": "integer",
+          "format": "int32",
+          "description": "操作百分比,取值为0到20000的整数。当scaling_resource_type为SCALING_GROUP时,size和instance_percentage参数均无配置,则size默认为1。当scaling_resource_type为BANDWIDTH时,不支持配置instance_percentage参数。"
+        }
+      },
+      "description": "操作告警区间"
+    },
+    "ScalingPolicyId": {
+      "properties": {
+        "scaling_policy_id": {
+          "type": "string",
+          "example": "0h327883-324n-4dzd-9c61-68d03ee191dd",
+          "description": "伸缩策略ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "创建伸缩策略"
+    },
+    "ScheduledPolicy": {
+      "required": [
+        "launch_time"
+      ],
+      "properties": {
+        "launch_time": {
+          "type": "string",
+          "description": "触发时间,遵循UTC时间。如果scaling_policy_type为SCHEDULED,则格式为:YYYY-MM-DDThh:mmZ。如果scaling_policy_type为RECURRENCE,则格式为:hh:mm。"
+        },
+        "recurrence_type": {
+          "type": "string",
+          "description": "周期触发类型,scaling_policy_type为RECURRENCE时该项必选。Daily:每天执行一次。Weekly:每周指定天执行一次。Monthly:每月指定天执行一次。",
+          "enum": [
+            "Daily",
+            "Weekly",
+            "Monthly"
+          ]
+        },
+        "recurrence_value": {
+          "type": "string",
+          "description": "周期触发任务数值,scaling_policy_type为RECURRENCE时该项必选。类型为Daily时,该字段为null,表示每天执行类型为Weekly时,该字段取值范围为1-7,1表示星期日,以此类推,以”,”分割,例如:1,3,5。类型为Monthly时,该字段取值范围为1-31,分别表示每月的日期,以“,”分割,例如:1,10,13,28。说明:- 当recurrence_type类型为Daily时,recurrence_value参数不生效。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "start_time": {
+          "type": "string",
+          "description": "周期策略重复执行开始时间,遵循UTC时间。默认为当前时间,格式为:YYYY-MM-DDThh:mZ"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "周期策略重复执行结束时间,遵循UTC时间,scaling_policy_type为RECURRENCE时该项必选。当为周期类型策略时,不得早于当前时间和开始时间。格式为:YYYY-MM-DDThh:mmZ"
+        }
+      },
+      "description": "定时、周期任务策略"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

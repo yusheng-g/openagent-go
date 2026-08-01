@@ -1,0 +1,118 @@
+{
+  "name": "StopInstance",
+  "summary": "停止实例",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/action/shutdown": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "StopInstance",
+        "summary": "停止实例",
+        "description": "实例进行关机,通过暂时停止按需实例以节省费用,实例默认停止七天。",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-constraint": "- 该接口仅支持PostgreSQL引擎。\n- 如需开通停止实例的权限,请联系客服人员申请。\n- 仅支持停止存储类型为超高IO、SSD云盘、极速型SSD的按需实例,专属云RDS不支持停止实例。\n- 停止主实例时,如果存在只读实例,会同时停止只读实例。主实例和只读实例均默认停止七天。不支持单独停止只读实例。\n- 已停止的实例被删除后不会进入回收站。\n- 实例默认停止七天,如果您在七天后未手动开启实例,则数据库实例将于七天后的下一个可维护时间段内自动启动,可维护时间段的详细内容请参考设置可维护时间段,开启实例操作步骤请参考开启实例。\n- 实例停止后,虚拟机(VM)停止收费,其余资源包括弹性公网IP(EIP)、存储资源、数据库代理(Proxy)、备份正常计费。\n- 实例在以下状态不能执行停止实例。\n  - PostgreSQL实例在创建、重启、扩容、变更规格、恢复、修改端口等不能进行此操作。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein03"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "停止实例",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin03/action/shutdown"
+      }
+    }
+  },
+  "definitions": {
+    "JobId": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

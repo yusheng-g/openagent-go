@@ -1,0 +1,234 @@
+{
+  "name": "ListRecycleInstances",
+  "summary": "查询回收站",
+  "tags": "回收站",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/recycle-instances": {
+      "get": {
+        "tags": [
+          "回收站"
+        ],
+        "summary": "查询回收站",
+        "description": "查询回收站实例信息",
+        "operationId": "ListRecycleInstances",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-constraint": "支持所有引擎",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": true,
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,必须为数字,不能为负数。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "description": "每页数据条数。取值范围[1, 50]。",
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/QueryRecycleListRespV3"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 6,
+                "instances": [
+                  {
+                    "id": "b7dea08c0f0e4fed9f1951fff9013639in01",
+                    "name": "rds-8b86",
+                    "ha_mode": "Ha",
+                    "engine_name": "mysql",
+                    "engine_version": "5.7.38",
+                    "pay_model": "0",
+                    "created_at": "2022-12-26T03:38:10+0000",
+                    "deleted_at": "2023-01-09T08:57:10+0000",
+                    "volume_type": "SSD",
+                    "volume_size": 80,
+                    "data_vip": "192.168.226.188",
+                    "enterprise_project_id": "0",
+                    "retained_until": "2023-01-16T09:20:48+0000",
+                    "recycle_backup_id": "e8e3c329c20442f5aec21b95a8cdaa52br01",
+                    "recycle_status": "COMPLETED",
+                    "is_serverless": false
+                  },
+                  {
+                    "id": "cc6d0dff4a9145d0a1335c35a866de23in01",
+                    "name": "rds-82b2",
+                    "ha_mode": "Ha",
+                    "engine_name": "mysql",
+                    "engine_version": "5.7.38",
+                    "pay_model": "0",
+                    "created_at": "2022-12-26T06:17:58+0000",
+                    "deleted_at": "2023-01-09T08:56:49+0000",
+                    "volume_type": "SSD",
+                    "volume_size": 200,
+                    "data_vip": "192.168.2.24",
+                    "enterprise_project_id": "0",
+                    "retained_until": "2023-01-16T09:20:45+0000",
+                    "recycle_backup_id": "3f35a348ae0943979bd302a9788f49e7br01",
+                    "recycle_status": "COMPLETED",
+                    "is_serverless": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "x-request-examples-description-1": "查询回收站",
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/054e292c9880d4992f02c0196d3ea468/recycle-instances?offset=0&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "RecycleInstsanceV3": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "04565fb6741349559f6f8c0e6b877e71in01",
+          "description": "实例id"
+        },
+        "name": {
+          "type": "string",
+          "example": "rds-sunbq-test",
+          "description": "实例名"
+        },
+        "ha_mode": {
+          "type": "string",
+          "example": "Ha",
+          "description": "实例主备模式,取值:Ha(主备),不区分大小写。"
+        },
+        "engine_name": {
+          "type": "string",
+          "example": "mysql",
+          "description": "引擎名"
+        },
+        "engine_version": {
+          "type": "string",
+          "example": "5.6.51",
+          "description": "数据库引擎版本"
+        },
+        "pay_model": {
+          "type": "string",
+          "example": 0,
+          "description": "计费方式"
+        },
+        "created_at": {
+          "type": "string",
+          "example": 1670634603870,
+          "description": "创建时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如偏移1个小时显示为+0100。"
+        },
+        "deleted_at": {
+          "type": "string",
+          "example": 1672217086870,
+          "description": "删除时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如偏移1个小时显示为+0100。"
+        },
+        "volume_type": {
+          "type": "string",
+          "example": "SSD",
+          "description": "磁盘类型。\n取值范围如下,区分大小写:\n- COMMON,表示SATA。\n- HIGH,表示SAS。\n- ULTRAHIGH,表示SSD。\n- ULTRAHIGHPRO,表示SSD尊享版,仅支持超高性能型尊享版(需申请权限)。\n- CLOUDSSD,表示SSD云盘,仅支持通用型和独享型规格实例。\n- LOCALSSD,表示本地SSD。"
+        },
+        "volume_size": {
+          "type": "integer",
+          "format": "int32",
+          "example": 40,
+          "description": "磁盘大小,单位为GB。\n取值范围:40GB~4000GB,必须为10的整数倍。\n\n部分用户支持40GB~6000GB,如果您想创建存储空间最大为6000GB的数据库实例,或提高扩容上限到10000GB,请联系客服开通。\n\n说明:对于只读实例,该参数无效,磁盘大小,默认和主实例相同。"
+        },
+        "data_vip": {
+          "type": "string",
+          "example": "192.168.0.92",
+          "description": "内网地址"
+        },
+        "data_vip_v6": {
+          "type": "string",
+          "description": "ipv6内网地址"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "example": 0,
+          "description": "企业项目ID"
+        },
+        "retained_until": {
+          "type": "string",
+          "example": 1672821971991,
+          "description": "保留时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如偏移1个小时显示为+0100。"
+        },
+        "recycle_backup_id": {
+          "type": "string",
+          "example": "bad46d77028844afb67c511c36ab1152br01",
+          "description": "备份id"
+        },
+        "recycle_status": {
+          "type": "string",
+          "example": "COMPLETED",
+          "description": "备份状态\n取值范围如下,区分大小写:\n- BUILDING 备份中,不能进行重建\n- COMPLETED,标识备份完成,可以重建"
+        },
+        "is_serverless": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否为serverless实例\n- false 不是serverless实例\n- true 是serverless实例"
+        }
+      }
+    },
+    "QueryRecycleListRespV3": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "回收站数据条数"
+        },
+        "instances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecycleInstsanceV3"
+          },
+          "description": "回收站信息"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

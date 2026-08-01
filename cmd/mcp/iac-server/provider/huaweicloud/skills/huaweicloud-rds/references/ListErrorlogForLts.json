@@ -1,0 +1,170 @@
+{
+  "name": "ListErrorlogForLts",
+  "summary": "查询实例的错误日志数据",
+  "tags": "日志",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/error-logs": {
+      "post": {
+        "x-publishpath": "getlog",
+        "tags": [
+          "日志"
+        ],
+        "description": "查询实例的错误日志数据。",
+        "operationId": "ListErrorlogForLts",
+        "summary": "查询实例的错误日志数据",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。获取方法请参见获取项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "description": "查询条件。",
+            "schema": {
+              "$ref": "#/definitions/ErrorlogForLtsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ErrorLogResponse"
+            },
+            "examples": {
+              "application/json": {
+                "error_log_list": [
+                  {
+                    "time": "2022-08-23T22:59:17Z",
+                    "level": "WARNING",
+                    "content": "Occur error when reading bytes from a network handler. Client actively closes the connection.",
+                    "line_num": "1595659490239433658"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorlogForLtsRequest": {
+      "type": "object",
+      "description": "查询实例的错误日志对象",
+      "required": [
+        "start_time",
+        "end_time"
+      ],
+      "properties": {
+        "start_time": {
+          "type": "string",
+          "description": "开始日期,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。只能查询当前时间前一个月内的慢日志。"
+        },
+        "level": {
+          "type": "string",
+          "description": "日志级别,默认为ALL。",
+          "enum": [
+            "ALL",
+            "INFO",
+            "LOG",
+            "WARNING",
+            "ERROR",
+            "FATAL",
+            "PANIC",
+            "NOTE"
+          ]
+        },
+        "line_num": {
+          "type": "string",
+          "description": "日志单行序列号,第一次查询时不需要此参数,后续分页查询时需要使用,可从上次查询的返回信息中获取。line_num应在start_time和end_time之间。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "每页多少条记录(查询结果),取值范围是1~100,不填时默认为10。"
+        },
+        "search_type": {
+          "type": "string",
+          "description": "搜索方式。默认forwards。配合line_num使用,以line_num为起点,向前搜索或向后搜索。"
+        }
+      }
+    },
+    "ErrorLogResponse": {
+      "type": "object",
+      "properties": {
+        "error_log_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ErrorLogItem"
+          },
+          "description": "日志数据集合。"
+        }
+      }
+    },
+    "ErrorLogItem": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "description": "日期时间UTC时间。"
+        },
+        "level": {
+          "type": "string",
+          "description": "日志级别。"
+        },
+        "content": {
+          "type": "string",
+          "description": "错误日志内容。"
+        },
+        "line_num": {
+          "type": "string",
+          "description": "日志单行序列号。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

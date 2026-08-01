@@ -1,0 +1,338 @@
+{
+  "name": "CreateTransitIp",
+  "summary": "创建中转IP",
+  "tags": "私网NAT中转IP",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/transit-ips": {
+      "post": {
+        "x-request-examples-text-1": {
+          "transit_ip": {
+            "virsubnet_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+            "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+            "ip_address": "192.168.1.68",
+            "tags": [
+              {
+                "key": "key1",
+                "value": "value1"
+              }
+            ]
+          }
+        },
+        "tags": [
+          "私网NAT中转IP"
+        ],
+        "summary": "创建中转IP",
+        "description": "创建中转IP。",
+        "operationId": "CreateTransitIp",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 512
+          },
+          {
+            "name": "CreateTransitIpRequestBody",
+            "in": "body",
+            "description": "创建中转子网请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTransitIpRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建中转IP成功。",
+            "examples": {
+              "application/json": {
+                "transit_ip": {
+                  "id": "a2845109-3b2f-4627-b08f-09a726c0a6e7",
+                  "project_id": "da261828016849188f4dcc2ef94d9da9",
+                  "network_interface_id": "adebbdca-8c26-4c14-b34f-3f53cd2c42f2",
+                  "ip_address": "192.168.1.68",
+                  "gateway_id": "521bb3d9-8bed-4c6c-9ee8-669bd0620f76",
+                  "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                  "created_at": "2019-04-29T02:16:09",
+                  "updated_at": "2019-04-29T02:16:09",
+                  "virsubnet_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                  "tags": [
+                    {
+                      "key": "key1",
+                      "value": "value1"
+                    }
+                  ],
+                  "status": "ACTIVE"
+                },
+                "request_id": "747a911c17067a39692f75ac146fb47e"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateTransitIpResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建中转IP",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "创建中转ip",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v3/70505c941b9b4dfd82fd351932328a2f/private-nat/transit-ips",
+        "x-request-examples-1": {
+          "transit_ip": {
+            "virsubnet_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+            "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+            "ip_address": "192.168.1.68",
+            "tags": [
+              {
+                "key": "key1",
+                "value": "value1"
+              }
+            ]
+          }
+        },
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateTransitIpRequestBody": {
+      "required": [
+        "transit_ip"
+      ],
+      "properties": {
+        "transit_ip": {
+          "$ref": "#/definitions/CreatTransitIpOption"
+        }
+      },
+      "description": "创建中转IP的请求体。",
+      "type": "object"
+    },
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "TransitIp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "中转IP的ID。"
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "项目的ID。"
+        },
+        "network_interface_id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "中转IP的网络接口ID。"
+        },
+        "ip_address": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 35,
+          "description": "中转IP的地址。"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "中转IP的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "中转IP的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 36,
+          "description": "当前租户子网的ID。取值约束:与transit_subnet_id参数二选一。默认空字符串。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表。",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "gateway_id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "中转IP绑定的私网NAT网关实例的ID。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "企业项目ID。创建中转IP时,关联的企业项目ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT中转IP的状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "中转子网IP的响应体。",
+      "required": [
+        "id",
+        "project_id",
+        "network_interface_id",
+        "ip_address",
+        "created_at",
+        "updated_at",
+        "gateway_id",
+        "enterprise_project_id"
+      ],
+      "type": "object"
+    },
+    "CreateTransitIpResponseBody": {
+      "required": [
+        "transit_ip"
+      ],
+      "properties": {
+        "transit_ip": {
+          "$ref": "#/definitions/TransitIp"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "创建中转IP的响应体。"
+    },
+    "PrivateTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "标签key值。",
+          "minLength": 1,
+          "maxLength": 128,
+          "example": "key1"
+        },
+        "value": {
+          "type": "string",
+          "description": "标签value。",
+          "minLength": 0,
+          "maxLength": 255,
+          "example": "value1"
+        }
+      },
+      "description": "标签。"
+    },
+    "CreatTransitIpOption": {
+      "properties": {
+        "virsubnet_id": {
+          "type": "string",
+          "example": "49ee5fb5-75bf-4320-946e-b21ef4c9c9c1",
+          "description": "当前项目子网的ID。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "ip_address": {
+          "type": "string",
+          "example": "192.168.1.68",
+          "description": "中转IP地址。",
+          "minLength": 7,
+          "maxLength": 35
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "49ee5fb5-75bf-4320-946e-b21ef4c9c9c1",
+          "description": "企业项目ID。创建中转IP时,关联的企业项目ID。",
+          "default": "0"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签",
+          "items": {
+            "$ref": "#/definitions/PrivateTag"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        }
+      },
+      "description": "创建中转IP的请求体。",
+      "type": "object",
+      "required": [
+        "virsubnet_id"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,138 @@
+{
+  "name": "CreateSqlserverDatabase",
+  "summary": "创建数据库",
+  "tags": "管理数据库和用户(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/database": {
+      "post": {
+        "tags": [
+          "管理数据库和用户(SQL Server)"
+        ],
+        "operationId": "CreateSqlserverDatabase",
+        "summary": "创建数据库",
+        "description": "创建数据库。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 实例在创建、变更规格、修改端口、冻结、异常等状态下不能执行该操作。\n- 如果通过V3接口之外的方式创建数据库,如自行登录节点或通过客户端工具创建数据库,数据库名称校验规则与V3接口不一致,调用V3接口执行数据库相关操作时可能会导致接口调用失败。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "CreateDatabaseRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SqlserverDatabaseForCreation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DBMSuccessRsp"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/database",
+        "x-request-examples-1": {
+          "name": "rds-test",
+          "character_set": "utf8"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DBMSuccessRsp": {
+      "required": [
+        "resp"
+      ],
+      "properties": {
+        "resp": {
+          "description": "操作结果。",
+          "type": "string",
+          "example": "successful"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "SqlserverDatabaseForCreation": {
+      "description": "数据库信息。",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "数据库名称。\n数据库名称长度可在1~64个字符之间,由字母、数字、中划线或下划线组成,不能包含其他特殊字符,且不能以RDS for SQL Server系统库开头或结尾。\nRDS for SQL Server系统库包括master,msdb,model,tempdb,resource以及rdsadmin。",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

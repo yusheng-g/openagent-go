@@ -1,0 +1,566 @@
+{
+  "name": "ListScalingConfigs",
+  "summary": "查询弹性伸缩配置列表",
+  "tags": "弹性伸缩配置",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_configuration": {
+      "get": {
+        "tags": [
+          "弹性伸缩配置"
+        ],
+        "summary": "查询弹性伸缩配置列表",
+        "description": "根据输入条件过滤查询弹性伸缩配置。查询结果分页显示。可以根据伸缩配置名称,镜像ID,起始行号,记录条数进行条件过滤查询。若不加过滤条件默认最多查询租户下20条伸缩配置信息。",
+        "operationId": "ListScalingConfigs",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_configuration_name",
+            "in": "query",
+            "description": "伸缩配置名称。",
+            "required": false,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "test"
+          },
+          {
+            "name": "image_id",
+            "in": "query",
+            "description": "镜像ID,同imageRef。",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "start_number",
+            "in": "query",
+            "description": "查询的起始行号,默认为0。",
+            "required": false,
+            "type": "integer",
+            "x-order": 5,
+            "x-example": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询的记录条数,默认为20。",
+            "required": false,
+            "type": "integer",
+            "x-order": 6,
+            "x-example": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "examples": {
+              "application/json": {
+                "total_number": 2,
+                "start_number": 0,
+                "limit": 10,
+                "scaling_configurations": [
+                  {
+                    "tenant": "06057680f980d5762f0cc01cc6a3a509",
+                    "scaling_configuration_id": "8249ba60-321c-4a02-a0ca-c38fdd54ab0f",
+                    "scaling_configuration_name": "as-config-9818",
+                    "instance_config": {
+                      "flavorRef": "s2.medium.2",
+                      "imageRef": "4ffe0dc8-ac16-4d3a-a1e9-5640e4930cea",
+                      "disk": [
+                        {
+                          "size": 40,
+                          "volume_type": "SATA",
+                          "disk_type": "SYS"
+                        }
+                      ],
+                      "key_name": "KeyPair-4671-test",
+                      "key_fingerprint": "SHA256:eX6af8hJmcx0FPZu36+E7w8snfp1JwyLb7Qc7qADeIs",
+                      "adminPass": "***",
+                      "metadata": {},
+                      "security_groups": [
+                        {
+                          "id": "c7033a8e-77bd-41db-a6f4-5788c0bb7fa9"
+                        }
+                      ],
+                      "multi_flavor_priority_policy": "PICK_FIRST"
+                    },
+                    "scaling_group_id": "5294b80e-ee63-4116-bb71-4ea4cadba995",
+                    "create_time": "2021-04-17T07:44:24Z"
+                  },
+                  {
+                    "tenant": "06057680f980d5762f0cc01cc6a3a509",
+                    "scaling_configuration_id": "ad8ff7b8-eac8-4b91-8ca6-b0fa5391aceb",
+                    "scaling_configuration_name": "as-config-01",
+                    "instance_config": {
+                      "flavorRef": "s2.medium.2,s2.medium.4,s6.small.1",
+                      "imageRef": "4ffe0dc8-ac16-4d3a-a1e9-5640e4930cea",
+                      "disk": [
+                        {
+                          "size": 40,
+                          "volume_type": "SATA",
+                          "disk_type": "SYS"
+                        }
+                      ],
+                      "key_name": "KeyPair-4671-test",
+                      "key_fingerprint": "SHA256:eX6af8hJmcx0FPZu36+E7w8snfp1JwyLb7Qc7qADeIs",
+                      "adminPass": "***",
+                      "metadata": {},
+                      "security_groups": [
+                        {
+                          "id": "c7033a8e-77bd-41db-a6f4-5788c0bb7fa9"
+                        }
+                      ],
+                      "multi_flavor_priority_policy": "PICK_FIRST"
+                    },
+                    "scaling_group_id": "4201a1cd-461c-447e-aa7a-a85aeabea5a3",
+                    "create_time": "2021-04-10T03:25:24Z"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ScalingConfigListResult"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了查询使用了ID为37ca2b35-6fc7-47ab-93c7-900324809c5c的镜像的伸缩配置。",
+        "x-support-sdk": "Y",
+        "x-name": "查询弹性伸缩配置列表",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 2,
+        "x-request-examples-url-1": "GET https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_configuration?image_id=37ca2b35-6fc7-47ab-93c7-900324809c5c",
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "78",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "780",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "ScalingConfiguration": {
+      "properties": {
+        "scaling_configuration_id": {
+          "type": "string",
+          "description": "伸缩配置ID,全局唯一。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "tenant": {
+          "type": "string",
+          "description": "租户ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_configuration_name": {
+          "type": "string",
+          "example": "config_name_1",
+          "description": "伸缩配置名称。"
+        },
+        "instance_config": {
+          "$ref": "#/definitions/InstanceConfigResult"
+        },
+        "create_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "创建伸缩配置的时间,遵循UTC时间。"
+        },
+        "scaling_group_id": {
+          "type": "string",
+          "description": "绑定该伸缩配置的伸缩组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "伸缩配置详情"
+    },
+    "VmMetaData": {
+      "properties": {
+        "admin_pass": {
+          "type": "string",
+          "description": "如果需要使用密码方式登录云服务器,可使用adminPass字段指定云服务器管理员帐户初始登录密码。其中,Linux管理员帐户为root,Windows管理员帐户为Administrator。密码复杂度要求:- 长度为8-26位。- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?)中的三种。- 密码不能包含用户名或用户名的逆序。- Windows系统密码不能包含用户名或用户名的逆序,不能包含用户名中超过两个连续字符的部分。"
+        }
+      },
+      "description": "云服务器元数据"
+    },
+    "InstanceConfigResult": {
+      "properties": {
+        "flavorRef": {
+          "type": "string",
+          "description": "云服务器的规格ID。"
+        },
+        "imageRef": {
+          "type": "string",
+          "description": "镜像ID,同image_id。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "disk": {
+          "type": "array",
+          "description": "磁盘组信息。",
+          "items": {
+            "$ref": "#/definitions/DiskResult"
+          }
+        },
+        "key_name": {
+          "type": "string",
+          "description": "登录云服务器的SSH密钥名称。",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "key_fingerprint": {
+          "type": "string",
+          "description": "登录云服务器的SSH密钥指纹。"
+        },
+        "instance_name": {
+          "type": "string",
+          "description": "该参数为预留字段。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "该参数为预留字段。"
+        },
+        "adminPass": {
+          "type": "string",
+          "description": "登录云服务器的密码,非明文回显。"
+        },
+        "personality": {
+          "type": "array",
+          "description": "个人信息",
+          "items": {
+            "$ref": "#/definitions/PersonalityResult"
+          }
+        },
+        "public_ip": {
+          "$ref": "#/definitions/PublicipResult"
+        },
+        "user_data": {
+          "type": "string",
+          "description": "cloud-init用户数据,base64格式编码。"
+        },
+        "metadata": {
+          "$ref": "#/definitions/VmMetaData"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "安全组信息。",
+          "items": {
+            "$ref": "#/definitions/SecurityGroups"
+          }
+        },
+        "server_group_id": {
+          "type": "string",
+          "description": "云服务器组ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "tenancy": {
+          "type": "string",
+          "description": "在专属主机上创建弹性云服务器。"
+        },
+        "dedicated_host_id": {
+          "type": "string",
+          "description": "专属主机的ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "market_type": {
+          "type": "string",
+          "description": "云服务器的计费模式,可以选择竞价计费或按需计费。"
+        },
+        "multi_flavor_priority_policy": {
+          "type": "string",
+          "description": "使用伸缩配置创建云主机的时候,多规格使用的优先级策略。\n\nPICK_FIRST(默认):选择优先,虚拟机扩容时规格的选择按照flavorRef列表的顺序进行优先级排序。\nCOST_FIRST:成本优化,虚拟机扩容时规格的选择按照价格最优原则进行优先级排序。"
+        },
+        "cpu_options": {
+          "description": "是否关闭超线程,1是关闭,2是开启(默认)",
+          "$ref": "#/definitions/CpuOptions"
+        }
+      },
+      "description": "实例配置信息"
+    },
+    "SecurityGroups": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "6c22a6c0-b5d2-4a84-ac56-51090dcc33be",
+          "description": "安全组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "安全组信息"
+    },
+    "ScalingConfigListResult": {
+      "properties": {
+        "total_number": {
+          "type": "integer",
+          "description": "总记录数。",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "start_number": {
+          "type": "integer",
+          "description": "查询的起始行号。"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "查询记录数。",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "scaling_configurations": {
+          "type": "array",
+          "description": "伸缩配置列表",
+          "items": {
+            "$ref": "#/definitions/ScalingConfiguration"
+          }
+        }
+      },
+      "description": "伸缩配置列表信息"
+    },
+    "DiskResult": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "description": "磁盘大小,容量单位为GB。"
+        },
+        "volume_type": {
+          "type": "string",
+          "description": "磁盘类型。",
+          "enum": [
+            "SATA",
+            "SAS",
+            "SSD",
+            "co-pl",
+            "uh-11",
+            "GPSSD2",
+            "ESSD2"
+          ]
+        },
+        "disk_type": {
+          "type": "string",
+          "description": "系统盘还是数据盘,DATA表示为数据盘,SYS表示为系统盘。",
+          "enum": [
+            "SYS",
+            "DATA"
+          ]
+        },
+        "dedicated_storage_id": {
+          "type": "string",
+          "description": "磁盘所属的专属存储ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "data_disk_image_id": {
+          "type": "string",
+          "description": "导入数据盘的数据盘镜像ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "description": "磁盘备份的快照ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "metadata": {
+          "description": "创建磁盘的元数据",
+          "$ref": "#/definitions/MetaData"
+        },
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘iops"
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘吞吐量"
+        }
+      },
+      "description": "磁盘信息"
+    },
+    "PersonalityResult": {
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "注入文件路径信息。"
+        },
+        "content": {
+          "type": "string",
+          "description": "注入文件内容,base64格式编码。"
+        }
+      },
+      "description": "个人信息"
+    },
+    "PublicipResult": {
+      "properties": {
+        "eip": {
+          "description": "云服务器自动分配弹性IP时,创建弹性IP的配置参数。",
+          "$ref": "#/definitions/EipResult"
+        }
+      },
+      "description": "弹性IP信息"
+    },
+    "CpuOptions": {
+      "type": "object",
+      "properties": {
+        "hw_cpu_threads": {
+          "type": "integer",
+          "format": "int32",
+          "description": "是否关闭实例超线程,1是关闭,2是开启"
+        }
+      }
+    },
+    "MetaData": {
+      "properties": {
+        "__system__encrypted": {
+          "type": "string",
+          "description": "metadata中的表示加密功能的字段,0代表不加密,1代表加密。  该字段不存在时,云硬盘默认为不加密。\n说明:\n系统盘不支持加密。"
+        },
+        "__system__cmkid": {
+          "type": "string",
+          "description": "用户主密钥ID,是metadata中的表示加密功能的字段,与__system__encrypted配合使用。说明:- 系统盘不支持加密。- 请参考[查询密钥列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=KMS&api=ListKeys&version=v2),通过HTTPS请求获取密钥ID。"
+        }
+      },
+      "description": "创建磁盘的元数据"
+    },
+    "BandwidthResult": {
+      "properties": {
+        "size": {
+          "type": "integer",
+          "description": "带宽(Mbit/s)。",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "share_type": {
+          "type": "string",
+          "description": "带宽的共享类型。共享类型枚举:PER,表示独享。目前只支持独享。",
+          "enum": [
+            "PER",
+            "WHOLE"
+          ]
+        },
+        "charging_mode": {
+          "type": "string",
+          "description": "带宽的计费类型。字段值为“bandwidth”,表示按带宽计费。字段值为“traffic”,表示按流量计费。",
+          "enum": [
+            "bandwidth",
+            "traffic"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "带宽ID,创建WHOLE类型带宽的弹性IP时指定的共享带宽。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "带宽信息"
+    },
+    "EipResult": {
+      "properties": {
+        "ip_type": {
+          "type": "string",
+          "description": "IP地址类型。",
+          "enum": [
+            "5_bgp",
+            "5_sbgp",
+            "5_telcom",
+            "5_union"
+          ]
+        },
+        "bandwidth": {
+          "description": "IP地址带宽参数。",
+          "$ref": "#/definitions/BandwidthResult"
+        }
+      },
+      "description": "eip信息"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

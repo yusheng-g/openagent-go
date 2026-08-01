@@ -1,0 +1,152 @@
+{
+  "name": "GetInstancesNoIndexTables",
+  "summary": "查询无索引表诊断数据",
+  "tags": "RDS",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/no-index-tables": {
+      "get": {
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "operationId": "GetInstancesNoIndexTables",
+        "tags": [
+          "RDS"
+        ],
+        "summary": "查询无索引表诊断数据",
+        "description": "查询无索引表诊断数据",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "newest",
+            "in": "query",
+            "required": true,
+            "description": "指定查询是否应侧重于检索最新或最新的特殊表。",
+            "type": "boolean"
+          },
+          {
+            "name": "table_type",
+            "in": "query",
+            "required": true,
+            "description": "表格类型。",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "索引位置,偏移量。",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询记录数。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/QuerySpecialTablesRsp"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-apigateway-ratelimit": "rds_user_policy"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "QuerySpecialTablesRsp": {
+      "description": "查询特殊表响应体。",
+      "type": "object",
+      "required": [
+        "tables",
+        "last_diagnose_timestamp",
+        "total_count"
+      ],
+      "properties": {
+        "tables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Table"
+          },
+          "description": "特殊表格列表。"
+        },
+        "last_diagnose_timestamp": {
+          "type": "Integer",
+          "format": "int64",
+          "description": "指定时间戳格式的时间。"
+        },
+        "total_count": {
+          "type": "Integer",
+          "format": "int32",
+          "description": "指定表的数量。"
+        }
+      }
+    },
+    "Table": {
+      "type": "object",
+      "properties": {
+        "db_name": {
+          "type": "string",
+          "description": "指定数据库名称。"
+        },
+        "schema_name": {
+          "type": "string",
+          "description": "指定模式名称。"
+        },
+        "table_name": {
+          "type": "string",
+          "description": "指定表名。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

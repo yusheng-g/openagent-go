@@ -1,0 +1,200 @@
+{
+  "name": "BatchDisableDomainIPs",
+  "summary": "批量将IP地址从ELB实例域名解析中移除",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/dns/ips/batch-disable": {
+      "post": {
+        "summary": "批量将IP地址从ELB实例域名解析中移除",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": false,
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/dns/ips/batch-disable",
+        "x-request-examples-description-1": "批量将IP地址从ELB实例域名解析中移除",
+        "x-request-examples-text-1": {
+          "ips": [
+            {
+              "ip_address": "192.168.20.87"
+            },
+            {
+              "ip_address": "2001:db8:a583:682::10"
+            }
+          ]
+        },
+        "x-request-examples-1": {
+          "ips": [
+            {
+              "ip_address": "192.168.20.87"
+            },
+            {
+              "ip_address": "2001:db8:a583:682::10"
+            }
+          ]
+        },
+        "tags": [
+          "负载均衡器"
+        ],
+        "description": "批量将IP地址从ELB实例域名解析中移除。",
+        "operationId": "BatchDisableDomainIPs",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "BatchDisableDomainIPsRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "批量将IP地址从ELB实例域名解析中移除的请求体。",
+            "schema": {
+              "$ref": "#/definitions/BatchDisableDomainIPsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "schema": {
+              "$ref": "#/definitions/LoadbalancerDnsIpsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "ips": [
+                  {
+                    "enable": false,
+                    "type": "vip",
+                    "created_at": "2026-01-29T07:08:09Z",
+                    "updated_at": "2026-01-29T07:08:28Z",
+                    "ip_address": "192.168.0.166",
+                    "domain_name": "737b61b6-ff56-4112-a14a-c7abaa4e58bf-internal.elb.elb-test"
+                  },
+                  {
+                    "enable": false,
+                    "type": "eip",
+                    "created_at": "2026-01-29T06:57:26Z",
+                    "updated_at": "2026-01-29T06:57:26Z",
+                    "ip_address": "10.83.50.35",
+                    "domain_name": "737b61b6-ff56-4112-a14a-c7abaa4e58bf.elb.example.com"
+                  }
+                ],
+                "request_id": "e7324226f3df8dedcd1e6a5a8b93b1bf"
+              }
+            }
+          }
+        },
+        "x-name": "批量将IP地址从ELB实例域名解析中移除",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 23,
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "DnsIpResponse": {
+      "type": "object",
+      "description": "负载均衡器IP地址的域名解析配置。",
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否已加入到域名解析。\n\n**取值范围**:\ntrue:已加入域名解析。\nfalse:未加入域名解析。"
+        },
+        "ip_address": {
+          "type": "string",
+          "description": "**参数解释**:IPv4或IPv6地址。\n\n**约束限制**:必须是当前负载均衡器绑定的私网地址或者公网地址。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:IP地址类型。\n\n**取值范围**:\nvip:私网IP。\neip:公网IP。"
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释**:当前IP地址关联的负载均衡实例域名。\n\n**约束限制**:\n- 如果IP为私网类型,则这里为负载均衡实例的私网域名。\n- 如果IP为公网类型,则这里为负载均衡实例的公网域名。"
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2024-05-16T12:54:54Z",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:不涉及"
+        },
+        "updated_at": {
+          "type": "string",
+          "example": "2024-05-16T12:54:54Z",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "BatchDisableDomainIPsRequestBody": {
+      "type": "object",
+      "description": "批量将IP地址从ELB实例域名解析中移除的请求体。",
+      "required": [
+        "ips"
+      ],
+      "properties": {
+        "ips": {
+          "type": "array",
+          "description": "**参数解释**:需要从负载均衡器域名解析中移除的IP列表。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "items": {
+            "$ref": "#/definitions/DnsIp"
+          }
+        }
+      }
+    },
+    "LoadbalancerDnsIpsResponseBody": {
+      "type": "object",
+      "description": "批量配置负载均衡器域名解析的IP地址的响应体。",
+      "properties": {
+        "ips": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器域名解析的IP地址列表。\n\n**约束限制**:如果负载均衡器的公网域名和私网域名域名解析开关都没有打开,则为空列表。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "items": {
+            "$ref": "#/definitions/DnsIpResponse"
+          }
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      }
+    },
+    "DnsIp": {
+      "type": "object",
+      "description": "负载均衡器域名解析配置中的IP地址。",
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "**参数解释**:IPv4或IPv6地址。\n\n**约束限制**:必须是当前负载均衡器绑定的私网地址或者公网地址。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

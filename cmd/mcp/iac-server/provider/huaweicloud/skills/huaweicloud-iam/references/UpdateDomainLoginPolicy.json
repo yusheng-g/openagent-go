@@ -1,0 +1,296 @@
+{
+  "name": "UpdateDomainLoginPolicy",
+  "summary": "修改账号登录策略",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/login-policy": {
+      "put": {
+        "tags": [
+          "安全设置"
+        ],
+        "summary": "修改账号登录策略",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)修改账号登录策略。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "UpdateDomainLoginPolicy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "账号ID,获取方式请参见:[获取账号ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "UpdateDomainLoginPolicyRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateDomainLoginPolicyRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "login_policy": {
+                  "custom_info_for_login": "",
+                  "period_with_login_failures": 15,
+                  "lockout_duration": 15,
+                  "account_validity_period": 99,
+                  "login_failed_times": 3,
+                  "session_timeout": 16,
+                  "show_recent_login_info": true
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateDomainLoginPolicyResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "examples": {
+              "application/json": {
+                "error_msg": "'%(key)s' is a required property.",
+                "error_code": "IAM.0072"
+              },
+              "application/json-1": {
+                "error_msg": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+                "error_code": "IAM.0073"
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "鉴权失败。",
+            "examples": {
+              "application/json": {
+                "error_msg": "You are not authorized to perform the requested action.",
+                "error_code": "IAM.0002"
+              }
+            }
+          },
+          "500": {
+            "description": "系统异常。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改账号登录策略",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 14,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/login-policy",
+        "x-request-examples-1": {
+          "login_policy": {
+            "custom_info_for_login": "",
+            "period_with_login_failures": 15,
+            "lockout_duration": 15,
+            "account_validity_period": 99,
+            "login_failed_times": 3,
+            "session_timeout": 16,
+            "show_recent_login_info": true
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"login_policy\":{\n        \"custom_info_for_login\":\"\",\n        \"period_with_login_failures\":15,\n        \"lockout_duration\":15,\n        \"account_validity_period\":99,\n        \"login_failed_times\":3,\n        \"session_timeout\":16,\n        \"show_recent_login_info\":true\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0071",
+            "httpStatus": "400",
+            "errorMessage": "Organization control policy exists assignment",
+            "errorDescription": "组织控制策略存在绑定关系",
+            "solution": "解除绑定关系后,重试删除",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0072",
+            "httpStatus": "400",
+            "errorMessage": "'%(key)s' is a required property.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "LoginPolicyOption": {
+      "properties": {
+        "account_validity_period": {
+          "type": "integer",
+          "description": "账号在该值设置的有效期内未使用,则被停用。"
+        },
+        "custom_info_for_login": {
+          "type": "string",
+          "description": "登录提示信息。"
+        },
+        "lockout_duration": {
+          "type": "integer",
+          "description": "帐号锁定时长(分钟),取值范围[15,30]。"
+        },
+        "login_failed_times": {
+          "type": "integer",
+          "description": "限定时间内登录失败次数,取值范围[3,10]。"
+        },
+        "period_with_login_failures": {
+          "type": "integer",
+          "format": "int32",
+          "example": 15,
+          "description": "限定时间长度(分钟),取值范围[15,60]。"
+        },
+        "session_timeout": {
+          "type": "integer",
+          "description": "登录会话失效时间,取值范围[15,1440]。"
+        },
+        "show_recent_login_info": {
+          "type": "boolean",
+          "description": "显示最近一次的登录信息。取值范围true或false。"
+        }
+      },
+      "description": ""
+    },
+    "UpdateDomainLoginPolicyResponseBody": {
+      "required": [
+        "login_policy"
+      ],
+      "properties": {
+        "login_policy": {
+          "description": "登录策略。",
+          "$ref": "#/definitions/LoginPolicyResult"
+        }
+      },
+      "description": ""
+    },
+    "UpdateDomainLoginPolicyRequestBody": {
+      "required": [
+        "login_policy"
+      ],
+      "properties": {
+        "login_policy": {
+          "description": "登录策略,至少要选一种登录策略。",
+          "$ref": "#/definitions/LoginPolicyOption"
+        }
+      },
+      "description": ""
+    },
+    "LoginPolicyResult": {
+      "required": [
+        "account_validity_period",
+        "custom_info_for_login",
+        "lockout_duration",
+        "login_failed_times",
+        "period_with_login_failures",
+        "session_timeout",
+        "show_recent_login_info"
+      ],
+      "properties": {
+        "account_validity_period": {
+          "type": "integer",
+          "format": "int32",
+          "example": 99,
+          "description": "账号在该值设置的有效期内未使用,则被停用。"
+        },
+        "custom_info_for_login": {
+          "type": "string",
+          "description": "登录提示信息。"
+        },
+        "lockout_duration": {
+          "type": "integer",
+          "format": "int32",
+          "example": 15,
+          "description": "帐号锁定时长(分钟)。"
+        },
+        "login_failed_times": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3,
+          "description": "限定时间内登录失败次数。"
+        },
+        "period_with_login_failures": {
+          "type": "integer",
+          "format": "int32",
+          "example": 15,
+          "description": "限定时间长度(分钟)。"
+        },
+        "session_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "example": 16,
+          "description": "登录会话失效时间。"
+        },
+        "show_recent_login_info": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否显示最近一次的登录信息。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

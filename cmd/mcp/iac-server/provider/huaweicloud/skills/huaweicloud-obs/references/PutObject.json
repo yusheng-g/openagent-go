@@ -1,0 +1,349 @@
+{
+  "name": "PutObject",
+  "summary": "PUT上传对象",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "put": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "PutObject",
+        "summary": "PUT上传对象",
+        "description": "用户在OBS系统中创建了桶之后,可以采用PUT操作的方式将对象上传到桶中。上传对象操作是指在指定的桶内增加一个对象,执行该操作需要用户拥有桶的写权限。\n说明: 同一个桶中存储的对象名是唯一的。\n在桶未开启多版本的情况下,如果在指定的桶内已经有相同的对象键值的对象,用户上传的新对象会覆盖原来的对象;为了确保数据在传输过程中没有遭到破坏,用户可以在请求消息头中加入Content-MD5参数。在这种情况下,OBS收到上传的对象后,会对对象进行MD5校验,如果不一致则返回出错信息。\n用户还可以在上传对象时指定x-obs-acl参数,设置对象的权限控制策略。如果匿名用户在上传对象时未指定x-obs-acl参数,则该对象默认可以被所有OBS用户访问。\n该操作支持服务端加密功能。\n单次上传对象大小范围是[0, 5GB],如果需要上传超过5GB的大文件,需要通过多段操作来分段上传。\nOBS没有文件夹的概念。为了使用户更方便进行管理数据,OBS提供了一种方式模拟文件夹:通过在对象的名称中增加“/”,例如“test/123.jpg”。此时,“test”就被模拟成了一个文件夹,“123.jpg”则模拟成“test”文件夹下的文件名了,而实际上,对象名称(Key)仍然是“test/123.jpg”。此类命名方式的对象,在控制台上会以文件夹的形式展示。\n#### 与POST上传的区别 #### PUT上传中参数通过请求头域传递;POST上传则作为消息体中的表单域传递。\nPUT上传需在URL中指定对象名;POST上传提交的URL为桶域名,无需指定对象名。两者的请求行分别为:\nPUT /ObjectName HTTP/1.1\nPOST / HTTP/1.1\n关于POST上传的更多详细信息,请参考POST上传。\n#### 多版本 #### 如果桶的多版本状态是开启的,系统会自动为对象生成一个唯一的版本号,并且会在响应报头x-obs-version-id返回该版本号。如果桶的多版本状态是暂停的,则对象的版本号为null。关于桶的多版本状态,参见设置桶的多版本状态。\n",
+        "consumes": [
+          "application/octet-stream"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "PUT /object01 HTTP/1.1",
+        "x-request-examples-description-1": "上传对象\n",
+        "x-request-examples-1": "PUT /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:11:15 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:gYqplLq30dEX7GMi2qFWyjdFsyw=\nContent-Length: 10240\nExpect: 100-continue\n\n[1024 Byte data content]\n",
+        "x-request-examples-url-2": "PUT /object01 HTTP/1.1",
+        "x-request-examples-description-2": "上传对象的同时设置ACL\n",
+        "x-request-examples-2": "PUT /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:13:55 GMT\nx-obs-grant-read:id=52f24s3593as5730ea4f722483579ai7,id=a93fcas852f24s3596ea8366794f7224\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:gYqplLq30dEX7GMi2qFWyjdFsyw=\nContent-Length: 10240\nExpect: 100-continue\n\n[1024 Byte data content]\n",
+        "x-request-examples-url-3": "PUT /object01 HTTP/1.1",
+        "x-request-examples-description-3": "桶开启多版本时上传对象\n",
+        "x-request-examples-3": "PUT /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:17:12 GMT\nx-obs-storage-class: WARM\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:uFVJhp/dJqj/CJIVLrSZ0gpw3ng=\nContent-Length: 10240\nExpect: 100-continue\n\n[1024 Byte data content]\n",
+        "x-request-examples-url-4": "PUT /object01 HTTP/1.1",
+        "x-request-examples-description-4": "上传对象时携带MD5\n",
+        "x-request-examples-4": "PUT /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:17:50 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:uFVJhp/dJqj/CJIVLrSZ0gpw3ng=\nContent-Length: 10\nContent-MD5: 6Afx/PgtEy+bsBjKZzihnw==\nExpect: 100-continue\n\n1234567890\n",
+        "x-request-examples-url-5": "PUT /object01 HTTP/1.1",
+        "x-request-examples-description-5": "桶设置了Website配置,上传对象时设置下载对象时重定向\n",
+        "x-request-examples-5": "PUT /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:17:12 GMT\nx-obs-website-redirect-location: http://www.example.com/\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:uFVJhp/dJqj/CJIVLrSZ0gpw3ng=\nContent-Length: 10240\nExpect: 100-continue\n\n[1024 Byte data content]\n",
+        "x-request-examples-url-6": "PUT /object02?AccessKeyId=H4IPJX0TQTHTHEBQQCEC&Expires=1532688887&Signature=EQmDuOhaLUrzrzRNZxwS72CXeXM%3D HTTP/1.1",
+        "x-request-examples-description-6": "在URL中携带签名并上传对象\n",
+        "x-request-examples-6": "PUT /object02?AccessKeyId=H4IPJX0TQTHTHEBQQCEC&Expires=1532688887&Signature=EQmDuOhaLUrzrzRNZxwS72CXeXM%3D HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nContent-Length: 1024\n\n[1024 Byte data content]\n",
+        "x-request-examples-url-7": "PUT /object01 HTTP/1.1",
+        "x-request-examples-description-7": "上传指定存储类型的对象\n",
+        "x-request-examples-7": "PUT /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:15:07 GMT\nx-obs-storage-class: WARM\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:uFVJhp/dJqj/CJIVLrSZ0gpw3ng=\nContent-Length: 10240\nExpect: 100-continue\n\n[1024 Byte data content]\n",
+        "parameters": [
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "通过此请求创建的对象名称。\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "required": false,
+            "description": "按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串\n\n示例:n58IG6hfM7vqI4K0vnWpog==。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-acl",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,可以加上此消息头设置对象的权限控制策略,使用的策略为预定义的常用策\n\n示例:x-obs-acl: public-read。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-read",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,使用此头域授权租户下所有用户有读对象和获取对象元数据的权限\n\n示例:x-obs-grant-read: id=domainID。如果授权给多个租户,需要通过','分割。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-read-acp",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,使用此头域授权租户下所有用户有获取对象ACL的权限\n\n示例:x-obs-grant-read-acp: id=domainID。如果授权给多个租户,需要通过','分割。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-write-acp",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,使用此头域授权租户下所有用户有写对象ACL的权\n\n示例:x-obs-grant-write-acp: id=domainID。如果授权给多个租户,需要通过','分割。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-full-control",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,使用此头域授权domain下所有用户有读对象、获取对象元数据、获取对象ACL、写对象ACL的权限\n\n示例:x-obs-grant-full-control: id=domainID。如果授权给多个租户,需要通过','分割。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-storage-class",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,可以加上此头域设置对象的存储类型。如果未设置此头域,则以桶的默认存储类型作为对象的存储类型\n\n说明:存储类型有3种:STANDARD(标准存储)、WARM(低频访问存储)、COLD(归档存储)。因此这里可配置的值有:STANDARD、WARM和COLD,注意大小写敏感。\n\n示例:x-obs-storage-class: STANDARD\n",
+            "enum": [
+              "STANDARD",
+              "WARM",
+              "COLD"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "x-obs-meta-xxx",
+            "in": "header",
+            "required": false,
+            "description": "用户自定义元数据\n\n示例:x-obs-meta-test: test metadata\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-persistent-headers",
+            "in": "header",
+            "required": false,
+            "description": "创建对象时,可以在HTTP请求中加入“x-obs-persistent-headers”消息头,用来加入一个或多个自定义的响应头,当用户获取此对象或查询此对象元数据时,加入的自定义响应头将会在返回消息的头域中出现。\n格式:x-obs-persistent-headers: key1:base64_encode(value1),key2:base64_encode(value2)....\n\n说明:其中key1/key2等为自定义header,若含有非ASCII码或不可识别字符,可以采用URL编码或者Base64编码,服务端只会作为字符串处理,不会做解码。value1/value2等为对应自定义header的值,base64_encode指做base64编码,即将自定义header和对应值的base64编码作为一个key-value对用“:”连接,然后用“,”将所有的key-value对连接起来,放在x-obs-persistent-headers这个header中即可,服务端会对上传的value做解码处理。\n\n示例: x-obs-persistent-headers: key1:dmFsdWUx,key2:dmFsdWUy\n\n下载此对象或获取此对象元数据时:返回两个头域分别为“key1:value1”与“key2:value2”\n\n约束:\n\n1. 通过该方式指定的自定义响应头不能以“x-obs-”为前缀,比如可以指定“key1”,但是不能指定“x-obs-key1”\n\n2. 不能指定http标准头,例如host/content-md5/origin/range/Content-Disposition等\n\n3. 此头域和自定义元数据总长度不能超过8KB\n\n4. 如果传入相同key,将value以“,”拼接后放入同一个key中返回\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-website-redirect-location",
+            "in": "header",
+            "required": false,
+            "description": "当桶设置了Website配置,可以将获取这个对象的请求重定向到桶内另一个对象或一个外部的URL,OBS将这个值从头域中取出,保存在对象的元数据中。\n\n例如,重定向请求到桶内另一对象:\n\nx-obs-website-redirect-location:/anotherPage.html\n\n或重定向请求到一个外部URL:\n\nx-obs-website-redirect-location:http://www.example.com/\n\n默认值:无\n\n约束:必须以“/”、“http://”或“https://”开头,长度不超过2KB。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption",
+            "in": "header",
+            "required": false,
+            "description": "使用该头域表示服务端加密是SSE-KMS方式。\n\n示例:x-obs-server-side-encryption: kms\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-kms-key-id",
+            "in": "header",
+            "required": false,
+            "description": "SSE-KMS方式下使用该头域,该头域表示主密钥,如果用户没有提供该头域,那么默认的主密钥将会被使用。\n支持两种格式的描述方式:\n\n1. regionID:domainID(租户ID):key/key_id\n\n或者\n\n2.key_id\n\n其中regionID是使用密钥所属region的ID;domainID是使用密钥所属租户的租户ID;key_id是从数据加密服务创建的密钥ID。\n\n示例:\n\n1. x-obs-server-side-encryption-kms-key-id: cn-north-4:domainiddomainiddomainiddoma0001:key/4f1cd4de-ab64-4807-920a-47fc42e7f0d0 或者\n\n2. x-obs-server-side-encryption-kms-key-id: 4f1cd4de-ab64-4807-920a-47fc42e7f0d0\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-bucket-key-enabled",
+            "in": "header",
+            "required": false,
+            "description": "SSE-KMS桶密钥功能开关。\n示例:x-obs-server-side-encryption-bucket-key-enabled:true\n约束:当您设置本头域为“true”时,必须同时设置本接口的另一个头域x-obs-server-side-encryption-kms-key-id以指定密钥ID。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-data-encryption",
+            "in": "header",
+            "required": false,
+            "description": "该头域表示对象使用的数据加密算法。\n示例:x-obs-server-side-data-encryption:SM4\n约束:仅在SSE-KMS加密方式下使用该头域。\n     不携带该头域则使用AES256算法。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-algorithm",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的算法。\n\n示例:x-obs-server-side-encryption-customer-algorithm: AES256\n\n约束:需要和x-obs-server-side-encryption-customer-key, x-obs-server-side-encryption-customer-key-MD5一起使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-key",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的密钥。该密钥用于加密对象\n\n示例:x-obs-server-side-encryption-customer-key:K7QkYpBkM5+hca27fsNkUnNVaobncnLht/rCB2o/9Cw=\n\n约束:该头域由256-bit的密钥经过base64-encoded得到,需要和x-obs-server-side-encryption-customer-algorithm,x-obs-server-side-encryption-customer-key-MD5一起使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-key-MD5",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的密钥的MD5值。MD5值用于验证密钥传输过程中没有出错。\n\n示例:x-obs-server-side-encryption-customer-key-MD5:4XvB3tbNTN+tIEVa0/fGaQ==\n\n约束: 该头域由密钥的128-bit MD5值经过base64-encoded得到,需要和x-obs-server-side-encryption-customer-algorithm,x-obs-server-side-encryption-customer-key一起使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "success-action-redirect",
+            "in": "header",
+            "required": false,
+            "description": "此参数的值是一个URL,用于指定当此次请求操作成功响应后的重定向的地址。\n\n如果此参数值有效且操作成功,响应码为303,Location头域由此参数以及桶名、对象名、对象的ETag组成。\n如果此参数值无效,则OBS忽略此参数的作用,响应码为204,Location头域为对象地址。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-expires",
+            "in": "header",
+            "required": false,
+            "description": "表示对象的过期时间,单位是天。过期之后对象会被自动删除。(从对象最后修改时间开始计算)\n此字段对于每个对象仅支持上传时配置,不支持后期通过修改元数据接口修改。\n\n示例:x-obs-expires:3\n",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "x-obs-tagging",
+            "in": "header",
+            "required": false,
+            "description": "以键值对(Key-Value)的形式指定Object的标签信息,可同时设置多个标签。\n示例:x-obs-tagging:TagA=A&TagB&TagC\n约束:Key或Value包含特殊字符以及“=”、中文字符时,需要进行URL编码处理。\n     如果某项没有“=”,则看作Value为空字符串。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-object-lock-mode",
+            "in": "header",
+            "required": false,
+            "description": "要应用于此对象的WORM模式。\n示例:x-obs-object-lock-mode:COMPLIANCE\n约束:仅支持COMPLIANCE,即合规模式。\n     该参数需要和x-obs-object-lock-retain-until-date一同使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-object-lock-retain-until-date",
+            "in": "header",
+            "required": false,
+            "description": "此对象的WORM策略过期的截止时间。\n示例:x-obs-object-lock-retain-until-date:2015-07-01T04:11:15Z\n约束:格式要求为UTC时间,并符合ISO 8601标准。如:2015-07-01T04:11:15Z。\n     该参数需要和x-obs-object-lock-mode一同使用。\n",
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "PutObjectRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-version-id": {
+                "description": "对象的版本号。如果桶的多版本状态为开启,则会返回对象的版本号。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-kms-key-id": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域,该头域表示主密钥。\n\n格式为: regionID:domainID(租户ID):key/key_id\n\n其中regionID是使用密钥所属region的ID;domainID是使用密钥所属租户的租户ID;key_id是本次加密使用的密钥ID。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-algorithm": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示加密使用的算法。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-key-MD5": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示加密使用的密钥的MD5值。\n",
+                "type": "string"
+              },
+              "x-obs-storage-class": {
+                "description": "对象为非标准存储对象时,会返回此头域,可取值为:WARM或者COLD\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

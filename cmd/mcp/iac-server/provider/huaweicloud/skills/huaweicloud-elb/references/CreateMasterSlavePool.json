@@ -1,0 +1,934 @@
+{
+  "name": "CreateMasterSlavePool",
+  "summary": "创建主备后端服务器组",
+  "tags": "主备后端服务器组",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/master-slave-pools": {
+      "post": {
+        "tags": [
+          "主备后端服务器组"
+        ],
+        "summary": "创建主备后端服务器组",
+        "description": "创建主备后端服务器组。",
+        "operationId": "CreateMasterSlavePool",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateMasterSlavePoolRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateMasterSlavePoolRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "pool": {
+                  "name": "master-slave-pool",
+                  "id": "060dac1a-a139-4628-9b27-eee5930f7104",
+                  "description": "",
+                  "lb_algorithm": "ROUND_ROBIN",
+                  "protocol": "TCP",
+                  "loadbalancers": [
+                    {
+                      "id": "696b9e7b-910f-4fbd-8d17-f9cb49fd222c"
+                    }
+                  ],
+                  "type": "instance",
+                  "project_id": "0c1503d710984bad92306faea3654dfd",
+                  "session_persistence": null,
+                  "listeners": [
+                    {
+                      "id": "0b11747a-b139-492f-9692-2df0b1c87193"
+                    }
+                  ],
+                  "members": [
+                    {
+                      "admin_state_up": false,
+                      "address": "192.168.255.56",
+                      "protocol_port": 80,
+                      "id": "b9ceb848-9715-4500-9463-72033151ed9a",
+                      "operating_status": "OFFLINE",
+                      "status": [
+                        {
+                          "listener_id": "0b11747a-b139-492f-9692-2df0b1c87193",
+                          "operating_status": "OFFLINE"
+                        }
+                      ],
+                      "reason": null,
+                      "instance_id": "",
+                      "device_id": "",
+                      "device_owner": "",
+                      "member_type": "instance",
+                      "role": "master",
+                      "ip_version": "v4",
+                      "name": "",
+                      "subnet_cidr_id": "b7e1fb40-74fd-4235-a83c-e0a07a9f2f44"
+                    },
+                    {
+                      "admin_state_up": false,
+                      "address": "192.168.255.56",
+                      "protocol_port": 81,
+                      "id": "df025ce9-4a04-4249-9b9a-06e35c79436c",
+                      "operating_status": "UNKNOWN",
+                      "reason": null,
+                      "instance_id": "",
+                      "device_id": "",
+                      "device_owner": "",
+                      "member_type": "instance",
+                      "role": "slave",
+                      "ip_version": "v4",
+                      "status": [],
+                      "name": "",
+                      "subnet_cidr_id": "b7e1fb40-74fd-4235-a83c-e0a07a9f2f44"
+                    }
+                  ],
+                  "enterprise_project_id": "0",
+                  "ip_version": "dualstack",
+                  "created_at": "2024-09-11T04:08:02Z",
+                  "updated_at": "2024-09-11T04:08:02Z",
+                  "healthmonitor": {
+                    "monitor_port": null,
+                    "id": "bb84fcd5-a0bf-4516-b99c-d62274f1e28d",
+                    "domain_name": "",
+                    "name": "",
+                    "delay": 5,
+                    "max_retries": 10,
+                    "max_retries_down": 3,
+                    "admin_state_up": true,
+                    "timeout": 50,
+                    "type": "TCP",
+                    "expected_codes": "200",
+                    "url_path": "/",
+                    "http_method": "GET"
+                  },
+                  "vpc_id": "aa8a8149-1ae2-4f22-b035-30046308f1ac",
+                  "connection_drain": null,
+                  "quic_cid_hash_strategy": null,
+                  "public_border_group": "center",
+                  "any_port_enable": false
+                },
+                "request_id": "2d974978-0733-404d-a21a-b29204f4803a"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateMasterSlavePoolResponseBody"
+            }
+          }
+        },
+        "x-name": "创建主备后端服务器组",
+        "x-constraint": "1. 指定session_persistence参数时,只有当type是APP_COOKIE时,才可以设置cookie_name。\n2. 若指定listener_id参数,则对应的监听器必须未绑定后端服务器组。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/master-slave-pools",
+        "x-request-examples-1": {
+          "pool": {
+            "name": "My pool",
+            "lb_algorithm": "LEAST_CONNECTIONS",
+            "listener_id": "0b11747a-b139-492f-9692-2df0b1c87193",
+            "protocol": "TCP",
+            "type": "ip",
+            "members": [
+              {
+                "protocol_port": 89,
+                "name": "My member",
+                "address": "120.10.10.16",
+                "role": "master"
+              },
+              {
+                "protocol_port": 89,
+                "address": "110.4.10.16",
+                "role": "slave"
+              }
+            ],
+            "healthmonitor": {
+              "name": "My Healthmonitor",
+              "max_retries": 3,
+              "type": "HTTP",
+              "timeout": 30,
+              "delay": 1
+            }
+          }
+        },
+        "x-request-examples-text-1": {
+          "pool": {
+            "name": "My pool",
+            "lb_algorithm": "LEAST_CONNECTIONS",
+            "listener_id": "0b11747a-b139-492f-9692-2df0b1c87193",
+            "protocol": "TCP",
+            "type": "ip",
+            "members": [
+              {
+                "protocol_port": 89,
+                "name": "My member",
+                "address": "120.10.10.16",
+                "role": "master"
+              },
+              {
+                "protocol_port": 89,
+                "address": "110.4.10.16",
+                "role": "slave"
+              }
+            ],
+            "healthmonitor": {
+              "name": "My Healthmonitor",
+              "max_retries": 3,
+              "type": "HTTP",
+              "timeout": 30,
+              "delay": 1
+            }
+          }
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "CreatePoolSessionPersistenceOption": {
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "cookie_name": {
+          "type": "string",
+          "description": "**参数解释**:cookie名称。\n\n**约束限制**:\n- 只有当type为APP_COOKIE时才有效。其他情况下传该字段会报错。\n- 网关型LB,不支持该特性,请勿使用。\n\n**取值范围**:最大长度1024个字符。\n\n**默认取值**:不涉及"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:会话保持类型。\n\n**约束限制**:\n- 当pool的protocol为TCP、UDP,无论type取值如何,都会被忽略,会话保持只按SOURCE_IP生效;\n- 当pool的protocol为HTTP、HTTPS时。type可以为HTTP_COOKIE和APP_COOKIE,其他取值会话保持失效。\n- 若pool的protocol为QUIC,则必须开启session_persistence且type为SOURCE_IP。\n\n\n\n\n**取值范围**:\n- SOURCE_IP:基于源IP地址的会话保持,也就是根据客户端的源IP地址将流量持续转发到同一后端服务器(member)。\n- HTTP_COOKIE:通过在HTTP响应中插入一个特殊的Cookie,实现会话保持。负载均衡会在后续请求中识别该Cookie,并将请求转发到对应的后端服务器。\n- APP_COOKIE:基于应用层Cookie的会话保持。与HTTP_COOKIE不同的是,APP_COOKIE要求后端服务在响应中插入一个指定名称的Cookie,负载均衡器识别后,将后续请求转发到相同后端member。\n\n**默认取值**:不涉及",
+          "enum": [
+            "SOURCE_IP",
+            "HTTP_COOKIE",
+            "APP_COOKIE"
+          ]
+        },
+        "persistence_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:会话保持的时间。\n\n**约束限制**:当type为APP_COOKIE时不生效。\n\n**取值范围**:\n- 若pool的protocol为TCP、UDP则范围为[1,60](分钟),默认值1;\n- 若pool的protocol为HTTP和HTTPS则范围为[1,1440](分钟),默认值1440。\n\n**默认取值**:不涉及"
+        }
+      },
+      "type": "object"
+    },
+    "CreateMasterSlaveHealthMonitorOption": {
+      "properties": {
+        "delay": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查间隔。\n\n**约束限制**:不涉及\n\n**取值范围**:1-50,单位:秒。\n\n**默认取值**:不涉及"
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释**:发送健康检查请求的域名。\n\n**约束限制**:当type为HTTP/HTTPS时生效。\n\n**取值范围**:以数字或字母开头,只能包含数字、字母、’-’、’.’。\n\n**默认取值**:null,表示使用负载均衡器的vip作为http请求的目的地址。",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-.]*$"
+        },
+        "expected_codes": {
+          "type": "string",
+          "description": "**参数解释**:期望响应状态码。\n\n**约束限制**:该字段仅在HTTP/HTTPS/GRPC协议下有效,其他协议可以设置但不会生效。\n\n**取值范围**:\n- 单值:单个返回码,例如200。\n- 列表:多个特定返回码,例如200,202。\n- 区间:一个返回码区间,例如200-204\n\n**默认取值**:若健康检查type为GRPC,则默认值为0,其他为200。",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(([2-5]\\d{2})|(([2-5]\\d{2})-([2-5]\\d{2})))(,(([2-5]\\d{2})|(([2-5]\\d{2})-([2-5]\\d{2})))){0,4}$"
+        },
+        "http_method": {
+          "type": "string",
+          "description": "**参数解释**:HTTP请求方法。\n\n**约束限制**:当type为HTTP/HTTPS时生效。\n\n**取值范围**:GET、HEAD、POST\n\n**默认取值**:GET",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "max_retries": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续成功多少次后,将后端服务器的健康检查状态由OFFLINE判定为ONLINE。\n\n**约束限制**:不涉及\n\n**取值范围**:1-10\n\n**默认取值**:不涉及",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max_retries_down": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续失败多少次后,将后端服务器的健康检查状态由ONLINE判定为OFFLINE。\n\n**约束限制**:不涉及\n\n**取值范围**:1-10\n\n**默认取值**:3",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "monitor_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查端口号。\n\n**约束限制**:不涉及\n\n**取值范围**:1-65535\n\n**默认取值**:null,表示使用后端服务器端口号。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:健康检查名称。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:一次健康检查请求的超时时间。建议该值小于delay的值。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:健康检查请求协议。\n\n**约束限制**:\n- 若pool的protocol为QUIC,则type只能是UDP_CONNECT。\n- 若pool的protocol为UDP,则type只能UDP_CONNECT。\n- 若pool的protocol为TCP,则type可以是TCP、HTTP、HTTPS。\n- 若pool的protocol为HTTP,则type可以是TCP、HTTP、HTTPS。\n- 若pool的protocol为HTTPS,则type可以是TCP、HTTP、HTTPS。\n\n\n\n**取值范围**:TCP、UDP_CONNECT、HTTP、HTTPS。UDP_CONNECT即UDP协议。\n\n**默认取值**:不涉及"
+        },
+        "url_path": {
+          "type": "string",
+          "description": "**参数解释**:健康检查请求的请求路径,以\"/\"开头。\n\n**约束限制**:当type为HTTP/HTTPS时生效。\n\n**取值范围**:支持使用字母、数字和短划线(-)、正斜线(/)、半角句号(.)、百分号(%)、半角问号(?)、井号(#)和and(&)以及扩展字符集_;~!()*[]@$^:',+\n\n**默认取值**:\"/\"",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "description": "**参数解释**:创建健康检查请求参数。\n\n**约束限制**:不涉及",
+      "required": [
+        "delay",
+        "max_retries",
+        "timeout",
+        "type"
+      ],
+      "type": "object"
+    },
+    "MemberHealthCheckFailedReason": {
+      "required": [
+        "reason_code",
+        "expected_response",
+        "healthcheck_response"
+      ],
+      "properties": {
+        "reason_code": {
+          "type": "string",
+          "description": "**参数解释**:健康检查异常原因码。\n\n**取值范围**:\n- CONNECT_TIMEOUT: 负载均衡健康检查时向后端服务器建立连接超时。\n- CONNECT_REFUSED: 负载均衡健康检查时向后端服务器拒绝连接。\n- CONNECT_FAILED: 负载均衡健康检查时向后端服务器建立连接失败。\n- CONNECT_INTERRUPT: 负载均衡健康检查与后端服务器连接中断。\n- SSL_HANDSHAKE_ERROR: 负载均衡健康检查时与后端服务器SSL握手失败。\n- RECV_RESPONSE_FAILED: 负载均衡健康检查时从后端服务器接收响应失败。\n- RECV_RESPONSE_TIMEOUT: 负载均衡健康检查时从后端服务器接收响应超时。\n- SEND_REQUEST_FAILED: 负载均衡健康检查时向后端服务器发送请求失败。\n- SEND_REQUEST_TIMEOUT: 负载均衡健康检查时向后端服务器发送请求超时。\n- RESPONSE_FORMAT_ERROR: 负载均衡健康检查时从后端服务器接收响应格式错误。\n- RESPONSE_MISMATCH: 负载均衡健康检查时从后端服务器接收的响应码与预期配置返回码不一致。"
+        },
+        "expected_response": {
+          "type": "string",
+          "description": "**参数解释**:健康检查预期响应状态码。支持HTTP,HTTPS,GRPC健康检查。只有reason_code为RESPONSE_MISMATCH时,支持非null取值。\n\n**取值范围**:\n- 单值:单个返回码。当type为GRPC时,取值范围为0-99;当type为其他协议时,取值范围为200-599。例如:\"0\"或\"200\"。\n- 列表:多个特定返回码,逗号分隔,最多支持5个返回码。例如:\"200,202\"或\"0,1\"。\n- 区间:一个返回码区间,区间内\"-\"分隔,区间之间逗号分隔,最多支持5个区间。例如\"200-204,300-399\"或\"0-5,10-12,20-30\"。"
+        },
+        "healthcheck_response": {
+          "type": "string",
+          "description": "**参数解释**:健康检查探测实际响应状态码。支持HTTP,HTTPS,GRPC健康检查。只有reason_code为RESPONSE_MISMATCH时,支持非null取值。\n\n**取值范围**:\n- 单个返回码。当type为GRPC时,取值范围为0-99;当type为其他协议时,取值范围为200-599。例如:\"0\"或\"200\"。"
+        }
+      }
+    },
+    "CreateMasterSlavePoolRequestBody": {
+      "properties": {
+        "pool": {
+          "description": "**参数解释**:创建pool的请求体。\n\n**约束限制**:网关型LB不支持主备服务器组。",
+          "$ref": "#/definitions/CreateMasterSlavePoolOption"
+        }
+      },
+      "description": "This is a auto create Body Object",
+      "required": [
+        "pool"
+      ]
+    },
+    "QuicCidHashStrategy": {
+      "type": "object",
+      "required": [
+        "len",
+        "offset"
+      ],
+      "properties": {
+        "len": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:表示hash的时候取CID的长度。\n\n**约束限制**:仅当负载均衡算法为QUIC_CID的时候才生效。\n\n**取值范围**:1-20\n\n**默认取值**:3"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:表示hash的时候取CID的偏移量。\n\n**约束限制**:仅当负载均衡算法为QUIC_CID的时候才生效。\n\n**取值范围**:0-19\n\n**默认取值**:1"
+        }
+      }
+    },
+    "MasterSlaveMember": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器ID。\n\n**取值范围**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器名称。\n\n**取值范围**:不涉及"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:后端服务器的管理状态。\n虽然创建、更新请求支持该字段,但实际取值决定于后端服务器对应的弹性云服务器是否存在。若存在,该值为true,否则,该值为false。\n\n**取值范围**:true、false。"
+        },
+        "subnet_cidr_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器所在子网的IPv4子网ID或IPv6子网ID。\n若所属的LB的IP类型后端转发特性已开启,则该字段可以不传,表示添加IP类型的后端服务器。此时address必须为**私网IPv4**地址,所在的pool的协议必须为UDP/TCP/TLS/HTTP/HTTPS/QUIC/GRPC。\n\n**取值范围**:不涉及"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器业务端口。\n\n>在开启端口透传的pool下创建member传该字段不生效,可不传该字段。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "address": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器对应的IP地址。\n\n**取值范围**:不涉及"
+        },
+        "ip_version": {
+          "type": "string",
+          "description": "**参数解释**:当前后端服务器的IP地址版本,由后端系统自动根据传入的address字段确定。\n\n**取值范围**:v4、v6"
+        },
+        "device_owner": {
+          "type": "string",
+          "description": "**参数解释**:设备所有者。\n\n**取值范围**:不涉及\n- 空,表示后端服务器未关联到ECS。\n- compute:{az_name},表示关联到ECS,其中{az_name}表示ECS所在可用区名。\n- compute:subeni,表示辅助弹性网卡。\n\n不支持该字段,请勿使用。"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "**参数解释**:关联的ECS ID,为空表示后端服务器未关联到ECS。\n\n**取值范围**:不涉及\n\n不支持该字段,请勿使用。"
+        },
+        "operating_status": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的健康状态。\n\n**取值范围**:不涉及\n- ONLINE:后端服务器正常。\n- NO_MONITOR:后端服务器所在的服务器组没有健康检查器。\n- OFFLINE:后端服务器关联的ECS服务器不存在或已关机。\n- INITIAL:后端云服务器健康检查打开时的初始状态。\n- UNKNOWN: 后端云服务器组没有绑定监听器或者后端云服务器没有关联ECS等原因,后端云服务器健康检查结果未知。"
+        },
+        "reason": {
+          "description": "**参数解释**:健康检查异常的原因。",
+          "$ref": "#/definitions/MemberHealthCheckFailedReason"
+        },
+        "member_type": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的类型。\n\n**取值范围**:\n- ip:IP类型的member。\n- instance:关联到ECS的member。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:member关联的实例ID。空表示member关联的实例为非真实设备 (如:IP类型的后端场景)。\n\n**取值范围**:不涉及"
+        },
+        "role": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的主备状态。\n\n**取值范围**:不涉及"
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListenerMemberInfo"
+          },
+          "description": "**参数解释**:后端服务器监听器粒度的的健康状态。\n若绑定的监听器在该字段中,则以该字段中监听器对应的operating_status为准。\n若绑定的监听器不在该字段中,则以外层的operating_status为准。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:后端服务器信息。",
+      "required": [
+        "id",
+        "name",
+        "admin_state_up",
+        "subnet_cidr_id",
+        "protocol_port",
+        "address",
+        "ip_version",
+        "device_owner",
+        "device_id",
+        "operating_status",
+        "member_type",
+        "instance_id",
+        "role",
+        "status"
+      ]
+    },
+    "CreateMasterSlavePoolOption": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的描述信息。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "lb_algorithm": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的负载均衡算法。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- ROUND_ROBIN:加权轮询算法。\n- LEAST_CONNECTIONS:加权最少连接算法。\n- SOURCE_IP:源IP算法。\n- QUIC_CID:连接ID算法。\n\n**默认取值**:不涉及"
+        },
+        "loadbalancer_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组关联的LB的ID。\n\n**约束限制**:listener_id,loadbalancer_id,type至少指定一个。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组关联的监听器的ID。\n\n**约束限制**:listener_id,loadbalancer_id,type至少指定一个。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的名称。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及\n\n> 该字段实际无效,最终使用url中的project_id。",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "[0-9a-fA-F]{32}"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的后端协议。\n\n**约束限制**:\n- listener的protocol为UDP时,pool的protocol必须为UDP或QUIC。\n- listener的protocol为TCP时,pool的protocol必须为TCP。\n- listener的protocol为TLS时,pool的protocol必须为TLS或TCP(且只能使用ip_version为v4的TCP pool)。\n- 其他协议监听器不支持主备后端服务器组。\n\n**取值范围**:TCP、UDP、QUIC、TLS。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "session_persistence": {
+          "$ref": "#/definitions/CreatePoolSessionPersistenceOption",
+          "description": "**参数解释**:会话持久性对象。\n\n**约束限制**:慢启动与会话保持不能同时开启。若都开启则会导致会话保持失效。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组关联的虚拟私有云的ID。\n\n**约束限制**:\n- 只能挂载到该虚拟私有云下。\n- 只能添加该虚拟私有云下的后端服务器或跨VPC的后端服务器。\n- type必须指定为instance。\n- pool的protocol为IP时,必须指定vpc_id,且与LB的vpc_id相同。\n- 若未指定vpc_id,则后续添加后端服务器时,vpc_id由后端服务器所在的虚拟私有云确定。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "default": "",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的类型。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- instance:允许任意类型的后端,type指定为该类型时,vpc_id是必选字段。\n- ip:只能添加IP类型后端,type指定为该类型时,vpc_id不允许指定。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "ip_version": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组支持的IP版本。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- 共享型:固定为v4;\n- 独享型:取值dualstack、v4。当协议为TCP/UDP时,ip_version为dualstack,表示双栈。当协议为HTTP时,ip_version为v4。\n\n\n\n\n**默认取值**:不涉及",
+          "default": "",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateMasterSlaveMemberOption"
+          },
+          "description": "**参数解释**:主备服务器组的后端服务器。\n\n**约束限制**:只能添加2个后端服务器,必须有一个为主,一个为备。"
+        },
+        "healthmonitor": {
+          "description": "**参数解释**:主备服务器组的健康检查。默认开启健康检查,无法关闭。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/CreateMasterSlaveHealthMonitorOption"
+        },
+        "any_port_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:后端是否开启全端口转发。开启后,后端服务器端口与前端监听器端口保持一致。关闭后,请求会转发给后端服务器protocol_port字段指定端口。\n\n**约束限制**:仅QUIC,TCP,UDP的pool支持。\n\n**取值范围**:false 不开启,true 开启。\n\n**默认取值**:不涉及",
+          "x-open-region-cloud": "hc,hk,fcs"
+        },
+        "connection_drain": {
+          "$ref": "#/definitions/ConnectionDrain",
+          "description": "**参数解释**:后端服务器的延迟注销的功能配置。\n以下场景会触发:\n- 后端服务器从后端服务器组中移除。\n- 后端服务器健康检查状态异常。\n- 后端服务器权重修改为0。\n\n**约束限制**:只针对TCP、UDP、QUIC协议类型的后端服务器组和TCP、UDP协议类的监听器。",
+          "x-open-region-cloud": "hc,hk,ocb"
+        },
+        "quic_cid_hash_strategy": {
+          "description": "**参数解释**:后端服务器组基于部分DST CID的多径分发策略配置。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/QuicCidHashStrategy"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。创建时不传则资源属于default企业项目,返回enterprise_project_id=\"0\"。\n\n**约束限制**:不能传入空字符串\"\"、\"0\"或不存在的企业项目ID。\n\n**取值范围**:不涉及\n\n**默认取值**:\"0\""
+        },
+        "public_border_group": {
+          "type": "string",
+          "description": "**参数解释**:公网边界组。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组\n\n**默认取值**:不涉及"
+        }
+      },
+      "description": "**参数解释**:创建主备服务器组请求参数。\n\n**约束限制**:不涉及",
+      "required": [
+        "lb_algorithm",
+        "protocol",
+        "type",
+        "members",
+        "healthmonitor"
+      ],
+      "type": "object"
+    },
+    "CreateMasterSlaveMemberOption": {
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器对应的IP地址。\n\n**约束限制**:\n- 若subnet_cidr_id为空,表示添加IP类型后端,此时address必须为**私网IPv4**地址。\n- 若subnet_cidr_id不为空,表示是一个关联到ECS的后端服务器。该IP地址必须在subnet_cidr_id对应的子网网段中,可以是**私网IPv4**或IPv6。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:后端服务器的管理状态。\n\n**约束限制**:虽然创建、更新请求支持该字段,但实际取值决定于后端服务器对应的弹性云服务器是否存在。若存在,该值为true,否则,该值为false。\n\n**取值范围**:true 弹性云服务器存在,false 弹性云服务器不存在。\n\n**默认取值**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器名称。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器业务端口\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n>在开启端口透传的pool下创建member传该字段不生效,可不传该字段。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "subnet_cidr_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器所在的子网ID,可以是子网的IPv4子网ID或IPv6子网ID。\n\n**约束限制**:\n- 该子网和关联的负载均衡器的子网必须在同一VPC下。\n- 若所属LB的IP类型后端转发特性已开启,则该字段可以不传,表示添加跨VPC的后端服务器。此时address必须为**私网IPv4**地址,所在的pool的协议必须为UDP/TCP/TLS/HTTP/HTTPS/QUIC/GRPC。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "role": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的主备状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- master:主后端服务器。\n- slave:备后端服务器。\n\n**默认取值**:不涉及",
+          "enum": [
+            "master",
+            "slave"
+          ],
+          "minLength": 0,
+          "maxLength": 36
+        }
+      },
+      "description": "**参数解释**:创建主备后端服务器请求参数。\n\n**约束限制**:不涉及",
+      "required": [
+        "address",
+        "role"
+      ],
+      "type": "object"
+    },
+    "MasterSlavePool": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的描述信息。\n\n**取值范围**:不涉及"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的ID。\n\n**取值范围**:不涉及"
+        },
+        "lb_algorithm": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的负载均衡算法。\n\n**取值范围**:\n- ROUND_ROBIN:加权轮询算法。\n- LEAST_CONNECTIONS:加权最少连接算法。\n- SOURCE_IP:源IP算法。\n- QUIC_CID:连接ID算法。"
+        },
+        "listeners": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组关联的监听器ID列表。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          }
+        },
+        "loadbalancers": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组关联的负载均衡器ID列表。",
+          "items": {
+            "$ref": "#/definitions/LoadBalancerRef"
+          }
+        },
+        "members": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器组中的后端服务器列表。",
+          "items": {
+            "$ref": "#/definitions/MasterSlaveMember"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的名称。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的后端协议。\n\n**取值范围**:不涉及TCP、UDP、QUIC、TLS。"
+        },
+        "session_persistence": {
+          "description": "**参数解释**:会话持久性对象。",
+          "$ref": "#/definitions/SessionPersistence"
+        },
+        "ip_version": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组支持的IP版本。\n\n**取值范围**:\n- 共享型:固定为v4;\n- 独享型:取值dualstack、v4。当协议为TCP/UDP时,ip_version为dualstack,表示双栈。当协议为HTTP时,ip_version为v4。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n**取值范围**:不涉及\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n**取值范围**:不涉及\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组关联的虚拟私有云的ID。\n\n**取值范围**:不涉及"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组的类型。\n\n**取值范围**:不涉及\n- instance:允许任意类型的后端,type指定为该类型时,vpc_id是必选字段。\n- ip:只能添加IP类型后端,type指定为该类型时,vpc_id不允许指定。\n- 空字符串(\"\"):允许任意类型的后端"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "healthmonitor": {
+          "$ref": "#/definitions/MasterSlaveHealthMonitor",
+          "description": "**参数解释**:后端服务器组的健康检查。"
+        },
+        "any_port_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:后端是否开启全端口转发。开启后,后端服务器端口与前端监听器端口保持一致。关闭后,请求会转发给后端服务器protocol_port字段指定端口。取值:false 不开启,true 开启。\n\n**取值范围**:不涉及",
+          "x-open-region-cloud": "hc,hk,fcs"
+        },
+        "connection_drain": {
+          "$ref": "#/definitions/ConnectionDrain",
+          "description": "**参数解释**:后端服务器的延迟注销的功能配置。\n以下场景会触发:\n- 后端服务器从后端服务器组中移除。\n- 后端服务器健康检查状态异常。\n- 后端服务器权重修改为0。\n\n**取值范围**:不涉及",
+          "x-open-region-cloud": "hc,hk,ocb"
+        },
+        "quic_cid_hash_strategy": {
+          "description": "**参数解释**:主备后端服务器组基于部分DST CID的多径分发策略配置。",
+          "$ref": "#/definitions/QuicCidHashStrategy"
+        },
+        "public_border_group": {
+          "type": "string",
+          "description": "**参数解释**:公网边界组。\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组"
+        }
+      },
+      "required": [
+        "description",
+        "id",
+        "lb_algorithm",
+        "listeners",
+        "loadbalancers",
+        "members",
+        "name",
+        "project_id",
+        "protocol",
+        "session_persistence",
+        "ip_version",
+        "created_at",
+        "updated_at",
+        "vpc_id",
+        "type",
+        "enterprise_project_id",
+        "healthmonitor"
+      ],
+      "type": "object"
+    },
+    "ConnectionDrain": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:延迟注销功能开关。\n\n**约束限制**:不涉及\n\n**取值范围**:true 开启,false 关闭。\n\n**默认取值**:不涉及"
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:延迟注销时间。\n\n**约束限制**:不涉及\n\n**取值范围**:10~4000,单位:秒。\n\n**默认取值**:不涉及"
+        }
+      }
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    },
+    "LoadBalancerRef": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器ID。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "SessionPersistence": {
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "cookie_name": {
+          "type": "string",
+          "description": "**参数解释**:cookie名称。\n\n**取值范围**:最大长度1024个字符。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:会话保持类型。\n\n**取值范围**:\n- SOURCE_IP:基于源IP地址的会话保持,也就是根据客户端的源IP地址将流量持续转发到同一后端服务器(member)。\n- HTTP_COOKIE:通过在HTTP响应中插入一个特殊的Cookie,实现会话保持。负载均衡会在后续请求中识别该Cookie,并将请求转发到对应的后端服务器。\n- APP_COOKIE:基于应用层Cookie的会话保持。与HTTP_COOKIE不同的是,APP_COOKIE要求后端服务在响应中插入一个指定名称的Cookie,负载均衡器识别后,将后续请求转发到相同后端member。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "persistence_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:会话保持的时间。当type为APP_COOKIE时不生效。\n\n**取值范围**:\n- 若pool的protocol为TCP、UDP和QUIC则范围为[1,60](分钟),默认值1。\n- 若pool的protocol为HTTP和HTTPS则范围为[1,1440](分钟),默认值1440。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "type": "object"
+    },
+    "MasterSlaveHealthMonitor": {
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:健康检查的管理状态。\n\n**取值范围**:\n- true:表示开启健康检查。\n- false表示关闭健康检查。"
+        },
+        "delay": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查间隔。\n\n**取值范围**:1-50,单位:秒。",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释**:发送健康检查请求的域名。\n\n**取值范围**:以数字或字母开头,只能包含数字、字母、’-’、’.’。"
+        },
+        "expected_codes": {
+          "type": "string",
+          "description": "**参数解释**:期望响应状态码。\n\n**取值范围**:\n- 单值:单个返回码,例如200。\n- 列表:多个特定返回码,例如200,202。\n- 区间:一个返回码区间,例如200-204。"
+        },
+        "http_method": {
+          "type": "string",
+          "description": "**约束限制**:HTTP请求方法。\n\n**取值范围**:GET、HEAD、POST"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:健康检查ID\n\n**取值范围**:不涉及"
+        },
+        "max_retries": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续成功多少次后,将后端服务器的健康检查状态由OFFLINE判定为ONLINE。\n\n**取值范围**:1-10",
+          "minimum": 1,
+          "maximum": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "max_retries_down": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续失败多少次后,将后端服务器的健康检查状态由ONLINE判定为OFFLINE。\n\n**取值范围**:1-10",
+          "minimum": 1,
+          "maximum": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "monitor_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查端口号。\n\n**取值范围**:1-65535",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:健康检查名称。\n\n**取值范围**:不涉及"
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:一次健康检查请求的超时时间。\n\n**取值范围**:不涉及",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:健康检查请求协议。\n\n**取值范围**:TCP、UDP_CONNECT、HTTP、HTTPS。UDP_CONNECT即UDP协议。"
+        },
+        "url_path": {
+          "type": "string",
+          "description": "**参数解释**:健康检查请求的请求路径。以\"/\"开头,默认为\"/\"。\n\n**取值范围**:支持使用字母、数字和短划线(-)、正斜线(/)、半角句号(.)、百分号(%)、半角问号(?)、井号(#)和and(&)以及扩展字符集_;~!()*[]@$^:',+"
+        }
+      },
+      "description": "健康检查对象",
+      "required": [
+        "admin_state_up",
+        "delay",
+        "domain_name",
+        "expected_codes",
+        "http_method",
+        "id",
+        "max_retries",
+        "max_retries_down",
+        "monitor_port",
+        "name",
+        "timeout",
+        "type",
+        "url_path"
+      ],
+      "type": "object"
+    },
+    "ListenerMemberInfo": {
+      "required": [
+        "listener_id",
+        "operating_status"
+      ],
+      "properties": {
+        "listener_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器关联的监听器ID。\n\n**取值范围**:不涉及"
+        },
+        "operating_status": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的健康状态。\n\n**取值范围**:\n- ONLINE:后端服务器正常。\n- NO_MONITOR:后端服务器所在的服务器组没有健康检查器。\n- OFFLINE:后端服务器关联的ECS服务器不存在或已关机或服务异常。\n- INITIAL:后端云服务器健康检查打开时的初始状态。\n- UNKNOWN: 后端云服务器组没有绑定监听器或者后端云服务器没有关联ECS等原因,后端云服务器健康检查结果未知。"
+        }
+      }
+    },
+    "CreateMasterSlavePoolResponseBody": {
+      "required": [
+        "pool",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "pool": {
+          "description": "**参数解释**:后端服务器组对象。",
+          "$ref": "#/definitions/MasterSlavePool"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

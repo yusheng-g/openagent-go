@@ -1,0 +1,171 @@
+{
+  "name": "ShowApiInfo",
+  "summary": "查询指定版本号的API版本信息",
+  "tags": "版本管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/{version}": {
+      "get": {
+        "tags": [
+          "版本管理"
+        ],
+        "x-request-examples-description-1": "查询指定版本号的云解析服务API版本信息。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2",
+        "operationId": "ShowApiInfo",
+        "summary": "查询指定版本号的API版本信息",
+        "description": "查询指定版本号的云解析服务API版本信息。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "description": "**参数解释:**\n待查询版本号。\n**约束限制:**\n不涉及。\n**取值范围:**\nv2。\n**默认取值:**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询指定版本号的API版本信息响应。",
+            "schema": {
+              "$ref": "#/definitions/VersionsInfoResp"
+            },
+            "examples": {
+              "application/json": {
+                "version": {
+                  "status": "CURRENT",
+                  "id": "v2",
+                  "links": [
+                    {
+                      "href": "https://Endpoint/v2/",
+                      "rel": "self"
+                    }
+                  ],
+                  "min_version": "",
+                  "updated": "2018-09-18T00:00:00Z",
+                  "version": ""
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 1
+      }
+    }
+  },
+  "definitions": {
+    "LinksItem": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "**参数解释:**\n对应快捷链接。\n**取值范围:**\n不涉及。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "**参数解释:**\n快捷链接标记名称。\n**取值范围:**\n不涉及。"
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    },
+    "VersionItem": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n版本号。\n**取值范围:**\nv2。",
+          "example": "v2"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n版本状态。\n**取值范围:**\n- CURRENT:表示该版本为主推版本。\n- SUPPORTED:表示为老版本,但是现在还继续支持。\n- DEPRECATED:表示为废弃版本,存在后续删除的可能。"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LinksItem"
+          },
+          "description": "**参数解释:**\nAPI的URL地址。\n**取值范围:**\n不涉及。"
+        },
+        "updated": {
+          "type": "string",
+          "description": "**参数解释:**\n版本发布时间。\n**取值范围:**\n不涉及。"
+        },
+        "version": {
+          "type": "string",
+          "description": "**参数解释:**\n支持的最大微版本号。\n**取值范围:**\n若该版本API不支持微版本,则为空。"
+        },
+        "min_version": {
+          "type": "string",
+          "description": "**参数解释:**\n支持的最小微版本号。\n**取值范围:**\n若该版本API不支持微版本,则为空。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "VersionsInfoResp": {
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "$ref": "#/definitions/VersionItem",
+          "description": "**参数解释:**\n待查询版本号。\n**取值范围:**\nv2。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

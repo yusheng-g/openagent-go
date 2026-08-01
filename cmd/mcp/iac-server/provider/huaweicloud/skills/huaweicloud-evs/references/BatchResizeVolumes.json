@@ -1,0 +1,187 @@
+{
+  "name": "BatchResizeVolumes",
+  "summary": "批量扩容云硬盘",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/{project_id}/volumes/batch-extend": {
+      "post": {
+        "x-request-examples-url-1": "/v5/{project_id}/volumes/batch-extend",
+        "x-request-examples-text-1": "{\n    \"volumes\" : [{\n        \"id\": \"111\",\n        \"new_size\": 100\n    }, {\n        \"id\": \"222\",\n        \"new_size\": 200\n    }],\n    \"bss_param\": {\n        \"is_auto_pay\": false\n    }\n}",
+        "x-request-examples-1": "{\n    \"volumes\" : [{\n        \"id\": \"111\",\n        \"new_size\": 100\n    }, {\n        \"id\": \"222\",\n        \"new_size\": 200\n    }],\n    \"bss_param\": {\n        \"is_auto_pay\": true\n    }\n}",
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "批量扩容云硬盘",
+        "description": "对按需或者包周期云硬盘进行批量扩容。\n在批量扩容存在包周期云硬盘的场景下:\n- 如果您需要查看订单可用的优惠券,请参考\"[查询订单可用优惠券](https://support.huaweicloud.com/api-oce/zh-cn_topic_0092953630.html)\"。\n- 如果您需要支付订单,请参考\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/api_order_00030.html)\"。\n- 如果您需要退订该包周期资源,请参考“[退订包周期资源](https://support.huaweicloud.com/api-oce/zh-cn_topic_0082522030.html)”。",
+        "operationId": "BatchResizeVolumes",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "BatchResizeVolumeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchResizeVolumeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b",
+                "order_id": "CS2301051020S361R"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ResizeVolumeResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "x-name": "批量扩容云硬盘",
+        "x-constraint": "* 扩容状态为available的云硬盘时,没有约束限制。\n* 扩容状态为in-use的云硬盘时,有以下约束:\n    * 不支持共享云硬盘,即multiattach参数值必须为false。\n    * 云硬盘所挂载的云服务器状态必须为ACTIVE、PAUSED、SUSPENDED、SHUTOFF才支持扩容。",
+        "x-version": "v5",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-publishpath": "evs_04_2004",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2023/1/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "BatchResizeVolumeRequestBody": {
+      "type": "object",
+      "required": [
+        "volumes"
+      ],
+      "properties": {
+        "volumes": {
+          "type": "array",
+          "description": "The list of disks to be expanded.",
+          "items": {
+            "description": "The information about a single disk returned.",
+            "$ref": "#/definitions/VolumesForBatchResizeVolume"
+          }
+        },
+        "bss_param": {
+          "description": "The extended parameter of yearly/monthly billing.",
+          "$ref": "#/definitions/PrepaidParamForBatchResizeVolume"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "PrepaidParamForBatchResizeVolume": {
+      "type": "object",
+      "properties": {
+        "is_auto_pay": {
+          "type": "string",
+          "description": "Whether to pay immediately. This parameter is valid only when the disk is billed on a yearly/monthly basis. The default value is **false**.\nValues:\n- **true**: An order is immediately paid from the account balance.\n- **false**: An order is not paid immediately after being created.",
+          "default": "false",
+          "enum": [
+            "false",
+            "true"
+          ]
+        }
+      },
+      "description": "The billing policy parameter for the yearly/monthly disk capacity expansion."
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "VolumesForBatchResizeVolume": {
+      "type": "object",
+      "required": [
+        "id",
+        "new_size"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The disk ID."
+        },
+        "new_size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The new disk size, in GiB. This parameter value must be greater than the original disk size and less than the maximum size allowed for a disk.\nThe maximum disk size:\n- Data disk: 32,768 GiB\n- System disk: 1,024 GiB"
+        }
+      }
+    },
+    "ResizeVolumeResponseBody": {
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID,云硬盘为按需计费时返回该参数。\n> 说明:\n> \n> 如果需要查询job的状态,请参考:\"[查询job的状态](https://support.huaweicloud.com/api-evs/evs_04_0054.html)\"。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID,云硬盘为包周期计费时返回该参数。\n> 说明:\n> \n> - 如果您需要支付订单,请参考:\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/zh-cn_topic_0075746561.html)\"。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

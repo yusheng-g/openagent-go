@@ -1,0 +1,419 @@
+{
+  "name": "ListL7Rules",
+  "summary": "查询转发规则列表",
+  "tags": "转发规则",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/l7policies/{l7policy_id}/rules": {
+      "get": {
+        "x-request-examples-description-1": "查询转发规则列表",
+        "tags": [
+          "转发规则"
+        ],
+        "summary": "查询转发规则列表",
+        "description": "查询转发规则列表。",
+        "operationId": "ListL7Rules",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "l7policy_id",
+            "in": "path",
+            "description": "**参数解释**:策略ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 5
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 6
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:转发规则ID。\n支持多值查询,查询条件格式:*id=xxx&id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "compare_type",
+            "in": "query",
+            "description": "**参数解释**:转发匹配方式。\n支持多值查询,查询条件格式:*compare_type=xxx&compare_type=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- EQUAL_TO 表示精确匹配。\n- REGEX 表示正则匹配。\n- STARTS_WITH 表示前缀匹配。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "provisioning_status",
+            "in": "query",
+            "description": "**参数解释**:转发规则的配置状态。\n支持多值查询,查询条件格式:*provisioning_status=xxx&provisioning_status=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- ACTIVE:已生效。\n- PENDING_CREATE:创建中。\n- ERROR:当前配置有误。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 9
+          },
+          {
+            "name": "invert",
+            "in": "query",
+            "description": "**参数解释**:是否反向匹配。\n\n**约束限制**:不涉及\n\n**取值范围**:false\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 10
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "**参数解释**:转发规则的管理状态。\n不支持该字段,请勿使用。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 11
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "description": "**参数解释**:匹配内容的值。\n支持多值查询,查询条件格式:*value=xxx&value=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 12
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "**参数解释**:匹配内容的键值,用于标识规则。\n支持多值查询,查询条件格式:*key=xxx&key=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 13
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "**参数解释**:匹配类别。\n支持多值查询,查询条件格式:*type=xxx&type=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- HOST_NAME:匹配域名。\n- PATH:匹配请求路径。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 14
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:资源所属的企业项目ID。\n支持多值查询,查询条件格式:*enterprise_project_id=xxx&enterprise_project_id=xxx*。\n\n**约束限制**:\n- 如果enterprise_project_id不传值,默认查询所有企业项目下的资源,鉴权按照细粒度权限鉴权,必须在用户组下分配elb:l7rules:list权限。\n- 如果enterprise_project_id传值,鉴权按照企业项目权限鉴权,分为传入具体eps_id和all_granted_eps两种场景,前者查询指定eps_id的eps下的资源,后者查询的是所有有list权限的eps下的资源。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 15
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "rules": [
+                  {
+                    "compare_type": "STARTS_WITH",
+                    "provisioning_status": "ACTIVE",
+                    "project_id": "99a3fff0d03c428eac3678da6a7d0f24",
+                    "invert": false,
+                    "admin_state_up": true,
+                    "value": "/ccc.html",
+                    "key": null,
+                    "type": "PATH",
+                    "id": "84f4fcae-9c15-4e19-a99f-72c0b08fd3d7"
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "84f4fcae-9c15-4e19-a99f-72c0b08fd3d7",
+                  "current_count": 1
+                },
+                "request_id": "ae4dbd7d-9271-4040-98b6-3bfe45bb15ee"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListL7RulesResponseBody"
+            }
+          }
+        },
+        "x-name": "查询转发规则列表",
+        "x-constraint": "- 分页查询使用的参数为marker、limit、page_reverse。\n\n- marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/{99a3fff0d03c428eac3678da6a7d0f24}/elb/l7policies/cf4360fd-8631-41ff-a6f5-b72c35da74be/rules",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "SYS.0400",
+            "httpStatus": "400",
+            "errorMessage": "",
+            "errorDescription": "无效的请求参数或请求body体。",
+            "solution": "请输入有效的请求参数或请求body体,重新发送请求。"
+          },
+          {
+            "errorCode": "SYS.0401",
+            "httpStatus": "401",
+            "errorMessage": "",
+            "errorDescription": "token不正确。",
+            "solution": "请输入有效的token,重新发送请求。"
+          },
+          {
+            "errorCode": "SYS.0403",
+            "httpStatus": "403",
+            "errorDescription": "企业项目管理验证不过,token验证不过。",
+            "solution": "请使用正确的未过期的token。"
+          },
+          {
+            "errorCode": "ELB.8904",
+            "httpStatus": "404",
+            "errorDescription": "查找的资源不存在。",
+            "solution": "请输入有效的请求参数。"
+          },
+          {
+            "errorCode": "SYS.0404",
+            "httpStatus": "404",
+            "errorMessage": "",
+            "errorDescription": "查找的资源不存在。",
+            "solution": "请输入合法的参数。"
+          },
+          {
+            "errorCode": "ELB.8906",
+            "httpStatus": "500",
+            "errorDescription": "系统内部错误。",
+            "solution": "请联系运维人员处理。"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "L7Rule": {
+      "required": [
+        "admin_state_up",
+        "compare_type",
+        "key",
+        "project_id",
+        "type",
+        "value",
+        "provisioning_status",
+        "invert",
+        "id",
+        "conditions"
+      ],
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:转发规则的管理状。\n\n**取值范围**:固定为true。\n\n不支持该字段,请勿使用。"
+        },
+        "compare_type": {
+          "type": "string",
+          "description": "**参数解释**:转发规则的匹配方式。\n\n**取值范围**:type为HOST_NAME时可以为EQUAL_TO。type为PATH时可以为REGEX,STARTS_WITH,EQUAL_TO。"
+        },
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:匹配内容的键值。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:转发规则所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:转发规则类别。\n\n**取值范围**:\n- HOST_NAME:匹配域名。\n- PATH:匹配请求路径。\n- METHOD:匹配请求方法。\n- HEADER:匹配请求头。\n- QUERY_STRING:匹配请求查询参数。\n- SOURCE_IP:匹配请求源IP地址。\n- COOKIE: 匹配cookie信息。",
+          "enum": [
+            "HOST_NAME",
+            "PATH",
+            "METHOD",
+            "HEADER",
+            "QUERY_STRING",
+            "SOURCE_IP"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:匹配内容的值。\n\n**取值范围**:\n- 当type为HOST_NAME时,字符串只能包含英文字母、数字、-.*,必须以字母、数字或*开头。若域名中包含*,则*只能出现在开头且必须以*.开始。当*开头时表示通配0~任一个字符。\n- 当type为PATH时,当转发规则的compare_type为STARTS_WITH、EQUAL_TO时,字符串只能包含英文字母、数字、_~';@^-%#&$.*+?,=!:|\\\\/()\\[\\]{},且必须以/开头。\n- 当type为METHOD、SOURCE_IP、HEADER、QUERY_STRING时,该字段无意义,使用conditions来指定key,value。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "provisioning_status": {
+          "type": "string",
+          "description": "**参数解释**:provisioning状态。该字段无效,默认为ACTIVE。\n\n**取值范围**:\n- ACTIVE:已生效。\n- PENDING_CREATE:创建中。\n- ERROR:当前配置有误。"
+        },
+        "invert": {
+          "type": "boolean",
+          "description": "**参数解释**:是否反向匹配。\n\n**取值范围**:不涉及"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:规则ID。\n\n**取值范围**:不涉及"
+        },
+        "conditions": {
+          "type": "array",
+          "description": "**参数解释**:转发规则的匹配条件。\n\n**取值范围**:不涉及",
+          "items": {
+            "$ref": "#/definitions/RuleCondition"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        }
+      },
+      "description": "L7转发规则",
+      "type": "object"
+    },
+    "ListL7RulesResponseBody": {
+      "required": [
+        "page_info",
+        "request_id",
+        "rules"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "rules": {
+          "type": "array",
+          "description": "**参数解释**:规则对象列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/L7Rule"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "RuleCondition": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的名称。\n\n**约束限制**:同一个rule内的conditions列表中所有key必须相同。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME、PATH、METHOD、SOURCE_IP时,该字段固定为空字符串。\n- 当转发规则类别type为HEADER时,key表示请求头参数的名称,value表示请求头参数的值。key的长度限制1-40字符,只允许包含字母、数字和-_。\n- 当转发规则类别type为QUERY_STRING时,key表示查询参数的名称,value表示查询参数的值。key的长度限制为1-128字符,不支持空格,中括号,大括号,尖括号,反斜杠,双引号,'#','&','|',‘%’,‘~’,字母区分大小写。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的值。\n\n**约束限制**:同一个rule内的conditions列表中所有value不允许重复。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME时,key固定为空字符串,value表示域名的值。value长度1-128字符,字符串只能包含英文字母、数字、-.\\*,必须以字母、数字或\\*开头,\\*只能出现在开头且必须以\\*.开始。\n- 当转发规则类别type为PATH时,key固定为空字符串,value表示请求路径的值。value长度1-128字符。当转发规则的compare_type为STARTS_WITH、EQUAL_TO时,字符串只能包含英文字母、数字、_~';@^-%#&$.*+?,=!:|\\\\/()\\[\\]{},且必须以\"/\"开头。\n- 当转发规则类别type为HEADER时,key表示请求头参数的名称,value表示请求头参数的值。value长度限制1-128字符,不支持空格,双引号,支持以下通配符:*(匹配0个或更多字符)和?(正好匹配1个字符)。\n- 当转发规则类别type为QUERY_STRING时,key表示查询参数的名称,value表示查询参数的值。value长度限制为1-128字符,不支持空格,中括号,大括号,尖括号,反斜杠,双引号,'#','&','|',‘%’,‘~’,字母区分大小写,支持通配符:*(匹配0个或更多字符)和?(正好匹配1个字符)\n- 当转发规则类别type为METHOD时,key固定为空字符串,value表示请求方式。value取值范围为:GET, PUT,POST,DELETE, PATCH, HEAD, OPTIONS。\n\n- 当转发规则类别type为SOURCE_IP时,key固定为空字符串,value表示请求源地址。value为CIDR格式,支持ipv4,ipv6。例如192.168.0.2/32,2049::49/64。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,248 @@
+{
+  "name": "ListMarketplaceEngineProducts",
+  "summary": "查询云市场引擎商品列表",
+  "tags": "服务商(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/business-partner/{bp_domain_id}": {
+      "get": {
+        "tags": [
+          "服务商(SQL Server)"
+        ],
+        "operationId": "ListMarketplaceEngineProducts",
+        "summary": "查询云市场引擎商品列表",
+        "description": "查询云市场引擎商品列表。",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": true
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言。",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "bp_domain_id",
+            "in": "path",
+            "description": "服务商ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "83daad92429b4c0baf84883cfd01292f"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数。默认为100,不能为负数,最小值为1,最大值为100。",
+            "type": "integer"
+          },
+          {
+            "name": "engine_id",
+            "in": "query",
+            "description": "按照引擎ID查询。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/MarketplaceEngineProductsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "marketplace_engine_products": [
+                  {
+                    "engine_id": "b832c9cf-ba23-11eb-b4c3-6c4b90b9e8cc",
+                    "engine_version": "2019_WEB",
+                    "spec_code": "d941aa2f-ebf9-48cd-b77f-19f5e6c25fd4",
+                    "product_id": "OFFI1070157414620106752",
+                    "bp_name": "深圳市伊登软件有限公司",
+                    "bp_domain_id": "83daad92429b4c0baf84883cfd01292f",
+                    "instance_mode": "All",
+                    "image_id": "3ba463ca-a09c-44eb-9e67-7de7b91ffc2e",
+                    "user_license_agreement": "https://marketplace.huaweicloud.com/end-user-license-agreement/3a33d9f9-c02d-440d-aff0-2e1c432918ee/?Microsoft+SQL+Server+2019+web%E7%89%88_v2",
+                    "agreements": [
+                      {
+                        "id": "EUA-e9e6d241-2f76-43d0-a875-41e08e99687",
+                        "name": "Microsoft SQL Server 2019 Entprise Market Product Service Agreement",
+                        "language": "en_US",
+                        "version": "V0002",
+                        "provision_url": "https://www.huaweicloud.com/intl/en-us/declaration/ppua.html"
+                      }
+                    ]
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "查询云市场引擎商品列表。",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/cbbb7403a51a40abaa3c35bf2cedf5b6/business-partner/83daad92429b4c0baf84883cfd01292f"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "MarketplaceEngineProduct": {
+      "properties": {
+        "engine_id": {
+          "type": "string",
+          "description": "引擎ID。",
+          "example": "b832c9cf-ba23-11eb-b4c3-6c4b90b9e8cc"
+        },
+        "engine_version": {
+          "type": "string",
+          "description": "引擎版本。",
+          "example": "2019_WEB"
+        },
+        "spec_code": {
+          "type": "string",
+          "description": "云市场规格ID。",
+          "example": "d941aa2f-ebf9-48cd-b77f-19f5e6c25fd4"
+        },
+        "product_id": {
+          "type": "string",
+          "description": "云市场商品ID。",
+          "example": "OFFI1070157414620106752"
+        },
+        "bp_name": {
+          "type": "string",
+          "description": "服务商名称。",
+          "example": "深圳市伊登软件有限公司"
+        },
+        "bp_domain_id": {
+          "type": "string",
+          "description": "服务商ID。",
+          "example": "83daad92429b4c0baf84883cfd01292f"
+        },
+        "instance_mode": {
+          "type": "string",
+          "description": "支持的实例类型。\n\n- Single: 单机实例\n- Ha: 主备实例\n- Replica: 只读实例\n- All: 以上类型都支持",
+          "example": "All"
+        },
+        "image_id": {
+          "type": "string",
+          "description": "镜像ID。",
+          "example": "e8e6267a-5c74-43cb-9e6c-1d6d4ce23f47"
+        },
+        "user_license_agreement": {
+          "type": "string",
+          "description": "用户许可。",
+          "example": "https://marketplace.huaweicloud.com/end-user-license-agreement/1ad0e0e1-2003-494b-8aff-c7b880bfa8b1/?Microsoft+SQL+Server+2022+web%E7%89%88_v2"
+        },
+        "agreements": {
+          "type": "array",
+          "description": "许可详情列表。",
+          "items": {
+            "$ref": "#/definitions/Agreement"
+          }
+        }
+      }
+    },
+    "Agreement": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "许可ID。",
+          "example": "OFFUA-1-1024-1351"
+        },
+        "name": {
+          "type": "string",
+          "description": "许可名称。",
+          "example": "Partner Product User Agreement"
+        },
+        "language": {
+          "type": "string",
+          "description": "许可语言类型。",
+          "example": "en_US"
+        },
+        "version": {
+          "type": "string",
+          "description": "许可版本。",
+          "example": "V0002"
+        },
+        "provision_url": {
+          "type": "string",
+          "description": "许可链接。",
+          "example": "https://www.huaweicloud.com/intl/en-us/declaration/ppua.html"
+        }
+      }
+    },
+    "MarketplaceEngineProductsResponse": {
+      "required": [
+        "marketplace_engine_products",
+        "total_count"
+      ],
+      "properties": {
+        "marketplace_engine_products": {
+          "type": "array",
+          "description": "云市场引擎商品列表。",
+          "items": {
+            "$ref": "#/definitions/MarketplaceEngineProduct"
+          }
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "云市场引擎商品总数。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

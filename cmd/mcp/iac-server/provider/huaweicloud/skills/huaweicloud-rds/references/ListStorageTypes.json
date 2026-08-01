@@ -1,0 +1,248 @@
+{
+  "name": "ListStorageTypes",
+  "summary": "查询数据库磁盘类型",
+  "tags": "引擎版本和规格",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/storage-type/{database_name}": {
+      "get": {
+        "tags": [
+          "引擎版本和规格"
+        ],
+        "operationId": "ListStorageTypes",
+        "summary": "查询数据库磁盘类型",
+        "description": "查询数据库磁盘类型。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "database_name",
+            "in": "path",
+            "description": "数据库引擎。支持的引擎如下,不区分大小写:\nMySQL\nPostgreSQL\nSQLServer",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "MySQL",
+              "PostgreSQL",
+              "SQLServer",
+              "MariaDB"
+            ],
+            "x-example": "MySQL"
+          },
+          {
+            "name": "version_name",
+            "in": "query",
+            "description": "数据库版本号。",
+            "required": true,
+            "type": "string",
+            "x-example": "5.7"
+          },
+          {
+            "name": "ha_mode",
+            "in": "query",
+            "description": "主备模式:\nsingle:单机模式。\nha:主备模式。\nreplica:只读模式。",
+            "type": "string",
+            "enum": [
+              "ha",
+              "single",
+              "replica"
+            ],
+            "x-example": "ha"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/StorageTypeListResponse"
+            },
+            "examples": {
+              "application/json": {
+                "storage_type": [
+                  {
+                    "name": "COMMON",
+                    "az_status": {
+                      "az1": "normal",
+                      "az2": "normal"
+                    }
+                  },
+                  {
+                    "name": "ULTRAHIGH",
+                    "az_status": {
+                      "az1": "normal",
+                      "az2": "normal"
+                    }
+                  }
+                ],
+                "dsspool_info": [
+                  {
+                    "az_name": "az1xahz",
+                    "free_capacity_gb": 150,
+                    "dsspool_volume_type": "ULTRAHIGH",
+                    "dsspool_id": "f5f84ed7-6f19-4bd4-99d7-b450ad6cc4df",
+                    "dsspool_status": "available"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/storage-type/mysql"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "AzStatus": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "其中key是可用区编号,value是规格所在az的状态,包含以下状态:\n- normal,在售。\n- unsupported,暂不支持该规格。\n- sellout,售罄。",
+      "example": {
+        "az1": "normal"
+      }
+    },
+    "StorageTypeListResponse": {
+      "required": [
+        "storage_type",
+        "dsspool_info"
+      ],
+      "properties": {
+        "storage_type": {
+          "description": "实例磁盘类型信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Storage"
+          }
+        },
+        "dsspool_info": {
+          "description": "实例专属存储信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DssPoolInfo"
+          }
+        }
+      }
+    },
+    "DssPoolInfo": {
+      "description": "实例专属存储信息。",
+      "required": [
+        "az_name",
+        "free_capacity_gb",
+        "dsspool_volume_type",
+        "dsspool_id",
+        "dsspool_status"
+      ],
+      "properties": {
+        "az_name": {
+          "type": "string",
+          "description": "专属存储池所在az",
+          "example": "az1xhz"
+        },
+        "free_capacity_gb": {
+          "type": "string",
+          "description": "专属存储池免费空间大小,单位GB",
+          "example": "8645"
+        },
+        "dsspool_volume_type": {
+          "type": "string",
+          "description": "专属存储池磁盘类型名称,可能取值如下:\n - ULTRAHIGH,表示SSD。\n - LOCALSSD:表示本地SSD。\n - CLOUDSSD:表示SSD云盘,仅支持通用型和独享型规格实例。\n - ESSD:表示极速型SSD,仅支持独享型规格实例。",
+          "example": "ULTRAHIGH"
+        },
+        "dsspool_id": {
+          "type": "string",
+          "description": "专属存储池ID",
+          "example": "f5f84ed7-6f19-4bd4-99d7-b450ad6cc4de"
+        },
+        "dsspool_status": {
+          "type": "string",
+          "description": "专属存储池当前状态,可能取值如下:\n- available,表示可用。\n- deploying,表示正在部署。\n- enlarging,表示正在扩容。\n- frozen,表示冻结。\n- sellout,表示售罄。",
+          "example": "available"
+        }
+      }
+    },
+    "Storage": {
+      "description": "实例磁盘类型信息。",
+      "required": [
+        "name",
+        "az_status"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "磁盘类型名称,可能取值如下:\n- ULTRAHIGH:表示SSD。\n- LOCALSSD:表示本地SSD。\n- CLOUDSSD:表示SSD云盘,仅支持通用型和独享型规格实例。\n- ESSD:表示极速型SSD,仅支持独享型规格实例。",
+          "example": "ULTRAHIGH"
+        },
+        "az_status": {
+          "$ref": "#/definitions/AzStatus"
+        },
+        "support_compute_group_type": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "性能规格,包含以下状态:\n- normal:通用增强型。\n- normal2:通用增强II型。\n- armFlavors:鲲鹏通用增强型。\n- dedicicatenormal :x86独享型。\n- armlocalssd:鲲鹏通用型。\n- normallocalssd:x86通用型。\n- general:通用型。\n- dedicated:独享型,仅云盘SSD支持。\n- rapid:独享型,仅极速型SSD支持。\n- bigmen:超大内存型。",
+          "example": [
+            "normal",
+            "normal2",
+            "armFlavors"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,237 @@
+{
+  "name": "UpdateVirsubnetCidrReservation",
+  "summary": "更新子网预留网段",
+  "tags": "子网预留网段",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/virsubnet-cidr-reservations/{virsubnet_cidr_reservation_id}": {
+      "put": {
+        "tags": [
+          "子网预留网段"
+        ],
+        "summary": "更新子网预留网段",
+        "description": "当您的子网预留网段创建成功后,您可以通过调用该接口更新子网预留网段的基本信息,包括子网预留网段的名称、描述信息。",
+        "operationId": "UpdateVirsubnetCidrReservation",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n项目ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "virsubnet_cidr_reservation_id",
+            "in": "path",
+            "description": "**参数解释**:\n子网预留网段的资源ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "in": "body",
+            "name": "UpdateVirsubnetCidrReservationRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateVirsubnetCidrReservationRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PUT操作正常返回,更多状态码请参见[状态码](vpc_api_0002.xml)。",
+            "examples": {
+              "application/json": {
+                "virsubnet_cidr_reservation": {
+                  "id": "ed4edb94-754c-7848-bb77-2d381906c535",
+                  "virsubnet_id": "fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19",
+                  "vpc_id": "cef5d621-6c20-d5df-74e8-746271fba734",
+                  "ip_version": 4,
+                  "cidr": "192.168.21.96/28",
+                  "name": "name-test-updated",
+                  "description": "description-test-updated",
+                  "project_id": "11e8dd119c77479db890e266e68c1ecf",
+                  "created_at": "2024-09-09T11:56:27Z",
+                  "updated_at": "2024-09-09T12:00:06Z"
+                },
+                "request_id": "5e8c57bcfa0bd4798915cb5d7a37c1d9"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateVirsubnetCidrReservationResponseBody"
+            }
+          }
+        },
+        "x-is-translated": "N",
+        "x-name": "更新子网预留网段",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "更新id为ed4edb94-754c-7848-bb77-2d381906c535的子网预留网段,名称更新为name-test-updated,描述更新为description-test-updated。",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/{project_id}/vpc/virsubnet-cidr-reservations/ed4edb94-754c-7848-bb77-2d381906c535",
+        "x-request-examples-1": {
+          "virsubnet_cidr_reservation": {
+            "name": "name-test-updated",
+            "description": "description-test-updated"
+          }
+        },
+        "x-request-examples-text-1": {
+          "virsubnet_cidr_reservation": {
+            "name": "name-test-updated",
+            "description": "description-test-updated"
+          }
+        },
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateVirsubnetCidrReservationRequestBody": {
+      "type": "object",
+      "required": [
+        "virsubnet_cidr_reservation"
+      ],
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否只预检此次请求。\n**约束限制**:\n不涉及。\n**取值范围**:\n- true:发送检查请求,不会更新子网预留网段。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应码202。\n- false:发送正常请求,并直接更新子网预留网段。\n**默认取值**:\nfalse",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_cidr_reservation": {
+          "description": "**参数解释**:\n更新子网预留网段的请求体。\n**约束限制**:\n不涉及。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。",
+          "$ref": "#/definitions/UpdateVirsubnetCidrReservationOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "UpdateVirsubnetCidrReservationOption": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的名称。\n**约束限制**:\n1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的描述信息。\n**约束限制**:\n0-255个字符,不能包含“<”和“>”。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    },
+    "VirsubnetCidrReservation": {
+      "type": "object",
+      "required": [
+        "cidr",
+        "created_at",
+        "description",
+        "id",
+        "ip_version",
+        "name",
+        "project_id",
+        "updated_at",
+        "virsubnet_id",
+        "vpc_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的资源ID。子网预留网段创建成功后,会生成一个子网预留网段 ID,是子网预留网段对应的唯一标识。\n**取值范围**:\n带“-”的标准UUID格式。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所在子网的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所在VPC的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n子网预留网段的IP版本。\n**取值范围**:\n- 4:IPv4\n- 6:IPv6"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的IP网段。\n**取值范围**:\nCIDR格式,掩码长度最小值为“所属子网的网段掩码 + 2”,最大值为32(IPv4)或128(IPv6)。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的名称。\n**取值范围**:\n1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的描述信息。\n**取值范围**:\n0-255个字符,不能包含“<”和“>”。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所属的项目ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网预留网段的创建时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ssZ。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网预留网段最近一次更新的时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ssZ。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    },
+    "UpdateVirsubnetCidrReservationResponseBody": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "virsubnet_cidr_reservation"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:\n请求ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_cidr_reservation": {
+          "description": "**参数解释**:\n更新子网预留网段的响应体。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/VirsubnetCidrReservation"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

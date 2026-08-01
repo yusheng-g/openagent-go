@@ -1,0 +1,412 @@
+{
+  "name": "ListVolumesInRecycle",
+  "summary": "查询回收站中所有云硬盘详情",
+  "tags": "回收站管理",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/recycle-bin-volumes/detail": {
+      "get": {
+        "tags": [
+          "回收站管理"
+        ],
+        "summary": "查询回收站中所有云硬盘详情",
+        "description": "查询回收站中所有云硬盘的详细信息。",
+        "operationId": "ListVolumesInRecycle",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n**约束限制**\n不涉及。\n**取值范围**\n不涉及。\n**默认取值**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**\n项目ID。获取方法请参见[获取项目ID](evs_04_0046.xml)。 \n**约束限制**\n不涉及。\n**取值范围**\n不涉及。        \n**默认取值**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**\n云硬盘名称。\n可通过[查询所有云硬盘详情](evs_04_2006.xml)获取云硬盘名称。\n**约束限制**\n最大支持64个字符。\n**取值范围**\n不涉及。\n**默认取值**\n不涉及。",
+            "required": false,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "**参数解释**\n云硬盘状态,取值可参考:\"[云硬盘状态](evs_04_0040.xml)\"。\n**约束限制**\n不涉及。\n**取值范围**\n不涉及。\n**默认取值**\n不涉及。",
+            "required": false,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**\n返回结果个数限制。\n**约束限制**\n不涉及。\n**取值范围**\n1-1000\n**默认取值**\n1000",
+            "required": false,
+            "type": "integer",
+            "default": 1000,
+            "maximum": 1000,
+            "minimum": 1,
+            "format": "int32",
+            "x-order": 3
+          },
+          {
+            "name": "availability_zone",
+            "in": "query",
+            "description": "**参数解释**\n可用区信息。\n可通过接口[查询所有的可用分区信息](evs_04_2081.xml)获取,也可参考[地区和终端节点](https://console.huaweicloud.com/apiexplorer/#/endpoint)获取。\n**约束限制**\n不涉及。\n**取值范围**\n不涉及。\n**默认取值**\n不涉及。",
+            "required": false,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "name": "service_type",
+            "in": "query",
+            "description": "**参数解释**\n服务类型。\n**约束限制**\n不涉及。\n**取值范围**\n- EVS:云硬盘。\n- DSS:专属分布式存储服务。\n**默认取值**\n不涉及。",
+            "required": false,
+            "type": "string",
+            "x-order": 5
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "**参数解释**\n分页查询时的偏移量。\n**约束限制**\n不涉及。\n**取值范围**\n取值为一个大于0小于磁盘总个数的整数。\n**默认取值**\n0",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 6
+          }
+        ],
+        "deprecated": false,
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "count": 1,
+                "volumes": [
+                  {
+                    "id": "0482c74b-1f85-4bc9-868c-64caecc16b61",
+                    "name": "test",
+                    "status": "restorable",
+                    "multiattach": false,
+                    "size": 89,
+                    "metadata": {},
+                    "bootable": "false",
+                    "tags": {},
+                    "availability_zone": "az1.dc1",
+                    "created_at": "2018-12-11T07:25:15.531000",
+                    "volume_type": "SATA",
+                    "volume_image_metadata": {},
+                    "updated_at": "2019-01-12T18:01:50.851000",
+                    "service_type": "EVS",
+                    "enterprise_project_id": "0",
+                    "plan_delete_at": "2019-01-18T22:31:58.642000",
+                    "pre_deleted_at": "2019-01-11T22:31:58.642000"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/recycleBinVolumes"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-name": "查询回收站中所有云硬盘详情",
+        "x-constraint": "",
+        "x-scope": "TechnicalPreview",
+        "x-order": 31,
+        "x-request-examples-1": "GET https://evs.cn-north-1.myhuaweicloud.com/v3/490e121341fc481d95f946ef844cb06a/recycle-bin-volumes/detail",
+        "x-request-examples-text-1": "GET https://evs.cn-north-1.myhuaweicloud.com/v3/490e121341fc481d95f946ef844cb06a/recycle-bin-volumes/detail",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "20190130",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "EVS.0003",
+            "httpStatus": "403",
+            "errorDescription": "invalid token roles!",
+            "solution": "请检查用户是否已被授予相应的权限。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "i8d5e01f362447749b400156edc83134"
+          },
+          {
+            "errorCode": "EVS.1027",
+            "httpStatus": "403",
+            "errorDescription": "user role is not allowed for this action!",
+            "solution": "请检查用户是否已被授予相应的权限。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "i8d5e01f362447749b400156edc83134"
+          },
+          {
+            "errorCode": "EVS.2056",
+            "httpStatus": "403",
+            "errorDescription": "Policy doesn't allow %s to be performed.",
+            "solution": "请配置相关的API授权项。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "i8d5e01f362447749b400156edc83134"
+          },
+          {
+            "errorCode": "EVS.2106",
+            "httpStatus": "403",
+            "errorDescription": "Can not use the recycle bin",
+            "solution": "请检查是否已启用回收站功能。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "i8d5e01f362447749b400156edc83134"
+          },
+          {
+            "errorCode": "EVS.2144",
+            "httpStatus": "403",
+            "errorDescription": "Your account is frozen and resources cannot be used.",
+            "solution": "请先检查账号是否存在以下几种情况,若不存在,请联系技术支持。\n账号是否已完成实名认证。\n账号是否处于欠费状态。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "i8d5e01f362447749b400156edc83134"
+          },
+          {
+            "errorCode": "EVS.2145",
+            "httpStatus": "403",
+            "errorDescription": "Your account is suspended and resources cannot be used.",
+            "solution": "请先检查账号是否存在以下几种情况,若不存在,请联系技术支持。\n账号是否已完善支付方式。\n账号是否已完成实名认证。\n账号是否处于欠费状态。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "i8d5e01f362447749b400156edc83134"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "**参数解释**\n出现错误时,返回的错误码。错误码和其对应的含义请参考[错误码说明](evs_04_0038.xml)。\n**取值范围**\n不涉及。",
+          "$ref": "#/definitions/Error"
+        }
+      }
+    },
+    "recycleBinVolumes": {
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**\n云硬盘总数。\n**取值范围**\n不涉及。"
+        },
+        "volumes": {
+          "type": "array",
+          "description": "**参数解释**\n云硬盘列表。\n**取值范围**\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/recycleBinVolume"
+          }
+        }
+      },
+      "description": ""
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "recycleBinVolume": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘ID。\n**取值范围**\n不涉及。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘名称。\n**取值范围**\n不涉及。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘描述。\n**取值范围**\n不涉及。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘状态,具体请参见[云硬盘状态](evs_04_0040.xml)。\n**取值范围**\n不涉及。"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "**参数解释**\n云硬盘的挂载信息。\n**取值范围**\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/Attachment"
+          }
+        },
+        "multiattach": {
+          "type": "boolean",
+          "description": "**参数解释**\n云硬盘是否共享。\n**取值范围**\n- true:表示为共享云硬盘。\n- false:表示为普通云硬盘。"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**\n云硬盘大小,单位为GiB。\n**取值范围**\n不涉及。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "**参数解释**\n云硬盘的metadata信息 ,调用方可以添加或删除metadata信息。\n**取值范围**\n当前部分key在EVS服务中有业务场景含义,这部分key的描述如下:\n- __system__cmkid\n\n  metadata中的加密cmkid字段,与__system__encrypted配合表示需要加密,cmkid长度固定为36个字节。\n\n  请求获取密钥ID的方法请参考:\"[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html)\"。\n  \n\n\n- __system__encrypted\n\n  metadata中的表示加密功能的字段,0代表不加密,1代表加密。\n\n  不指定该字段时,云硬盘的加密属性与数据源保持一致,如果不是从数据源创建的场景,则默认不加密。\n\n\n- hw:passthrough\n\n  - true表示云硬盘的设备类型为SCSI类型,即允许ECS操作系统直接访问底层存储介质。支持SCSI锁命令。\n\n  - false表示云硬盘的设备类型为VBD (虚拟块存储设备 , Virtual Block Device)类型,即为默认类型,VBD只能支持简单的SCSI读写命令。\n\n  - 该字段不存在时,云硬盘默认为VBD类型。",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "bootable": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘是否为启动盘。\n**取值范围**\n- true:表示为启动云硬盘。\n- false:表示为非启动云硬盘。"
+        },
+        "tags": {
+          "type": "object",
+          "description": "**参数解释**\n云硬盘标签。\n**取值范围**\n不涉及。",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘所属可用区。\n**取值范围**\n不涉及。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘创建时间。\n**取值范围**\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "service_type": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘所属的服务类型。\n**取值范围**\n- EVS:云硬盘。\n- DSS:专属分布式存储服务。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘信息被更新的时间。\n**取值范围**\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "volume_type": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘类型。\n**取值范围**\n目前支持\"SATA\",\"SAS\",\"GPSSD\",\"SSD\",\"ESSD\",\"GPSSD2\",\"ESSD2\"七种。\n\n\n- \"SATA\"为普通IO云硬盘(已售罄)\n- \"SAS\"为高IO云硬盘\n- \"GPSSD\"为通用型SSD云硬盘\n- \"SSD\"为超高IO云硬盘\n- \"ESSD\"为极速型SSD云硬盘\n- \"GPSSD2\"为通用型SSD V2云硬盘\n- \"ESSD2\"为极速型SSD V2云硬盘"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**\n企业项目ID。\n**取值范围**\n不涉及。"
+        },
+        "plan_delete_at": {
+          "type": "string",
+          "description": "**参数解释**\n预计到期清理的时间。\n**取值范围**\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "pre_deleted_at": {
+          "type": "string",
+          "description": "**参数解释**\n放入回收站的时间。\n**取值范围**\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "dedicated_storage_id": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘所属的专属存储池ID。\n**取值范围**\n不涉及。"
+        },
+        "dedicated_storage_name": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘所属的专属存储池的名称。\n**取值范围**\n不涉及。"
+        },
+        "volume_image_metadata": {
+          "type": "object",
+          "description": "**参数解释**\n云硬盘镜像的元数据。\n关于“volume_image_metadata”字段的详细说明,具体请参见:\"[查询镜像详情](https://support.huaweicloud.com/api-ims/ims_03_0703.html)\"。\n\n**取值范围**\n不涉及。",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "wwn": {
+          "type": "string",
+          "description": "**参数解释**\n云硬盘的唯一标识。\n**取值范围**\n不涉及。"
+        }
+      },
+      "description": "回收站云硬盘详情"
+    },
+    "Attachment": {
+      "required": [
+        "attached_at",
+        "attachment_id",
+        "device",
+        "host_name",
+        "id",
+        "server_id",
+        "volume_id"
+      ],
+      "properties": {
+        "attached_at": {
+          "type": "string",
+          "description": "挂载的时间信息。\n\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "attachment_id": {
+          "type": "string",
+          "description": "挂载信息对应的ID。"
+        },
+        "device": {
+          "type": "string",
+          "description": "挂载点。"
+        },
+        "host_name": {
+          "type": "string",
+          "description": "云硬盘挂载到的云服务器对应的物理主机的名称。"
+        },
+        "id": {
+          "type": "string",
+          "description": "挂载的资源ID。"
+        },
+        "server_id": {
+          "type": "string",
+          "description": "云硬盘挂载到的云服务器的 ID。"
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘ID。"
+        }
+      },
+      "description": "云硬盘挂载信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

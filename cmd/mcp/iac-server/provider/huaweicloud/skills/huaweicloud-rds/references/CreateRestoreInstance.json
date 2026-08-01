@@ -1,0 +1,663 @@
+{
+  "name": "CreateRestoreInstance",
+  "summary": "恢复到新实例",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances": {
+      "post": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "CreateRestoreInstance",
+        "summary": "恢复到新实例",
+        "description": "恢复到新实例。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 源实例和目标实例的数据库类型必须一致,如都是MySQL。\n- 源实例和目标实例的数据库版本约束如下:\n  - MySQL和PostgreSQL的源实例和目标实例的数据库版本必须一致。\n  - Microsoft SQL Server的源实例和目标实例的数据库版本约束参见表5。\n- 目标实例的数据卷总大小,大于或等于源实例的数据卷总大小。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "CreateInstanceRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateRestoreInstanceRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateInstanceResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "instance": {
+                  "name": "rds-instance-rep2",
+                  "datastore": {
+                    "type": "MySQL",
+                    "version": "5.6"
+                  },
+                  "flavor_ref": "rds.mysql.s1.large",
+                  "volume": {
+                    "type": "ULTRAHIGH",
+                    "size": 100
+                  },
+                  "disk_encryption_id": "2gfdsh-844a-4023-a776-fc5c5fb71fb4",
+                  "region": "aaa",
+                  "availability_zone": "bbb",
+                  "vpc_id": "490a4a08-ef4b-44c5-94be-3051ef9e4fce",
+                  "subnet_id": "0e2eda62-1d42-4d64-a9d1-4e9aa9cd994f",
+                  "security_group_id": "2a1f7fc8-3307-42a7-aa6f-42c8b9b8f8c5",
+                  "port": "8635",
+                  "backup_strategy": {
+                    "start_time": "08:15-09:15",
+                    "keep_days": 12
+                  },
+                  "charge_info": {
+                    "charge_mode": "postPaid"
+                  },
+                  "password": "Test@12345678",
+                  "configuration_id": "452408-ef4b-44c5-94be-305145fg",
+                  "enterprise_project_id": "fdsa-3rds",
+                  "time_zone": "UTC+04:00"
+                },
+                "job_id": "dff1d289-4d03-4942-8b9f-463ea07c000d"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-4": "使用备份文件恢复到新实例(MySQL)",
+        "x-request-examples-url-4": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances",
+        "x-request-examples-4": {
+          "name": "targetInst",
+          "availability_zone": "bbb,ccc",
+          "ha": {
+            "mode": "ha",
+            "replication_mode": "async"
+          },
+          "flavor_ref": "rds.mysql.s1.large",
+          "volume": {
+            "type": "ULTRAHIGH",
+            "size": 40
+          },
+          "disk_encryption_id": "2gfdsh-844a-4023-a776-fc5c5fb71fb4",
+          "vpc_id": "490a4a08-ef4b-44c5-94be-3051ef9e4fce",
+          "subnet_id": "0e2eda62-1d42-4d64-a9d1-4e9aa9cd994f",
+          "security_group_id": "2a1f7fc8-3307-42a7-aa6f-42c8b9b8f8c5",
+          "backup_strategy": {
+            "keep_days": 2,
+            "start_time": "19:00-20:00"
+          },
+          "password": "Demo@12345678",
+          "configuration_id": "52e86e87445847a79bf807ceda213165pr01",
+          "enterprise_project_id": "ba1f7fc8-3307-42a7-aa6f-42c8b9b8f85c",
+          "time_zone": "UTC+04:00",
+          "restore_point": {
+            "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin01",
+            "type": "backup",
+            "backup_id": "2f4ddb93-b901-4b08-93d8-1d2e472f30fe"
+          },
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value2"
+            }
+          ]
+        },
+        "x-request-examples-description-5": "按时间点恢复到新实例(Microsoft SQL Server)",
+        "x-request-examples-url-5": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances",
+        "x-request-examples-5": {
+          "name": "targetInst",
+          "availability_zone": "bbb,ccc",
+          "ha": {
+            "mode": "ha",
+            "replication_mode": "sync"
+          },
+          "flavor_ref": "rds.mssql.2014.se.s3.xlarge.2.ha",
+          "volume": {
+            "type": "ULTRAHIGH",
+            "size": 40
+          },
+          "disk_encryption_id": "2gfdsh-844a-4023-a776-fc5c5fb71fb4",
+          "vpc_id": "490a4a08-ef4b-44c5-94be-3051ef9e4fce",
+          "subnet_id": "0e2eda62-1d42-4d64-a9d1-4e9aa9cd994f",
+          "security_group_id": "2a1f7fc8-3307-42a7-aa6f-42c8b9b8f8c5",
+          "backup_strategy": {
+            "keep_days": 2,
+            "start_time": "19:00-20:00"
+          },
+          "password": "Demo@12345678",
+          "configuration_id": "52e86e87445847a79bf807ceda213165pr04",
+          "enterprise_project_id": "ba1f7fc8-3307-42a7-aa6f-42c8b9b8f85c",
+          "time_zone": "UTC+04:00",
+          "restore_point": {
+            "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin04",
+            "type": "timestamp",
+            "restore_time": 1532001446987,
+            "database_name": {
+              "db1": "dbtest1"
+            }
+          },
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value2"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Datastore": {
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,不区分大小写:\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+          "enum": [
+            "MySQL",
+            "PostgreSQL",
+            "SQLServer",
+            "MariaDB"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。\n- MySQL引擎支持5.6、5.7、8.0版本。取值示例:5.7。具有相应权限的用户才可使用8.0,您可联系华为云客服人员申请。\n- PostgreSQL引擎支持9.5、9.6、10、11版本。取值示例:9.6。\n- Microsoft SQL Server:仅支持2017 企业版、2017 标准版、2017 web版、2014 标准版、2014 企业版、2016 标准版、2016 企业版、2012 企业版、2012 标准版、2012 web版、2008 R2 企业版、2008 R2 web版、2014 web版、2016 web版。取值示例2014_SE。 例如:2017标准版可填写2017_SE,2017企业版可填写2017_EE,2017web版可以填写2017_WEB"
+        },
+        "complete_version": {
+          "type": "string",
+          "description": "数据库完整版本号。仅在数据库引擎是”MySQL”和”PostgreSQL”时返回。"
+        }
+      }
+    },
+    "CreateRestoreInstanceRequestBody": {
+      "description": "实例信息。",
+      "required": [
+        "name",
+        "flavor_ref",
+        "volume",
+        "availability_zone"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "实例名称。\n用于表示实例的名称,同一租户下,同类型的实例名可重名。取值范围如下:\n- MySQL数据库支持的字符长度是4~64个字符,必须以字母开头,区分大小写,可以包含字母、数字、中文字符、中划线或者下划线,不能包含其他的特殊字符。\n- PostgreSQL和SQL Server数据库支持的字符长度是4~64个字符,必须以字母开头,区分大小写,可以包含字母、数字、中划线或者下划线,不能包含其他的特殊字符。"
+        },
+        "datastore": {
+          "$ref": "#/definitions/Datastore"
+        },
+        "ha": {
+          "$ref": "#/definitions/Ha"
+        },
+        "configuration_id": {
+          "type": "string",
+          "description": "参数模板ID。可调用[获取参数模板列表](https://support.huaweicloud.com/api-rds/rds_09_0301.html)接口返回的ID获取。",
+          "example": "452408-ef4b-44c5-94be-305145fg"
+        },
+        "port": {
+          "type": "string",
+          "description": "数据库端口信息。\n\n- MySQL数据库端口设置范围为1024~65535(其中12017和33071被RDS系统占用不可设置)。\n- PostgreSQL数据库端口修改范围为2100~9500。\n- Microsoft SQL Server实例的端口设置范围为1433和2100~9500(其中5355和5985不可设置。对于2017 EE、2017 SE、2017 Web版,5050、5353和5986不可设置。\n\n当不传该参数时,默认端口如下:\n\n- MySQL默认3306。\n- PostgreSQL默认5432。\n- Microsoft SQL Server默认1433。",
+          "example": "3306"
+        },
+        "password": {
+          "type": "string",
+          "description": "数据库密码。创建只读实例时不可选,其它场景必选。\n\n取值范围:\n\n非空,由大小写字母、数字和特殊符号~!@#%^*-_=+?组成,长度8~32个字符。\n\n其中允许的特殊字符如下:\n- MySQL数据库允许输入~!@#$%^*-_=+?,特殊字符。\n- SQL Server数据库允许输入~!@#$%^*-_+?,特殊字符。\n- PostgreSQL数据库允许输入~!@#%^*-_=+?,特殊字符。\n\n建议您输入高强度密码,以提高安全性,防止出现密码被暴力破解等安全风险。"
+        },
+        "backup_strategy": {
+          "$ref": "#/definitions/BackupStrategy"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。\n使用请参考《企业管理 API参考》的[查询企业项目列表](https://support.huaweicloud.com/api-em/zh-cn_topic_0121230880.html)响应消息表“enterprise_project字段数据结构说明”的“id”。"
+        },
+        "disk_encryption_id": {
+          "type": "string",
+          "description": "用于磁盘加密的密钥ID,默认为空。"
+        },
+        "flavor_ref": {
+          "type": "string",
+          "description": "规格码,取值范围:非空。\n使用[查询数据库规格](https://support.huaweicloud.com/api-rds/rds_06_0002.html)接口响应消息中的 flavors字段中“spec_code”获取且对应az_status为“在售”状态。",
+          "example": "rds.mysql.s1.large"
+        },
+        "volume": {
+          "$ref": "#/definitions/Volume"
+        },
+        "region": {
+          "type": "string",
+          "description": "区域ID。创建主实例时必选,其它场景不可选。\n取值参见OpenAPI查询数据库规格(https://console.huaweicloud.com/apiexplorer/#/openapi/RDS/doc?api=ListFlavors)响应体的az_desc字段。\nSQL Server数据库和PostgreSQL数据库备份恢复到新实例时为必填项。"
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "可用区ID。对于数据库实例类型不是单机的实例,需要分别为实例所有节点指定可用区,并用逗号隔开。\n取值参见OpenAPI查询数据库规格(https://console.huaweicloud.com/apiexplorer/#/openapi/RDS/doc?api=ListFlavors)响应体的az_desc字段。",
+          "example": "cn-north-4a,cn-north-4b"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "虚拟私有云ID。创建只读实例时不可选(只读实例的网络属性默认和主实例相同),其它场景必选。\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,在虚拟私有云的详情页面查找VPC ID。\n- 方法2:通过虚拟私有云服务的API接口查询,具体操作可参考[查询VPC列表](https://support.huaweicloud.com/api-vpc/vpc_api01_0003.html)。\nSQL Server数据库和PostgreSQL数据库备份恢复到新实例时为必填项。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "子网的网络ID信息。创建只读实例时不可选(只读实例的网络属性默认和主实例相同),其它场景必选。\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找网络ID。\n- 方法2:通过虚拟私有云服务的API接口查询,具体操作可参考[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)。\nSQL Server数据库和PostgreSQL数据库备份恢复到新实例时为必填项。"
+        },
+        "data_vip": {
+          "type": "string",
+          "description": "指定实例的内网IP,目前仅支持设置IPv4地址。\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找子网的网段,选择未被占用的IP。\n- 方法2:通过虚拟私有云服务的API接口查询,具体操作可参考[查询私有IP列表](https://support.huaweicloud.com/api-vpc/vpc_privateip_0003.html),选择“device_owner”为空的私有IP。"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "安全组ID。创建只读实例时不可选(只读实例的网络属性默认和主实例相同),其它场景必选。\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,在安全组的详情页面查找安全组ID。\n- 方法2:通过虚拟私有云服务的API接口查询,具体操作可参考[查询安全组列表](https://support.huaweicloud.com/api-vpc/vpc_sg01_0003.html)。\nSQL Server数据库和PostgreSQL数据库备份恢复到新实例时为必填项。"
+        },
+        "charge_info": {
+          "$ref": "#/definitions/ChargeInfo"
+        },
+        "time_zone": {
+          "type": "string",
+          "description": "时区。\n\n- 不选择时,各个引擎时区如下:\n  - MySQL国内站、国际站默认为UTC时间。\n  - PostgreSQL国内站、国际站默认为UTC时间。\n  - Microsoft SQL Server国内站默认为China Standard Time,国际站默认为UTC时间。\n- MySQL和PostgreSQL引擎选择填写时,取值范围为UTC-12:00~UTC+12:00,且只支持整段时间,如UTC+08:00,不支持UTC+08:30。\n- Microsoft SQL Server引擎选择填写时,请参见“创建数据库实例”接口[表10](https://support.huaweicloud.com/api-rds/rds_01_0002.html#rds_01_0002__table613473883617) 时区与UTC偏移量对照表,填写时区列字符串,如:China Standard Time。"
+        },
+        "dsspool_id": {
+          "type": "string",
+          "description": "Dec用户专属存储ID,每个az配置的专属存储不同,Dec用户创建实例时,对于数据库实例类型不是单机或只读的实例,需要分别为实例所有节点指定dsspoolId,并用逗号隔开。\n获取方法如下:\n- 方法1:登录专属分布式存储服务DSS的控制台界面,查看专属存储列表,选择符合条件的az下的专属dss的ID。\n- 方法2:通过专属分布式存储服务DSS的API接口查询,具体操作可参考[获取专属存储详情列表](https://support.huaweicloud.com/api-dss/dss_02_1002.html)。"
+        },
+        "restore_point": {
+          "$ref": "#/definitions/RestorePoint"
+        },
+        "collation": {
+          "type": "string",
+          "description": "仅限Microsoft SQL Server实例创建使用。对于MySQL和PostgreSQL实例,该参数无意义。取值范围:根据查询SQL Server可用字符集的字符集查询列表查询可设置的字符集。\n取值范围:根据[查询SQL Server可用字符集](https://support.huaweicloud.com/api-rds/rds_05_0010.html)查询可设置的字符集。"
+        },
+        "tags": {
+          "description": "标签列表。单个实例总标签数上限20个。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagWithKeyValue"
+          }
+        },
+        "serverless_info": {
+          "$ref": "#/definitions/ServerlessInfo",
+          "description": "Serverless型实例的资源扩缩范围。创建Serverless型实例时必选。"
+        },
+        "dry_run": {
+          "type": "boolean",
+          "description": "是否只预检此次请求,仅支持MySQL。\n- true:发送参数检查请求,不会创建实例。\n  - 检查通过:返回202状态码。\n  - 检查不通过:返回对应错误码,详情请参考错误码。\n- false:发送正常请求,通过检查后,并且执行创建实例的请求。"
+        },
+        "is_auto_upgrade": {
+          "type": "boolean",
+          "description": "是否开启自动小版本升级,默认为false,仅支持PostgreSQL。\n- true:开启自动小版本升级。\n- false:不开启自动小版本升级。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "RestorePoint": {
+      "required": [
+        "instance_id",
+        "type"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "源实例ID。"
+        },
+        "type": {
+          "type": "string",
+          "description": "表示恢复方式,枚举值:\n\n- “backup”,表示使用备份文件恢复,按照此方式恢复时,“type”字段为非必选,“backup_id”必选。\n- “timestamp”,表示按时间点恢复,按照此方式恢复时,“type”字段必选,“restore_time”必选。"
+        },
+        "backup_id": {
+          "type": "string",
+          "description": "用于恢复的备份ID。当使用备份文件恢复时需要指定该参数。"
+        },
+        "restore_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "恢复数据的时间点,格式为UNIX时间戳,单位是毫秒,时区为UTC。"
+        },
+        "database_name": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "仅适用于SQL Server引擎,当有此参数时表示支持局部恢复和重命名恢复,恢复数据以局部恢复为主。\n\n- 新数据库名称不可与源实例数据库名称重名,新数据库名称为空,默认按照原数据库名进行恢复。\n  注意:\n  不填写该字段时,默认恢复全部数据库。\n\n  示例:”database_name”:{“原库名”:”新库名”}\n\n- 新数据库名不能包含rdsadmin、master、msdb、tempdb、model或resource字段(不区分大小写)。\n- 数据库名称长度在1~64个字符之间,包含字母、数字、下划线或中划线,不能包含其他特殊字符。",
+          "example": {
+            "dbName1": "tableName1",
+            "dbName2": "tableName2"
+          }
+        }
+      }
+    },
+    "Ha": {
+      "required": [
+        "mode",
+        "replication_mode"
+      ],
+      "description": "HA配置参数,创建HA实例时使用。",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "实例主备模式,取值:Ha(主备),不区分大小写。",
+          "enum": [
+            "Ha",
+            "Single"
+          ],
+          "example": "Ha"
+        },
+        "replication_mode": {
+          "type": "string",
+          "description": "备机同步参数。实例主备模式为Ha时有效。\n取值:\n- MySQL为“async”或“semisync”。\n- PostgreSQL为“async”或“sync”。\n- Microsoft SQL Server为“sync”。",
+          "enum": [
+            "async",
+            "semisync",
+            "sync"
+          ]
+        }
+      }
+    },
+    "ChargeInfo": {
+      "description": "计费类型信息,支持包年包月和按需,默认为按需。",
+      "required": [
+        "charge_mode"
+      ],
+      "properties": {
+        "charge_mode": {
+          "type": "string",
+          "description": "计费模式。\n\n取值范围:\n\n- prePaid:预付费,即包年/包月。\n- postPaid:后付费,即按需付费。",
+          "enum": [
+            "prePaid",
+            "postPaid"
+          ]
+        },
+        "period_type": {
+          "type": "string",
+          "description": "订购周期类型。\n\n取值范围:\n\n- month:包月。\n- year:包年。",
+          "enum": [
+            "month",
+            "year"
+          ]
+        },
+        "period_num": {
+          "type": "integer",
+          "description": "“charge_mode”为“prePaid”时生效,且为必选值,指定订购的时间。\n\n取值范围:\n\n当“period_type”为“month”时,取值为1~9。\n当“period_type”为“year”时,取值为1~3。"
+        },
+        "is_auto_renew": {
+          "type": "boolean",
+          "description": "创建包周期实例时可指定,表示是否自动续订,续订的周期和原周期相同,且续订时会自动支付。\n\n- true,为自动续订。\n- false,为不自动续订,默认该方式。",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "is_auto_pay": {
+          "type": "boolean",
+          "description": "创建包周期时可指定,表示是否自动从客户的账户中支付,此字段不影响自动续订的支付方式。\n\n- true,为自动支付。\n- false,为手动支付,默认该方式。",
+          "enum": [
+            true,
+            false
+          ]
+        }
+      }
+    },
+    "ServerlessInfo": {
+      "required": [
+        "min_cap",
+        "max_cap"
+      ],
+      "properties": {
+        "min_cap": {
+          "type": "string",
+          "description": "Serverless型实例的最小算力,单位RCU,范围0.5~8,步进0.5。"
+        },
+        "max_cap": {
+          "type": "string",
+          "description": "Serverless型实例的最大算力,单位RCU,范围0.5~8,步进0.5。"
+        }
+      }
+    },
+    "CreateInstanceResponseBody": {
+      "required": [
+        "instance",
+        "job_id"
+      ],
+      "properties": {
+        "instance": {
+          "$ref": "#/definitions/CreateInstanceRespItem"
+        },
+        "job_id": {
+          "type": "string",
+          "description": "实例创建的任务id。\n\n仅创建按需实例时会返回该参数。",
+          "example": "dff1d289-4d03-4942-8b9f-463ea07c000d"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单号,创建包年包月时返回该参数。"
+        }
+      }
+    },
+    "Volume": {
+      "required": [
+        "type",
+        "size"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "磁盘类型。\n取值范围如下,区分大小写:\n- COMMON,表示SATA。\n- HIGH,表示SAS。\n- ULTRAHIGH,表示SSD。\n- ULTRAHIGHPRO,表示SSD尊享版,仅支持超高性能型尊享版(需申请权限)。\n- CLOUDSSD,表示SSD云盘,仅支持通用型和独享型规格实例。\n- LOCALSSD,表示本地SSD。\n- ESSD,表示极速型SSD,仅支持独享型规格实例。",
+          "enum": [
+            "ULTRAHIGH",
+            "HIGH",
+            "COMMON",
+            "NVMESSD",
+            "ULTRAHIGHPRO",
+            "CLOUDSSD",
+            "LOCALSSD",
+            "ESSD"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "description": "磁盘大小,单位为GB。\n取值范围:40GB~4000GB,必须为10的整数倍。\n\n部分用户支持40GB~6000GB,如果您想创建存储空间最大为6000GB的数据库实例,或提高扩容上限到10000GB,请联系客服开通。\n\n说明:对于只读实例,该参数无效,磁盘大小,默认和主实例相同。"
+        }
+      }
+    },
+    "TagWithKeyValue": {
+      "description": "键值对标签。",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "description": "标签键。长度为1-128个unicode字符。\n可以包含任何语种字母、数字、空格和_.:=+-@,\n但首尾不能含有空格,不能以sys开头。",
+          "type": "string"
+        },
+        "value": {
+          "description": "标签值。最大长度255个unicode字符。\n可以为空字符串。可以包含任何语种字母、数字、空格和_.:=+-@,",
+          "type": "string"
+        }
+      }
+    },
+    "CreateInstanceRespItem": {
+      "description": "实例信息。",
+      "required": [
+        "name",
+        "datastore",
+        "flavor_ref",
+        "volume",
+        "region",
+        "availability_zone",
+        "vpc_id",
+        "subnet_id",
+        "security_group_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "实例id"
+        },
+        "name": {
+          "type": "string",
+          "description": "实例名称。\n用于表示实例的名称,同一租户下,同类型的实例名可重名,其中,SQL Server实例名唯一。\n取值范围:4~64个字符之间,必须以字母开头,区分大小写,可以包含字母、数字、中划线或者下划线,不能包含其他的特殊字符。"
+        },
+        "status": {
+          "type": "string",
+          "description": "实例状态。如BUILD,表示创建中。\n仅创建按需实例时会返回该参数。"
+        },
+        "datastore": {
+          "description": "数据库信息。创建主实例时必选,创建只读或者恢复到新实例时不可选。",
+          "$ref": "#/definitions/Datastore"
+        },
+        "ha": {
+          "$ref": "#/definitions/Ha"
+        },
+        "configuration_id": {
+          "type": "string",
+          "description": "参数组ID。",
+          "example": "452408-ef4b-44c5-94be-305145fg"
+        },
+        "port": {
+          "type": "string",
+          "description": "数据库端口信息。\n\n- MySQL数据库端口设置范围为1024~65535(其中12017和33071被RDS系统占用不可设置)。\n- PostgreSQL数据库端口修改范围为2100~9500。\n- Microsoft SQL Server实例的端口设置范围为1433和2100~9500(其中5355和5985不可设置。对于2017 EE、2017 SE、2017 Web版,5050、5353和5986不可设置。\n\n当不传该参数时,默认端口如下:\n\n- MySQL默认3306。\n- PostgreSQL默认5432。\n- Microsoft SQL Server默认1433。",
+          "example": "3306"
+        },
+        "backup_strategy": {
+          "$ref": "#/definitions/BackupStrategy"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。"
+        },
+        "disk_encryption_id": {
+          "type": "string",
+          "description": "用于磁盘加密的密钥ID。"
+        },
+        "flavor_ref": {
+          "type": "string",
+          "description": "规格码。",
+          "example": "rds.mysql.s1.large"
+        },
+        "volume": {
+          "description": "实例存储信息。创建只读实例时不可选(只读实例的磁盘大小默认和主实例相同),其它场景必选。",
+          "$ref": "#/definitions/Volume"
+        },
+        "region": {
+          "type": "string",
+          "description": "区域ID。创建主实例时必选,其它场景不可选。\n取值参见OpenAPI查询数据库规格(https://console.huaweicloud.com/apiexplorer/#/openapi/RDS/doc?api=ListFlavors)响应体的az_desc字段。"
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "可用区ID。对于数据库实例类型不是单机的实例,需要分别为实例所有节点指定可用区,并用逗号隔开。\n取值参见OpenAPI查询数据库规格(https://console.huaweicloud.com/apiexplorer/#/openapi/RDS/doc?api=ListFlavors)响应体的az_desc字段。",
+          "example": "cn-north-4a,cn-north-4b"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "虚拟私有云ID。创建只读实例时不可选(只读实例的网络属性默认和主实例相同),其它场景必选。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "子网ID。创建只读实例时不可选(只读实例的网络属性默认和主实例相同),其它场景必选。"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "安全组ID。创建只读实例时不可选(只读实例的网络属性默认和主实例相同),其它场景必选。"
+        },
+        "charge_info": {
+          "$ref": "#/definitions/ChargeInfo"
+        },
+        "collation": {
+          "type": "string",
+          "description": "仅限Microsoft SQL Server实例使用。取值范围:根据查询SQL Server可用字符集的字符集查询列表查询可设置的字符集。"
+        },
+        "restore_point": {
+          "$ref": "#/definitions/RestorePoint",
+          "description": "恢复数据源对象。恢复到新实例时必选,其它场景不可选。"
+        }
+      }
+    },
+    "BackupStrategy": {
+      "required": [
+        "start_time"
+      ],
+      "description": "自动备份策略。",
+      "properties": {
+        "start_time": {
+          "type": "string",
+          "description": "备份时间段。自动备份将在该时间段内触发。\n\n取值范围:非空,格式必须为hh:mm-HH:MM且有效,当前时间指UTC时间。\n\nHH取值必须比hh大1。\nmm和MM取值必须相同,且取值必须为00、15、30或45。",
+          "example": "23:00-00:00"
+        },
+        "keep_days": {
+          "type": "integer",
+          "description": "指定备份文件的可保存天数。\n\n取值范围:0~732。该参数缺省,或取值为0,表示关闭自动备份策略。如果需要延长保留时间请联系客服人员申请,自动备份最长可以保留2562天。\n\n说明:SQL Server的HA实例不支持关闭自动备份策略。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

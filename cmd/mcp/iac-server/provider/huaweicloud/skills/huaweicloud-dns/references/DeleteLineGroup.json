@@ -1,0 +1,149 @@
+{
+  "name": "DeleteLineGroup",
+  "summary": "删除线路分组",
+  "tags": "自定义线路管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/linegroups/{linegroup_id}": {
+      "delete": {
+        "tags": [
+          "自定义线路管理"
+        ],
+        "operationId": "DeleteLineGroup",
+        "summary": "删除线路分组",
+        "description": "删除线路分组。该接口部分区域未上线,如需使用请提交工单申请开通。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/LineGroupIdInPath"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "删除线路分组响应。",
+            "schema": {
+              "$ref": "#/definitions/CreateLineGroupsResp"
+            },
+            "examples": {
+              "application/json": {
+                "name": "linegroup",
+                "lines": [
+                  "LA",
+                  "ST"
+                ],
+                "status": "PENDING_DELETE",
+                "description": "456",
+                "line_id": "lgroup_ff8080826c33046a016c3ce46a3322cf",
+                "created_at": "2019-07-29T08:41:38.096",
+                "updated_at": "2019-07-29T09:23:16.610"
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 8
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "CreateLineGroupsResp": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "线路分组名称。"
+        },
+        "lines": {
+          "type": "array",
+          "description": "线路分组包含的线路列表。\n解析线路ID。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ERROR:失败"
+        },
+        "description": {
+          "type": "string",
+          "description": "线路分组的描述信息"
+        },
+        "line_id": {
+          "type": "string",
+          "description": "线路分组的ID。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "LineGroupIdInPath": {
+      "name": "linegroup_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "线路分组ID。",
+      "pattern": "[0-9a-zA-Z_]{1,50}"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

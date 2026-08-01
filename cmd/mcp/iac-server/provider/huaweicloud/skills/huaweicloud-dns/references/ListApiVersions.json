@@ -1,0 +1,161 @@
+{
+  "name": "ListApiVersions",
+  "summary": "查询API版本信息列表",
+  "tags": "版本管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "版本管理"
+        ],
+        "x-request-examples-description-1": "查询云解析服务支持的所有API版本信息列表。",
+        "x-request-examples-url-1": "GET https://{endpoint}/",
+        "operationId": "ListApiVersions",
+        "summary": "查询API版本信息列表",
+        "description": "查询云解析服务支持的所有API版本信息列表。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "查询API版本信息列表响应。",
+            "schema": {
+              "$ref": "#/definitions/ApiVersionsInfoResp"
+            },
+            "examples": {
+              "application/json": {
+                "versions": {
+                  "values": [
+                    {
+                      "status": "CURRENT",
+                      "id": "v2",
+                      "links": [
+                        {
+                          "href": "https://Endpoint/v2",
+                          "rel": "self"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 0
+      }
+    }
+  },
+  "definitions": {
+    "LinksItem": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "**参数解释:**\n对应快捷链接。\n**取值范围:**\n不涉及。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "**参数解释:**\n快捷链接标记名称。\n**取值范围:**\n不涉及。"
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "valuesItem": {
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListApiVersionsItem"
+          },
+          "description": "**参数解释:**\n所有版本列表。\n**取值范围:**\n不涉及。"
+        }
+      },
+      "description": "**参数解释:**\n版本对象。\n**取值范围:**\n不涉及。"
+    },
+    "ApiVersionsInfoResp": {
+      "description": "**参数解释:**\nDNS API列表。\n**取值范围:**\n不涉及。",
+      "required": [
+        "versions"
+      ],
+      "properties": {
+        "versions": {
+          "description": "**参数解释:**\n版本信息列表。\n**取值范围:**\n不涉及。",
+          "$ref": "#/definitions/valuesItem"
+        }
+      }
+    },
+    "ListApiVersionsItem": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n版本状态。\n**取值范围:**\n- CURRENT:表示该版本为主推版本。\n- SUPPORTED:表示为老版本,但是现在还在继续支持。\n- DEPRECATED:表示为废弃版本,存在后续删除的可能。"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n版本号。\n**取值范围:**\nv2。"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LinksItem"
+          },
+          "description": "**参数解释:**\n指向当前版本的URL。\n**取值范围:**\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

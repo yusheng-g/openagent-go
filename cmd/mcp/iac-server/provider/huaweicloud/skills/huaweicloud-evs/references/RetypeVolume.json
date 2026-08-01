@@ -1,0 +1,208 @@
+{
+  "name": "RetypeVolume",
+  "summary": "磁盘类型变更",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/volumes/{volume_id}/retype": {
+      "post": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "磁盘类型变更",
+        "description": "对按需或者包周期云硬盘进行磁盘类型变更。\n在磁盘类型变更包周期云硬盘的场景下:\n- 如果您需要查看订单可用的优惠券,请参考\"[查询订单可用优惠券](https://support.huaweicloud.com/api-oce/zh-cn_topic_0092953630.html)\"。\n- 如果您需要支付订单,请参考\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/api_order_00030.html)\"。\n- 如果您需要查询订单的资源开通详情,请参考\"[查询订单的资源开通详情](https://support.huaweicloud.com/api-oce/api_order_00001.html)\"。\n- 如果您需要退订该包周期资源,请参考“[退订包周期资源](https://support.huaweicloud.com/api-oce/zh-cn_topic_0082522030.html)”。",
+        "operationId": "RetypeVolume",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "RetypeVolumeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RetypeVolumeRequestBody"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "volume_id",
+            "in": "path",
+            "description": "磁盘ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "deprecated": false,
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "job_id": "4011af9965d85d3c0165d8628c650007"
+              },
+              "application/json-1": {
+                "order_id": "CS1711152257C60TL"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/RetypeVolumeResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "x-name": "磁盘类型变更",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 17,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "https://{endpoint}/v2/{project_id}/volumes/{volume_id}/retype",
+        "x-request-examples-1": {
+          "retype": {
+            "new_type": "SAS"
+          },
+          "bssParam": {
+            "isAutoPay": "true"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"retype\": {\n        \"new_type\": \"SAS\"\n    },\n    \"bssParam\": {\n        \"isAutoPay\": \"true\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "BssParamForRetypeVolume": {
+      "properties": {
+        "isAutoPay": {
+          "type": "string",
+          "description": "功能说明:是否立即支付。该参数只有在云硬盘为包周期的情况下有意义。默认值为false\n取值范围:\n* true:立即支付,从帐户余额中自动扣费\n* false:不立即支付,创建订单暂不支付",
+          "enum": [
+            "false",
+            "true"
+          ],
+          "default": "false"
+        }
+      },
+      "description": "包周期retype计费策略参数。"
+    },
+    "RetypeVolumeResponseBody": {
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID,云硬盘为按需计费时返回该参数。\n> 说明:\n> \n> 如果需要查询job的状态,请参考:\"[查询job的状态](https://support.huaweicloud.com/api-evs/evs_04_0054.html)\"。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID,云硬盘为包周期计费时返回该参数。\n> 说明:\n> \n> - 如果您需要支付订单,请参考:\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/zh-cn_topic_0075746561.html)\"。"
+        }
+      },
+      "description": ""
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "RetypeVolume": {
+      "type": "object",
+      "required": [
+        "new_type"
+      ],
+      "properties": {
+        "new_type": {
+          "type": "string",
+          "example": "SATA",
+          "description": "变更至指定的云硬盘类型"
+        },
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘iops大小。"
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘的吞吐量大小。"
+        }
+      },
+      "description": "变更云硬盘类型"
+    },
+    "RetypeVolumeRequestBody": {
+      "required": [
+        "os-retype"
+      ],
+      "properties": {
+        "bssParam": {
+          "description": "包周期retype传入字段",
+          "$ref": "#/definitions/BssParamForRetypeVolume"
+        },
+        "os-retype": {
+          "description": "变更磁盘类型的请求体。",
+          "$ref": "#/definitions/RetypeVolume"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

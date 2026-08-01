@@ -1,0 +1,199 @@
+{
+  "name": "CreateXelLogDownload",
+  "summary": "获取扩展日志下载信息",
+  "tags": "获取扩展日志下载信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/xellog-download": {
+      "post": {
+        "x-request-examples-text-1": {
+          "file_name": "HkEngineEventFile_0_133311031287610000.xel"
+        },
+        "tags": [
+          "获取扩展日志下载信息"
+        ],
+        "x-is-registered": "Y",
+        "x-publishpath": "xellog",
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "operationId": "CreateXelLogDownload",
+        "summary": "获取扩展日志下载信息",
+        "description": "获取扩展日志下载信息",
+        "x-support-sdk": "Y",
+        "x-constraint": "",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": false,
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "required": false,
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "CreateXelLogDownloadRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateXelLogDownloadRequestBody"
+            },
+            "description": "请求体"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateXelLogDownloadResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "list": [
+                  {
+                    "file_name": "HkEngineEventFile_0_133311031287610000.xel",
+                    "status": "FINISH",
+                    "file_size": "0",
+                    "file_link": "https://rdsbucket.xxxr.obs.cn-xianhz-1.myhuaweicloud.com:443/054bc9c1f680d55c1f36c006e5a9f67b_xellog_download_20200515080614589?AWSAccessKeyId=1BQ38TBCQHAVQXBUMUTC&Expires=1589530200&response-cache-control=no-cache%2Cno-store&Signature=Fgi4%2BLOJ9frAXyOkz5hRoW5O%2BUM%3D",
+                    "create_at": "2023-06-06T01:47:20+0000",
+                    "update_at": "2023-06-06T01:47:20+0000"
+                  }
+                ],
+                "count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "获取扩展日志下载信息",
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/xellog-download",
+        "x-request-examples-1": {
+          "fileName": "HkEngineEventFile_0_133311031287610000.xel"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateXelLogDownloadResponseBody": {
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateXelLogDownloadResult"
+          },
+          "description": "扩展日志文件返回实体"
+        },
+        "count": {
+          "type": "integer",
+          "description": "扩展日志文件信息数量。"
+        }
+      }
+    },
+    "CreateXelLogDownloadResult": {
+      "required": [
+        "file_name",
+        "status",
+        "file_size",
+        "file_link",
+        "create_at",
+        "update_at"
+      ],
+      "properties": {
+        "file_name": {
+          "description": "下载文件名",
+          "type": "string"
+        },
+        "status": {
+          "description": "生成链接的生成状态。FINISH,表示下载链接已经生成完成。EXPORTING,,表示正在生成文件。FAILED,表示存在日志文件准备失败。",
+          "type": "string"
+        },
+        "file_size": {
+          "description": "日志大小,单位:KB",
+          "type": "string"
+        },
+        "file_link": {
+          "description": "下载链接,链接的生成状态为EXPORTING,或者FAILED不予返回",
+          "type": "string"
+        },
+        "create_at": {
+          "description": "生成时间",
+          "type": "string",
+          "format": "yyyy-MM-dd hh:mm:ss"
+        },
+        "update_at": {
+          "description": "更新时间",
+          "type": "string",
+          "format": "yyyy-MM-dd hh:mm:ss"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "CreateXelLogDownloadRequestBody": {
+      "required": [
+        "file_name"
+      ],
+      "properties": {
+        "file_name": {
+          "type": "string",
+          "description": "文件名。取值范围:不为null和空字符串,只为大小写字母,数字和下划线,以“.xel”结尾"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

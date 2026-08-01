@@ -1,0 +1,497 @@
+{
+  "name": "CinderListQuotas",
+  "summary": "查询租户的详细配额",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/os-quota-sets/{target_project_id}": {
+      "get": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "查询租户的详细配额",
+        "description": "查询租户的详细配额。",
+        "operationId": "CinderListQuotas",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "target_project_id",
+            "in": "path",
+            "description": "目标的项目ID。与project_id保持一致即可。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "usage",
+            "in": "query",
+            "description": "是否查询配额详细信息。当前只支持传true。",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "True"
+            ],
+            "x-order": 4,
+            "x-admin": "",
+            "x-internal": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "quota_set": {
+                  "gigabytes_SAS": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 21
+                  },
+                  "volumes_SATA": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 8
+                  },
+                  "gigabytes": {
+                    "reserved": 0,
+                    "limit": 42790,
+                    "in_use": 2792
+                  },
+                  "backup_gigabytes": {
+                    "reserved": 0,
+                    "limit": 5120,
+                    "in_use": 51
+                  },
+                  "snapshots_SAS": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 0
+                  },
+                  "volumes_SSD": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 28
+                  },
+                  "snapshots": {
+                    "reserved": 0,
+                    "limit": 10,
+                    "in_use": 6
+                  },
+                  "id": "cd631140887d4b6e9c786b67a6dd4c02",
+                  "volumes_SAS": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 2
+                  },
+                  "snapshots_SSD": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 0
+                  },
+                  "volumes": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 108
+                  },
+                  "gigabytes_SATA": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 168
+                  },
+                  "backups": {
+                    "reserved": 0,
+                    "limit": 100,
+                    "in_use": 10
+                  },
+                  "gigabytes_SSD": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 1085
+                  },
+                  "snapshots_SATA": {
+                    "reserved": 0,
+                    "limit": -1,
+                    "in_use": 0
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CinderListQuotasResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询租户的详细配额",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 17,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/{project_id}/os-quota-sets/{target_project_id}?usage=True",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016/6/30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QuotaDetailSnapshotsGPSSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "GPSSD类型云硬盘预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailVolumesSATA": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SATA云硬盘类型预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailSnapshotsSAS": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SAS类型云硬盘预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetail": {
+      "required": [
+        "in_use",
+        "limit",
+        "reserved"
+      ],
+      "properties": {
+        "in_use": {
+          "type": "integer",
+          "format": "int32",
+          "description": "已使用的数量。"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大的数量。"
+        },
+        "reserved": {
+          "type": "integer",
+          "format": "int32",
+          "description": "预留属性。"
+        }
+      },
+      "description": "配额详细信息。"
+    },
+    "QuotaList": {
+      "required": [
+        "backup_gigabytes",
+        "backups",
+        "gigabytes",
+        "id",
+        "snapshots",
+        "volumes"
+      ],
+      "properties": {
+        "backup_gigabytes": {
+          "description": "备份容量,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailBackupGigabytes"
+        },
+        "backups": {
+          "description": "备份个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailBackups"
+        },
+        "gigabytes": {
+          "description": "总容量,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailGigabytes"
+        },
+        "id": {
+          "type": "string",
+          "description": "项目ID。"
+        },
+        "snapshots": {
+          "description": "快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailSnapshots"
+        },
+        "volumes": {
+          "description": "云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailVolumes"
+        },
+        "gigabytes_SATA": {
+          "description": "SATA云硬盘类型预留的容量大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailGigabytesSATA"
+        },
+        "snapshots_SATA": {
+          "description": "SATA云硬盘类型预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailSnapshotsSATA"
+        },
+        "volumes_SATA": {
+          "description": "SATA云硬盘类型预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailVolumesSATA"
+        },
+        "gigabytes_SAS": {
+          "description": "SAS类型云硬盘预留的size大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailGigabytesSAS"
+        },
+        "snapshots_SAS": {
+          "description": "SAS类型云硬盘预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailSnapshotsSAS"
+        },
+        "volumes_SAS": {
+          "description": "SAS类型云硬盘预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailVolumesSAS"
+        },
+        "gigabytes_SSD": {
+          "description": "SSD类型云硬盘预留的size大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailGigabytesSSD"
+        },
+        "snapshots_SSD": {
+          "description": "SSD类型云硬盘预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailSnapshotsSSD"
+        },
+        "volumes_SSD": {
+          "description": "SSD类型云硬盘预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailVolumesSSD"
+        },
+        "per_volume_gigabytes": {
+          "description": "每个云硬盘的容量配额限制。键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。",
+          "$ref": "#/definitions/QuotaDetailPerVolumeGigabytes"
+        }
+      },
+      "description": "配额信息。"
+    },
+    "QuotaDetailSnapshotsESSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "ESSD类型云硬盘预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailGigabytesESSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "ESSD类型云硬盘预留的size大小,单位为GiB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailVolumesSSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SSD类型云硬盘预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "CinderListQuotasResponseBody": {
+      "required": [
+        "quota_set"
+      ],
+      "properties": {
+        "quota_set": {
+          "description": "查询请求返回的配额信息,请参见• [quota_set参数说明](https://support.huaweicloud.com/api-evs/evs_04_2073.html#evs_04_2073__li4741865201620)。",
+          "$ref": "#/definitions/QuotaList"
+        }
+      },
+      "description": "配额信息。"
+    },
+    "QuotaDetailSnapshots": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailGigabytesSSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SSD类型云硬盘预留的size大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailGigabytesGPSSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "GPSSD类型云硬盘预留的size大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "QuotaDetailGigabytes": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "总容量,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailSnapshotsSSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SSD类型云硬盘预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailPerVolumeGigabytes": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "每个云硬盘的容量配额限制。键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailSnapshotsSATA": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SATA云硬盘类型预留快照个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailGigabytesSATA": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SATA云硬盘类型预留的容量大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailVolumesESSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "ESSD类型云硬盘预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailVolumes": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailVolumesSAS": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SAS类型云硬盘预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "QuotaDetailBackupGigabytes": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "备份容量,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailBackups": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "备份个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailVolumesGPSSD": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "GPSSD类型云硬盘预留的云硬盘个数,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    },
+    "QuotaDetailGigabytesSAS": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/QuotaDetail"
+        }
+      ],
+      "description": "SAS类型云硬盘预留的size大小,单位为GB,键值对,包含:reserved(预留)、limit(最大)和in_use(已使用)。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

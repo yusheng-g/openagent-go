@@ -1,0 +1,130 @@
+{
+  "name": "UpdateProjectStatus",
+  "summary": "设置项目状态",
+  "tags": "项目管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3-ext/projects/{project_id}": {
+      "put": {
+        "tags": [
+          "项目管理"
+        ],
+        "summary": "设置项目状态",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)设置项目状态。项目状态包括:正常、冻结。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "UpdateProjectStatus",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "待设置状态的项目ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "07707ab14980265e2f5fc003a021bbc3",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "UpdateProjectStatusRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateProjectStatusRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "设置成功。"
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "设置项目状态",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 21,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3-ext/projects/{project_id}",
+        "x-request-examples-1": {
+          "project": {
+            "status": "suspended"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"project\":{\n        \"status\":\"suspended\"\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateProjectStatusRequestBody": {
+      "required": [
+        "project"
+      ],
+      "properties": {
+        "project": {
+          "description": "项目信息。",
+          "$ref": "#/definitions/UpdateProjectOption"
+        }
+      },
+      "description": ""
+    },
+    "UpdateProjectOption": {
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "suspended",
+          "description": "项目的状态信息,参数的值为\"suspended\"或\"normal\"。\n- status值为\"suspended\"时,会将项目设置为冻结状态。\n- status值为\"normal\"时,会将项目设置为正常(解冻)状态。",
+          "enum": [
+            "suspended",
+            "normal"
+          ]
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

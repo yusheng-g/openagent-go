@@ -1,0 +1,137 @@
+{
+  "name": "NotifyReplaceNode",
+  "summary": "备机顶替只读节点",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/replace-node": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "备机顶替只读节点",
+        "description": "备机顶替只读节点。",
+        "operationId": "NotifyReplaceNode",
+        "x-constraint": "只读实例发生故障,通过节点顶替,暂时将只读实例的数据vip漂到对应主实例的备机节点上提供服务。待修复只读实例后,通过“节点顶替回切”进行手动回切。\n注意事项:仅是将只读实例的数据vip漂到对应主实例的备机上,并且因为备机和只读节点的规格、参数设置、复制时延等的差异,备机顶替期间用户使用时会存在性能差异、数据跳变等情况,以及备机顶替期间,主备倒换、规格变更、端口修改等操作会受到限制。在节点顶替/顶替回切中,因为涉及到vip的切换,会有一段时间的业务中断。仅支持RDS for SQL Server实例。如需使用备机替换只读节点功能,请提交工单申请。",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言。",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "只读实例ID。"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "NotifyReplaceNodeRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReplaceNodeRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ReplaceNodeResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "5a7a69c429aa41b8a565c9a4995afea0"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "备机顶替只读节点。",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/5a7a69c429aa41b8a565c9a4995afea0/instances/02a202cf9fdd4561b80036337c9732f8in04/replace-node",
+        "x-request-examples-1": {
+          "instance_id": "02a202cf9fdd4561b80036337c9732f8in04",
+          "node_id": "bfafde30219f4ac5a820c7748e4dc106no04",
+          "replace_action": "REPLACE"
+        },
+        "x-request-examples-description-2": "备机顶替只读节点回切。",
+        "x-request-examples-url-2": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/5a7a69c429aa41b8a565c9a4995afea0/instances/02a202cf9fdd4561b80036337c9732f8in04/replace-node",
+        "x-request-examples-2": {
+          "instance_id": "02a202cf9fdd4561b80036337c9732f8in04",
+          "node_id": "bfafde30219f4ac5a820c7748e4dc106no04",
+          "replace_action": "REPLACE_ROLLBACK"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ReplaceNodeResponse": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务流id。"
+        }
+      }
+    },
+    "ReplaceNodeRequest": {
+      "type": "object",
+      "required": [
+        "instance_id",
+        "node_id",
+        "replace_action"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "只读实例ID。"
+        },
+        "node_id": {
+          "type": "string",
+          "description": "只读实例的节点ID。"
+        },
+        "replace_action": {
+          "type": "string",
+          "description": "替换动作,取值范围:\nREPLACE: 节点顶替\nREPLACE_ROLLBACK: 节点顶替回切",
+          "enum": [
+            "REPLACE",
+            "REPLACE_ROLLBACK"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

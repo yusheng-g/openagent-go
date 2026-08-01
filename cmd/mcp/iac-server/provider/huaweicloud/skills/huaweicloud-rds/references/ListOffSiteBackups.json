@@ -1,0 +1,284 @@
+{
+  "name": "ListOffSiteBackups",
+  "summary": "查询跨区域备份列表",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/offsite-backups": {
+      "get": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListOffSiteBackups",
+        "x-support-sdk": "Y",
+        "summary": "查询跨区域备份列表",
+        "x-constraint": "- 仅支持查询MySQL和SQL Server的备份列表。\n- SQL Server仅支持查询备份类型为自动全量备份和手动备份的备份列表。",
+        "description": "查询跨区域备份列表。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b593+edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "type": "string",
+            "required": true,
+            "description": "实例ID。"
+          },
+          {
+            "name": "backup_id",
+            "in": "query",
+            "type": "string",
+            "description": "备份ID。"
+          },
+          {
+            "name": "backup_type",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "auto",
+              "incremental"
+            ],
+            "description": "备份类型,取值:\n- “auto”: 自动全量备份。SQL Server仅支持查询备份类型为“auto”的备份列表\n- “incremental”: 自动增量备份"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "integer",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "minimum": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "查询记录数。默认为100,不能为负数,最小值为1,最大值为100。",
+            "minimum": 1,
+            "maximum": 100
+          },
+          {
+            "name": "begin_time",
+            "in": "query",
+            "type": "string",
+            "description": "查询开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。与end_time必须同时使用。"
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "string",
+            "description": "查询结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”,且大于查询开始时间。其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。与begin_time必须同时使用。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListOffSiteBackupsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "backups": [
+                  {
+                    "id ": "43e4feaab48f11e89039fa163ebaa7e4br04",
+                    "name": "xxxx.xxx",
+                    "type": "manual",
+                    "size": 2803,
+                    "status": "COMPLETED",
+                    "begin_time": "2018-08-06T12:41:14+0800",
+                    "end_time": "2018-08-06T12:43:14+0800",
+                    "datastore": {
+                      "type": "MySQL",
+                      "version": 5.6
+                    },
+                    "instance_id": "a48e43ff268f4c0e879652d65e63d0fbin04"
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/offsite-backups?instance_id=a48e43ff268f4c0e879652d65e63d0fbin04"
+      }
+    }
+  },
+  "definitions": {
+    "BackupDatabase": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "SqlServer引擎指定备份的数据库。",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "OffSiteBackupForList": {
+      "description": "跨区域备份信息。",
+      "required": [
+        "id",
+        "instance_id",
+        "name",
+        "begin_time",
+        "end_time",
+        "status",
+        "type",
+        "size",
+        "datastore"
+      ],
+      "properties": {
+        "id": {
+          "description": "备份ID。",
+          "type": "string"
+        },
+        "instance_id": {
+          "description": "实例ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "备份名称。",
+          "type": "string"
+        },
+        "databases": {
+          "description": "备份的数据库。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BackupDatabase"
+          }
+        },
+        "begin_time": {
+          "description": "备份开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "end_time": {
+          "description": "备份结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "status": {
+          "description": "备份状态,取值:\n\n- BUILDING: 备份中。\n- COMPLETED: 备份完成。\n- FAILED:备份失败。\n- DELETING:备份删除中。",
+          "type": "string",
+          "enum": [
+            "BUILDING",
+            "COMPLETED",
+            "FAILED",
+            "DELETING"
+          ]
+        },
+        "type": {
+          "description": "备份类型,取值:\n\n- “auto”: 自动全量备份\n- “incremental”: 自动增量备份",
+          "type": "string",
+          "enum": [
+            "auto",
+            "incremental"
+          ]
+        },
+        "size": {
+          "description": "备份大小,单位为KB。",
+          "type": "integer",
+          "format": "int64"
+        },
+        "datastore": {
+          "$ref": "#/definitions/ParaGroupDatastore"
+        },
+        "associated_with_ddm": {
+          "description": "是否已被DDM实例关联。",
+          "type": "boolean"
+        }
+      }
+    },
+    "ListOffSiteBackupsResponseBody": {
+      "required": [
+        "backups",
+        "total_count"
+      ],
+      "properties": {
+        "backups": {
+          "description": "跨区域备份信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OffSiteBackupForList"
+          }
+        },
+        "total_count": {
+          "description": "总记录数。",
+          "type": "integer"
+        }
+      }
+    },
+    "ParaGroupDatastore": {
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,不区分大小写:\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+          "enum": [
+            "MySQL",
+            "PostgreSQL",
+            "SQLServer",
+            "MariaDB"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。\n\n- MySQL引擎支持5.6、5.7、8.0版本。取值示例:5.7。具有相应权限的用户才可使用8.0,您可联系华为云客服人员申请。\n- PostgreSQL引擎支持9.5、9.6、10、11版本。取值示例:9.6。\n- Microsoft SQL Server:仅支持2017 企业版、2017 标准版、2017 web版、2014 标准版、2014 企业版、2016 标准版、2016 企业版、2012 企业版、2012 标准版、2012 web版、2008 R2 企业版、2008 R2 web版、2014 web版、2016 web版。取值示例2014_SE。 例如:2017标准版可填写2017_SE,2017企业版可填写2017_EE,2017web版可以填写2017_WEB"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

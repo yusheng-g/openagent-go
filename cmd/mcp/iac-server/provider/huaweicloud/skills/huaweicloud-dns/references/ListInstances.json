@@ -1,0 +1,254 @@
+{
+  "name": "ListInstances",
+  "summary": "批量查询DNS解析量统计相关的资源",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/batch-query-instances": {
+      "post": {
+        "tags": [
+          "批量操作"
+        ],
+        "operationId": "ListInstances",
+        "summary": "批量查询DNS解析量统计相关的资源",
+        "description": "批量查询DNS解析量统计相关的资源。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-enable-auth-anno": {
+          "type": "iam-token"
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ListInstancesRequestBody",
+            "in": "body",
+            "description": "查询DNS资源请求。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListInstancesRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询DNS资源响应。",
+            "schema": {
+              "$ref": "#/definitions/ListInstancesResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "instances": [
+                  {
+                    "dns_public_zone_id": [
+                      {
+                        "name": "example.com.",
+                        "id": "9a175b9787bcc2710187c5ae33ad2670",
+                        "region": "global",
+                        "enterprise_project_id": "0"
+                      }
+                    ],
+                    "dns_public_recordset_id": [
+                      {
+                        "id": "9a186e6689ce017c0189cfff487966cb",
+                        "name": "www.example.com."
+                      }
+                    ]
+                  },
+                  {
+                    "dns_public_zone_id": [
+                      {
+                        "name": "example.cn.",
+                        "id": "9a175b9785770684018577afafe900dc",
+                        "region": "global",
+                        "enterprise_project_id": "50b6a13d-4b22-4122-a100-e9915b9c1cff"
+                      }
+                    ],
+                    "dns_public_recordset_id": [
+                      {
+                        "id": "9a175b9784c34a960184c35e4243000b",
+                        "name": "www.example.cn."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "批量查询DNS解析量统计相关的资源。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/batch-query-instances",
+        "x-request-examples-1": {
+          "dim_name": [
+            "dns_public_zone_id",
+            "dns_public_recordset_id"
+          ],
+          "ids": [
+            [
+              "9a175b9787bcc2710187c5ae33ad2670",
+              "9a186e6689ce017c0189cfff487966cb"
+            ],
+            [
+              "9a175b9785770684018577afafe900dc",
+              "9a175b9784c34a960184c35e4243000b"
+            ]
+          ]
+        },
+        "x-order": 13
+      }
+    }
+  },
+  "definitions": {
+    "ZoneResolutionInstances": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n域名ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n域名。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n域名状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- PENDING_DISABLE:暂停中\n- DISABLE:暂停\n- ERROR:失败",
+          "readOnly": true
+        },
+        "region": {
+          "type": "string",
+          "description": "**参数解释:**\n域名所属的区域。\n**取值范围:**\n不涉及。",
+          "default": "global",
+          "readOnly": true
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释:**\n企业项目ID。\n**取值范围:**\n不涉及。",
+          "default": "0",
+          "readOnly": true
+        }
+      }
+    },
+    "ListInstancesRequestBody": {
+      "required": [
+        "dim_name",
+        "ids"
+      ],
+      "properties": {
+        "dim_name": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "description": "**参数解释:**\nDNS批量查询接口支持查询的维度。\n**约束限制:**\n不涉及。\n**取值范围:**\n- dns_public_zone_id:公网域名ID\n- dns_public_recordset_id:公网记录集ID,需与dns_public_zone_id组合使用\n- dns_private_zone_id:内网域名ID\n- vpc_id:VPC ID,需与dns_private_zone_id组合使用\n**默认取值:**\n不涉及。",
+          "items": {
+            "type": "string",
+            "pattern": "dns_zone_id|dns_recordset_id|dns_public_zone_id|dns_public_recordset_id|dns_private_zone_id|vpc_id"
+          }
+        },
+        "ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1000,
+          "description": "DNS上报的资源ID列表。",
+          "items": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-zA-Z]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "description": "DNS上报资源ID,可包含域名ID、记录集ID、VPC ID。"
+            }
+          }
+        }
+      }
+    },
+    "RsetResolutionInstances": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集域名。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- PENDING_DISABLE:暂停中\n- DISABLE:暂停\n- ERROR:失败",
+          "readOnly": true
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集类型。\n**取值范围:**\n- A:将域名解析到指定的IPv4地址。\n- AAAA:将域名解析到指定的IPv6地址。\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。\n- SRV:用于记录某台服务器对外提供了哪些服务。\n- NS:指定域名的权威DNS服务器。\n- SOA:提供域名的基本信息和权威服务器的详细信息。\n- CAA:指定为域名颁发HTTPS证书的授权CA机构,仅支持公网域名解析。\n- PTR:指定IP地址反向解析记录,仅支持内网域名解析。",
+          "readOnly": true
+        }
+      }
+    },
+    "VpcResolutionInstances": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\nVPC ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\nVPC名称。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    },
+    "ListInstancesResponseBody": {
+      "type": "object",
+      "properties": {
+        "instances": {
+          "type": "array",
+          "description": "返回查询到的解析量资源实例。",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/ResolutionInstances"
+          }
+        }
+      }
+    },
+    "ResolutionInstances": {
+      "type": "object",
+      "properties": {
+        "dns_public_zone_id": {
+          "description": "公网域名的资源详情。",
+          "$ref": "#/definitions/ZoneResolutionInstances"
+        },
+        "dns_public_recordset_id": {
+          "description": "公网记录集的资源详情,需与dns_public_zone_id组合使用。",
+          "$ref": "#/definitions/RsetResolutionInstances"
+        },
+        "dns_private_zone_id": {
+          "description": "内网域名的资源详情。",
+          "$ref": "#/definitions/ZoneResolutionInstances"
+        },
+        "vpc_id": {
+          "description": "VPC的资源详情,需与dns_private_zone_id组合使用。",
+          "$ref": "#/definitions/VpcResolutionInstances"
+        }
+      },
+      "description": "**参数解释:**\nDNS批量查询接口支持响应的维度。\n**取值范围:**\n- dns_public_zone_id:公网域名ID\n- dns_public_recordset_id:公网记录集ID,需与dns_public_zone_id组合使用\n- dns_private_zone_id:内网域名ID\n- vpc_id:VPC ID,需与dns_private_zone_id组合使用"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,191 @@
+{
+  "name": "ListLoadbalancerFeature",
+  "summary": "查询指定ELB实例的特性配置",
+  "tags": "特性配置",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/features": {
+      "get": {
+        "x-request-examples-url-1": "https://{ELB_Endpoint}/v3/0c1503d710984bad92306faea3654dfd/elb/loadbalancers/6c9ddefb-c0c2-40fb-9505-0b4c81fac234/features",
+        "tags": [
+          "特性配置"
+        ],
+        "summary": "查询指定ELB实例的特性配置",
+        "description": "查询指定ELB实例的特性配置情况。",
+        "operationId": "ListLoadbalancerFeature",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "schema": {
+              "$ref": "#/definitions/ListLoadbalancerFeaturesResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "features": [
+                  {
+                    "feature": "update_elastic_flavor",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "tcpssl",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "dnat_forward_mode_enable",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "upgrade_l4_resource_package",
+                    "value": "false",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "upgrade_l7_resource_package",
+                    "value": "false",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "l7policy_cors",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "l7policy_traffic_limit",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "listener_qos",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "l7_traffic_mirror",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "traffic_mirror_enable",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "nat64_enable",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "multi_eip",
+                    "value": "true",
+                    "type": "BOOL"
+                  },
+                  {
+                    "feature": "multi_vip",
+                    "value": "true",
+                    "type": "BOOL"
+                  }
+                ],
+                "request_id": "d8e8d908-1f54-46da-b254-45203bc1115d"
+              }
+            }
+          }
+        },
+        "x-name": "查询指定ELB实例的特性配置。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2024-06-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ListLoadbalancerFeaturesResponseBody": {
+      "required": [
+        "features",
+        "request_id"
+      ],
+      "properties": {
+        "features": {
+          "type": "array",
+          "description": "**参数解释**:ELB实例特性信息列表。",
+          "items": {
+            "$ref": "#/definitions/LoadbalancerFeature"
+          }
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "type": "object"
+    },
+    "LoadbalancerFeature": {
+      "type": "object",
+      "description": "**参数解释**:ELB实例特性。",
+      "required": [
+        "feature",
+        "value",
+        "type"
+      ],
+      "properties": {
+        "feature": {
+          "type": "string",
+          "example": "multi_eip",
+          "description": "**参数解释**:特性名称。\n\n**取值范围**:不涉及"
+        },
+        "type": {
+          "type": "string",
+          "example": "INT",
+          "description": "**参数解释**:特性值(value字段)的类型,如:INT,表示整型。\n\n**取值范围**:不涉及"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:特性值。如开关类型的特性取值true/false,表示特性开启关闭;配额类型的特性取值整数,表示限制配额。\n\n**取值范围**:不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

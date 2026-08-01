@@ -1,0 +1,211 @@
+{
+  "name": "ShowIntelligentKillSessionHistory",
+  "summary": "查询一键kill会话历史",
+  "tags": "RDS",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/ops/intelligent-kill-session/history": {
+      "get": {
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "x-api-type": "open-api",
+        "tags": [
+          "RDS"
+        ],
+        "operationId": "ShowIntelligentKillSessionHistory",
+        "summary": "查询一键kill会话历史",
+        "description": "查询一键kill会话历史",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": false,
+            "description": "查询开始时间",
+            "type": "integer",
+            "format": "int64",
+            "minLength": 0,
+            "maxLength": 512
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false,
+            "description": "查询结束时间",
+            "type": "integer",
+            "format": "int64",
+            "minLength": 0,
+            "maxLength": 512
+          },
+          {
+            "name": "page_num",
+            "in": "query",
+            "required": false,
+            "description": "查询页编号",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 512
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "description": "查询分页大小",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 512
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Common response",
+            "schema": {
+              "$ref": "#/definitions/IntelligentKillSessionHistoryRsp"
+            },
+            "examples": {
+              "application/json": {
+                "history": [
+                  {
+                    "task_id": "1753061903381",
+                    "start_time": 1753061905,
+                    "end_time": 1753061905,
+                    "download_link": "https://dbsbucket-0-cn-southwest-244-f36a91159fbd44d8927e100fa8695ee5.obs.cn-southwest-244.ulanqab.huawei.com:443/0cf6f193231e41feac6deabbf6620274_instanceId_aa650a108f034e83b24486fd1ff7be2fin01_OneClickKillSession/1753061903381_1753061905_1753061905.tar.gz?AWSAccessKeyId=A73CYSZNIARONC64E7ZR&Expires=1753106674&response-cache-control=no-cache%2Cno-store&Signature=e7R4UJyS6nvFqm%2FY8ygEBDRwEcw%3D"
+                  },
+                  {
+                    "task_id": "1753104595497",
+                    "start_time": 1753104597,
+                    "end_time": 1753104597,
+                    "download_link": "https://dbsbucket-0-cn-southwest-244-f36a91159fbd44d8927e100fa8695ee5.obs.cn-southwest-244.ulanqab.huawei.com:443/0cf6f193231e41feac6deabbf6620274_instanceId_aa650a108f034e83b24486fd1ff7be2fin01_OneClickKillSession/1753104595497_1753104597_1753104597.tar.gz?AWSAccessKeyId=A73CYSZNIARONC64E7ZR&Expires=1753106674&response-cache-control=no-cache%2Cno-store&Signature=1Di7%2F%2FzBDDuTeL%2BZ9pJ4Beajkts%3D"
+                  }
+                ],
+                "total_count": 2
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "IntelligentKillSessionHistory": {
+      "type": "object",
+      "description": "限流信息",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "任务id",
+          "minLength": 0,
+          "maxLength": 512
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "kill开始时间",
+          "minimum": 0,
+          "maximum": 10000000000000
+        },
+        "end_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "kill结束时间",
+          "minimum": 0,
+          "maximum": 10000000000000
+        },
+        "download_link": {
+          "type": "string",
+          "description": "操作历史下载链接",
+          "minLength": 0,
+          "maxLength": 1000000
+        }
+      }
+    },
+    "IntelligentKillSessionHistoryRsp": {
+      "type": "object",
+      "description": "查询一键kill会话历史记录返回体",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例id",
+          "example": "28f61af50fc9452aa0ed5ea25c3cc3d3",
+          "readOnly": true,
+          "minLength": 32,
+          "maxLength": 36
+        },
+        "history": {
+          "type": "array",
+          "description": "限流信息列表",
+          "minItems": 0,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/definitions/IntelligentKillSessionHistory"
+          }
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "历史记录数量",
+          "minimum": 0,
+          "maximum": 512
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

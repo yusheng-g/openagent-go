@@ -1,0 +1,169 @@
+{
+  "name": "ListIncentiveDiscountPolicies",
+  "summary": "查询产品的折扣和激励策略",
+  "tags": "管理产品(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/products/incentive-discount-policies": {
+      "get": {
+        "summary": "查询产品的折扣和激励策略",
+        "description": "伙伴在伙伴销售平台上查询产品的折扣和激励策略。\n\n伙伴登录合作伙伴中心查看产品的折扣和激励策略请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/dp_120400.html)。",
+        "tags": [
+          "管理产品(伙伴)"
+        ],
+        "operationId": "ListIncentiveDiscountPolicies",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用经销商伙伴或华为云伙伴能力中心(一级经销商)的AK/SK或者Token调用。调用的时候必须传递经销商伙伴或华为云伙伴能力中心(一级经销商)的AK/SK或者Token。",
+        "x-externalURL": "/v2/products/incentive-discount-policies",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-10-11",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "required": true,
+            "description": "查询策略的指定时间。东八区时间,格式:YYYY-MM。 说明: 实际查询结果为指定时间所在月最后一天23:59:59的策略情况。",
+            "x-maxLength": 20,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "2021-10",
+            "x-allowNull": false
+          },
+          {
+            "name": "service_type_code",
+            "in": "query",
+            "required": false,
+            "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。此参数不携带或携带值为空时,不作为筛选条件;携带值为空串时,作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "hws.service.type.obs",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 0,
+            "x-allowNull": true,
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量,默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "x-allowNull": true,
+            "default": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询产品的折扣和激励策略响应",
+            "schema": {
+              "$ref": "#/definitions/ListIncentiveDiscountPoliciesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "policies": [
+                  {
+                    "service_type_code": "hws.service.type.workplace",
+                    "service_type_name": "华为云WeLink",
+                    "incentive_policy": "0",
+                    "allow_discount": null
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理产品(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/products/incentive-discount-policies?time=2021-10&service_type_code=hws.service.type.workplace&offset=0&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "IncentiveAndDiscountPolicy": {
+      "properties": {
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型列表。",
+          "example": "hws.service.type.obs"
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "incentive_policy": {
+          "type": "string",
+          "description": "激励策略。 0:非特定产品1:特定产品2:无业绩无返点13:有业绩无返点",
+          "example": "0"
+        },
+        "allow_discount": {
+          "type": "string",
+          "description": "是否允许应用伙伴授予折扣。 YES:允许应用NO:不许应用",
+          "example": true
+        }
+      }
+    },
+    "ListIncentiveDiscountPoliciesRsp": {
+      "properties": {
+        "policies": {
+          "description": "产品折扣和激励策略信息列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IncentiveAndDiscountPolicy"
+          }
+        },
+        "total_count": {
+          "description": "查询总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

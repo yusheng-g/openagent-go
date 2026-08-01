@@ -1,0 +1,189 @@
+{
+  "name": "BatchCreateVolumeTags",
+  "summary": "为指定云硬盘批量添加标签",
+  "tags": "云硬盘标签",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/cloudvolumes/{volume_id}/tags/action": {
+      "post": {
+        "tags": [
+          "云硬盘标签"
+        ],
+        "summary": "为指定云硬盘批量添加标签",
+        "description": "为指定云硬盘批量添加标签。\n\n添加标签时,如果云硬盘的标签已存在相同key,则会覆盖已有标签。\n单个云硬盘最多支持创建10个标签。",
+        "operationId": "BatchCreateVolumeTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchCreateVolumeTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchCreateVolumeTagsRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "volume_id",
+            "in": "path",
+            "description": "云硬盘ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "为指定云硬盘批量添加标签",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 24,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/{project_id}/cloudvolumes/{volume_id}/tags/action",
+        "x-request-examples-1": {
+          "action": "create",
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value3"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n    \"action\": \"create\", \n \n    \"tags\": [\n        {\n            \"key\": \"key1\", \n            \"value\": \"value1\"\n        }, \n        {\n            \"key\": \"key2\", \n            \"value\": \"value3\"\n        }\n    ]\n}",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2017/9/30",
+        "x-open-region-cloud": "hc,hk,otc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "标签键。同一资源的key值不能重复。\n最大长度36个字符。\n字符集:A-Z,a-z , 0-9,‘-’,‘_’,UNICODE字符(\\一-\\鿿)。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "value": {
+          "type": "string",
+          "description": "标签值。\n最大长度43个字符。\n字符集:A-Z,a-z , 0-9,‘.’,‘-’,‘_’,UNICODE字符(\\一-\\鿿)。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": ""
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "BatchCreateVolumeTagsRequestBody": {
+      "required": [
+        "action",
+        "tags"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "example": "create",
+          "description": "操作标识,当前支持的取值如下:\n\n添加标签:create",
+          "enum": [
+            "create"
+          ],
+          "default": "create"
+        },
+        "tags": {
+          "type": "array",
+          "example": "\"[{ \\\"key\\\": \\\"key1\\\", \\\"value\\\": \\\"value1\\\"},{\\\"key\\\": \\\"key2\\\",\\\"value\\\": \\\"value3\\\"}]\"",
+          "description": "标签列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Tag"
+          }
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

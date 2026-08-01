@@ -1,0 +1,92 @@
+{
+  "name": "KeystoneDeleteIdentityProvider",
+  "summary": "删除身份提供商",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/OS-FEDERATION/identity_providers/{id}": {
+      "delete": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "删除身份提供商",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html) 删除身份提供商。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneDeleteIdentityProvider",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "待删除的身份提供商ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "ACME",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除成功。"
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除身份提供商",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 87,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "DELETE https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/{id}",
+        "x-request-examples-text-1": "DELETE https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/{id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

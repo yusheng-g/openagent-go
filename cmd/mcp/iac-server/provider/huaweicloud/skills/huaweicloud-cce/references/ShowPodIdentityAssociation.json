@@ -1,0 +1,171 @@
+{
+  "name": "ShowPodIdentityAssociation",
+  "summary": "查询指定pod-identity关联",
+  "tags": "权限管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/pod-identity-associations/{association_id}": {
+      "get": {
+        "tags": [
+          "权限管理"
+        ],
+        "summary": "查询指定pod-identity关联",
+        "description": "该API用于查询指定pod-identity关联详情信息。",
+        "operationId": "ShowPodIdentityAssociation",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_path_pod_identity_association_id"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示查询指定pod-identity关联详情信息成功",
+            "schema": {
+              "description": "**参数解释**:\npod-identity关联详情信息\n**约束限制**:\n不涉及",
+              "$ref": "#/definitions/PodIdentityAssociationResp"
+            },
+            "examples": {
+              "application/json": {
+                "uid": "402358e8-2e3a-4531-bae7-fe9cbxxxxxx1",
+                "clusterId": "402358e8-2e3a-4531-bae7-fe9cbxxxxxx1",
+                "namespace": "example-namespace",
+                "serviceAccount": "example-serviceaccount",
+                "agencyName": "example-agency",
+                "tags": [
+                  {
+                    "key": "example-tag-key",
+                    "value": "example-tag-val"
+                  }
+                ],
+                "createdAt": "",
+                "modifiedAt": ""
+              }
+            }
+          }
+        },
+        "x-name": "查询指定pod-identity关联",
+        "deprecated": false,
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "PodIdentityAssociationResp": {
+      "description": "pod-identity关联详情",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联的uid。\n**约束限制:**\n该值不可修改\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        },
+        "clusterId": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联所属的集群id。\n**约束限制:**\n该值不可修改\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联所要绑定的serviceaccount所属的命名空间。\n**约束限制:**\n该值不可修改\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        },
+        "serviceAccount": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联所要绑定的serviceaccount名称。\n**约束限制:**\n该值不可修改\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        },
+        "agencyName": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联所要绑定的委托名称。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        },
+        "tags": {
+          "type": "array",
+          "description": "**参数解释:**\npod-identity关联的资源标签列表。\n**约束限制:**\n不涉及",
+          "items": {
+            "description": "pod-identity关联的资源标签",
+            "$ref": "#/definitions/ResourceTag"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联创建时间。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        },
+        "modifiedAt": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联最近一次更新时间。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        }
+      }
+    },
+    "ResourceTag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释:**\nKey值。\n**约束限制:**\n不涉及\n**取值范围:**\n- 不能为空且首尾不能包含空格,最多支持128个字符\n- 可用UTF-8格式表示的任意语种字母、数字和空格\n- 支持部分特殊字符:_.:=+-@\n- 不能以\"\\_sys\\_\"开头\n\n**默认取值:**\n不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "Value值。\n- 可以为空但不能缺省,最多支持255个字符\n- 可用UTF-8格式表示的汉字、字母、数字和空格\n- 支持部分特殊字符:_.:/=+-@",
+          "maxLength": 255
+        }
+      },
+      "description": "CCE资源标签"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_pod_identity_association_id": {
+      "name": "association_id",
+      "in": "path",
+      "description": "**参数解释**:\nPod-identity关联ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

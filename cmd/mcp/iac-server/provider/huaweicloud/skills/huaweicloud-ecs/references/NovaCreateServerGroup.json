@@ -1,0 +1,225 @@
+{
+  "name": "NovaCreateServerGroup",
+  "summary": "创建云服务器组",
+  "tags": "云服务器组管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/os-server-groups": {
+      "post": {
+        "tags": [
+          "云服务器组管理"
+        ],
+        "summary": "创建云服务器组",
+        "description": "创建弹性云服务器组。",
+        "operationId": "NovaCreateServerGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "NovaCreateServerGroupRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NovaCreateServerGroupRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "server_group": {
+                  "id": "5bbcc3c4-1da2-4437-a48a-66f15b1b13f9",
+                  "name": "test",
+                  "policies": [
+                    "anti-affinity"
+                  ],
+                  "members": [],
+                  "metadata": {}
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaCreateServerGroupResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建云服务器组",
+        "x-constraint": "当前只支持反亲和性组。",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 76,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/{project_id}/os-server-groups",
+        "x-request-examples-1": {
+          "server_group": {
+            "name": "test",
+            "policies": [
+              "anti-affinity"
+            ]
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"server_group\": {\n        \"name\": \"test\",\n        \"policies\": [\"anti-affinity\"]\n    }\n}",
+        "x-registered_to": "nova",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "N",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaCreateServerGroupRequestBody": {
+      "required": [
+        "server_group"
+      ],
+      "properties": {
+        "server_group": {
+          "description": "弹性云服务器组信息。",
+          "$ref": "#/definitions/NovaCreateServerGroupOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "NovaCreateServerGroupResponseBody": {
+      "required": [
+        "server_group"
+      ],
+      "properties": {
+        "server_group": {
+          "description": "弹性云服务器组信息",
+          "$ref": "#/definitions/NovaServerGroup"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaServerGroup": {
+      "required": [
+        "id",
+        "members",
+        "metadata",
+        "name",
+        "policies",
+        "project_id",
+        "user_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云服务器组UUID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云服务器组名称。"
+        },
+        "members": {
+          "type": "array",
+          "description": "云服务器组中包含的云服务器列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云服务器组元数据。",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "policies": {
+          "type": "array",
+          "description": "与服务器组关联的策略名称列表。当前有效的策略名称为:\n\nanti-affinity -此组中的服务器必须安排到不同的主机;\n\naffinity -此组中的服务器必须安排在同一主机上.\n\nsoft-anti-affinity –如果可能, 应将此组中的服务器安排到不同的主机, 但如果无法实现, 则仍应安排它们, 而不是导致生成失败。\n\nsoft-affinity -如果可能, 应将此组中的服务器安排在同一主机上, 但如果无法实现, 则仍应安排它们, 而不是导致生成失败。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "description": "弹性云服务器组所属项目ID,UUID格式。 \n\n> 说明:\n\n- 微版本2.13新增参数。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "弹性云服务器组所属用户ID,UUID格式。 \n\n> 说明:\n\n- 微版本2.13新增参数。"
+        }
+      },
+      "description": " "
+    },
+    "NovaCreateServerGroupOption": {
+      "required": [
+        "name",
+        "policies"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "test",
+          "description": "弹性云服务器组名称,长度大于0小于256字节。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "policies": {
+          "type": "array",
+          "description": "与云服务器组关联的策略名称列表。包括:\n\n- anti-affinity:此组中的弹性云服务器必须安排到不同的主机。\n\n- affinity:此组中的弹性云服务器必须安排在同一主机上。\n\n- soft-anti-affinity:如果可能,应将此组中的云服务器尽量安排到不同的主机上,但如果无法实现,则仍应安排它们,而不是导致生成失败。\n\n- soft-affinity:如果可能,应将此组中的弹性云服务器尽量安排在同一主机上, 但如果无法实现,则仍应安排它们,而不是导致生成失败。 \n\n> 说明:\n\n- 当前仅支持反亲和性anti-affinity策略。",
+          "items": {
+            "type": "string",
+            "enum": [
+              "anti-affinity"
+            ]
+          }
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

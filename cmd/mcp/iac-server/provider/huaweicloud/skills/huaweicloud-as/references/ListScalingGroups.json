@@ -1,0 +1,547 @@
+{
+  "name": "ListScalingGroups",
+  "summary": "查询弹性伸缩组列表",
+  "tags": "弹性伸缩组管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_group": {
+      "get": {
+        "tags": [
+          "弹性伸缩组管理"
+        ],
+        "summary": "查询弹性伸缩组列表",
+        "description": "根据输入条件过滤查询弹性伸缩组列表。查询结果分页显示。可根据伸缩组名称,伸缩配置ID,伸缩组状态,企业项目ID,起始行号,记录条数进行条件过滤查询。若不加过滤条件默认最多查询租户下20条伸缩组信息。",
+        "operationId": "ListScalingGroups",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_group_name",
+            "in": "query",
+            "description": "伸缩组名称",
+            "required": false,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "test"
+          },
+          {
+            "name": "scaling_configuration_id",
+            "in": "query",
+            "description": "伸缩配置ID,通过查询弹性伸缩配置列表接口获取,详见[查询弹性伸缩配置列表](https://support.huaweicloud.com/api-as/as_06_0202.html)。",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 4,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "scaling_group_status",
+            "in": "query",
+            "description": "伸缩组状态,取值如下:\n\n- INSERVICE:正常状态\n- PAUSED:停用状态\n- ERROR:异常状态\n- DELETING:删除中\n- FREEZED:已冻结",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "INSERVICE",
+              "PAUSED",
+              "ERROR",
+              "DELETING"
+            ],
+            "x-order": 5,
+            "x-example": "INSERVICE"
+          },
+          {
+            "name": "start_number",
+            "in": "query",
+            "description": "查询的起始行号,默认为0。最小值为0,最大值没有限制。",
+            "required": false,
+            "type": "integer",
+            "x-order": 6
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询的记录条数,默认为20。取值范围为:0~100。",
+            "required": false,
+            "type": "integer",
+            "x-order": 7,
+            "x-example": 5
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "企业项目ID,当传入all_granted_eps时表示查询该用户所有授权的企业项目下的伸缩组列表,如何获取企业项目ID,请参考[查询企业项目列表](https://support.huaweicloud.com/api-em/zh-cn_topic_0121230880.html)。说明:华为云帐号和拥有全局权限的IAM用户可以查询该用户所有伸缩组列表。授予部分企业项目的IAM用户,如果拥有超过100个企业项目,则只能返回有权限的前100个企业项目对应的伸缩组列表。",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "examples": {
+              "application/json": {
+                "scaling_groups": [
+                  {
+                    "scaling_group_name": "as-group-dd48",
+                    "scaling_group_id": "7d03f471-779e-46b7-a4cd-9601e639e08a",
+                    "scaling_group_status": "INSERVICE",
+                    "scaling_configuration_id": "57da4923-6067-4952-bedd-f70744332be8",
+                    "scaling_configuration_name": "as-config-3565",
+                    "current_instance_number": 0,
+                    "desire_instance_number": 0,
+                    "min_instance_number": 0,
+                    "max_instance_number": 1,
+                    "cool_down_time": 300,
+                    "lbaas_listeners": [],
+                    "networks": [
+                      {
+                        "id": "c1a2fdf3-7d65-46bd-a967-039cdea0abd2",
+                        "ipv6_enable": false,
+                        "allowed_address_pairs": []
+                      }
+                    ],
+                    "available_zones": [
+                      "XXXA",
+                      "XXXB"
+                    ],
+                    "security_groups": [],
+                    "create_time": "2021-04-14T03:09:18Z",
+                    "vpc_id": "0f9c6ff3-84b9-4f65-be8a-00d6f22572d1",
+                    "health_periodic_audit_method": "NOVA_AUDIT",
+                    "health_periodic_audit_time": 5,
+                    "health_periodic_audit_grace_period": 600,
+                    "instance_terminate_policy": "OLD_CONFIG_OLD_INSTANCE",
+                    "is_scaling": false,
+                    "delete_publicip": true,
+                    "delete_volume": true,
+                    "enterprise_project_id": "0",
+                    "multi_az_priority_policy": "EQUILIBRIUM_DISTRIBUTE",
+                    "tags": null
+                  }
+                ],
+                "total_number": 1,
+                "start_number": 0,
+                "limit": 10
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ScalingGroupsResult"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "示例为查询满足条件“伸缩组名称为as-group-test且伸缩配置ID为1d281494-6085-4579-b817-c1f813be835f”的伸缩组列表。",
+        "x-support-sdk": "Y",
+        "x-name": "查询弹性伸缩组列表",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 2,
+        "x-request-examples-url-1": "GET https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group?scaling_group_name=as-group-test&scaling_configuration_id=1d281494-6085-4579-b817-c1f813be835f",
+        "x-flow_control_group": "as",
+        "x-tenant_flow_time": 1,
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": 78,
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": 1,
+        "x-ctc": "Y",
+        "x-hc": "Y",
+        "x-multi_tenant_flow_value": 780,
+        "x-otc": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ScalingGroupsResult": {
+      "properties": {
+        "total_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "总记录数"
+        },
+        "start_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "查询的开始记录号"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "查询记录数"
+        },
+        "scaling_groups": {
+          "type": "array",
+          "description": "伸缩组列表",
+          "items": {
+            "$ref": "#/definitions/ScalingGroups"
+          }
+        }
+      },
+      "description": "伸缩组列表"
+    },
+    "NetworksResult": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "a8327883-6b07-4497-9c61-68d03ee193a",
+          "description": "网络ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "ipv6_enable": {
+          "type": "boolean",
+          "description": "是否启用IPv6。取值为true时,标识此网卡已启用IPv6。"
+        },
+        "ipv6_bandwidth": {
+          "$ref": "#/definitions/Ipv6Bandwidth"
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "是否开启源/目的检查开关。",
+          "items": {
+            "$ref": "#/definitions/AllowedAddressPair"
+          }
+        }
+      },
+      "description": "网络信息"
+    },
+    "AllowedAddressPair": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "是否开启源/目的检查开关。\n\n默认是开启,不允许置空。\n\n关闭:1.1.1.1/0\n开启:除“1.1.1.1/0”以外的其余值均按开启处理"
+        }
+      },
+      "description": "是否开启源/目的检查开关。"
+    },
+    "Ipv6Bandwidth": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "IPv6共享带宽的ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "IPv6信息"
+    },
+    "TagsSingleValue": {
+      "type": "object",
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "资源标签键。最大长度36个unicode字符。key不能为空。(搜索时不对此参数做校验)。最多为10个,不能为空或者空字符串。且不能重复。"
+        },
+        "value": {
+          "type": "string",
+          "description": "资源标签值列表,每个值最大长度43个unicode字符,每个key下最多为10个,同一个key中values不能重复。\n\n“*”为系统保留字符,如果value是以“*”开头表示按照“*”后面的值全模糊匹配。不能只传入“*”。\n如果values为空列表但不可缺省,则表示any_value(查询任意value)。value之间为或的关系。"
+        }
+      },
+      "description": "资源标签键"
+    },
+    "SecurityGroupsResult": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "8a4b1d5b-0054-419f-84b1-5c8a59ebc829",
+          "description": "安全组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "安全组信息"
+    },
+    "LbaasListenersResult": {
+      "type": "object",
+      "properties": {
+        "listener_id": {
+          "type": "string",
+          "description": "监听器ID"
+        },
+        "pool_id": {
+          "type": "string",
+          "description": "后端云服务器组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "后端协议号,指后端云服务器监听的端口,取值范围[1,65535]",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "权重,指后端云服务器经分发得到的请求数量比例,取值范围[0,1],默认为1。"
+        },
+        "protocol_version": {
+          "type": "string",
+          "description": "指定ip协议版本",
+          "enum": [
+            "IPV4",
+            "IPV6"
+          ]
+        }
+      },
+      "description": "增强型负载均衡器信息"
+    },
+    "ScalingGroups": {
+      "type": "object",
+      "properties": {
+        "scaling_group_name": {
+          "type": "string",
+          "description": "伸缩组名称。"
+        },
+        "scaling_group_id": {
+          "type": "string",
+          "description": "伸缩组ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_group_status": {
+          "type": "string",
+          "description": "伸缩组状态。",
+          "enum": [
+            "INSERVICE",
+            "PAUSED",
+            "ERROR",
+            "DELETING",
+            "FREEZED"
+          ]
+        },
+        "scaling_configuration_id": {
+          "type": "string",
+          "description": "伸缩配置ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_configuration_name": {
+          "type": "string",
+          "description": "伸缩配置名称。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "current_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组中当前实例数。"
+        },
+        "desire_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组期望实例数。"
+        },
+        "min_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组最小实例数。"
+        },
+        "max_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组最大实例数"
+        },
+        "cool_down_time": {
+          "type": "integer",
+          "description": "冷却时间,单位是秒。",
+          "maximum": 86400
+        },
+        "lb_listener_id": {
+          "type": "string",
+          "description": "经典型负载均衡监听器ID,多个负载均衡监听器ID以逗号分隔。",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "lbaas_listeners": {
+          "type": "array",
+          "description": "增强型负载均衡器信息,该参数为预留字段。",
+          "items": {
+            "$ref": "#/definitions/LbaasListenersResult"
+          }
+        },
+        "available_zones": {
+          "type": "array",
+          "description": "可用分区信息",
+          "items": {
+            "type": "string"
+          }
+        },
+        "networks": {
+          "type": "array",
+          "description": "网络信息",
+          "items": {
+            "$ref": "#/definitions/NetworksResult"
+          }
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "安全组信息",
+          "items": {
+            "$ref": "#/definitions/SecurityGroupsResult"
+          }
+        },
+        "create_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "创建伸缩组时间,遵循UTC时间。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "伸缩组所在的VPC ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "detail": {
+          "type": "string",
+          "description": "伸缩组详情。"
+        },
+        "is_scaling": {
+          "type": "boolean",
+          "description": "伸缩组伸缩标志。"
+        },
+        "health_periodic_audit_method": {
+          "type": "string",
+          "description": "健康检查方式。",
+          "enum": [
+            "ELB_AUDIT",
+            "NOVA_AUDIT"
+          ]
+        },
+        "health_periodic_audit_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查的间隔时间。"
+        },
+        "health_periodic_audit_grace_period": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康状况检查宽限期。",
+          "maximum": 86400
+        },
+        "instance_terminate_policy": {
+          "type": "string",
+          "description": "移除策略。",
+          "enum": [
+            "OLD_CONFIG_OLD_INSTANCE",
+            "OLD_CONFIG_NEW_INSTANCE",
+            "OLD_INSTANCE",
+            "NEW_INSTANCE"
+          ]
+        },
+        "delete_publicip": {
+          "type": "boolean",
+          "description": "删除云服务器是否删除云服务器绑定的弹性IP。"
+        },
+        "delete_volume": {
+          "type": "boolean",
+          "description": "删除云服务器是否删除云服务器绑定的数据盘"
+        },
+        "cloud_location_id": {
+          "type": "string",
+          "description": "该参数为预留字段"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "activity_type": {
+          "type": "string",
+          "description": "伸缩组活动类型"
+        },
+        "multi_az_priority_policy": {
+          "type": "string",
+          "description": "伸缩组扩缩容时目标AZ选择的优先级策略"
+        },
+        "iam_agency_name": {
+          "type": "string",
+          "description": "委托的名称委托是由租户管理员在统一身份认证服务(Identity and Access Management,IAM)上创建的,可以为弹性云服务器提供访问云服务的临时凭证。"
+        },
+        "description": {
+          "type": "string",
+          "description": "伸缩组描述信息"
+        },
+        "tags": {
+          "type": "array",
+          "description": "添加到伸缩组的标签。",
+          "items": {
+            "$ref": "#/definitions/TagsSingleValue"
+          }
+        }
+      },
+      "description": "伸缩组详情"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

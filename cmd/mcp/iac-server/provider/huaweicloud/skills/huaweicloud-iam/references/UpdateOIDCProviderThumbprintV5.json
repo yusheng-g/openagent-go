@@ -1,0 +1,95 @@
+{
+  "name": "UpdateOIDCProviderThumbprintV5",
+  "summary": "替换OIDC提供商指纹列表",
+  "tags": "OIDC身份提供商管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/oidc-providers/{provider_id}/thumbprint": {
+      "put": {
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "tags": [
+          "OIDCIdentityProvider"
+        ],
+        "summary": "替换OIDC提供商指纹列表",
+        "description": "该接口可以用一个新的指纹列表替换与 OIDC 提供商关联的现有指纹列表。通常,您仅在身份提供商证书更改时才需要更新指纹,这种情况一般很少发生。但是,如果提供商的证书发生了变化,而您又没有更新指纹,那么任何尝试切换代入与该 OIDC 提供商相关的 信任委托都将失败。\n\n**注意:**\nIAM 使用自己的信任根证书颁发机构 (CAs) 库来验证 JSON Web Key Set (JWKS) 端点的 TLS 证书,从而确保与 OIDC 身份提供商 (IdPs) 的通信安全。如果您的 OIDC IdP 依赖于不是由这些受信任 CA 之一签名的证书,那么我们才会使用 IdP 配置中设置的指纹来确保通信安全。",
+        "operationId": "UpdateOIDCProviderThumbprintV5",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProviderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOIDCProviderThumbprintReqBody"
+              },
+              "example": {
+                "thumbprints": [
+                  "stringstringstringstringstringstringstringstringstringstringstri"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "请求成功。"
+          },
+          "400": {
+            "description": "请求体异常。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResp"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "put",
+  "uri": null
+}

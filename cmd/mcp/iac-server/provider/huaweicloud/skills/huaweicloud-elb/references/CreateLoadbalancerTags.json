@@ -1,0 +1,124 @@
+{
+  "name": "CreateLoadbalancerTags",
+  "summary": "添加负载均衡器标签",
+  "tags": "标签管理",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/{project_id}/loadbalancers/{loadbalancer_id}/tags": {
+      "post": {
+        "tags": [
+          "标签管理"
+        ],
+        "summary": "添加负载均衡器标签",
+        "description": "给指定负载均衡器添加标签。",
+        "operationId": "CreateLoadbalancerTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateLoadbalancerTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateLoadbalancerTagsRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "description": "负载均衡器ID",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "添加tag成功返回"
+          }
+        },
+        "deprecated": false,
+        "x-name": "添加负载均衡器标签",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v2.0/6a0de1c3-7d74-4f4a-b75e-e57135bd2b97/loadbalancers/7add33ad-11dc-4ab9-a50f-419703f13163/tags",
+        "x-request-examples-1": {
+          "tag": {
+            "key": "key1",
+            "value": "value1"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"tag\": {\n        \"key\": \"key1\",\n        \"value\": \"value1\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度36个unicode字符。 key不能为空。\n搜索时不对此参数做校验\n不能包含非打印字符\"=\",“*”,“<”,“>”,“\\”,“,”,\"|\",“/”。"
+        },
+        "value": {
+          "type": "string",
+          "description": "值列表。每个值最大长度255个unicode字符,如果values为空列表,则表示any_value。value之间为或的关系。不能包含非打印字符\"=\",“*”,“<”,“>”,“\\”,“,”,\"|\",“/”。"
+        }
+      },
+      "description": "资源标签"
+    },
+    "CreateLoadbalancerTagsRequestBody": {
+      "properties": {
+        "tag": {
+          "description": "创建标签的请求体",
+          "$ref": "#/definitions/ResourceTag"
+        }
+      },
+      "description": "This is a auto create Body Object",
+      "type": "object",
+      "required": [
+        "tag"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

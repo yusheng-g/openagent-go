@@ -1,0 +1,154 @@
+{
+  "name": "UpdateAutopilotMaintenanceWindow",
+  "summary": "更新集群维护窗口",
+  "tags": "集群升级(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/projects/{project_id}/clusters/{cluster_id}/maintenancewindows": {
+      "put": {
+        "tags": [
+          "集群升级(Autopilot)"
+        ],
+        "summary": "更新集群维护窗口",
+        "description": "该API用于更新集群维护窗口。",
+        "operationId": "UpdateAutopilotMaintenanceWindow",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "UpdateAutopilotMaintenanceWindowRequestBody",
+            "description": "请求body体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MaintenanceWindow"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新集群维护窗口成功",
+            "examples": {
+              "application/json": {
+                "weekly_period": "Friday",
+                "start_time": "16:00:00",
+                "duration_hours": 3,
+                "upgrade_scope": "OnlyPatchVersion"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/MaintenanceWindow"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "更新集群维护窗口",
+        "x-order": 25,
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-request-examples-description-1": "更新集群维护窗口",
+        "x-request-examples-url-1": "PUT /api/v3/projects/{project_id}/clusters/{cluster_id}/maintenancewindows",
+        "x-request-examples-1": {
+          "weekly_period": "Friday",
+          "start_time": "16:00:00",
+          "duration_hours": 3,
+          "upgrade_scope": "OnlyPatchVersion"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MaintenanceWindow": {
+      "required": [
+        "weekly_period",
+        "start_time",
+        "duration_hours"
+      ],
+      "properties": {
+        "weekly_period": {
+          "type": "string",
+          "description": "升级周期,从\"Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday\"中进行选择,以英文逗号分隔\n如:\"Friday,Saturday\""
+        },
+        "start_time": {
+          "type": "string",
+          "description": "升级起始时间(UTC时间)"
+        },
+        "duration_hours": {
+          "type": "integer",
+          "description": "升级时长"
+        },
+        "upgrade_scope": {
+          "type": "string",
+          "description": "升级版本范围,当前只支持小版本自动升级",
+          "default": "OnlyPatchVersion",
+          "pattern": "OnlyPatchVersion"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,601 @@
+{
+  "name": "KeystoneCreateScopedToken",
+  "summary": "获取联邦认证scoped token",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/auth/tokens": {
+      "post": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "获取联邦认证scoped token",
+        "description": "该接口可以用于通过联邦认证方式获取scoped token。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneCreateScopedToken",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "KeystoneCreateScopedTokenRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateScopedTokenRequestBody"
+            },
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。",
+            "examples": {
+              "application/json": {
+                "token": {
+                  "expires_at": "2020-02-13T14:21:34.042000Z",
+                  "methods": [
+                    "token"
+                  ],
+                  "catalog": [
+                    {
+                      "endpoints": [
+                        {
+                          "id": "d2983f677ce14f1e81cbb6a9345a107a",
+                          "interface": "public",
+                          "region": "*",
+                          "region_id": "*",
+                          "url": "https://iam.cn-north-1.myhwclouds.com/v3"
+                        }
+                      ],
+                      "id": "fd631b3426cb40f0919091d5861d8fea",
+                      "name": "keystone",
+                      "type": "identity"
+                    }
+                  ],
+                  "domain": {
+                    "id": "06aa2260a480cecc0f36c0086bb6cfe0",
+                    "name": "IAMDomain"
+                  },
+                  "roles": [
+                    {
+                      "id": "0",
+                      "name": "te_admin"
+                    },
+                    {
+                      "id": "0",
+                      "name": "secu_admin"
+                    }
+                  ],
+                  "issued_at": "2020-02-12T14:21:34.042000Z",
+                  "user": {
+                    "OS-FEDERATION": {
+                      "groups": [
+                        {
+                          "id": "06aa2260bb00cecc3f3ac0084a74038f",
+                          "name": "admin"
+                        }
+                      ],
+                      "identity_provider": {
+                        "id": "ACME"
+                      },
+                      "protocol": {
+                        "id": "saml"
+                      }
+                    },
+                    "domain": {
+                      "id": "06aa2260a480cecc0f36c0086bb6cfe0",
+                      "name": "IAMDomain"
+                    },
+                    "id": "LdQTDSC7zmJVIic3yaCbLBXDxPAdDxLg",
+                    "name": "FederationUser",
+                    "password_expires_at": ""
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Subject-Token": {
+                "type": "string",
+                "description": "签名后的scoped token。",
+                "x-example": "MIID...."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateScopedTokenResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取联邦认证scoped token",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 103,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3/auth/tokens",
+        "x-request-examples-1": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "token"
+              ],
+              "token": {
+                "id": "MIIatAYJKoZIhvcNAQcCoIIapTCCGqECAQExDTALB..."
+              }
+            },
+            "scope": {
+              "domain": {
+                "id": "063bb260a480cecc0f36c0086bb6cfe0"
+              }
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"token\"\n            ],\n            \"token\": {\n                \"id\": \"MIIatAYJKoZIhvcNAQcCoIIapTCCGqECAQExDTALB...\"\n            }\n        },\n        \"scope\": {\n            \"domain\": {\n                \"id\": \"063bb260a480cecc0f36c0086bb6cfe0\"\n            }\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TokenProjectResult": {
+      "required": [
+        "domain",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "项目名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "34c77f3eaf84c00aaf54...",
+          "description": "项目ID。"
+        },
+        "domain": {
+          "description": "项目所属账号信息。",
+          "$ref": "#/definitions/TokenProjectDomainResult"
+        }
+      },
+      "description": ""
+    },
+    "OsfederationIdentityprovider": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "exampleidentityprovider",
+          "description": "身份提供商ID。"
+        }
+      },
+      "description": ""
+    },
+    "OsfederationProtocol": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "saml",
+          "description": "协议ID。"
+        }
+      },
+      "description": ""
+    },
+    "ScopeProjectOption": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "0b95b78b67fa045b38104c12fb...",
+          "description": "项目ID,id与name二选一即可。"
+        },
+        "name": {
+          "type": "string",
+          "description": "项目名,id与name二选一即可。"
+        },
+        "domain": {
+          "description": "项目所属账号,使用name时必填。",
+          "$ref": "#/definitions/ScopeDomainOption"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateScopedTokenRequestBody": {
+      "required": [
+        "auth"
+      ],
+      "properties": {
+        "auth": {
+          "description": "认证信息。",
+          "$ref": "#/definitions/ScopedTokenAuth"
+        }
+      },
+      "description": ""
+    },
+    "TokenSocpeOption": {
+      "properties": {
+        "domain": {
+          "description": "取值为domain时,表示可以跨区域使用,domain支持id和name,二选一即可。",
+          "$ref": "#/definitions/ScopeDomainOption"
+        },
+        "project": {
+          "description": "取值为project时,表示仅能访问指定project下的资源,project支持id和name,二选一即可。",
+          "$ref": "#/definitions/ScopeProjectOption"
+        }
+      },
+      "description": ""
+    },
+    "ScopedToken": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "MIIatAYJKoZIhvcNAQcCoIIapTCCGqECAQExDTALB...",
+          "description": "联邦unscoped token的ID。"
+        }
+      },
+      "description": ""
+    },
+    "ScopedTokenUser": {
+      "required": [
+        "OS-FEDERATION",
+        "domain",
+        "id",
+        "name",
+        "password_expires_at"
+      ],
+      "properties": {
+        "domain": {
+          "description": "用户所属账号信息。",
+          "$ref": "#/definitions/TokenDomainResult"
+        },
+        "OS-FEDERATION": {
+          "description": "联邦身份认证信息。",
+          "$ref": "#/definitions/TokenUserOsfederation"
+        },
+        "id": {
+          "type": "string",
+          "example": "RMQTgtjjSNGDcKy7oUmI3AZg7GgsWG0Z",
+          "description": "用户ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "用户名。"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "description": "密码过期时间(UTC时间),“”表示密码不过期。"
+        }
+      },
+      "description": ""
+    },
+    "TokenCatalogEndpoint": {
+      "required": [
+        "id",
+        "interface",
+        "region",
+        "region_id",
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3",
+          "description": "终端节点的URL。"
+        },
+        "region": {
+          "type": "string",
+          "example": "*",
+          "description": "终端节点所属区域。"
+        },
+        "region_id": {
+          "type": "string",
+          "example": "*",
+          "description": "终端节点所属区域ID。"
+        },
+        "interface": {
+          "type": "string",
+          "example": "public",
+          "description": "接口类型,描述接口在该终端节点的可见性。值为“public”,表示该接口为公开接口。"
+        },
+        "id": {
+          "type": "string",
+          "example": "089d4a381d574308a703122d3ae738e9",
+          "description": "终端节点ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenRole": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "te_admin",
+          "description": "权限名称。"
+        },
+        "id": {
+          "type": "string",
+          "description": "权限ID。默认显示为0,非真实权限ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenDomainResult": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "exampledomain",
+          "description": "用户所属账号名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "e31ac82d778b4d128cb6fed37fd72cdb",
+          "description": "用户所属账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenProjectDomainResult": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "账号名。"
+        },
+        "id": {
+          "type": "string",
+          "description": "账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenUserOsfederation": {
+      "required": [
+        "groups",
+        "identity_provider",
+        "protocol"
+      ],
+      "properties": {
+        "groups": {
+          "type": "array",
+          "description": "用户组信息列表。",
+          "items": {
+            "$ref": "#/definitions/OsfederationGroups"
+          }
+        },
+        "identity_provider": {
+          "description": "身份提供商信息。",
+          "$ref": "#/definitions/OsfederationIdentityprovider"
+        },
+        "protocol": {
+          "example": "fdec73ffea524aa1b373e40...",
+          "description": "协议信息。",
+          "$ref": "#/definitions/OsfederationProtocol"
+        }
+      },
+      "description": ""
+    },
+    "ScopeTokenResult": {
+      "required": [
+        "domain",
+        "expires_at",
+        "issued_at",
+        "methods",
+        "project",
+        "roles",
+        "user"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "description": "获取token的方式。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expires_at": {
+          "type": "string",
+          "example": "2017-05-24T06:54:12.508000Z",
+          "description": "token过期时间。"
+        },
+        "catalog": {
+          "type": "array",
+          "description": "服务目录信息。",
+          "items": {
+            "$ref": "#/definitions/TokenCatalog"
+          }
+        },
+        "domain": {
+          "description": "获取token的用户所属的账号信息。如果获取token时请求体中scope参数设置为domain,则返回该字段。",
+          "$ref": "#/definitions/TokenDomainResult"
+        },
+        "project": {
+          "description": "获取token的用户所属账号的项目信息。如果获取token时请求体中scope参数设置为project,则返回该字段。",
+          "$ref": "#/definitions/TokenProjectResult"
+        },
+        "roles": {
+          "type": "array",
+          "description": "token的权限信息。",
+          "items": {
+            "$ref": "#/definitions/TokenRole"
+          }
+        },
+        "user": {
+          "description": "获取token的用户信息。",
+          "$ref": "#/definitions/ScopedTokenUser"
+        },
+        "issued_at": {
+          "type": "string",
+          "example": "2015-11-09T00:42:57.527404Z",
+          "description": "token下发时间。"
+        }
+      },
+      "description": ""
+    },
+    "TokenCatalog": {
+      "required": [
+        "endpoints",
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "identity",
+          "description": "该接口所属服务。"
+        },
+        "id": {
+          "type": "string",
+          "example": "1331e5cff2a74d76b03da1225910e31d",
+          "description": "服务ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "iam",
+          "description": "服务名称。"
+        },
+        "endpoints": {
+          "type": "array",
+          "description": "终端节点。",
+          "items": {
+            "$ref": "#/definitions/TokenCatalogEndpoint",
+            "default": {
+              "value": "{}",
+              "type": "object"
+            }
+          }
+        }
+      },
+      "description": ""
+    },
+    "ScopeDomainOption": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "0b95b78b67fa045b38104c12fb...",
+          "description": "账号ID,id与name二选一即可。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMDomain",
+          "description": "账号名,id与name二选一即可。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateScopedTokenResponseBody": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "description": "联邦认证token信息。",
+          "$ref": "#/definitions/ScopeTokenResult"
+        }
+      },
+      "description": ""
+    },
+    "ScopedTokenAuth": {
+      "required": [
+        "identity",
+        "scope"
+      ],
+      "properties": {
+        "identity": {
+          "description": "认证参数。",
+          "$ref": "#/definitions/ScopedTokenIdentity"
+        },
+        "scope": {
+          "description": "token的使用范围,取值为project或domain,二选一即可。",
+          "$ref": "#/definitions/TokenSocpeOption"
+        }
+      },
+      "description": ""
+    },
+    "ScopedTokenIdentity": {
+      "required": [
+        "methods",
+        "token"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "description": "认证方法,该字段内容为“token”。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token": {
+          "description": "联邦unscoped token的信息。",
+          "$ref": "#/definitions/ScopedToken"
+        }
+      },
+      "description": ""
+    },
+    "OsfederationGroups": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "b40189e26ea44f959877621b4b298db5",
+          "description": "用户组ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "admin",
+          "description": "用户组名称。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

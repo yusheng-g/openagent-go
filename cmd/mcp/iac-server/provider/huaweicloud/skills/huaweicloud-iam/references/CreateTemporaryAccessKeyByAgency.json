@@ -1,0 +1,380 @@
+{
+  "name": "CreateTemporaryAccessKeyByAgency",
+  "summary": "通过委托获取临时访问密钥",
+  "tags": "Credential管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-CREDENTIAL/securitytokens": {
+      "post": {
+        "tags": [
+          "Credential管理"
+        ],
+        "summary": "通过委托获取临时访问密钥",
+        "description": "该接口可以用于通过委托来获取临时访问密钥(临时AK/SK)和securitytoken。\n\n临时AK/SK和securitytoken是系统颁发给IAM用户的临时访问令牌,有效期为15分钟至24小时,过期后需要重新获取。临时AK/SK和securitytoken遵循权限最小化原则。鉴权时,临时AK/SK和securitytoken必须同时使用,请求头中需要添加“x-security-token”字段,使用方法详情请参考:[API签名参考](https://support.huaweicloud.com/devg-apisign/api-sign-provide.html) 。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "CreateTemporaryAccessKeyByAgency",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Agent Operator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "CreateTemporaryAccessKeyByAgencyRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTemporaryAccessKeyByAgencyRequestBody"
+            },
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。\n\n无论\"session_user\"填写与否,返回都是相同的。若填写了\"session_user\",则在securitytoken中包含了所填写的\"session_user\"信息。",
+            "examples": {
+              "application/json": {
+                "credential": {
+                  "access": "E6DX0TF2ZREQ4ZAVM5CS",
+                  "expires_at": "2020-01-08T02:56:19.587000Z",
+                  "secret": "w9ePum0qdfac39ErLD0UdjofYkqort6Iw2bmR6Si",
+                  "securitytoken": "gQpjbi1ub3J0aC0..."
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateTemporaryAccessKeyByAgencyResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "通过委托获取临时访问密钥",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-request-examples-description-1": "填写\"policy\"参数。",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens",
+        "x-request-examples-1": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "assume_role"
+              ],
+              "policy": {
+                "Version": "1.1",
+                "Statement": [
+                  {
+                    "Effect": "allow",
+                    "Action": [
+                      "obs:object:*"
+                    ],
+                    "Resource": [
+                      "obs:*:*:object:*"
+                    ],
+                    "Condition": {
+                      "StringEquals": {
+                        "obs:prefix": [
+                          "public"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "assume_role": {
+                "domain_name": "IAMDomainA",
+                "agency_name": "IAMAgency",
+                "duration_seconds": 3600
+              }
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"assume_role\"\n            ],\n            \"policy\": {\n                \"Version\": \"1.1\",\n                \"Statement\": [\n                    {\n                        \"Effect\": \"allow\",\n                        \"Action\": [\n                            \"obs:object:*\"\n                        ],\n                        \"Resource\": [\n                            \"obs:*:*:object:*\"\n                        ],\n                        \"Condition\": {\n                            \"StringEquals\": {\n                                \"obs:prefix\": [\n                                    \"public\"\n                                ]\n                            }\n                        }\n                    }\n                ]\n            },\n            \"assume_role\": {\n                \"domain_name\": \"IAMDomainA\",\n                \"agency_name\": \"IAMAgency\",\n                \"duration_seconds\": 3600\n            }\n        }\n    }\n}",
+        "x-request-examples-description-2": "不填写\"session_user\"参数。",
+        "x-request-examples-url-2": "POST https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens",
+        "x-request-examples-2": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "assume_role"
+              ],
+              "assume_role": {
+                "domain_name": "IAMDomainA",
+                "agency_name": "IAMAgency",
+                "duration_seconds": 3600
+              }
+            }
+          }
+        },
+        "x-request-examples-text-2": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\"assume_role\"],\n            \"assume_role\": {\n                \"domain_name\": \"IAMDomainA\",\n                \"agency_name\": \"IAMAgency\",\n                \"duration_seconds\": 3600\n            }\n        }\n    }\n}",
+        "x-request-examples-description-3": "填写\"session_user\"参数。",
+        "x-request-examples-url-3": "POST https://iam.myhuaweicloud.com/v3.0/OS-CREDENTIAL/securitytokens",
+        "x-request-examples-3": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "assume_role"
+              ],
+              "assume_role": {
+                "domain_name": "IAMDomainA",
+                "agency_name": "IAMAgency",
+                "duration_seconds": 3600,
+                "session_user": {
+                  "name": "SessionUserName"
+                }
+              }
+            }
+          }
+        },
+        "x-request-examples-text-3": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\"assume_role\"],\n            \"assume_role\": {\n                \"domain_name\": \"IAMDomainA\",\n                \"agency_name\": \"IAMAgency\",\n                \"duration_seconds\": 3600,\n                \"session_user\": {\n                    \"name\": \"SessionUserName\"\n                }\n            }\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AgencyAuthIdentity": {
+      "required": [
+        "assume_role",
+        "methods"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "description": "认证方法,该字段内容为[\"assume_role\"]。",
+          "items": {
+            "type": "string",
+            "enum": [
+              "assume_role"
+            ]
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "assume_role": {
+          "description": "assume_role的具体信息。",
+          "$ref": "#/definitions/IdentityAssumerole"
+        },
+        "policy": {
+          "description": "自定义策略的具体内容。",
+          "$ref": "#/definitions/ServicePolicy"
+        }
+      },
+      "description": ""
+    },
+    "ConditionAdditional": {
+      "type": "array",
+      "description": "",
+      "items": {
+        "type": "string"
+      }
+    },
+    "IdentityAssumerole": {
+      "required": [
+        "agency_name"
+      ],
+      "properties": {
+        "agency_name": {
+          "type": "string",
+          "example": "IAMAgency",
+          "description": "委托名。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "委托方的账号ID。“domain_id”与“domain_name”至少填写一个。"
+        },
+        "domain_name": {
+          "type": "string",
+          "example": "IAMDomainA",
+          "description": "委托方的账号名。“domain_id”与“domain_name”至少填写一个。"
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3600,
+          "description": "AK/SK和securitytoken的有效期,时间单位为秒。取值范围:15min ~ 24h ,默认为15min。",
+          "minimum": 900,
+          "maximum": 86400,
+          "default": 900
+        },
+        "session_user": {
+          "description": "委托方对应的企业用户信息。",
+          "$ref": "#/definitions/AssumeroleSessionuser"
+        }
+      },
+      "description": ""
+    },
+    "ServiceStatement": {
+      "required": [
+        "Action",
+        "Effect"
+      ],
+      "properties": {
+        "Action": {
+          "type": "array",
+          "description": "授权项,指对资源的具体操作权限。\n> - 格式为:服务名:资源类型:操作,例:vpc:ports:create。\n> - 服务名为产品名称,例如ecs、evs和vpc等,服务名仅支持小写。 资源类型和操作没有大小写,要求支持通配符号*,无需罗列全部授权项。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Effect": {
+          "type": "string",
+          "example": "Allow",
+          "description": "作用。包含两种:允许(Allow)和拒绝(Deny),既有Allow又有Deny的授权语句时,遵循Deny优先的原则。",
+          "enum": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "Condition": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "",
+            "additionalProperties": {
+              "description": "",
+              "$ref": "#/definitions/ConditionAdditional"
+            }
+          }
+        },
+        "Resource": {
+          "type": "array",
+          "description": "资源。规则如下:\n> - 可填 * 的五段式:<service-name>:<region>:<account-id>:<resource-type>:<resource-path>,例:\"obs:*:*:bucket:*\"。\n> - region字段为*或用户可访问的region。service必须存在且resource属于对应service。",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": ""
+    },
+    "CreateTemporaryAccessKeyByAgencyResponseBody": {
+      "required": [
+        "credential"
+      ],
+      "properties": {
+        "credential": {
+          "description": "认证结果信息。",
+          "$ref": "#/definitions/Credential"
+        }
+      },
+      "description": ""
+    },
+    "AssumeroleSessionuser": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "SessionUserName",
+          "description": "委托方对应的企业用户名。用户名需满足如下规则:长度5~64,只能包含大写字母、小写字母、数字(0-9)、特殊字符(\"-\"与\"_\")且只能以字母开头。"
+        }
+      },
+      "description": ""
+    },
+    "ServicePolicy": {
+      "required": [
+        "Statement",
+        "Version"
+      ],
+      "properties": {
+        "Version": {
+          "type": "string",
+          "example": "1.1",
+          "description": "权限版本号,创建自定义策略时,该字段值填为“1.1”。\n> - 1.0:系统预置的角色。以服务为粒度,提供有限的服务相关角色用于授权。\n> - 1.1:策略。IAM最新提供的一种细粒度授权的能力,可以精确到具体服务的操作、资源以及请求条件等。",
+          "default": "1.1"
+        },
+        "Statement": {
+          "type": "array",
+          "description": "授权语句,描述自定义策略的具体内容。",
+          "items": {
+            "$ref": "#/definitions/ServiceStatement"
+          }
+        }
+      },
+      "description": ""
+    },
+    "CreateTemporaryAccessKeyByAgencyRequestBody": {
+      "required": [
+        "auth"
+      ],
+      "properties": {
+        "auth": {
+          "description": "认证信息。",
+          "$ref": "#/definitions/AgencyAuth"
+        }
+      },
+      "description": ""
+    },
+    "AgencyAuth": {
+      "required": [
+        "identity"
+      ],
+      "properties": {
+        "identity": {
+          "description": "认证参数。",
+          "$ref": "#/definitions/AgencyAuthIdentity"
+        }
+      },
+      "description": ""
+    },
+    "Credential": {
+      "required": [
+        "access",
+        "expires_at",
+        "secret",
+        "securitytoken"
+      ],
+      "properties": {
+        "expires_at": {
+          "type": "string",
+          "example": "2020-01-08T03:16:01.599000Z",
+          "description": "AK/SK和securitytoken的过期时间。"
+        },
+        "access": {
+          "type": "string",
+          "example": "WX99FNBSHCNPG9EV3T6S",
+          "description": "获取的AK。"
+        },
+        "secret": {
+          "type": "string",
+          "example": "G8jME3FdItroUAxevyZy5EJJ00lJj6Y52NtVSMzr",
+          "description": "获取的SK。"
+        },
+        "securitytoken": {
+          "type": "string",
+          "example": "gQpjbi1ub3J0aC00jN8BogWJ6OgFkxd_e---9bY_7QIw-92jIFQQ-A9RdR...",
+          "description": "securitytoken是将所获的AK、SK等信息进行加密后的字符串。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

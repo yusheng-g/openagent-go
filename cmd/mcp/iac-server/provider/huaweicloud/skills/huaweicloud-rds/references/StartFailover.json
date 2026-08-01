@@ -1,0 +1,136 @@
+{
+  "name": "StartFailover",
+  "summary": "手动倒换主备",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/failover": {
+      "put": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "StartFailover",
+        "summary": "手动倒换主备",
+        "description": "手动倒换主备.",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口仅支持MySQL和PostgreSQL引擎。\n- 仅支持HA实例。\n- 实例在以下状态不能执行手动倒换主备操作。\n  - MySQL和PostgreSQL实例在创建、重启、数据库升级、变更规格、恢复、修改端口、创建用户不能进行此操作。\n  - MySQL实例在删除用户状态下不能进行此操作。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "FailoverRequestBody",
+            "in": "body",
+            "required": false,
+            "description": "默认为空不强制",
+            "schema": {
+              "$ref": "#/definitions/FailoverRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/FailoverResponse"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "手动倒换主备",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/failover"
+      }
+    }
+  },
+  "definitions": {
+    "FailoverResponse": {
+      "properties": {
+        "instanceId": {
+          "description": "实例Id",
+          "type": "string"
+        },
+        "nodeId": {
+          "description": "节点Id",
+          "type": "string"
+        },
+        "workflowId": {
+          "description": "任务Id",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "FailoverRequest": {
+      "description": "强制倒换请求参数对象。",
+      "properties": {
+        "force": {
+          "type": "boolean",
+          "description": "是否强制倒换;true:强制倒换;false和默认null为不强制。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

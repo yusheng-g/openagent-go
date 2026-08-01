@@ -1,0 +1,194 @@
+{
+  "name": "CreateBindingDevice",
+  "summary": "绑定MFA设备",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-MFA/mfa-devices/bind": {
+      "put": {
+        "tags": [
+          "安全设置"
+        ],
+        "summary": "绑定MFA设备",
+        "description": "该接口可以用于绑定MFA设备。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "CreateBindingDevice",
+        "parameters": [
+          {
+            "name": "X-Auth-token",
+            "in": "header",
+            "description": "请求Body中user_id所对应IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "CreateBindingDeviceRequestBody",
+            "description": "绑定mfa Device",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BindMfaDevice"
+            },
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求成功。"
+          },
+          "400": {
+            "description": "请求校验异常"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "请求未授权。"
+          },
+          "404": {
+            "description": "无法找到请求资源。"
+          },
+          "409": {
+            "description": "保存请求资源时发生冲突。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0005",
+                "error_msg": "Conflict occurred when attempting to store %(type)s - %(details)s."
+              }
+            }
+          },
+          "500": {
+            "description": "系统错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "绑定mfa device",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-iftype": "open",
+        "x-order": 26,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "https://iam.myhuaweicloud.com/v3.0/OS-MFA/mfa-devices/bind",
+        "x-request-examples-1": {
+          "user_id": "09f99d8f6a001d4f1f01c00c31968287",
+          "authentication_code_first": "977931",
+          "authentication_code_second": "527347",
+          "serial_number": "iam:09f6bd6a96801de40f01c00c85691f40:mfa/{device_name}"
+        },
+        "x-request-examples-text-1": {
+          "user_id": "09f99d8f6a001d4f1f01c00c31968287",
+          "authentication_code_first": "977931",
+          "authentication_code_second": "527347",
+          "serial_number": "iam:09f6bd6a96801de40f01c00c85691f40:mfa/{device_name}"
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0072",
+            "httpStatus": "400",
+            "errorMessage": "'%(key)s' is a required property.",
+            "errorDescription": "请求校验异常。举例:%(key)s为必填属性",
+            "solution": "请联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0073",
+            "httpStatus": "400",
+            "errorMessage": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+            "errorDescription": "输入字段无效。",
+            "solution": "请联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "请求未授权。",
+            "solution": "请确认是否授权成功。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "策略未授权此操作。",
+            "solution": "请确认策略是否授权此操作。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0004",
+            "httpStatus": "404",
+            "errorMessage": "Could not find %(target)s: %(target_id)s.",
+            "errorDescription": "无法找到请求资源。",
+            "solution": "请确认请求或联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0005",
+            "httpStatus": "409",
+            "errorMessage": "Conflict occurred attempting to store %(type)s - %(details)s.",
+            "errorDescription": "保存请求资源时发生冲突。",
+            "solution": "请确认请求或联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "系统错误。",
+            "solution": "请联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "BindMfaDevice": {
+      "required": [
+        "authentication_code_first",
+        "authentication_code_second",
+        "serial_number",
+        "user_id"
+      ],
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "description": "待绑定MFA设备的IAM用户ID。"
+        },
+        "serial_number": {
+          "type": "string",
+          "description": "MFA设备序列号。"
+        },
+        "authentication_code_first": {
+          "type": "string",
+          "description": "第一组验证码。"
+        },
+        "authentication_code_second": {
+          "type": "string",
+          "description": "第二组验证码。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

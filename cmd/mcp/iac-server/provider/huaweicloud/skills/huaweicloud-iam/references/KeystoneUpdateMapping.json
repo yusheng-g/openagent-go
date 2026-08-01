@@ -1,0 +1,343 @@
+{
+  "name": "KeystoneUpdateMapping",
+  "summary": "更新映射",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/OS-FEDERATION/mappings/{id}": {
+      "patch": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "更新映射",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)更新映射。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneUpdateMapping",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "待更新的映射ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "ACME",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "KeystoneUpdateMappingRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneUpdateMappingRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "mapping": {
+                  "rules": [
+                    {
+                      "local": [
+                        {
+                          "user": {
+                            "name": "LocalUser"
+                          }
+                        },
+                        {
+                          "group": {
+                            "name": "LocalGroup"
+                          }
+                        }
+                      ],
+                      "remote": [
+                        {
+                          "type": "UserName"
+                        },
+                        {
+                          "type": "orgPersonType",
+                          "not_any_of": [
+                            "Contractor",
+                            "Guest"
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "id": "ACME",
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/OS-FEDERATION/mappings/ACME"
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneUpdateMappingResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "409": {
+            "description": "资源冲突。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新映射",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 91,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PATCH https://iam.myhuaweicloud.com/v3/OS-FEDERATION/mappings/{id}",
+        "x-request-examples-1": {
+          "mapping": {
+            "rules": [
+              {
+                "local": [
+                  {
+                    "user": {
+                      "name": "LocalUser"
+                    }
+                  },
+                  {
+                    "group": {
+                      "name": "LocalGroup"
+                    }
+                  }
+                ],
+                "remote": [
+                  {
+                    "type": "UserName"
+                  },
+                  {
+                    "type": "orgPersonType",
+                    "not_any_of": [
+                      "Contractor",
+                      "Guest"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"mapping\": {\n        \"rules\": [\n            {\n                \"local\": [\n                    {\n                        \"user\": {\n                            \"name\": \"LocalUser\"\n                        }\n                    },\n                    {\n                        \"group\": {\n                            \"name\": \"LocalGroup\"\n                        }\n                    }\n                ],\n                \"remote\": [\n                    {\n                        \"type\": \"UserName\"\n                    },\n                    {\n                        \"type\": \"orgPersonType\",\n                        \"not_any_of\": [\n                            \"Contractor\",\n                            \"Guest\"\n                        ]\n                    }\n                ]\n            }\n        ]\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneUpdateMappingRequestBody": {
+      "required": [
+        "mapping"
+      ],
+      "properties": {
+        "mapping": {
+          "description": "映射信息。",
+          "$ref": "#/definitions/MappingOption"
+        }
+      },
+      "description": ""
+    },
+    "RulesLocal": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "description": "联邦用户在本系统中的用户名称",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "{0}",
+              "description": "联邦用户在本系统中的用户名称"
+            }
+          }
+        },
+        "group": {
+          "description": "联邦用户在本系统中所属用户组",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "admin",
+              "description": "联邦用户在本系统中所属用户组"
+            }
+          }
+        }
+      },
+      "description": "联邦用户映射到IAM中的身份信息"
+    },
+    "MappingResult": {
+      "required": [
+        "id",
+        "links",
+        "rules"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "ACME",
+          "description": "映射ID。"
+        },
+        "links": {
+          "description": "映射的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "rules": {
+          "type": "array",
+          "description": "将联邦用户映射为本地用户的规则列表。",
+          "items": {
+            "$ref": "#/definitions/MappingRules"
+          }
+        }
+      },
+      "description": ""
+    },
+    "MappingOption": {
+      "required": [
+        "rules"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "description": "将联邦用户映射为本地用户的规则列表。",
+          "items": {
+            "$ref": "#/definitions/MappingRules"
+          }
+        }
+      },
+      "description": ""
+    },
+    "KeystoneUpdateMappingResponseBody": {
+      "required": [
+        "mapping"
+      ],
+      "properties": {
+        "mapping": {
+          "description": "映射信息。",
+          "$ref": "#/definitions/MappingResult"
+        }
+      },
+      "description": ""
+    },
+    "MappingRules": {
+      "required": [
+        "local",
+        "remote"
+      ],
+      "properties": {
+        "local": {
+          "type": "array",
+          "description": "表示联邦用户在本系统中的用户信息。 user:联邦用户在本系统中的用户名称。group:联邦用户在本系统中所属用户组。",
+          "items": {
+            "$ref": "#/definitions/RulesLocal"
+          }
+        },
+        "remote": {
+          "type": "array",
+          "description": "表示联邦用户在IdP中的用户信息。由断言属性及运算符组成的表达式,取值由断言决定。",
+          "items": {
+            "$ref": "#/definitions/RulesRemote"
+          }
+        }
+      },
+      "type": "object"
+    },
+    "RulesRemote": {
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "UserName",
+          "description": "表示IdP断言中的属性。"
+        },
+        "any_one_of": {
+          "type": "array",
+          "description": "输入属性值中包含指定值才生效,并返回布尔值,返回值不能用于local块中的占位符。在同一个remote数组元素中,any_one_of与not_any_of互斥,两者至多填写一个,不能同时填写。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "not_any_of": {
+          "type": "array",
+          "description": "输入属性值中不包含指定值才生效,并返回布尔值,返回值不能用于local块中的占位符。在同一个remote数组元素中,any_one_of与not_any_of互斥,两者至多填写一个,不能同时填写。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "regex": {
+          "type": "boolean",
+          "example": false,
+          "description": "同级的any_one_of或not_any_of的值是否支持正则表达式,true:支持正则表达式,false:不支持正则表达式,默认为false。"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "patch",
+  "uri": null
+}

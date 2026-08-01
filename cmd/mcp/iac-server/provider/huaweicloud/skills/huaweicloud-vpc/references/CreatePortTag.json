@@ -1,0 +1,142 @@
+{
+  "name": "CreatePortTag",
+  "summary": "添加端口资源标签",
+  "tags": "端口资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/ports/{port_id}/tags": {
+      "post": {
+        "tags": [
+          "端口资源标签管理"
+        ],
+        "summary": "添加端口资源标签",
+        "description": "给指定端口资源实例增加标签信息。\n此接口为幂等接口:创建时,如果创建的标签已经存在(key相同),则覆盖。",
+        "operationId": "CreatePortTag",
+        "parameters": [
+          {
+            "name": "port_id",
+            "in": "path",
+            "description": "功能说明:端口唯一标识\n取值范围:合法UUID\n约束:ID对应的端口必须存在",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "05137572fa00d5eb2fdcc014b0f5c751",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-open-region-cloud": ""
+          },
+          {
+            "in": "body",
+            "name": "CreatePortTagRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePortTagRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求正常返回"
+          }
+        },
+        "x-name": "添加端口资源标签",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "添加一条端口标签,key为key4,value为value4。",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v3/{project_id}/ports/{port_id}/tags",
+        "x-request-examples-1": {
+          "tag": {
+            "key": "key4",
+            "value": "value4"
+          }
+        },
+        "x-request-examples-text-1": {
+          "tag": {
+            "key": "key4",
+            "value": "value4"
+          }
+        },
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreatePortTagRequestBody": {
+      "required": [
+        "tag"
+      ],
+      "properties": {
+        "tag": {
+          "description": "创建端口资源标签请求体",
+          "$ref": "#/definitions/ResourceTag",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

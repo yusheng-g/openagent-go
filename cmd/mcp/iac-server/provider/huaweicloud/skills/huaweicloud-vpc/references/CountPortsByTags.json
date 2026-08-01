@@ -1,0 +1,228 @@
+{
+  "name": "CountPortsByTags",
+  "summary": "查询端口资源实例数量",
+  "tags": "端口资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/ports/resource-instances/count": {
+      "post": {
+        "tags": [
+          "端口资源标签管理"
+        ],
+        "summary": "查询端口资源实例数量",
+        "description": "使用标签过滤查询端口实例数量。",
+        "operationId": "CountPortsByTags",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "05137572fa00d5eb2fdcc014b0f5c751",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          },
+          {
+            "in": "body",
+            "name": "CountPortsByTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CountPortsByTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常返回",
+            "examples": {
+              "application/json": {
+                "request_id": "239df34e-a651-4631-aaa1-d5fef231933a",
+                "total_count": 2
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ResourceCountRespBody"
+            }
+          }
+        },
+        "x-name": "查询端口资源实例数量",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "过滤查询端口资源实例数量,用tags和matches过滤。",
+        "x-request-examples-url-1": "POST https://{{Endpoint}}/v3/{project_id}/ports/resource-instances/count",
+        "x-request-examples-1": {
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "value1"
+              ]
+            }
+          ],
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "portv3_test"
+            }
+          ]
+        },
+        "x-request-examples-text-1": {
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "value1"
+              ]
+            }
+          ],
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "portv3_test"
+            }
+          ]
+        },
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CountPortsByTagsRequestBody": {
+      "properties": {
+        "matches": {
+          "type": "array",
+          "description": "功能说明:搜索字段,key为要匹配的字段,value为匹配的值\n约束:key为固定字典值,不能包含重复的key或不支持的key,当前key仅支持resource_name",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Match"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": ""
+        },
+        "tags": {
+          "type": "array",
+          "description": "包含标签,最多包含50个key,每个key下面的value最多10个,每个key对应的value可以为空数组但结构体不能缺失 。\nKey不能重复,同一个key中values不能重复。\n结果返回包含所有标签的资源列表,key之间是与的关系,key-value结构中value是或的关系。无tag过滤条件时返回全量数据。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ListTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ListTag": {
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:key不能为空",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "values": {
+          "type": "array",
+          "description": "功能描述:标签值列表。\n如果values为空列表,则表示any_value(查询任意value)。value之间为或的关系。",
+          "items": {
+            "type": "string",
+            "description": "",
+            "maxLength": 255
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "ResourceCountRespBody": {
+      "required": [
+        "request_id",
+        "total_count"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "资源数量",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "Match": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。当前仅限定为resource_name",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符.",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

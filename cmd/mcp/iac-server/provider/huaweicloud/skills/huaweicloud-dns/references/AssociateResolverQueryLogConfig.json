@@ -1,0 +1,187 @@
+{
+  "name": "AssociateResolverQueryLogConfig",
+  "summary": "解析器访问日志关联VPC",
+  "tags": "访问日志管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/resolver/queryloggingconfig/{id}/associatevpc": {
+      "post": {
+        "tags": [
+          "访问日志管理"
+        ],
+        "x-request-examples-description-1": "解析器访问日志关联VPC。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/resolver/queryloggingconfig/{id}/associatevpc",
+        "x-request-examples-1": {
+          "vpc": {
+            "vpc_id": "ce84922c-5da5-4d09-89ac-d5f9de878a51",
+            "vpc_region": "xx"
+          }
+        },
+        "operationId": "AssociateResolverQueryLogConfig",
+        "summary": "解析器访问日志关联VPC",
+        "description": "解析器访问日志关联VPC。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ResolverQueryLogConfigIdInPath"
+          },
+          {
+            "name": "AssociateResolverQueryLogConfigRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AssociateResolverQueryLogConfigRequestBody"
+            },
+            "description": "解析器访问日志关联VPC请求。"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "解析器访问日志关联VPC响应。",
+            "schema": {
+              "$ref": "#/definitions/ResolverQueryLogConfigResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "resolver_query_log_config": {
+                  "id": "2f9bd47dbdab4d74a02e1484d68401ea",
+                  "lts_group_id": "7c89b584-8984-405f-862e-b3bc0d791405",
+                  "lts_topic_id": "8c8785f6-aad7-41c1-9c88-9c500d2ac435",
+                  "vpc_ids": [
+                    "ce84922c-5da5-4d09-89ac-d5f9de878a51"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 4
+      }
+    }
+  },
+  "definitions": {
+    "Vpc": {
+      "required": [
+        "vpc_id"
+      ],
+      "properties": {
+        "vpc_id": {
+          "type": "string",
+          "description": "关联VPC的ID。"
+        },
+        "vpc_region": {
+          "type": "string",
+          "description": "关联VPC所在的region。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "ResolverQueryLogConfig": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "解析器访问日志的ID,UUID形式的一个资源标识。"
+        },
+        "lts_group_id": {
+          "type": "string",
+          "description": "日志组ID。"
+        },
+        "lts_topic_id": {
+          "type": "string",
+          "description": "日志流ID。"
+        },
+        "vpc_ids": {
+          "type": "array",
+          "description": "关联的VPC ID列表。",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "AssociateResolverQueryLogConfigRequestBody": {
+      "required": [
+        "vpc"
+      ],
+      "properties": {
+        "vpc": {
+          "$ref": "#/definitions/Vpc",
+          "description": "关联的VPC。"
+        }
+      }
+    },
+    "ResolverQueryLogConfigResponseBody": {
+      "properties": {
+        "resolver_query_log_config": {
+          "description": "解析器访问日志对象。",
+          "$ref": "#/definitions/ResolverQueryLogConfig"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ResolverQueryLogConfigIdInPath": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "访问日志ID。",
+      "pattern": "[0-9a-fA-F]{32}"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

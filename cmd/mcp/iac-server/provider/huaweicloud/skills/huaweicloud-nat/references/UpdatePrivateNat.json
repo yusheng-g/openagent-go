@@ -1,0 +1,385 @@
+{
+  "name": "UpdatePrivateNat",
+  "summary": "更新私网NAT网关",
+  "tags": "私网NAT网关",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/gateways/{gateway_id}": {
+      "put": {
+        "x-request-examples-text-1": {
+          "gateway": {
+            "name": "private-nat-gateway-name",
+            "description": "private-nat-gateway-description",
+            "spec": "Medium"
+          }
+        },
+        "tags": [
+          "私网NAT网关"
+        ],
+        "summary": "更新私网NAT网关",
+        "description": "更新私网NAT网关实例。",
+        "operationId": "UpdatePrivateNat",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "gateway_id",
+            "in": "path",
+            "description": "私网NAT网关实例的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "UpdatePrivateNatRequestBody",
+            "in": "body",
+            "description": "更新私网NAT网关实例的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateNatRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新私网NAT网关实例成功。",
+            "examples": {
+              "application/json": {
+                "gateway": {
+                  "id": "14338426-6afe-4019-996b-3a9525296e11",
+                  "name": "private-nat-gateway-name",
+                  "description": "private-nat-gateway-description",
+                  "spec": "Medium",
+                  "project_id": "70505c941b9b4dfd82fd351932328a2f",
+                  "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                  "status": "ACTIVE",
+                  "created_at": "2019-04-22T08:47:13",
+                  "updated_at": "2019-04-22T08:47:13",
+                  "tags": [
+                    {
+                      "key": "key1",
+                      "value": "value1"
+                    }
+                  ],
+                  "downlink_vpcs": [
+                    {
+                      "vpc_id": "3cb66d44-9f75-4237-bfff-e37b14d23ad2",
+                      "virsubnet_id": "373979ee-f4f0-46c5-80e3-0fbf72646b70"
+                    }
+                  ]
+                },
+                "request_id": "e7e3323e95b348708d26e68a0ddece71"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateNatResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新私网NAT网关",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/70505c941b9b4dfd82fd351932328a2f/private-nat/gateways/14338426-6afe-4019-996b-3a9525296e11",
+        "x-request-examples-1": {
+          "gateway": {
+            "name": "private-nat-gateway-name",
+            "description": "private-nat-gateway-description",
+            "spec": "Medium"
+          }
+        },
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdatePrivateNatRequestBody": {
+      "required": [
+        "gateway"
+      ],
+      "properties": {
+        "gateway": {
+          "$ref": "#/definitions/UpdatePrivateNatOption"
+        }
+      },
+      "description": "更新私网NAT网关实例的请求体。",
+      "type": "object"
+    },
+    "UpdatePrivateNatResponseBody": {
+      "properties": {
+        "gateway": {
+          "$ref": "#/definitions/PrivateNat"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "example": "dae9393a-b536-491c-a5a2-72edc1104707",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "更新私网NAT网关实例的响应体。"
+    },
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "DownlinkVpc": {
+      "properties": {
+        "vpc_id": {
+          "type": "string",
+          "description": "私网NAT网关实例所属VPC的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "私网NAT网关实例所属子网的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "ngport_ip_address": {
+          "type": "string",
+          "description": "私网NAT网关的ngport_ip_addrss。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "私网NAT网关实例所属VPC实例。",
+      "type": "object",
+      "required": [
+        "vpc_id",
+        "virsubnet_id"
+      ]
+    },
+    "UpdatePrivateNatOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "private-nat-gateway-name",
+          "description": "私网NAT网关实例的名字。\n私网NAT网关实例的名字仅支持数字、字母、_(下划线)、-(中划线)、中文。",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "example": "private-nat-gateway-description",
+          "description": "私网NAT网关的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "x-huawei-extraAnnotation": "",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "spec": {
+          "type": "string",
+          "description": "私网NAT网关实例的规格。\n取值为:\n- Small:小型\n- Medium:中型\n- Large:大型\n- Extra-large:超大型\n- Extra-xlarge:企业型",
+          "enum": [
+            "Small",
+            "Medium",
+            "Large",
+            "Extra-large",
+            "Extra-xlarge"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "更新私网NAT网关实例的请求体。",
+      "type": "object"
+    },
+    "PrivateNat": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "私网NAT网关实例的ID。",
+          "example": "14338426-6afe-4019-996b-3a9525296e11",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "example": "70505c941b9b4dfd82fd351932328a2f",
+          "minLength": 32,
+          "maxLength": 32,
+          "x-huawei-extraAnnotation": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "私网NAT网关实例的名字。",
+          "example": "private-nat-name",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "description": "私网NAT网关实例的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "example": "private-nat-description",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-huawei-extraAnnotation": ""
+        },
+        "spec": {
+          "type": "string",
+          "description": "私网NAT网关实例的规格。\n取值为:\n- Small:小型\n- Medium:中型\n- Large:大型\n- Extra-large:超大型\n- Extra-xlarge:企业型",
+          "example": "Small",
+          "enum": [
+            "Small",
+            "Medium",
+            "Large",
+            "Extra-large",
+            "Extra-xlarge"
+          ],
+          "default": "Small",
+          "x-huawei-extraAnnotation": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT网关实例的状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2019-04-22T08:47:13Z",
+          "description": "私网NAT网关实例的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2019-04-22T08:47:13Z",
+          "description": "私网NAT网关实例的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "downlink_vpcs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DownlinkVpc"
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "description": "私网NAT网关实例所属的VPC实例。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表。",
+          "example": [
+            {
+              "key": "key1",
+              "value": "value1"
+            }
+          ],
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "x-huawei-extraAnnotation": ""
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。\n创建私网NAT网关实例时,关联的企业项目ID。",
+          "example": "0",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "rule_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大规则数。",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "transit_ip_pool_size_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "中转ip池大小",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "description": "私网NAT网关实例的响应体。",
+      "type": "object",
+      "required": [
+        "id",
+        "project_id",
+        "name",
+        "description",
+        "spec",
+        "status",
+        "created_at",
+        "updated_at",
+        "downlink_vpcs",
+        "enterprise_project_id"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

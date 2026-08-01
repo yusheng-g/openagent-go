@@ -1,0 +1,192 @@
+{
+  "name": "ModifyDbAgentJob",
+  "summary": "修改数据库代理作业",
+  "tags": "发布订阅(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/db-jobs/{job_id}": {
+      "put": {
+        "tags": [
+          "发布订阅(SQL Server)"
+        ],
+        "operationId": "ModifyDbAgentJob",
+        "summary": "修改数据库代理作业",
+        "description": "修改数据库代理作业。",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "作业ID"
+          },
+          {
+            "name": "ModifyDbAgentJobRequestBody",
+            "description": "修改数据库代理作业请求体。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModifyDbAgentJobRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/DbAgentJobResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "BC809208-4C1E-44DC-AF98-48E71B374440",
+                "job_name": "Distribution clean up: distribution",
+                "is_enabled": true,
+                "run_status": "1",
+                "is_exist_failure": true,
+                "agent_type": "snapshot",
+                "profile_id": "1",
+                "profile_name": "Default agent profile"
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "PUT https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/1aa833000a124455a6801e83cca37e6ein04/db-jobs/BC809208-4C1E-44DC-AF98-48E71B374440",
+        "x-request-examples-text-1": {
+          "profile_id": 1
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ModifyDbAgentJobRequestBody": {
+      "description": "修改数据库代理作业请求体。",
+      "required": [
+        "profile_id"
+      ],
+      "properties": {
+        "profile_id": {
+          "description": "配置文件id。",
+          "type": "string",
+          "example": 4
+        }
+      }
+    },
+    "DbAgentJobResponseBody": {
+      "description": "数据库代理作业响应信息。",
+      "properties": {
+        "job_id": {
+          "description": "作业id。",
+          "type": "string",
+          "example": "BC809208-4C1E-44DC-AF98-48E71B374440"
+        },
+        "job_name": {
+          "description": "作业名。",
+          "type": "string",
+          "example": "Distribution clean up: distribution"
+        },
+        "is_enabled": {
+          "description": "是否可用。\n\ntrue:可用。\nfalse:不可用。",
+          "type": "boolean",
+          "example": true
+        },
+        "run_time": {
+          "description": "最新执行时间。格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string",
+          "example": "2023-01-05T08:00:00+0000"
+        },
+        "run_status": {
+          "description": "作业执行状态。取值如下:\n\n0:失败。\n1:成功。\n2:重试中。\n3:已取消。\n4:正在运行。",
+          "example": "1",
+          "type": "string"
+        },
+        "last_failure_time": {
+          "description": "最近失败时间。格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string",
+          "example": "2023-01-05T08:00:00+0000"
+        },
+        "failure_count": {
+          "description": "历史失败次数。",
+          "type": "integer"
+        },
+        "agent_type": {
+          "description": "作业代理的类型。\n\nsnapshot:快照代理\nlog_reader:日志读取器代理\ndistribution:分发代理\nmerge:合并代理\nqueue_reader:队列读取器代理。",
+          "type": "string"
+        },
+        "profile_id": {
+          "description": "配置文件id。",
+          "type": "string",
+          "example": "1"
+        },
+        "profile_name": {
+          "description": "配置文件名。",
+          "type": "string",
+          "example": "Default agent profile"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

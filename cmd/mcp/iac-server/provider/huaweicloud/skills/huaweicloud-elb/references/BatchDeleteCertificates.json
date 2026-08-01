@@ -1,0 +1,161 @@
+{
+  "name": "BatchDeleteCertificates",
+  "summary": "批量删除证书",
+  "tags": "证书",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/certificates/batch-delete": {
+      "post": {
+        "tags": [
+          "证书"
+        ],
+        "summary": "批量删除证书",
+        "description": "批量删除证书。",
+        "operationId": "BatchDeleteCertificates",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchDeleteCertificatesRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteCertificatesRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "certificates": [
+                  {
+                    "id": "de3404aeb44f499893fb42a0b218a515",
+                    "ret_status": "successful"
+                  },
+                  {
+                    "id": "de3404aeb44f499893fb42a0b218a515",
+                    "ret_status": "successful"
+                  }
+                ],
+                "request_id": "98414965-856c-4be3-8a33-3e08432a222e"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteCertificatesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量删除证书",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "批量删除证书",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/{project_id}/elb/certificates/batch-delete",
+        "x-request-examples-1": {
+          "certificates": [
+            "de3404aeb44f499893fb42a0b218a515",
+            "de3404aeb44f499893fb42a0b218a123"
+          ]
+        },
+        "x-request-examples-text-1": {
+          "certificates": [
+            "de3404aeb44f499893fb42a0b218a515",
+            "de3404aeb44f499893fb42a0b218a123"
+          ]
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "BatchDeleteCertificatesRequestBody": {
+      "properties": {
+        "certificates": {
+          "description": "待删除的证书id列表。",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object",
+      "type": "object"
+    },
+    "BatchDeleteCertificatesResp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "证书ID。"
+        },
+        "ret_status": {
+          "type": "string",
+          "description": "对应id的证书删除后的结果,not found表示证书不存在,successful表示删除成功"
+        },
+        "ret_code": {
+          "type": "string",
+          "description": "错误码,删除失败时返回此字段"
+        }
+      },
+      "required": [
+        "id",
+        "ret_status"
+      ],
+      "type": "object"
+    },
+    "BatchDeleteCertificatesResponseBody": {
+      "required": [
+        "request_id",
+        "certificates"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "certificates": {
+          "description": "证书批量删除后的响应结果。",
+          "items": {
+            "$ref": "#/definitions/BatchDeleteCertificatesResp"
+          },
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

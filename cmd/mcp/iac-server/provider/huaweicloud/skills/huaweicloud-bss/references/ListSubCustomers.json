@@ -1,0 +1,322 @@
+{
+  "name": "ListSubCustomers",
+  "summary": "查询客户列表",
+  "tags": "管理客户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/sub-customers/query": {
+      "post": {
+        "summary": "查询客户列表",
+        "description": "伙伴可以查询合作伙伴的客户信息列表。\n\n伙伴登录合作伙伴中心查询客户信息列表请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0072435115.html)。",
+        "tags": [
+          "管理客户(伙伴)"
+        ],
+        "operationId": "ListSubCustomers",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/partners/sub-customers/query",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L3",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询伙伴子客户列表请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QuerySubCustomerListReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/sub-customers/query",
+        "x-request-examples-1": {
+          "account_name": "betahc_kehu107",
+          "customer": "sun***01",
+          "offset": 0,
+          "limit": 10,
+          "label": "sunny",
+          "association_type": "1",
+          "associated_on_begin": "2019-05-06T08:05:01Z",
+          "associated_on_end": "2019-05-06T08:05:01Z",
+          "customer_id": "065024********e90f44c01cbccfa280",
+          "indirect_partner_id": "si3fjg8ugf********"
+        },
+        "responses": {
+          "200": {
+            "description": "查询子客户列表响应",
+            "schema": {
+              "$ref": "#/definitions/QuerySubCustomerListRsp"
+            },
+            "examples": {
+              "application/json": {
+                "customer_infos": [
+                  {
+                    "customer": "sun***01",
+                    "account_name": "betahc_kehu107",
+                    "customer_id": "0b11fa********870f20c003f6a53940",
+                    "associated_on": "2021-01-05T06:35:51Z",
+                    "association_type": "1",
+                    "label": "sunny",
+                    "telephone": "134****6666",
+                    "verified_status": "2",
+                    "country_code": "0086",
+                    "customer_type": 0,
+                    "is_frozen": "0",
+                    "account_managers": [
+                      {
+                        "account_name": "tan_ma"
+                      }
+                    ],
+                    "xaccount_id": "98**9707",
+                    "xaccount_type": "***_IDP",
+                    "customer_level": "V0",
+                    "email": "test***@123"
+                  }
+                ],
+                "count": "1"
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理客户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QuerySubCustomerListReq": {
+      "properties": {
+        "account_name": {
+          "type": "string",
+          "description": "客户登录名称(如果客户创建了IAM用户,此处需要填写主账号登录名称。关于主账号和IAM用户的具体介绍请参见身份管理中“账号”和“IAM用户”的描述)。 支持模糊查询。仅支持前缀匹配、后缀匹配、中间匹配;不支持携带空格查询。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 128,
+          "example": "xxxxx"
+        },
+        "customer": {
+          "type": "string",
+          "description": "客户的实名认证名称,支持模糊查询。仅支持前缀匹配、后缀匹配、中间匹配;不支持携带空格查询。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 128,
+          "example": "王xx"
+        },
+        "offset": {
+          "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0",
+          "default": 0,
+          "maximum": 40000000,
+          "minimum": 0
+        },
+        "limit": {
+          "description": "每次查询的客户数量。默认值为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "10",
+          "default": 10,
+          "maximum": 100,
+          "minimum": 1
+        },
+        "label": {
+          "type": "string",
+          "description": "标签,支持模糊查找。仅支持前缀匹配、后缀匹配、中间匹配;不支持携带空格查询;不支持英文大小写模糊匹配查询。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "xxxx"
+        },
+        "association_type": {
+          "type": "string",
+          "description": "关联类型: 1:顾问销售2:代售 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 2,
+          "example": "2"
+        },
+        "associated_on_begin": {
+          "type": "string",
+          "description": "关联时间区间段开始,UTC时间。 格式:YYYY-MM-DD'T'hh:mm:ss'Z',例如“2019-05-06T08:05:01Z”。 此参数不携带或携带值为null时,不作为筛选条件,不支持携带值为空串。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2019-05-06T08:05:01Z"
+        },
+        "associated_on_end": {
+          "type": "string",
+          "description": "关联时间区间段结束,UTC时间。 格式:YYYY-MM-DD'T'hh:mm:ss'Z',例如“2019-05-06T08:05:01Z”。 此参数不携带或携带值为null时,不作为筛选条件,不支持携带值为空串。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2019-05-06T08:05:01Z"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id,或者可以从创建客户接口的响应获取domain_id。此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "4ar9fjg8ugfxxxxxxxx"
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。如果需要查询云经销商的子客户列表,必须携带该字段。除此之外,此参数不做处理。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "si3fjg8ugfxxxxxxxx"
+        }
+      }
+    },
+    "CustomerInformation": {
+      "required": [
+        "account_name",
+        "customer_id"
+      ],
+      "properties": {
+        "customer": {
+          "type": "string",
+          "description": "实名认证名称。",
+          "example": "王xx"
+        },
+        "account_name": {
+          "type": "string",
+          "description": "客户登录名称(如果客户创建了子用户,此处返回主账号登录名称)。",
+          "example": "ie278hxxxx"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": "9fjg8ugfxxxxxxxx"
+        },
+        "associated_on": {
+          "type": "string",
+          "description": "客户和伙伴关联时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”,其中,HH范围是0~23,mm和ss范围是0~59。",
+          "example": "2019-05-06T08:05:01Z"
+        },
+        "association_type": {
+          "type": "string",
+          "description": "关联类型: 1:顾问销售2:代售",
+          "example": "2"
+        },
+        "label": {
+          "type": "string",
+          "description": "标签。",
+          "example": "saxxxx"
+        },
+        "telephone": {
+          "type": "string",
+          "description": "客户电话号码。",
+          "example": "134xxxxxxxx"
+        },
+        "verified_status": {
+          "type": "string",
+          "description": "实名认证状态: -1:未实名认证0:实名认证审核中1:实名认证不通过2:已实名认证",
+          "example": "0"
+        },
+        "country_code": {
+          "type": "string",
+          "description": "国家码,电话号码的国家码前缀。 例如:中国 0086。",
+          "example": "0086"
+        },
+        "customer_type": {
+          "description": "客户类型: -1:无类型0:个人1:企业 客户刚注册的时候,没有具体的客户类型,为“-1:无类型”,客户可以在账号中心通过设置客户类型或者在实名认证的时候,选择对应的企业/个人实名认证来决定自己的类型。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0"
+        },
+        "is_frozen": {
+          "description": "是否冻结: 0:否1:客户账号冻结2:客户账号和资源冻结 该字段预留。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0"
+        },
+        "account_managers": {
+          "description": "该客户对应的客户经理信息,目前只支持1个,具体参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountManager"
+          }
+        },
+        "xaccount_id": {
+          "description": "伙伴销售平台的用户唯一标识,该标识的具体值由伙伴分配。",
+          "type": "string",
+          "example": "1c8191b8a2c13"
+        },
+        "xaccount_type": {
+          "description": "华为分配给合作伙伴的平台标识。 该标识的具体值由华为分配。获取方法请参见如何获取xaccountType的取值。",
+          "type": "string",
+          "example": "XXXXX_IDP"
+        },
+        "customer_level": {
+          "description": "客户等级。具体等级体系和权益请参见客户等级体系。 V0V1V2V3V4V5",
+          "type": "string",
+          "example": "V1"
+        },
+        "email": {
+          "description": "|参数名称:客户邮箱| |参数的约束及描述:该参数为字符串 范围限制:0-256。|",
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        }
+      }
+    },
+    "AccountManager": {
+      "properties": {
+        "account_name": {
+          "type": "string",
+          "description": "客户经理登录名称。",
+          "minLength": 1,
+          "maxLength": 128,
+          "example": "tanxxx"
+        }
+      }
+    },
+    "QuerySubCustomerListRsp": {
+      "required": [
+        "count"
+      ],
+      "properties": {
+        "customer_infos": {
+          "description": "客户信息列表。 具体请参见表1。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerInformation"
+          }
+        },
+        "count": {
+          "description": "总记录数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

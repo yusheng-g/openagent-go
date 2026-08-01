@@ -1,0 +1,107 @@
+{
+  "name": "ListEntitiesForPolicyV5",
+  "summary": "查询指定身份策略附加的所有实体",
+  "tags": "权限管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/policies/{policy_id}/attached-entities": {
+      "get": {
+        "tags": [
+          "PolicyAttachment"
+        ],
+        "operationId": "ListEntitiesForPolicyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "查询指定身份策略附加的所有实体",
+        "description": "该接口可用于查询指定身份策略附加的所有实体。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PolicyId"
+          },
+          {
+            "$ref": "#/components/parameters/EntityType"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Marker"
+          }
+        ],
+        "x-request-examples-description-1": "查询指定身份策略附加的所有实体。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v5/policies/{policy_id}/attached-entities",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListEntitiesForPolicyResp"
+                },
+                "example": {
+                  "policy_agencies": [
+                    {
+                      "agency_id": "string",
+                      "attached_at": "2023-09-25T09:29:06.817Z"
+                    }
+                  ],
+                  "policy_groups": [
+                    {
+                      "group_id": "string",
+                      "attached_at": "2023-09-25T09:29:06.817Z"
+                    }
+                  ],
+                  "policy_users": [
+                    {
+                      "user_id": "string",
+                      "attached_at": "2023-09-25T09:29:06.817Z"
+                    }
+                  ],
+                  "page_info": {
+                    "next_marker": "marker",
+                    "current_count": 3
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

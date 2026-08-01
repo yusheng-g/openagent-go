@@ -1,0 +1,228 @@
+{
+  "name": "CreateWhitelist",
+  "summary": "创建白名单",
+  "tags": "白名单",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/whitelists": {
+      "post": {
+        "tags": [
+          "白名单"
+        ],
+        "summary": "创建白名单",
+        "description": "创建白名单,控制监听器的访问权限。若开启了白名单功能,只有白名单中放通的IP可以访问该监听器的后端服务。",
+        "operationId": "CreateWhitelist",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateWhitelistRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateWhitelistRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "whitelist": {
+                  "tenant_id": "eabfefa3fd1740a88a47ad98e132d238",
+                  "enable_whitelist": true,
+                  "listener_id": "eabfefa3fd1740a88a47ad98e132d238",
+                  "id": "eabfefa3fd1740a88a47ad98e132d238",
+                  "whitelist": "192.168.11.1,192.168.0.1/24,192.168.201.18/8,100.164.0.1/24"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateWhitelistsResp"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "408": {
+            "description": "Request Timeout",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建白名单",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 37,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2/eabfefa3fd1740a88a47ad98e132d238/elb/whitelists",
+        "x-request-examples-1": {
+          "whitelist": {
+            "listener_id": "eabfefa3fd1740a88a47ad98e132d238",
+            "enable_whitelist": true,
+            "whitelist": "192.168.11.1,192.168.0.1/24,192.168.201.18/8,100.164.0.1/24"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"whitelist\": {\n        \"listener_id\": \"eabfefa3fd1740a88a47ad98e132d238\",\n        \"enable_whitelist\": true,\n        \"whitelist\": \"192.168.11.1,192.168.0.1/24,192.168.201.18/8,100.164.0.1/24\"\n    }\n}",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "CreateWhitelistsResp": {
+      "required": [
+        "whitelist"
+      ],
+      "properties": {
+        "whitelist": {
+          "description": "白名单对象",
+          "$ref": "#/definitions/WhitelistResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "CreateWhitelistRequestBody": {
+      "required": [
+        "whitelist"
+      ],
+      "properties": {
+        "whitelist": {
+          "description": "白名单对象",
+          "$ref": "#/definitions/CreateWhitelistReq"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "WhitelistResp": {
+      "required": [
+        "enable_whitelist",
+        "id",
+        "listener_id",
+        "tenant_id",
+        "whitelist"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "白名单id"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "白名单所在的项目ID"
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "白名单关联的监听器ID"
+        },
+        "enable_whitelist": {
+          "type": "boolean",
+          "description": "是否开启白名单访问控制开关。true:开启;false:关闭"
+        },
+        "whitelist": {
+          "type": "string",
+          "description": "白名单IP列表。可以是ip,例如192.168.10.123;也可以是一个网段,例如192.168.10.1/24;不同的值之间用逗号分隔"
+        }
+      },
+      "description": ""
+    },
+    "CreateWhitelistReq": {
+      "required": [
+        "listener_id"
+      ],
+      "properties": {
+        "tenant_id": {
+          "type": "string",
+          "description": "白名单所在的项目ID"
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "白名单关联的监听器ID"
+        },
+        "enable_whitelist": {
+          "type": "boolean",
+          "description": "是否开启白名单访问控制开关。true:开启;false:关闭",
+          "default": true
+        },
+        "whitelist": {
+          "type": "string",
+          "description": "白名单IP列表。可以是ip,例如192.168.10.123。也可以是一个网段,例如192.168.10.1/24。不同的值之间用逗号分隔。\n不传,默认为空。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

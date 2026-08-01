@@ -1,0 +1,98 @@
+{
+  "name": "KeystoneCheckDomainPermissionForGroup",
+  "summary": "查询用户组是否拥有全局服务权限",
+  "tags": "权限管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}": {
+      "head": {
+        "tags": [
+          "权限管理"
+        ],
+        "summary": "查询用户组是否拥有全局服务权限",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询用户组是否拥有全局服务权限。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneCheckDomainPermissionForGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "用户组所属账号ID,获取方式请参见:[获取账号ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "d54061ebcb5145dd814f8eb3fe9b7ac0",
+            "x-order": 2
+          },
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "用户组ID,获取方式请参见:[获取用户组ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "47d79cabc2cf4c35b13493d919a5bb3d",
+            "x-order": 3
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "description": "权限ID,获取方式请参见:[获取权限名、权限ID](https://support.huaweicloud.com/api-iam/iam_10_0001.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "e62d9ba0d6a544cd878d9e8a4663f6e2",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "查询成功。(具有指定权限)"
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询用户组是否拥有全局服务权限",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 49,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "HEAD https://iam.myhuaweicloud.com/v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}",
+        "x-request-examples-text-1": "HEAD https://iam.myhuaweicloud.com/v3/domains/{domain_id}/groups/{group_id}/roles/{role_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "head",
+  "uri": null
+}

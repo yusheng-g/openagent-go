@@ -1,0 +1,207 @@
+{
+  "name": "ListServerBlockDevices",
+  "summary": "查询弹性云服务器挂载磁盘列表详情信息",
+  "tags": "磁盘管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/block_device": {
+      "get": {
+        "tags": [
+          "磁盘管理"
+        ],
+        "summary": "查询弹性云服务器挂载磁盘列表详情信息",
+        "description": "查询弹性云服务器挂载的磁盘信息。",
+        "operationId": "ListServerBlockDevices",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "attachableQuantity": {
+                  "free_scsi": 23,
+                  "free_blk": 15,
+                  "free_disk": 23
+                },
+                "volumeAttachments": [
+                  {
+                    "pciAddress": "0000:02:01.0",
+                    "volumeId": "a26887c6-c47b-4654-abb5-dfadf7d3f803",
+                    "device": "/dev/vda",
+                    "serverId": "4d8c3732-a248-40ed-bebc-539a6ffd25c0",
+                    "id": "a26887c6-c47b-4654-abb5-dfadf7d3f803",
+                    "size": "40",
+                    "bootIndex": 0,
+                    "bus": "virtio"
+                  },
+                  {
+                    "pciAddress": "0000:02:02.0",
+                    "volumeId": "a26887c6-c47b-4654-abb5-asdf234r234r",
+                    "device": "/dev/vdb",
+                    "serverId": "4d8c3732-a248-40ed-bebc-539a6ffd25c0",
+                    "id": "a26887c6-c47b-4654-abb5-asdf234r234r",
+                    "size": "10",
+                    "bootIndex": 1,
+                    "bus": "virtio"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListServerBlockDevicesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询弹性云服务器挂载磁盘列表详情信息",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 34,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/block_device",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/block_device",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-7-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ServerBlockDevice": {
+      "properties": {
+        "bootIndex": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘启动顺序。\n\n- 0为系统盘。\n\n- 非0为数据盘",
+          "x-huawei-extraAnnotation": ""
+        },
+        "pciAddress": {
+          "type": "string",
+          "description": "pci地址。"
+        },
+        "volumeId": {
+          "type": "string",
+          "description": "云硬盘ID,UUID格式。"
+        },
+        "device": {
+          "type": "string",
+          "description": "云硬盘挂载盘符,即磁盘挂载点。"
+        },
+        "serverId": {
+          "type": "string",
+          "description": "弹性云服务器ID,UUID格式。"
+        },
+        "id": {
+          "type": "string",
+          "description": "挂载ID,与云硬盘ID相同。UUID格式。"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘大小,单位GB。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "bus": {
+          "type": "string",
+          "description": "磁盘总线类型 。\n\n取值范围:virtio、scsi"
+        }
+      },
+      "description": "查询云服务器指定磁盘挂载信息响应信息"
+    },
+    "BlockDeviceAttachableQuantity": {
+      "properties": {
+        "free_scsi": {
+          "type": "integer",
+          "format": "int32",
+          "example": 23,
+          "description": "云服务器可挂载scsi类型磁盘数量。"
+        },
+        "free_blk": {
+          "type": "integer",
+          "format": "int32",
+          "example": 15,
+          "description": "云服务器可挂载virtio_blk类型磁盘数量。"
+        },
+        "free_disk": {
+          "type": "integer",
+          "format": "int32",
+          "example": 23,
+          "description": "云服务器可挂载磁盘总数。"
+        }
+      },
+      "description": "云服务器可挂载磁盘数量。"
+    },
+    "ListServerBlockDevicesResponseBody": {
+      "required": [
+        "attachableQuantity",
+        "volumeAttachments"
+      ],
+      "properties": {
+        "attachableQuantity": {
+          "description": "云服务器可挂载磁盘数量。",
+          "$ref": "#/definitions/BlockDeviceAttachableQuantity"
+        },
+        "volumeAttachments": {
+          "type": "array",
+          "description": "云服务器挂载信息列表。",
+          "items": {
+            "$ref": "#/definitions/ServerBlockDevice"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

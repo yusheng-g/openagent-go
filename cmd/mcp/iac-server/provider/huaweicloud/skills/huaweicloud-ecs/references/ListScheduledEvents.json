@@ -1,0 +1,267 @@
+{
+  "name": "ListScheduledEvents",
+  "summary": "查询计划事件列表",
+  "tags": "计划事件",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instance-scheduled-events": {
+      "get": {
+        "tags": [
+          "计划事件"
+        ],
+        "summary": "查询计划事件列表",
+        "operationId": "ListScheduledEvents",
+        "description": "查询计划事件列表\n支持查看过去7天内计划事件",
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "从marker指定的事件的下一条数据开始查询。",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "事件ID",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "description": "实例ID",
+            "required": false,
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "事件类型",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "事件状态",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "publish_since",
+            "in": "query",
+            "description": "事件发布开始时间",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "publish_until",
+            "in": "query",
+            "description": "事件发布截至时间",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页显示的条目数量",
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ListEventsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询实例事件列表",
+        "x-constraint": "无",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 103,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/{project_id}/instance-scheduled-events?state=inquiring,scheduled,executing&limit=1",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2025-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "EventResponse": {
+      "required": [
+        "id"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "事件ID"
+        },
+        "type": {
+          "type": "string",
+          "description": "事件类型"
+        },
+        "state": {
+          "type": "string",
+          "description": "事件状态"
+        },
+        "publish_time": {
+          "type": "string",
+          "description": "事件发布时间"
+        },
+        "start_time": {
+          "type": "string",
+          "description": "事件开始时间"
+        },
+        "finish_time": {
+          "type": "string",
+          "description": "事件完成时间"
+        },
+        "not_before": {
+          "type": "string",
+          "description": "事件计划执行开始时间"
+        },
+        "not_after": {
+          "type": "string",
+          "description": "事件计划执行完成时间"
+        },
+        "not_before_deadline": {
+          "type": "string",
+          "description": "事件计划执行开始时间deadline"
+        },
+        "description": {
+          "type": "string",
+          "description": "事件描述"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "实例ID"
+        },
+        "execute_options": {
+          "type": "object",
+          "properties": {
+            "device": {
+              "type": "string",
+              "description": "本地盘设备名"
+            },
+            "wwn": {
+              "type": "string",
+              "description": "本地盘挂载唯一标识"
+            },
+            "serial_number": {
+              "type": "string",
+              "description": "本地盘序列号"
+            },
+            "resize_target_flavor_id": {
+              "type": "string",
+              "description": "flavorID"
+            },
+            "migrate_policy": {
+              "type": "string",
+              "description": "实例迁移策略"
+            },
+            "executor": {
+              "type": "string",
+              "description": "执行器"
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "计划事件来源类型"
+            },
+            "host_scheduled_event_id": {
+              "type": "string",
+              "description": "主机计划事件ID"
+            }
+          }
+        }
+      }
+    },
+    "ListEventsResponseBody": {
+      "required": [
+        "events"
+      ],
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "description": "计划事件列表",
+          "items": {
+            "$ref": "#/definitions/EventResponse"
+          }
+        },
+        "page_info": {
+          "$ref": "#/definitions/ListEventsResponsePageInfo"
+        }
+      }
+    },
+    "ListEventsResponsePageInfo": {
+      "type": "object",
+      "properties": {
+        "next_marker": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

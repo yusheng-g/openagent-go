@@ -1,0 +1,358 @@
+{
+  "name": "CreateAgencyCustomPolicy",
+  "summary": "创建委托自定义策略",
+  "tags": "自定义策略管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-ROLE/roles": {
+      "post": {
+        "tags": [
+          "自定义策略管理"
+        ],
+        "summary": "创建委托自定义策略",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)创建委托自定义策略。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "CreateAgencyCustomPolicy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "CreateAgencyCustomPolicyRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateAgencyCustomPolicyRequestBody"
+            },
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。",
+            "examples": {
+              "application/json": {
+                "role": {
+                  "catalog": "CUSTOMED",
+                  "display_name": "IAMAgencyPolicy",
+                  "description": "IAMDescription",
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/roles/f67224e84dc849ab954ce29fb4f47f8e"
+                  },
+                  "policy": {
+                    "Version": "1.1",
+                    "Statement": [
+                      {
+                        "Action": [
+                          "iam:agencies:assume"
+                        ],
+                        "Resource": {
+                          "uri": [
+                            "/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c"
+                          ]
+                        },
+                        "Effect": "Allow"
+                      }
+                    ]
+                  },
+                  "description_cn": "中文描述",
+                  "domain_id": "d78cbac186b744899480f25bd022f468",
+                  "type": "AX",
+                  "id": "f67224e84dc849ab954ce29fb4f47f8e",
+                  "name": "custom_d78cbac186b744899480f25bd022f468_0"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateAgencyCustomPolicyResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建委托自定义策略",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 57,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3.0/OS-ROLE/roles",
+        "x-request-examples-1": {
+          "role": {
+            "display_name": "IAMAgencyPolicy",
+            "type": "AX",
+            "description": "IAMDescription",
+            "description_cn": "中文描述",
+            "policy": {
+              "Version": "1.1",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "iam:agencies:assume"
+                  ],
+                  "Resource": {
+                    "uri": [
+                      "/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"role\": {\n        \"display_name\": \"IAMAgencyPolicy\",\n        \"type\": \"AX\",\n        \"description\": \"IAMDescription\",\n        \"description_cn\": \"中文描述\",\n        \"policy\": {\n            \"Version\": \"1.1\",\n            \"Statement\": [\n                {\n                    \"Effect\": \"Allow\",\n                    \"Action\": [\n                        \"iam:agencies:assume\"\n                    ],\n                    \"Resource\":{\n                        \"uri\":[\n                            \"/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c\"\n                        ]\n                    }\n                }\n            ]\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AgencyPolicyRoleOption": {
+      "required": [
+        "description",
+        "display_name",
+        "policy",
+        "type"
+      ],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "example": "IAMPolicy",
+          "description": "自定义策略展示名。"
+        },
+        "type": {
+          "type": "string",
+          "example": "AX",
+          "description": "自定义策略的显示模式。\n> - AX表示在domain层显示。\n> - XA表示在project层显示。\n> - 自定义策略的显示模式只能为AX或者XA,不能在domain层和project层都显示(AA),或者在domain层和project层都不显示(XX)。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "自定义策略的描述信息。"
+        },
+        "description_cn": {
+          "type": "string",
+          "example": "中文描述",
+          "description": "自定义策略的中文描述信息。"
+        },
+        "policy": {
+          "description": "自定义策略的具体内容。",
+          "$ref": "#/definitions/AgencyPolicy"
+        }
+      },
+      "description": ""
+    },
+    "CreateAgencyCustomPolicyResponseBody": {
+      "required": [
+        "role"
+      ],
+      "properties": {
+        "role": {
+          "description": "自定义策略信息。",
+          "$ref": "#/definitions/AgencyPolicyRoleResult"
+        }
+      },
+      "description": ""
+    },
+    "AgencyPolicyRoleResult": {
+      "required": [
+        "catalog",
+        "description",
+        "display_name",
+        "domain_id",
+        "id",
+        "links",
+        "name",
+        "policy",
+        "type"
+      ],
+      "properties": {
+        "catalog": {
+          "type": "string",
+          "example": "CUSTOMED",
+          "description": "自定义策略所在目录。"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "IAMPolicy",
+          "description": "自定义策略展示名。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "自定义策略的描述信息。"
+        },
+        "links": {
+          "description": "自定义策略的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "policy": {
+          "description": "自定义策略的具体内容。",
+          "$ref": "#/definitions/AgencyPolicy"
+        },
+        "description_cn": {
+          "type": "string",
+          "example": "中文描述",
+          "description": "自定义策略的中文描述信息。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "9698542758bc422088c0c3eabfc30d12",
+          "description": "自定义策略所属账号ID。"
+        },
+        "type": {
+          "type": "string",
+          "example": "AX",
+          "description": "自定义策略的显示模式。\n> - AX表示在domain层显示。\n> - XA表示在project层显示。\n> - 自定义策略的显示模式只能为AX或者XA,不能在domain层和project层都显示(AA),或者在domain层和project层都不显示(XX)。"
+        },
+        "id": {
+          "type": "string",
+          "example": "608776087b7649ad92c6f11ffd5bf35a",
+          "description": "自定义策略ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "custom_d78cbac186b744899480f25bd022f468_2",
+          "description": "自定义策略名。"
+        },
+        "updated_time": {
+          "type": "string",
+          "example": "1579157459495",
+          "description": "自定义策略更新时间。"
+        },
+        "created_time": {
+          "type": "string",
+          "example": "1577026425747",
+          "description": "自定义策略创建时间。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyPolicyResource": {
+      "required": [
+        "uri"
+      ],
+      "properties": {
+        "uri": {
+          "type": "array",
+          "description": "委托资源的URI。格式为:/iam/agencies/委托ID。例:\n```\n\"uri\": [\"/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c\"]\n```",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": ""
+    },
+    "CreateAgencyCustomPolicyRequestBody": {
+      "required": [
+        "role"
+      ],
+      "properties": {
+        "role": {
+          "description": "自定义策略信息。",
+          "$ref": "#/definitions/AgencyPolicyRoleOption"
+        }
+      },
+      "description": ""
+    },
+    "AgencyPolicy": {
+      "required": [
+        "Statement",
+        "Version"
+      ],
+      "properties": {
+        "Version": {
+          "type": "string",
+          "example": "1.1",
+          "description": "权限版本号,创建自定义策略时,该字段值填为“1.1”。\n> - 1.0:系统预置的角色。以服务为粒度,提供有限的服务相关角色用于授权。\n> - 1.1:策略。IAM最新提供的一种细粒度授权的能力,可以精确到具体服务的操作、资源以及请求条件等。",
+          "default": "1.1"
+        },
+        "Statement": {
+          "type": "array",
+          "description": "授权语句,描述自定义策略的具体内容。",
+          "items": {
+            "$ref": "#/definitions/AgencyPolicyStatement"
+          }
+        }
+      },
+      "description": ""
+    },
+    "AgencyPolicyStatement": {
+      "required": [
+        "Action",
+        "Effect"
+      ],
+      "properties": {
+        "Action": {
+          "type": "array",
+          "description": "授权项,指对资源的具体操作权限。\n> - 当自定义策略为委托自定义策略时,该字段值为:``` \"Action\": [\"iam:agencies:assume\"]```。",
+          "items": {
+            "type": "string",
+            "enum": [
+              "iam:agencies:assume"
+            ]
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "Effect": {
+          "type": "string",
+          "example": "Allow",
+          "description": "作用。包含两种:允许(Allow)和拒绝(Deny),既有Allow又有Deny的授权语句时,遵循Deny优先的原则。",
+          "enum": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "Resource": {
+          "description": "委托资源。在有其他账号与您创建了多个委托关系,即您是被委托方,需要将委托中的权限授权给不同的用户组,这些用户组中的IAM用户进行角色切换时,仅能切换到被授权的委托中,不能切换其他委托。例:\n```\n\"Resource\": {\"uri\": [\"/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c\"]}\n```",
+          "$ref": "#/definitions/AgencyPolicyResource"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

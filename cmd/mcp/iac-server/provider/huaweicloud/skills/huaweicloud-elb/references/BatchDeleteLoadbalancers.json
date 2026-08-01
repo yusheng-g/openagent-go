@@ -1,0 +1,153 @@
+{
+  "name": "BatchDeleteLoadbalancers",
+  "summary": "批量删除负载均衡器",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/batch-delete": {
+      "post": {
+        "tags": [
+          "负载均衡器"
+        ],
+        "summary": "批量删除负载均衡器",
+        "description": "批量删除负载均衡器。",
+        "operationId": "BatchDeleteLoadbalancers",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchDeleteLoadbalancersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteLoadbalancersRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "job_id": "6b76f5cb-cab8-48e2-919a-0ff55d230051",
+                "loadbalancer_ids": [
+                  "5b2513ca-3290-46ad-b723-e47afb83b4d2",
+                  "c2d6bfd6-4eae-4995-8e5d-711fa592744c"
+                ],
+                "request_id": "8812a7b1-4201-45e9-8346-f12bf9a78f04"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteLoadbalancersResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量删除负载均衡器",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 9,
+        "x-request-examples-description-1": "批量删除负载均衡器",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/{project_id}/elb/loadbalancers/batch-delete",
+        "x-request-examples-1": {
+          "public_ip": true,
+          "unbounded_pool": true,
+          "loadbalancer_ids": [
+            "5b2513ca-3290-46ad-b723-e47afb83b4d2",
+            "c2d6bfd6-4eae-4995-8e5d-711fa592744c"
+          ]
+        },
+        "x-request-examples-text-1": {
+          "public_ip": true,
+          "unbounded_pool": true,
+          "loadbalancer_ids": [
+            "5b2513ca-3290-46ad-b723-e47afb83b4d2",
+            "c2d6bfd6-4eae-4995-8e5d-711fa592744c"
+          ]
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "BatchDeleteLoadbalancersRequestBody": {
+      "required": [
+        "loadbalancer_ids"
+      ],
+      "properties": {
+        "unbounded_pool": {
+          "description": "解绑后的游离pool是否被删除",
+          "type": "boolean"
+        },
+        "public_ip": {
+          "description": "是否删除公网IP",
+          "type": "boolean"
+        },
+        "loadbalancer_ids": {
+          "description": "待删除的负载均衡器id列表。",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "BatchDeleteLoadbalancersResponseBody": {
+      "required": [
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "job_id": {
+          "description": "批量删除任务id",
+          "type": "string"
+        },
+        "loadbalancer_ids": {
+          "description": "待删除的负载均衡器id列表。",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

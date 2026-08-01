@@ -1,0 +1,144 @@
+{
+  "name": "ShowQuotas",
+  "summary": "查询配额",
+  "tags": "配额",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/quotas": {
+      "get": {
+        "tags": [
+          "配额"
+        ],
+        "operationId": "ShowQuotas",
+        "x-support-sdk": "Y",
+        "x-constraint": "",
+        "summary": "查询配额",
+        "description": "查询当前项目下资源配额情况。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "required": true,
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "租户在某一region下的project ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ShowQuotasResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "quotas": {
+                  "resources": [
+                    {
+                      "type": "instance",
+                      "quota": 100,
+                      "used": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "查询配额",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/quotas"
+      }
+    }
+  },
+  "definitions": {
+    "ShowQuotasResponseBody": {
+      "properties": {
+        "quotas": {
+          "description": "配额列表对象。",
+          "$ref": "#/definitions/Quotas"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "Resources": {
+      "properties": {
+        "quota": {
+          "type": "integer",
+          "format": "int32",
+          "description": "项目资源配额。"
+        },
+        "used": {
+          "type": "integer",
+          "format": "int32",
+          "description": "已使用的资源数量。"
+        },
+        "type": {
+          "type": "string",
+          "description": "项目资源类型,取值范围:instance。"
+        }
+      }
+    },
+    "Quotas": {
+      "properties": {
+        "resources": {
+          "type": "array",
+          "description": "资源列表对象。",
+          "items": {
+            "$ref": "#/definitions/Resources"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

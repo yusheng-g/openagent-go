@@ -1,0 +1,112 @@
+{
+  "name": "CreateServiceLinkedAgencyV5",
+  "summary": "创建服务关联委托",
+  "tags": "委托及信任委托管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/service-linked-agencies": {
+      "put": {
+        "tags": [
+          "Agency"
+        ],
+        "operationId": "CreateServiceLinkedAgencyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "创建服务关联委托",
+        "description": "该接口可以用于创建服务关联委托。",
+        "requestBody": {
+          "required": true,
+          "description": "服务主体信息",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceLinkedAgencyReqBody"
+              },
+              "example": {
+                "service_principal": "service.xxx",
+                "description": "description"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "创建服务主体为service.xxx的服务关联委托。",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v5/service-linked-agencies",
+        "x-request-examples-1": {
+          "service_principal": "service.xxx",
+          "description": "description"
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "201": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateServiceLinkedAgencyResp"
+                },
+                "example": {
+                  "agency": {
+                    "urn": "iam::accountid:agency:service-linked-agency/service.xxx/name",
+                    "trust_policy": "{\"Version\":\"5.0\",\"Statement\":[{\"Action\":[\"sts:agencies:assume\",\"sts::tagSession\",\"sts::setSourceIdentity\"],\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"service.xxx\"]}}]}",
+                    "created_at": "2023-09-11T10:13:25.414Z",
+                    "description": "description",
+                    "max_session_duration": 3600,
+                    "path": "service-linked-agency/service.xxx/",
+                    "agency_id": "id",
+                    "agency_name": "name",
+                    "trust_domain_id": null,
+                    "trust_domain_name": null
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,108 @@
+{
+  "name": "CheckWeakpwd",
+  "summary": "弱密码校验",
+  "tags": "数据库安全性",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/weakpwd": {
+      "post": {
+        "tags": [
+          "数据库安全性"
+        ],
+        "summary": "弱密码校验",
+        "description": "弱密码校验。",
+        "operationId": "CheckWeakpwd",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言。",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "CheckWeakpwdRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CheckWeakPasswordRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CheckWeakPwdResponse"
+            },
+            "examples": {
+              "application/json": {
+                "weak": true
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "弱密码校验。",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/54623db08b174c858ba779d2aa7923a3/weakpwd",
+        "x-request-examples-1": {
+          "target": "123456",
+          "engine": "sqlserver"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CheckWeakPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "description": "需要检验的密码。",
+          "type": "string"
+        },
+        "engine": {
+          "description": "引擎名称,取值范围:sqlserver, mysql, postgresql,区分大小写。",
+          "type": "string"
+        }
+      }
+    },
+    "CheckWeakPwdResponse": {
+      "type": "object",
+      "properties": {
+        "weak": {
+          "type": "boolean",
+          "description": "是否是弱密码。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

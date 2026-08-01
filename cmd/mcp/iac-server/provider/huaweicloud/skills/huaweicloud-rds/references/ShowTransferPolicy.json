@@ -1,0 +1,140 @@
+{
+  "name": "ShowTransferPolicy",
+  "summary": "查询自动转储策略",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/transfer/policy": {
+      "get": {
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "tags": [
+          "备份与恢复"
+        ],
+        "summary": "查询自动转储策略",
+        "description": "查询自动转储策略",
+        "operationId": "ShowTransferPolicy",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "转储策略列表",
+            "schema": {
+              "$ref": "#/definitions/TransferPolicyInfo"
+            },
+            "examples": {
+              "application/json": {
+                "policies": [
+                  {
+                    "setting_id": "7c781e6a-d215-4482-bf15-cfe04cc7eb96",
+                    "instance_id": "e4e2ee2f2c7943f1a9f9c817b993dc0ein01",
+                    "period": "* * 1,2,3,4,5,6,7",
+                    "backup_type": "Db",
+                    "destination": "xxxbucket",
+                    "prefix": "aaa/"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        },
+        "x-order": 2
+      }
+    }
+  },
+  "definitions": {
+    "TransferPolicy": {
+      "type": "object",
+      "description": "转储策略信息",
+      "properties": {
+        "setting_id": {
+          "type": "string",
+          "description": "策略id"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "实例id"
+        },
+        "period": {
+          "type": "string",
+          "description": "转储策略周期"
+        },
+        "backup_type": {
+          "type": "string",
+          "description": "转储备份类型"
+        },
+        "destination": {
+          "type": "string",
+          "description": "目标存储"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "转储目标前缀"
+        }
+      }
+    },
+    "TransferPolicyInfo": {
+      "type": "object",
+      "description": "查询转储策略的返回体",
+      "properties": {
+        "policies": {
+          "items": {
+            "$ref": "#/definitions/TransferPolicy"
+          },
+          "description": "转储策略列表",
+          "type": "array"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

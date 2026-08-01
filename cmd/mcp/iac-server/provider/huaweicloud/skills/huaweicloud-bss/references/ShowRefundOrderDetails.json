@@ -1,0 +1,202 @@
+{
+  "name": "ShowRefundOrderDetails",
+  "summary": "查询退款订单的金额详情",
+  "tags": "管理包年/包月订单(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/customer-orders/refund-orders": {
+      "get": {
+        "summary": "查询退款订单的金额详情",
+        "description": "功能描述:伙伴/客户在伙伴/客户销售平台查询某次退订订单或者降配订单的退款金额来自哪些资源和对应订单",
+        "tags": [
+          "管理包年/包月订单(公共)"
+        ],
+        "operationId": "ShowRefundOrderDetails",
+        "x-constraint": "该接口既可以使用合作伙伴AK/SK或者Token调用,也可以使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/orders/customer-orders/refund-orders",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-26",
+        "x-operation-data-level": "L3",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": true,
+            "description": "退订订单或者降配订单的ID。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "CS19040119281JMYC",
+            "x-allowNull": false
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "客户账号ID,非必填,范围限制:0-64,伙伴查询子客户退款订单的金额详情必须携带该字段。",
+            "minLength": 0,
+            "maxLength": 64,
+            "x-example": "0930b12c4******1f5720",
+            "x-allowNull": true
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "云经销商ID,非必填,范围限制:0-64,如果华为云总经销商(一级经销商)需要查询云经销商的子客户退款订单的金额详情必须携带该字段。除此之外,此参数不做处理。|",
+            "minLength": 0,
+            "maxLength": 64,
+            "x-example": "0930b12c4******1f5720",
+            "x-allowNull": true
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/orders/customer-orders/refund-orders?order_id=CS1904190917GIBHC",
+        "responses": {
+          "200": {
+            "description": "查询退款订单的金额详情响应",
+            "schema": {
+              "$ref": "#/definitions/QueryRefundOrdersRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "refund_infos": [
+                  {
+                    "id": "e9bb1650-0f34-49b8-9628-23d4155abc1c",
+                    "amount": -1200.0,
+                    "measure_id": "1",
+                    "customer_id": "cd1b7080452c410fa2b922baa9b6a408",
+                    "resource_type_code": "hws.resource.type.volume",
+                    "service_type_code": "hws.service.type.ebs",
+                    "resource_type_name": "云硬盘",
+                    "service_type_name": "云硬盘",
+                    "region_code": "cn-north-1",
+                    "base_order_id": "CS20061811411F8CI"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理包年/包月订单(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "OrderRefundInfoV2": {
+      "required": [
+        "id",
+        "amount",
+        "measure_id",
+        "customer_id",
+        "resource_type_code",
+        "service_type_code",
+        "region_code"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "该记录的ID。",
+          "example": ""
+        },
+        "amount": {
+          "description": "金额。 金额为负数,表示退订金额。金额为正数,表示已消费金额或收取的退订手续费。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "measure_id": {
+          "type": "string",
+          "description": "金额的度量单位。 1:元",
+          "example": ""
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": ""
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用查询资源类型列表接口获取。",
+          "example": ""
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "region_code": {
+          "type": "string",
+          "description": "云服务区编码,例如:“cn-north-1”。具体请参见地区和终端节点对应云服务的“区域”列的值。",
+          "example": ""
+        },
+        "base_order_id": {
+          "type": "string",
+          "description": "退订金额、已消费金额或收取退订手续费对应的原订单ID。",
+          "example": ""
+        }
+      }
+    },
+    "QueryRefundOrdersRsp": {
+      "properties": {
+        "total_count": {
+          "description": "查询总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "refund_infos": {
+          "description": "资源信息列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderRefundInfoV2"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

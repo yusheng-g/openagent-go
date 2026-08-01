@@ -1,0 +1,106 @@
+{
+  "name": "DisableDnssecConfig",
+  "summary": "关闭DNSSEC",
+  "tags": "DNSSEC",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/zones/{zone_id}/disable-dnssec": {
+      "post": {
+        "tags": [
+          "DNSSEC"
+        ],
+        "summary": "关闭DNSSEC",
+        "description": "关闭公网域名的DNSSEC。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "operationId": "DisableDnssecConfig",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "zone_id",
+            "in": "path",
+            "description": "公网域名的ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "关闭DNSSEC响应。",
+            "examples": {
+              "application/json": {
+                "status": "DISABLE"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/DisableDnssecConfigResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 1
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "DisableDnssecConfigResponseBody": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n状态。\n**取值范围:**\nDISABLE:关闭"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,330 @@
+{
+  "name": "KeystoneListProjectPermissionsForGroup",
+  "summary": "查询项目服务中的用户组权限",
+  "tags": "权限管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/projects/{project_id}/groups/{group_id}/roles": {
+      "get": {
+        "tags": [
+          "权限管理"
+        ],
+        "summary": "查询项目服务中的用户组权限",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询项目服务中的用户组权限。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneListProjectPermissionsForGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID,获取方式请参见:[获取项目名称、项目ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "073bbf60da374853841cf6624c94de4b",
+            "x-order": 2
+          },
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "用户组ID,获取方式请参见:[获取用户组ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "47d79cabc2cf4c35b13493d919a5bb3d/",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "roles": [
+                  {
+                    "domain_id": null,
+                    "flag": "fine_grained",
+                    "description_cn": "应用运维管理服务只读权限",
+                    "catalog": "AOM",
+                    "name": "system_all_30",
+                    "description": "AOM read only",
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.myhuaweicloud.com/v3/roles/75cfe22af2b3498d82b655fbb39de498"
+                    },
+                    "id": "75cfe22af2b3498d82b655fbb39de498",
+                    "display_name": "AOM Viewer",
+                    "type": "XA",
+                    "policy": {
+                      "Version": "1.1",
+                      "Statement": [
+                        {
+                          "Action": [
+                            "aom:*:list",
+                            "aom:*:get",
+                            "apm:*:list",
+                            "apm:*:get"
+                          ],
+                          "Effect": "Allow"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "links": {
+                  "next": null,
+                  "previous": null,
+                  "self": "https://iam.myhuaweicloud.com/v3/projects/065a7c66da0010992ff7c0031e5a5e7d/groups/077d71374b8025173f61c003ea0a11ac/roles"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneListProjectPermissionsForGroupResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询项目服务中的用户组权限",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 46,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/projects/{project_id}/groups/{group_id}/roles",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/projects/{project_id}/groups/{group_id}/roles",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RolePolicy": {
+      "required": [
+        "Statement",
+        "Version"
+      ],
+      "properties": {
+        "Depends": {
+          "type": "array",
+          "description": "该权限所依赖的权限。",
+          "items": {
+            "$ref": "#/definitions/PolicyDepends"
+          }
+        },
+        "Statement": {
+          "type": "array",
+          "description": "授权语句,描述权限的具体内容。",
+          "items": {
+            "$ref": "#/definitions/PolicyStatement"
+          }
+        },
+        "Version": {
+          "type": "string",
+          "example": "1.0",
+          "description": "权限版本号。\n> - 1.0:系统预置的角色。以服务为粒度,提供有限的服务相关角色用于授权。\n> - 1.1:策略。IAM最新提供的一种细粒度授权的能力,可以精确到具体服务的操作、资源以及请求条件等。"
+        }
+      },
+      "description": ""
+    },
+    "PolicyDepends": {
+      "required": [
+        "catalog",
+        "display_name"
+      ],
+      "properties": {
+        "catalog": {
+          "type": "string",
+          "example": "BASE",
+          "description": "权限所在目录。"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "Tenant Guest",
+          "description": "权限展示名。"
+        }
+      },
+      "description": ""
+    },
+    "PolicyStatement": {
+      "required": [
+        "Action",
+        "Effect"
+      ],
+      "properties": {
+        "Action": {
+          "type": "array",
+          "description": "授权项,指对资源的具体操作权限,不超过100个。\n> - 格式为:服务名:资源类型:操作,例:vpc:ports:create。\n> - 服务名为产品名称,例如ecs、evs和vpc等,服务名仅支持小写。 资源类型和操作没有大小写,要求支持通配符号*,无需罗列全部授权项。\n> - 当自定义策略为委托自定义策略时,该字段值为:``` \"Action\": [\"iam:agencies:assume\"]```。",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100
+        },
+        "Effect": {
+          "type": "string",
+          "example": "Allow",
+          "description": "作用。包含两种:允许(Allow)和拒绝(Deny),既有Allow又有Deny的授权语句时,遵循Deny优先的原则。",
+          "enum": [
+            "Allow",
+            "Deny"
+          ]
+        },
+        "Condition": {
+          "type": "object",
+          "description": "限制条件。不超过10个。"
+        },
+        "Resource": {
+          "type": "object",
+          "description": "资源。数组长度不超过10,每个字符串长度不超过128,规则如下:\n> - 可填 * 的五段式:<service-name>:<region>:<account-id>:<resource-type>:<resource-path>,例:\"obs:*:*:bucket:*\"。\n> - region字段为*或用户可访问的region。service必须存在且resource属于对应service。\n> - 当该自定义策略为委托自定义策略时,该字段类型为Object,值为:```\"Resource\": {\"uri\": [\"/iam/agencies/07805acaba800fdd4fbdc00b8f888c7c\"]}```。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneListProjectPermissionsForGroupResponseBody": {
+      "required": [
+        "links",
+        "roles"
+      ],
+      "properties": {
+        "links": {
+          "description": "资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "roles": {
+          "type": "array",
+          "description": "权限信息列表。",
+          "items": {
+            "$ref": "#/definitions/RoleResult"
+          }
+        }
+      },
+      "description": ""
+    },
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    },
+    "RoleResult": {
+      "required": [
+        "id",
+        "name",
+        "policy",
+        "type"
+      ],
+      "properties": {
+        "domain_id": {
+          "type": "string",
+          "example": "null",
+          "description": "权限所属账号ID。"
+        },
+        "flag": {
+          "type": "string",
+          "example": "fine_grained",
+          "description": "该参数值为fine_grained时,标识此权限为系统内置的策略。"
+        },
+        "description_cn": {
+          "type": "string",
+          "description": "权限的中文描述信息。"
+        },
+        "catalog": {
+          "type": "string",
+          "example": "SFS Turbo",
+          "description": "权限所在目录。"
+        },
+        "name": {
+          "type": "string",
+          "example": "system_all_98",
+          "description": "权限名。携带在用户的token中,云服务根据该名称来判断用户是否有权限访问。"
+        },
+        "description": {
+          "type": "string",
+          "example": "The read-only permissions to all Scalable File Service (SFS Turbo) resources.",
+          "description": "权限描述信息。"
+        },
+        "links": {
+          "description": "权限的资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "id": {
+          "type": "string",
+          "example": "002e10aa648948ef98b71a493aa739ab",
+          "description": "权限ID。"
+        },
+        "display_name": {
+          "type": "string",
+          "example": "SFS Turbo Viewer",
+          "description": "权限展示名。"
+        },
+        "type": {
+          "type": "string",
+          "example": "AX",
+          "description": "权限的显示模式。\n> - AX表示在domain层显示。\n> - XA表示在project层显示。\n> - AA表示在domain和project层均显示。\n> - XX表示在domain和project层均不显示。\n> - 自定义策略的显示模式只能为AX或者XA,不能在domain层和project层都显示(AA),或者在domain层和project层都不显示(XX)。"
+        },
+        "policy": {
+          "description": "权限的具体内容。",
+          "$ref": "#/definitions/RolePolicy"
+        },
+        "updated_time": {
+          "type": "string",
+          "description": "权限更新时间。"
+        },
+        "created_time": {
+          "type": "string",
+          "description": "权限创建时间。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

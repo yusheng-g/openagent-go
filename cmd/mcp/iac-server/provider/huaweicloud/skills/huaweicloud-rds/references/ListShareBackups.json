@@ -1,0 +1,229 @@
+{
+  "name": "ListShareBackups",
+  "summary": "查询共享备份列表",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/share-backups": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/0483b6b16e954cb88930a360d2c4e663/share-backups",
+        "tags": [
+          "备份与恢复"
+        ],
+        "summary": "查询共享备份列表",
+        "description": "查询共享备份列表",
+        "operationId": "ListShareBackups",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "instance_name",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "实例名称。"
+          },
+          {
+            "name": "backup_name",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "备份名称。"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询记录数。默认为100,不能为负数,最小值为1,最大值为100。",
+            "type": "string"
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/QueryShareResourcesResponse"
+            },
+            "examples": {
+              "application/json": {
+                "backups": [
+                  {
+                    "id": "1a46f915495347099b354ccf7324dec7br03",
+                    "name": "xxxx.xxx",
+                    "begin_time": "1671525796958,",
+                    "end_time": "1671526030579,",
+                    "status": "COMPLETED,",
+                    "size": "5133.503907,",
+                    "backup_method": "Physics,",
+                    "instance_id": "d63811fb21484c76a56df05e61b12f73in03,",
+                    "instance_name": "xxxx.xxx,",
+                    "instance_status": "deleted,",
+                    "datastore": [
+                      {
+                        "type": "postgresql,",
+                        "version": 11.16
+                      }
+                    ],
+                    "user_name": "xxxx.xxx"
+                  }
+                ],
+                "total": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ShareBackups": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "备份ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "备份名字。"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "备份开始时间。"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "备份结束时间。"
+        },
+        "status": {
+          "type": "string",
+          "description": "备份状态,取值:BUILDING:备份中,COMPLETED:备份完成,FAILED:备份失败,DELETING:备份删除中。"
+        },
+        "size": {
+          "type": "number",
+          "format": "double",
+          "description": "备份大小,单位:KB。"
+        },
+        "type": {
+          "type": "string",
+          "description": "备份类型,取值:\"auto\"自动全量备份,“manual”手动全量备份。"
+        },
+        "backup_method": {
+          "type": "string",
+          "description": "备份方法。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "备份所在实例ID。"
+        },
+        "instance_name": {
+          "type": "string",
+          "description": "备份所在实例名称。"
+        },
+        "instance_status": {
+          "type": "string",
+          "description": "备份所在实例状态。"
+        },
+        "datastore": {
+          "type": "object",
+          "items": {
+            "$ref": "#/definitions/ShareBackupDatastore"
+          },
+          "description": "数据库版本信息。"
+        },
+        "user_name": {
+          "type": "string",
+          "description": "共享者用户名称。"
+        }
+      }
+    },
+    "QueryShareResourcesResponse": {
+      "type": "object",
+      "properties": {
+        "backups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShareBackups"
+          },
+          "description": "共享备份列表。"
+        },
+        "total": {
+          "type": "integer",
+          "description": "总记录数。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ShareBackupDatastore": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,支持的引擎如下,不区分大小写:PostgreSQL。"
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

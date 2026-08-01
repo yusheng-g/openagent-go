@@ -1,0 +1,184 @@
+{
+  "name": "UpdateLogtank",
+  "summary": "更新云日志",
+  "tags": "云日志",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/logtanks/{logtank_id}": {
+      "put": {
+        "x-request-examples-url-1": "PUT https://{ELB_Endpoint}/v3/060576798a80d5762fafc01a9b5eedc7/elb/logtanks/603e507f-3e18-498b-9460-01a3b6c28fc5",
+        "x-request-examples-description-1": "更新云日志",
+        "x-request-examples-1": {
+          "logtank": {
+            "log_topic_id": "5b9b8370-a1fc-4c59-a509-483a673c8a94",
+            "log_group_id": "7733882e-f7fa-4fb0-a460-0605c48a2280"
+          }
+        },
+        "x-request-examples-text-1": {
+          "logtank": {
+            "log_topic_id": "5b9b8370-a1fc-4c59-a509-483a673c8a94",
+            "log_group_id": "7733882e-f7fa-4fb0-a460-0605c48a2280"
+          }
+        },
+        "tags": [
+          "云日志"
+        ],
+        "summary": "更新云日志",
+        "description": "更新云日志。",
+        "operationId": "UpdateLogtank",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "logtank_id",
+            "in": "path",
+            "description": "**参数解释**:云日志ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "in": "body",
+            "name": "UpdateLogtankRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateLogtankRequestBody"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UpdateLogtankResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "logtank": {
+                  "project_id": "060576798a80d5762fafc01a9b5eedc7",
+                  "log_topic_id": "5b9b8370-a1fc-4c59-a509-483a673c8a94",
+                  "id": "603e507f-3e18-498b-9460-01a3b6c28fc5",
+                  "log_group_id": "7733882e-f7fa-4fb0-a460-0605c48a2280",
+                  "loadbalancer_id": "47ecc304-3f1a-4cc6-9c1c-72add483b9ce"
+                },
+                "request_id": "59662f86620f8fc09c908eed060a2f0e"
+              }
+            }
+          }
+        },
+        "x-name": "更新云日志",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-03-30",
+        "x-open-region-cloud": "hc,hk,hws_eu,ctc,tm,cmcc,otc,dt",
+        "x-is-registered": "Y",
+        "x-apiexplorer-hide": false,
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateLogtankOption": {
+      "properties": {
+        "log_group_id": {
+          "type": "string",
+          "description": "**参数解释**:日志组别id,其他(非ELB)服务提供。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "log_topic_id": {
+          "type": "string",
+          "description": "**参数解释**:日志订阅主题id,其他(非ELB)服务提供。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      }
+    },
+    "UpdateLogtankRequestBody": {
+      "properties": {
+        "logtank": {
+          "$ref": "#/definitions/UpdateLogtankOption",
+          "description": "**参数解释**:更新云日志请求参数。\n\n**约束限制**:不涉及"
+        }
+      },
+      "required": [
+        "logtank"
+      ]
+    },
+    "UpdateLogtankResponseBody": {
+      "required": [
+        "logtank",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "logtank": {
+          "description": "**参数解释**:云日志信息。",
+          "$ref": "#/definitions/Logtank"
+        }
+      }
+    },
+    "Logtank": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:云日志ID。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。"
+        },
+        "loadbalancer_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器ID。\n\n**取值范围**:不涉及"
+        },
+        "log_group_id": {
+          "type": "string",
+          "description": "**参数解释**:云日志分组ID。\n\n**取值范围**:不涉及"
+        },
+        "log_topic_id": {
+          "type": "string",
+          "description": "**参数解释**:云日志主题ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "required": [
+        "id",
+        "project_id",
+        "loadbalancer_id",
+        "log_group_id",
+        "log_topic_id"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

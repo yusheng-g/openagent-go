@@ -1,0 +1,104 @@
+{
+  "name": "UpdateDatabaseOwner",
+  "summary": "修改数据库owner",
+  "tags": "管理数据库和用户(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/database/owner": {
+      "post": {
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-file": "Y3",
+        "x-request-examples-url-1": "https://{Endpoint}/v3/{project_id}/instances/{instance_id}/database/owner",
+        "x-request-examples-text-1": {
+          "owner": "username1",
+          "database": "db1"
+        },
+        "x-request-examples-1": {
+          "owner": "username1",
+          "database": "db1"
+        },
+        "tags": [
+          "管理数据库和用户(PostgreSQL)"
+        ],
+        "summary": "修改数据库owner",
+        "description": "修改数据库owner",
+        "operationId": "UpdateDatabaseOwner",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "UpdateDatabaseOwnerRequestBody",
+            "in": "body",
+            "required": false,
+            "description": "请求参数",
+            "schema": {
+              "$ref": "#/definitions/UpdateDatabaseOwnerRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UpdateDatabaseOwnerResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdateDatabaseOwnerResponseBody": {
+      "type": "object",
+      "properties": {
+        "resp": {
+          "type": "string",
+          "description": "调用正常时,返回“successful”。"
+        }
+      }
+    },
+    "UpdateDatabaseOwnerRequestBody": {
+      "type": "object",
+      "required": [
+        "owner",
+        "database"
+      ],
+      "properties": {
+        "owner": {
+          "type": "string",
+          "description": "修改后数据库owner"
+        },
+        "database": {
+          "type": "string",
+          "description": "数据库名称"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

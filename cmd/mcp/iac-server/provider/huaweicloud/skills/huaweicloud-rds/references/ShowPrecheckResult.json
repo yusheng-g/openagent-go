@@ -1,0 +1,398 @@
+{
+  "name": "ShowPrecheckResult",
+  "summary": "获取mysql5.7升级mysql8.0预检查结果",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/upgrade-version/precheck-result": {
+      "get": {
+        "x-request-examples-url-1": "https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/d8e6ca5a624745bcb546a227aa3ae1cfin01/upgrade-version/precheck-result",
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ShowPrecheckResult",
+        "summary": "获取mysql5.7升级mysql8.0预检查结果",
+        "description": "获取mysql5.7升级mysql8.0预检查结果",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-constraint": "- 该接口仅支持MySQL引擎。\n- 请在调用大版本升级预检查后调用此接口查询具体结果。\n- 只有当result_code为0且status为finished状态下,检查才算通过。\n- 当报告文件超过8MB将不再展示具体检查信息,请下载报告查看。\n",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": false,
+            "description": "用户Token",
+            "type": "string",
+            "x-example": "******",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id",
+            "minLength": 2,
+            "maxLength": 64
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/MySQLQueryUpgradeDBPrecheckResultResp"
+            },
+            "examples": {
+              "application/json": {
+                "status": "finished",
+                "display": true,
+                "result_code": 1,
+                "updated_at": 1744186721503,
+                "instance_status_check_list": [
+                  "readOnly_exists_sql_limit",
+                  "related_to_ddm"
+                ],
+                "download_link": "https://dbsbucket-xxxxxxx/xxxxxxxxxxxxxxxxx",
+                "db_upgrade_precheck": {
+                  "result": 0,
+                  "checks_performed": [
+                    {
+                      "description": "Warning: The following objects use the utf8mb3 character set. It is recommended to convert them to use utf8mb4 instead, for improved Unicode support.",
+                      "id": "utf8mb3Check",
+                      "title": "Usage of utf8mb3 charset",
+                      "status": "OK",
+                      "documentation_link": "https://dev.mysql.com/doc/refman/8.0/en/charset-unicode-utf8mb3.html",
+                      "detected_problems": [
+                        {
+                          "level": "Warning",
+                          "description": "schema's default character set: utf8",
+                          "db_object": "mysql"
+                        }
+                      ]
+                    },
+                    {
+                      "description": "Warning: Following system variables that were detected as being used will be removed. Please update your system to not rely on them before the upgrade.",
+                      "id": "removedSysVars",
+                      "title": "Removed system variables",
+                      "status": "OK",
+                      "documentation_link": "https://dev.mysql.com/doc/refman/8.0/en/added-deprecated-removed.html#optvars-removed",
+                      "detected_problems": [
+                        {
+                          "level": "Warning",
+                          "description": "is set and will be removed",
+                          "db_object": "innodb_file_format_max"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "is set and will be removed",
+                          "db_object": "query_cache_size"
+                        }
+                      ]
+                    },
+                    {
+                      "description": "Warning: Following system variables that are not defined in your configuration file will have new default values. Please review if you rely on their current values and if so define them before performing upgrade.",
+                      "id": "sysVarsNewDefaults",
+                      "title": "System variables with new default values",
+                      "status": "OK",
+                      "documentation_link": "https://mysqlserverteam.com/new-defaults-in-mysql-8-0/",
+                      "detected_problems": [
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from latin1_swedish_ci to utf8mb4_0900_ai_ci",
+                          "db_object": "collation_server"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from OFF to ON",
+                          "db_object": "event_scheduler"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 75 (%)  90 (%)",
+                          "db_object": "innodb_max_dirty_pages_pct"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from_0 (%) to 10 (%)",
+                          "db_object": "innodb_max_dirty_pages_pct_lwm"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 0 to 2",
+                          "db_object": "innodb_undo_tablespaces"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 3 (Notes) to 2 (Warning)",
+                          "db_object": "log_error_verbosity"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 64 to 1024",
+                          "db_object": "max_error_count"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 16KB to 1MB",
+                          "db_object": "optimizer_trace_max_mem_size"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from OFF to ON",
+                          "db_object": "performance_schema_consumer_events_transactions_current"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from OFF to ON",
+                          "db_object": "performance_schema_consumer_events_transactions_history"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 'INDEX_SCAN, TABLE_SCAN' to 'INDEX_SCAN, HASH_SCAN'",
+                          "db_object": "slave_rows_search_algorithms"
+                        },
+                        {
+                          "level": "Warning",
+                          "description": "default value will change from 2000 to 4000",
+                          "db_object": "table_open_cache"
+                        }
+                      ]
+                    },
+                    {
+                      "description": "Warning: By default zero date/datetime/timestamp values are no longer allowed in MySQL, as of 5.7.8 NO_ZERO_IN_DATE and NO_ZERO_DATE are included in SQL_MODE by default. These modes should be used with strict mode as they will be merged with strict mode in a future release. If you do not include these modes in your SQL_MODE setting, you are able to insert date/datetime/timestamp values that contain zeros. It is strongly advised to replace zero values with valid ones, as they may not work correctly in the future.",
+                      "id": "zeroDatesCheck",
+                      "title": "Zero Date, Datetime, and Timestamp values",
+                      "status": "OK",
+                      "documentation_link": "https://lefred.be/content/mysql-8-0-and-wrong-dates/",
+                      "detected_problems": [
+                        {
+                          "level": "Warning",
+                          "description": "does not contain either NO_ZERO_DATE or NO_ZERO_IN_DATE which allows insertion of zero dates",
+                          "db_object": "global.sql_mode"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "请求id."
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "请求id."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MySQLQueryUpgradeDBPrecheckResultResp": {
+      "description": "mysql5.7升级mysql8.0预检查结果响应体",
+      "required": [
+        "result_code",
+        "status"
+      ],
+      "properties": {
+        "result_code": {
+          "type": "integer",
+          "description": "检查是否通过,0代表通过,1代表未通过",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "status": {
+          "type": "string",
+          "description": "检查状态",
+          "minLength": 6,
+          "maxLength": 64,
+          "example": "finished"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "检查结果更新时间",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "display": {
+          "type": "boolean",
+          "description": "是否展示数据库检查结果"
+        },
+        "instance_status_check_list": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1024
+          },
+          "description": "实例关联关系检查失败项",
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "db_upgrade_precheck": {
+          "description": "数据库检查结果",
+          "$ref": "#/definitions/DBUpgradePrecheck"
+        },
+        "download_link": {
+          "type": "string",
+          "description": "检查结果下载链接",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      }
+    },
+    "DetectedProblem": {
+      "description": "每项检查项检测到的问题",
+      "properties": {
+        "db_object": {
+          "type": "string",
+          "description": "存在问题的数据库对象",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "level": {
+          "type": "string",
+          "description": "告警级别",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "description": "检查项描述",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      }
+    },
+    "DBUpgradePrecheck": {
+      "description": "数据库检查结果",
+      "properties": {
+        "result": {
+          "type": "integer",
+          "description": "检查是否通过,0代表通过,1代表未通过",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "checks_performed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DBCheckDetail"
+          },
+          "description": "检查项",
+          "minItems": 0,
+          "maxItems": 50
+        }
+      }
+    },
+    "DBCheckDetail": {
+      "description": "数据库检查结果",
+      "properties": {
+        "documentation_link": {
+          "type": "string",
+          "description": "检查说明链接",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "description": {
+          "type": "string",
+          "description": "检查项描述",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "id": {
+          "type": "string",
+          "description": "检查项id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "检查项标题",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "status": {
+          "type": "string",
+          "description": "检查状态",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "detected_problems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DetectedProblem"
+          },
+          "minItems": 0,
+          "maxItems": 10,
+          "description": "各项检查项检测到的问题"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

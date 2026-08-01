@@ -1,0 +1,415 @@
+{
+  "name": "ListSecurityGroups",
+  "summary": "查询安全组列表",
+  "tags": "安全组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/security-groups": {
+      "get": {
+        "tags": [
+          "安全组"
+        ],
+        "summary": "查询安全组列表",
+        "description": "查询某租户下的安全组列表",
+        "operationId": "ListSecurityGroups",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID\n获取项目ID,请参见获取项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数\n取值范围:0-2000",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询起始的资源ID,为空时查询第一页",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "功能说明:安全组资源ID。可以使用该字段精确过滤安全组,支持多个ID",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 5,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "功能说明:安全组名称。可以使用该字段精确过滤满足条件的安全组,支持传入多个name过滤",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "功能说明:安全组描述新增。可以使用该字段精确过滤安全组,支持传入多个描述进行过滤",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "功能说明:企业项目ID。可以使用该字段过滤某个企业项目下的安全组。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。\n约束:若需要查询当前用户所有有权限查看企业项目绑定的安全组,请传参all_granted_eps。",
+            "required": false,
+            "type": "string",
+            "x-order": 8,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "request_id": "d31cb32ca06f3c1a294fa24e6cbc5a56",
+                "security_groups": [
+                  {
+                    "id": "0552091e-b83a-49dd-88a7-4a5c86fd9ec3",
+                    "name": "Sys-FullAccess--",
+                    "project_id": "060576782980d5762f9ec014dd2f1148",
+                    "description": "~!@#¥",
+                    "enterprise_project_id": "0",
+                    "created_at": "2019-10-16T11:11:14Z",
+                    "updated_at": "2020-03-25T10:53:46Z"
+                  },
+                  {
+                    "id": "0b8cb773-197c-4c91-94f1-e051f0563e5a",
+                    "name": "test-sg",
+                    "project_id": "060576782980d5762f9ec014dd2f1148",
+                    "description": "通用Web服务器,默认放通22、3389、80、443端口和ICMP协议。适用于需要远程登录、公网ping及用于网站服务的云服务器场景。",
+                    "enterprise_project_id": "0",
+                    "created_at": "2019-12-03T09:02:11Z",
+                    "updated_at": "2019-12-03T09:02:11Z"
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "0552091e-b83a-49dd-88a7-4a5c86fd9ec3",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListSecurityGroupsResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询安全组列表",
+        "x-constraint": "查询提交请求的租户有权限查看的所有安全组信息,单次查询最多返回2000条数据,超过2000后会返回分页标记",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 15,
+        "x-request-examples-description-1": "查询安全组列表",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/{project_id}/vpc/security-groups",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListSecurityGroupsResponseBody": {
+      "required": [
+        "page_info",
+        "request_id",
+        "security_groups"
+      ],
+      "properties": {
+        "security_groups": {
+          "type": "array",
+          "description": "安全组列表响应体",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/SecurityGroup"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "page_info": {
+          "description": "分页信息",
+          "$ref": "#/definitions/PageInfo",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "PageInfo": {
+      "required": [
+        "current_count",
+        "previous_marker"
+      ],
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "当前页第一条记录",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前页总数",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "当前页最后一条记录,最后一页时无next_marker字段",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "SecurityGroup": {
+      "required": [
+        "created_at",
+        "description",
+        "enterprise_project_id",
+        "id",
+        "name",
+        "project_id",
+        "updated_at",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能描述:安全组对应的唯一标识\n取值范围:带“-”的标准UUID格式",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:安全组名称\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:安全组的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:安全组所属的项目ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:安全组创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:安全组更新时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "功能说明:安全组所属的企业项目ID。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "tags": {
+          "type": "array",
+          "description": "功能描述:安全组的标签信息",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          }
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

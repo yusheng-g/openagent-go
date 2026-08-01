@@ -1,0 +1,70 @@
+{
+  "name": "DeleteBatchCreateRecordSetsTask",
+  "summary": "删除批量创建记录集任务",
+  "tags": "记录集管理(v2.1)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/zones/{zone_id}/recordsets/batch-create-task": {
+      "delete": {
+        "tags": [
+          "记录集管理(v2.1)"
+        ],
+        "operationId": "DeleteBatchCreateRecordSetsTask",
+        "summary": "删除批量创建记录集任务",
+        "description": "删除批量创建记录集任务。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-enable-auth-anno": {
+          "type": "iam-token"
+        },
+        "x-iam-auth-meta-anno": {
+          "authLevel": "instance",
+          "abacAction": "dns:recordset:deleteBatchCreateTask",
+          "abacActionAlias": "dns:privateRecordset:deleteImport,dns:publicRecordset:deleteImport",
+          "authContextInitializerName": "zoneAuthContextInitializer"
+        },
+        "x-cts-meta-anno": {
+          "resourceType": "privateRecordSet",
+          "traceName": "deleteBatchCreateRecordSetsTask",
+          "operationId": "DeleteBatchCreateRecordSetsTask"
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除批量创建记录集任务响应。"
+          }
+        },
+        "x-request-examples-description-1": "删除批量创建记录集任务。",
+        "x-request-examples-url-1": "DELETE https://{endpoint}/v2.1/zones/{zone_id}/recordsets/batch-create-task",
+        "x-order": 13
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

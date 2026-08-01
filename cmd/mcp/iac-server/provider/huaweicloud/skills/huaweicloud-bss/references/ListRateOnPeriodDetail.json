@@ -1,0 +1,685 @@
+{
+  "name": "ListRateOnPeriodDetail",
+  "summary": "查询包年/包月产品价格",
+  "tags": "购买云服务(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/ratings/period-resources/subscribe-rate": {
+      "post": {
+        "summary": "查询包年/包月产品价格",
+        "description": "伙伴在销售平台按照条件查询包年/包月产品开通时候的价格。\n\n如果购买该产品的客户享受折扣,可以在查询结果中返回折扣金额以及扣除折扣后的最后成交价。\n\n如果该客户享受多种折扣,系统会返回每种折扣的批价结果。如果客户在下单的时候选择自动支付,则系统会优先应用商务折扣的批价结果。\n\n>![](public_sys-resources/icon-caution.gif) **注意:** \n>华为云根据云服务类型、资源类型、云服务区和资源规格四个条件来查询产品,查询时请确认这4个查询条件均输入正确,否则该接口会返回无法找到产品的错误。",
+        "tags": [
+          "购买云服务(公共)"
+        ],
+        "operationId": "ListRateOnPeriodDetail",
+        "x-externalURL": "/v2/bills/ratings/period-resources/subscribe-rate",
+        "x-open-region-cloud": "hc,hk",
+        "x-constraint": "该接口可以使用客户AK/SK或者Token调用伙伴置换子客户的token调用。",
+        "x-flowControl": 30,
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-lastAnalysisDate": "2020-03-30",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询包年/包月产品价格请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RateOnPeriodReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询包年/包月产品价格响应",
+            "schema": {
+              "$ref": "#/definitions/RateOnPeriodRsp"
+            },
+            "examples": {
+              "application/json": {
+                "official_website_rating_result": {
+                  "official_website_amount": 3059.13,
+                  "installment_official_website_amount": "3059.13",
+                  "installment_period_type": null,
+                  "measure_id": 1,
+                  "product_rating_results": [
+                    {
+                      "id": "1",
+                      "product_id": "00301-2****7-0--0_merge",
+                      "official_website_amount": 107.8,
+                      "measure_id": 1,
+                      "installment_official_website_amount": "1003.33",
+                      "installment_period_type": null
+                    },
+                    {
+                      "id": "2",
+                      "product_id": "00301-2****2-0--0_merge",
+                      "official_website_amount": 0.0,
+                      "measure_id": 1,
+                      "installment_official_website_amount": "1003.33",
+                      "installment_period_type": null
+                    },
+                    {
+                      "id": "3",
+                      "product_id": "00301-4****4-0--0",
+                      "official_website_amount": 28.0,
+                      "measure_id": 1,
+                      "installment_official_website_amount": "1003.33",
+                      "installment_period_type": null
+                    },
+                    {
+                      "id": "4",
+                      "product_id": "00301-2****5-0--0_merge",
+                      "official_website_amount": 2915.0,
+                      "measure_id": 1,
+                      "installment_official_website_amount": "1003.33",
+                      "installment_period_type": null
+                    },
+                    {
+                      "id": "5",
+                      "product_id": "OFFI67********74347776",
+                      "official_website_amount": 8.33,
+                      "measure_id": 1,
+                      "installment_official_website_amount": "1003.33",
+                      "installment_period_type": null
+                    }
+                  ]
+                },
+                "optional_discount_rating_results": [
+                  {
+                    "discount_id": "b6ffa4********9ea85021f67a59dd9b",
+                    "amount": 2604.46,
+                    "official_website_amount": 3059.13,
+                    "discount_amount": 454.67,
+                    "measure_id": 1,
+                    "discount_type": 607,
+                    "discount_name": "伙伴授予折扣",
+                    "best_offer": 1,
+                    "product_rating_results": [
+                      {
+                        "id": "1",
+                        "product_id": "00301-2****7-0--0_merge",
+                        "amount": 91.63,
+                        "official_website_amount": 107.8,
+                        "discount_amount": 16.17,
+                        "measure_id": 1,
+                        "installment_official_website_amount": null,
+                        "installment_official_discount_amount": null,
+                        "installment_amount": null,
+                        "installment_period_type": null
+                      },
+                      {
+                        "id": "2",
+                        "product_id": "00301-2****2-0--0_merge",
+                        "amount": 0.0,
+                        "official_website_amount": 0.0,
+                        "discount_amount": 0.0,
+                        "measure_id": 1,
+                        "installment_official_website_amount": null,
+                        "installment_official_discount_amount": null,
+                        "installment_amount": null,
+                        "installment_period_type": null
+                      },
+                      {
+                        "id": "3",
+                        "product_id": "00301-4****4-0--0",
+                        "amount": 28.0,
+                        "official_website_amount": 28.0,
+                        "discount_amount": 0.0,
+                        "measure_id": 1,
+                        "installment_official_website_amount": null,
+                        "installment_official_discount_amount": null,
+                        "installment_amount": null,
+                        "installment_period_type": null
+                      },
+                      {
+                        "id": "4",
+                        "product_id": "00301-2****5-0--0_merge",
+                        "amount": 2477.75,
+                        "official_website_amount": 2915.0,
+                        "discount_amount": 437.25,
+                        "measure_id": 1,
+                        "installment_official_website_amount": null,
+                        "installment_official_discount_amount": null,
+                        "installment_amount": null,
+                        "installment_period_type": null
+                      },
+                      {
+                        "id": "5",
+                        "product_id": "OFFI67********74347776",
+                        "amount": 7.08,
+                        "official_website_amount": 8.33,
+                        "discount_amount": 1.25,
+                        "measure_id": 1,
+                        "installment_official_website_amount": null,
+                        "installment_official_discount_amount": null,
+                        "installment_amount": "852.83",
+                        "installment_period_type": null
+                      }
+                    ],
+                    "installment_official_website_amount": "1003.33",
+                    "installment_official_discount_amount": "150.50",
+                    "installment_amount": "852.83",
+                    "installment_period_type": null
+                  }
+                ],
+                "currency": "CNY"
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/bills/ratings/period-resources/subscribe-rate",
+        "x-request-examples-1": {
+          "project_id": "84c53ec51e794a4888fb0f5c0cfb2420",
+          "product_infos": [
+            {
+              "id": "1",
+              "cloud_service_type": "hws.service.type.ec2",
+              "resource_type": "hws.resource.type.vm",
+              "resource_spec": "s3.medium.4.linux",
+              "region": "cn-east-3",
+              "available_zone": "cn-east-3a",
+              "resource_size": null,
+              "size_measure_id": null,
+              "period_type": 2,
+              "period_num": 1,
+              "subscription_num": 1
+            },
+            {
+              "id": "2",
+              "cloud_service_type": "hws.service.type.vpc",
+              "resource_type": "hws.resource.type.ip",
+              "resource_spec": "5_bgp",
+              "region": "cn-east-3",
+              "available_zone": null,
+              "resource_size": null,
+              "size_measure_id": 15,
+              "period_type": 2,
+              "period_num": 1,
+              "subscription_num": 1
+            },
+            {
+              "id": "3",
+              "cloud_service_type": "hws.service.type.ebs",
+              "resource_type": "hws.resource.type.volume",
+              "resource_spec": "GPSSD",
+              "region": "cn-east-3",
+              "available_zone": "cn-east-3a",
+              "resource_size": 40,
+              "size_measure_id": 17,
+              "period_type": 2,
+              "period_num": 1,
+              "subscription_num": 1
+            },
+            {
+              "id": "4",
+              "cloud_service_type": "hws.service.type.vpc",
+              "resource_type": "hws.resource.type.bandwidth",
+              "resource_spec": "19_bgp",
+              "region": "cn-east-3",
+              "available_zone": "cn-east-3a",
+              "resource_size": 40,
+              "size_measure_id": 15,
+              "period_type": 2,
+              "period_num": 1,
+              "subscription_num": 1
+            },
+            {
+              "id": "5",
+              "cloud_service_type": "hws.service.type.ies",
+              "resource_type": "hws.resource.type.iesserver",
+              "resource_spec": "ies.cbu.4c6",
+              "region": "global-cbc-1",
+              "period_type": 2,
+              "period_num": 1,
+              "subscription_num": 1,
+              "resource_size": 10,
+              "size_measure_id": 10,
+              "fee_installment_mode": "HALF_PAY"
+            }
+          ]
+        },
+        "x-category": "购买云服务(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RateOnPeriodRsp": {
+      "required": [
+        "official_website_rating_result"
+      ],
+      "properties": {
+        "official_website_rating_result": {
+          "description": "包年/包月产品的官网价格查询结果,具体参见表2。",
+          "$ref": "#/definitions/OfficialWebsiteRatingResult"
+        },
+        "optional_discount_rating_results": {
+          "description": "存在可选折扣优惠时返回折扣优惠维度询价结果,每个折扣优惠一组询价结果,具体参见表4。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/definitions/OptionalDiscountRatingResult"
+          }
+        },
+        "currency": {
+          "description": "币种。 CNY:人民币。 值为空代表人民币。",
+          "minLength": 0,
+          "maxLength": 20,
+          "type": "string",
+          "example": "xxxxx"
+        }
+      }
+    },
+    "PeriodProductRatingResult": {
+      "properties": {
+        "id": {
+          "description": "ID标识,来源于请求中的ID。",
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "product_id": {
+          "description": "包年/包月产品的ID。",
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "amount": {
+          "description": "总额,即最终优惠后的金额。 amount= official_website_amount - discountAmount。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "official_website_amount": {
+          "description": "包年/包月产品的官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "discount_amount": {
+          "description": "可选折扣优惠额,如商务折扣、伙伴折扣、促销折扣和折扣券选用时的优惠额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 5.0
+        },
+        "measure_id": {
+          "description": "价格度量单位标识。 1:元",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "installment_official_website_amount": {
+          "description": "分期金额的官网价。  说明: 暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_official_discount_amount": {
+          "description": "分期金额的折扣价。  说明: 暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_amount": {
+          "description": "分期金额的成交价。  说明: 分期金额的成交价=分期金额的官网价-分期金额的折扣价。暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_period_type": {
+          "description": "分期付款的周期类型。 2:月 3:年 说明: 暂只支持CloudPond产品。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 2,
+          "x-site": "HC"
+        }
+      }
+    },
+    "RateOnPeriodReq": {
+      "required": [
+        "project_id",
+        "product_infos"
+      ],
+      "properties": {
+        "project_id": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "项目ID。  说明: 获取方法: 步骤1:调用IAM获取委托Token接口,获取客户Token。步骤2:参见如何将合作伙伴Token置换为客户Token的步骤2,获取项目ID。IAM子用户调用此接口,需要IAM主账号授权,具体请参考创建用户组并授权。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "product_infos": {
+          "description": "产品信息列表,询价时要询价产品的信息的列表,具体参见表1。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "x-maxLength": 100,
+          "x-minLength": 1,
+          "items": {
+            "$ref": "#/definitions/PeriodProductInfo"
+          }
+        }
+      }
+    },
+    "OfficialWebsiteRatingResult": {
+      "properties": {
+        "official_website_amount": {
+          "description": "包年/包月产品的官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "installment_official_website_amount": {
+          "description": "分期金额的官网价。  说明: 暂只支持CloudPond产品。",
+          "type": "string",
+          "x-site": "HC"
+        },
+        "installment_period_type": {
+          "description": "分期付款的周期类型。 2:月 3:年  说明: 暂只支持CloudPond产品。",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1,
+          "x-site": "HC"
+        },
+        "measure_id": {
+          "description": "价格度量单位标识。 1:元",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "product_rating_results": {
+          "description": "产品询价结果,具体参见表5。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PeriodProductOfficialRatingResult"
+          }
+        }
+      }
+    },
+    "PeriodProductInfo": {
+      "required": [
+        "id",
+        "cloud_service_type",
+        "resource_type",
+        "resource_spec",
+        "region",
+        "period_type",
+        "period_num",
+        "subscription_num"
+      ],
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "ID标识,同一次询价中不能重复,用于标识返回询价结果和请求的映射关系。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "cloud_service_type": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。",
+          "type": "string",
+          "example": "hws.service.type.obs"
+        },
+        "resource_type": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。 ResourceType是CloudServiceType中的一种资源,CloudServiceType由多种ResourceType组合提供。",
+          "type": "string",
+          "example": "hws.resource.type.vm"
+        },
+        "resource_spec": {
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "云服务类型的资源规格,部分云服务类型和资源规格举例如下: 弹性云服务器:根据操作系统类型在云服务器规格的ID后添加“.win”或“.linux”,例如“s2.small.1.linux”。云服务器规格的ID字段,您可以调用查询规格详情和规格扩展信息列表接口获取。 带宽:12_bgp:动态BGP按流量计费带宽12_sbgp:静态BGP按流量计费带宽19_bgp:动态BGP按带宽计费带宽19_sbgp:静态BGP按带宽计费带宽19_share:按带宽计费共享带宽 IP:5_bgp:动态BGP公网IP5_sbgp:静态BGP公网IP 云数据库:云数据库的资源规格信息,您可以调用查询数据库规格接口获取。 分布式缓存服务:分布式缓存服务的资源规格信息,您可以调用查询产品规格接口获取。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "region": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "云服务区编码,例如:“cn-north-1”。具体请参见地区和终端节点对应云服务的“区域”列的值。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "available_zone": {
+          "minLength": 0,
+          "maxLength": 64,
+          "description": "可用区标识,例如:“cn-north-1a”,大小写不敏感。具体请参见地区和终端节点可用分区的“可用分区名称”列的值。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "resource_size": {
+          "description": "资源容量大小,例如购买的卷大小或带宽大小。 线性产品时该参数不能为空。线性产品为包括硬盘,带宽等在订购时需要指定大小的产品。例如硬盘在订购时需选择10G、20G等不同大小。非线性产品时此参数不携带或者携带值为null时,不作为筛选条件。",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 214783647,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "size_measure_id": {
+          "description": "资源容量度量标识。 15:Mbps(购买带宽时使用)17:GB(购买云硬盘时使用)14:个 线性产品时该参数必填。线性产品为包括硬盘,带宽等在订购时需要指定大小的产品。例如硬盘在订购时需选择10G、20G等不同大小。 非线性产品时此参数不携带或者携带值为null时,不作为筛选条件。",
+          "type": "integer",
+          "maximum": 214783647,
+          "minimum": 0,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 14
+        },
+        "period_type": {
+          "description": "订购包年/包月产品的周期类型。 0:天2:月3:年4:小时",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "period_num": {
+          "description": "订购包年/包月产品的周期数。",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 214783647,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "subscription_num": {
+          "description": "订购包年/包月产品的数量。",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000,
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 0
+        },
+        "fee_installment_mode": {
+          "minLength": 0,
+          "maxLength": 64,
+          "description": "费用分期模式。 HALF_PAY:半付ZERO_PAY:零付NA:不支持费用分期模式  说明: 此参数不携带或携带值为空串或携带值为null时,默认值为“NA”。暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "HALF_PAY",
+          "x-site": "HC"
+        }
+      }
+    },
+    "OptionalDiscountRatingResult": {
+      "properties": {
+        "discount_id": {
+          "description": "折扣优惠ID。",
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "amount": {
+          "description": "总额,即最终优惠后的金额。 amount= official_website_amount - discountAmount。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "official_website_amount": {
+          "description": "包年/包月产品的官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "discount_amount": {
+          "description": "可选折扣优惠额,如商务折扣、伙伴折扣、促销折扣和折扣券选用时的优惠额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "measure_id": {
+          "description": "价格度量单位标识。 1:元",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "discount_type": {
+          "description": "折扣优惠类型。商务授权折扣:605(华为云BE场景下的合同商务折扣)、伙伴授予折扣:606(分销商BE场景下的合同商务折扣)、伙伴设置折扣:607(合作伙伴设置折扣-折扣率)",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "discount_name": {
+          "description": "折扣名称。",
+          "minLength": 0,
+          "maxLength": 256,
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "best_offer": {
+          "description": "是否为最优折扣。 0:不是最优折扣,为缺省值。1:是最优折扣最优折扣:在商务折扣、伙伴折扣中选择(优惠金额最大的折扣为最优,优惠金额相等则按此顺序排优先级),促销折扣,折扣券不参与最优折扣的计算。",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "product_rating_results": {
+          "description": "产品询价结果,具体参见表5。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/definitions/PeriodProductRatingResult"
+          }
+        },
+        "installment_official_website_amount": {
+          "description": "分期金额的官网价。  说明: 暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_official_discount_amount": {
+          "description": "分期金额的折扣价。  说明: 暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_amount": {
+          "description": "分期金额的成交价。  说明: 分期金额的成交价=分期金额的官网价-分期金额的折扣价。暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_period_type": {
+          "description": "分期付款的周期类型。 2:月 3:年 说明: 暂只支持CloudPond产品。",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 2,
+          "x-site": "HC"
+        }
+      }
+    },
+    "PeriodProductOfficialRatingResult": {
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "ID标识,来源于请求中的ID。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "product_id": {
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "包年/包月产品的ID。",
+          "type": "string",
+          "example": "xxxxx"
+        },
+        "official_website_amount": {
+          "description": "包年/包月产品的官网价。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true
+        },
+        "measure_id": {
+          "description": "价格度量单位标识。 1:元",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1
+        },
+        "installment_official_website_amount": {
+          "description": "分期金额的官网价。  说明: 暂只支持CloudPond产品。",
+          "type": "string",
+          "example": "xxxxx",
+          "x-site": "HC"
+        },
+        "installment_period_type": {
+          "description": "分期付款的周期类型。 2:月 3:年 说明: 暂只支持CloudPond产品。",
+          "type": "integer",
+          "x-allowNull": true,
+          "format": "int32",
+          "example": 1,
+          "x-site": "HC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

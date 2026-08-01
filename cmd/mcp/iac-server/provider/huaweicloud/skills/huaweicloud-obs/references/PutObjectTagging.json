@@ -1,0 +1,211 @@
+{
+  "name": "PutObjectTagging",
+  "summary": "设置对象标签",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "put": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "PutObjectTagging",
+        "consumes": [
+          "application/xml"
+        ],
+        "summary": "设置对象标签",
+        "description": "用户可以通过本接口设置或更新对象(Object)的标签信息。对象标签使用一组键值对(Key-Value)标记对象。 如果请求中不携带版本号(versionId),需要确保执行者有PutObjectTagging权限。如果请求中携带版本号(versionId),需要确保执行者有PutObjectTagging+PutObjectVersionTagging权限。缺省情况下只有对象的所有者可以执行此操作,也可以通过设置桶策略或用户策略给其他用户。 默认设置Object当前版本的标签信息。可以通过指定versionId参数来设置指定Object版本的标签信息。如果对应版本为删除标记(Delete Marker),则OBS将返回404 Not Found。\n说明: 1. 并行文件系统不支持给文件设置标签。 2. 每个对象最多能设置10个标签。 3. 标签的键值约束: 键名(Key)区分大小写且必须唯一,不能为空且不能超过128个字符,不允许使用,/|<>=*\\字符。 键值(Value)区分大小写且可以为空,不能超过255个字符,不允许使用,/|<>=*\\字符。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/xml"
+        ],
+        "x-request-examples-url-1": "/objectname?tagging&versionId=versionid HTTP/1.1",
+        "x-request-examples-1": "PUT /objectname?tagging&versionId=versionid HTTP/1.1\nHost: bucketname.obs.cn-north-4.myhuaweicloud.com\nDate: date\nAuthorization: authorization string\nContent-MD5: md5\n\n<?xml version=\"1.0\" encoding=\"UTF-8\">\n<Tagging>\n    <TagSet>\n        <Tag>\n            <Key>Key</Key>\n            <Value>Value</Value>\n        </Tag>\n     </TagSet> \n</Tagging>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "description": "按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串。也支持设置Content-SHA256头域,其值为消息体256-bit SHA256值经过base64编码后得到的字符串,Content-MD5和Content-SHA256二选一。\n示例:n58IG6hfM7vqI4K0vnWpog==",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "设置标签对象名。",
+            "type": "string"
+          },
+          {
+            "name": "tagging",
+            "in": "query",
+            "required": true,
+            "description": "标识当前请求是对象标签请求。",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "description": "对象版本号。标识设置指定版本的对象标签。对应的附加响应消息头为x-obs-version-id。",
+            "type": "string",
+            "allowEmptyValue": false,
+            "minLength": 32,
+            "maxLength": 32
+          },
+          {
+            "name": "Tagging",
+            "in": "body",
+            "description": "对象标签配置。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PutObjectTaggingRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功请求响应。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "description": "Tag信息的元素\n",
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "properties": {
+        "Key": {
+          "description": "Tag的名字\n",
+          "type": "string"
+        },
+        "Value": {
+          "description": "Tag的值\n",
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "PutObjectTaggingRequestBody": {
+      "xml": {
+        "name": "Tagging"
+      },
+      "description": "TagSet和Tag的元素\n",
+      "required": [
+        "TagSet"
+      ],
+      "properties": {
+        "TagSet": {
+          "description": "Tag的集合元素\n",
+          "required": [
+            "Tag"
+          ],
+          "properties": {
+            "Tag": {
+              "description": "Tag信息的元素\n",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Tag"
+              },
+              "minItems": 1,
+              "maxItems": 10
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

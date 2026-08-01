@@ -1,0 +1,214 @@
+{
+  "name": "KeystoneListServices",
+  "summary": "查询服务列表",
+  "tags": "服务和终端节点",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/services": {
+      "get": {
+        "tags": [
+          "服务和终端节点"
+        ],
+        "summary": "查询服务列表",
+        "description": "该接口可以用于查询服务列表。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneListServices",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "服务类型。",
+            "required": false,
+            "type": "string",
+            "x-example": "identity",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "links": {
+                  "next": null,
+                  "previous": null,
+                  "self": "https://iam.huaweicloud.com/v3/services"
+                },
+                "services": [
+                  {
+                    "name": "keystone",
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.huaweicloud.com/v3/services/1842ae22353d45a39a1eb89c22f0fe50"
+                    },
+                    "id": "1842ae22353d45a39a1eb89c22f0fe50",
+                    "type": "identity",
+                    "enabled": true
+                  },
+                  {
+                    "name": "iam",
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.huaweicloud.com/v3/services/6cf6e23e00dd49beb13313b024aec598"
+                    },
+                    "id": "6cf6e23e00dd49beb13313b024aec598",
+                    "type": "identity",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneListServicesResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "501": {
+            "description": "接口没有实现。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询服务列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 74,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/services",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/services",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneListServicesResponseBody": {
+      "required": [
+        "links",
+        "services"
+      ],
+      "properties": {
+        "services": {
+          "type": "array",
+          "description": "服务信息列表。",
+          "items": {
+            "$ref": "#/definitions/Service"
+          }
+        },
+        "links": {
+          "description": "服务的资源链接信息。",
+          "$ref": "#/definitions/Links"
+        }
+      },
+      "description": ""
+    },
+    "Service": {
+      "required": [
+        "enabled",
+        "id",
+        "links",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "iam",
+          "description": "服务名。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAM Service",
+          "description": "服务描述信息。"
+        },
+        "links": {
+          "description": "服务的资源链接。",
+          "$ref": "#/definitions/Links"
+        },
+        "id": {
+          "type": "string",
+          "example": "6cf6e23e00dd49beb13313b024aec598",
+          "description": "服务ID。"
+        },
+        "type": {
+          "type": "string",
+          "example": "identity",
+          "description": "服务类型。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "服务是否可用。"
+        }
+      },
+      "description": ""
+    },
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

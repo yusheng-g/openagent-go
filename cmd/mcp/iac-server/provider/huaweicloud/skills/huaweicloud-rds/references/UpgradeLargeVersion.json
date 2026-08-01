@@ -1,0 +1,171 @@
+{
+  "name": "UpgradeLargeVersion",
+  "summary": "MySQL大版本升级",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/major-upgrade": {
+      "post": {
+        "x-request-examples-url-1": "https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/d8e6ca5a624745bcb546a227aa3ae1cfin01/major-upgrade",
+        "x-request-examples-description-1": "下发MySQL5.7升级8.0",
+        "x-request-examples-text-1": "{“delay”:false}",
+        "x-request-examples-1": "{“delay”:false}",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "MySQL大版本升级",
+        "operationId": "UpgradeLargeVersion",
+        "description": "提供mysql5.7升级mysql8.0的下发接口",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-constraint": "- 该接口仅支持mysql从5.7升级至8.0版本\n- 使用该接口前请联系客服申请获取相应权限\n- 具体约束请参考https://support.huaweicloud.com/usermanual-rds/rds_05_0004.html",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": false,
+            "description": "用户Token",
+            "type": "string",
+            "x-example": "******",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "in": "body",
+            "name": "UpgradeLargeVersionRequestBody",
+            "required": true,
+            "description": "大版本升级请求体",
+            "schema": {
+              "$ref": "#/definitions/CustomerUpgradeMajorVersionReq"
+            }
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "项目ID"
+          },
+          {
+            "in": "path",
+            "name": "instance_id",
+            "required": true,
+            "type": "string",
+            "description": "实例id",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/UpgradeLargeVersionV3Resp"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "234asdb34234-54367547-123213"
+              }
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "请求id."
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "请求id."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CustomerUpgradeMajorVersionReq": {
+      "type": "object",
+      "properties": {
+        "delay": {
+          "type": "boolean",
+          "description": "是否在运维时间窗内切换版本,默认为否。"
+        },
+        "configuration_id": {
+          "type": "string",
+          "description": "指定新版本的参数模板,若不填则默认会最大限度继承原实例的参数。",
+          "minLength": 32,
+          "maxLength": 36
+        }
+      }
+    },
+    "UpgradeLargeVersionV3Resp": {
+      "type": "object",
+      "description": "大版本升级响应体",
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务流ID",
+          "minLength": 32,
+          "maxLength": 36
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

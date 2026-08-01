@@ -1,0 +1,174 @@
+{
+  "name": "ListConsumeSubCustomers",
+  "summary": "查询伙伴消费子客户列表",
+  "tags": "管理账单(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/subcustomer-bills/res-fee-records/sub-customers/query": {
+      "post": {
+        "summary": "查询伙伴消费子客户列表",
+        "description": "伙伴在伙伴销售平台可实时查询消费账期内的子客户列表,可以用于查询子客户的消费记录。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>若当前子客户与伙伴无关联关系,仍可查询账期内处于关联状态且有消费的子客户列表。",
+        "tags": [
+          "管理账单(伙伴)"
+        ],
+        "operationId": "ListConsumeSubCustomers",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用",
+        "x-externalURL": "/v2/bills/subcustomer-bills/res-fee-records/sub-customers/query",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2022-03-23",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-interface-dataLevel": "L1",
+        "x-interface-privacyLevel": "H",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。中文:zh_CN英文:en_US缺省为zh_CN。",
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询客户消费子客户列表请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListConsumeSubCustomersReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询客户消费子客户列表响应",
+            "schema": {
+              "$ref": "#/definitions/ListConsumeSubCustomersRsp"
+            },
+            "examples": {
+              "application/json": {
+                "sub_customers": [
+                  {
+                    "customer_id": "0501ed********b50f8cc00878383140"
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理账单(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/bills/subcustomer-bills/res-fee-records/sub-customers/query?bill_cycle=2022-03&offset=0&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "SubCustomerInfoV3": {
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "x-dataLevel": "L2",
+          "x-data-category": "",
+          "x-privacyLevel": "M",
+          "example": "D60F111AB9BB4ADAA99E940EF144EF40"
+        }
+      }
+    },
+    "ListConsumeSubCustomersReq": {
+      "required": [
+        "bill_cycle"
+      ],
+      "properties": {
+        "bill_cycle": {
+          "type": "string",
+          "description": "账期所在月份。 格式:YYYY-MM",
+          "minLength": 1,
+          "maxLength": 10,
+          "x-dataLevel": "L2",
+          "x-data-category": "",
+          "x-privacyLevel": "M",
+          "pattern": "^[0-9]{4}-[0-9]{2}$",
+          "example": "2022-03"
+        },
+        "offset": {
+          "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0",
+          "x-dataLevel": "L2",
+          "x-data-category": "",
+          "x-privacyLevel": "M",
+          "maximum": 2147483646,
+          "minimum": 0,
+          "default": "0"
+        },
+        "limit": {
+          "description": "一次查询的条数,默认值为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "10",
+          "x-dataLevel": "L2",
+          "x-data-category": "",
+          "x-privacyLevel": "M",
+          "maximum": 100,
+          "minimum": 1,
+          "default": "10"
+        }
+      }
+    },
+    "ListConsumeSubCustomersRsp": {
+      "properties": {
+        "sub_customers": {
+          "description": "子客户列表。 具体请参见表SubCustomerInfo。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubCustomerInfoV3"
+          }
+        },
+        "total_count": {
+          "description": "结果集数量,只有成功才返回这个参数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1",
+          "x-dataLevel": "L2",
+          "x-data-category": "",
+          "x-privacyLevel": "M"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

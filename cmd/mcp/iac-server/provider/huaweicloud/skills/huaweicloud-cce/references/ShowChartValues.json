@@ -1,0 +1,120 @@
+{
+  "name": "ShowChartValues",
+  "summary": "获取模板Values",
+  "tags": "模板管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/charts/{chart_id}/values": {
+      "get": {
+        "tags": [
+          "模板管理"
+        ],
+        "summary": "获取模板Values",
+        "description": "获取模板Values",
+        "operationId": "ShowChartValues",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_chart_id"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ChartValue"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取模板Values",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-publishpath": "ShowChartValues",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ChartValue": {
+      "required": [
+        "values"
+      ],
+      "properties": {
+        "values": {
+          "type": "object",
+          "description": "values.yaml中的数据,数据结构以具体的模板为准",
+          "properties": {
+            "basic": {
+              "type": "object",
+              "default": "模板的一些基础值"
+            }
+          },
+          "additionalProperties": true,
+          "example": {
+            "basic": {
+              "admin_password": "******",
+              "admin_username": "admin"
+            },
+            "global": {
+              "magento_EIP": "100.95.154.255",
+              "magento_EPORT": 32080,
+              "namespace": "default"
+            },
+            "image": {
+              "magento_image": "swr.cn-north-7.myhuaweicloud.com/everest/magento:latest",
+              "mysql_image": "swr.cn-north-7.myhuaweicloud.com/everest/mysql:5.7.14"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_chart_id": {
+      "name": "chart_id",
+      "in": "path",
+      "description": "模板的ID",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 5
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

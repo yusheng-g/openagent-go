@@ -1,0 +1,248 @@
+{
+  "name": "ShowQuota",
+  "summary": "查询配额详情",
+  "tags": "配额",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/quotas": {
+      "get": {
+        "x-request-examples-description-1": "查询负载均衡的相关资源配额信息",
+        "tags": [
+          "配额"
+        ],
+        "summary": "查询配额详情",
+        "description": "查询指定项目中负载均衡相关的各类资源的当前配额。接口返回只包含总配额,不包含已使用配额。若需要查询已使用配额,可使用查询配额使用详情(GET /v3/{project_id}/elb/quotas/details)接口。",
+        "operationId": "ShowQuota",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "c6f3d7fe99bb1d8aa29e148097dab0d0",
+                "quota": {
+                  "member": 10000,
+                  "members_per_pool": 1000,
+                  "certificate": -1,
+                  "l7policy": 2000,
+                  "listener": 1500,
+                  "loadbalancer": 100000,
+                  "healthmonitor": -1,
+                  "pool": 5000,
+                  "ipgroup": 1000,
+                  "ipgroup_bindings": 50,
+                  "ipgroup_max_length": 300,
+                  "ipgroups_per_listener": 2,
+                  "security_policy": 50,
+                  "project_id": "060576798a80d5762fafc01a9b5eedc7",
+                  "condition_per_policy": 10,
+                  "listeners_per_pool": 50,
+                  "listeners_per_loadbalancer": 50,
+                  "free_instance_listeners_per_loadbalancer": 5,
+                  "free_instance_members_per_pool": 10,
+                  "l7policies_per_listener": 100,
+                  "pools_per_l7policy": 5
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowQuotaResponseBody"
+            }
+          }
+        },
+        "x-name": "查询配额详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "",
+        "x-order": 8,
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/quotas",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "ShowQuotaResponseBody": {
+      "required": [
+        "request_id",
+        "quota"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "quota": {
+          "description": "**参数解释**:负载均衡相关各类资源的配额信息。仅返回资源的总配额,不包括剩余可用配额。",
+          "$ref": "#/definitions/Quota"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "Quota": {
+      "required": [
+        "project_id",
+        "loadbalancer",
+        "certificate",
+        "listener",
+        "l7policy",
+        "condition_per_policy",
+        "pool",
+        "healthmonitor",
+        "member",
+        "members_per_pool",
+        "listeners_per_pool",
+        "ipgroup",
+        "ipgroup_bindings",
+        "ipgroup_max_length",
+        "ipgroups_per_listener",
+        "security_policy",
+        "listeners_per_loadbalancer",
+        "free_instance_members_per_pool",
+        "free_instance_listeners_per_loadbalancer",
+        "l7policies_per_listener",
+        "pools_per_l7policy"
+      ],
+      "properties": {
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。"
+        },
+        "loadbalancer": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:负载均衡器配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "certificate": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:证书配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "listener": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:监听器配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "l7policy": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:转发策略配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "condition_per_policy": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个转发策略下所有转发规则的condition总数配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "pool": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器组配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "healthmonitor": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "member": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "members_per_pool": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个pool下的member的配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "listeners_per_pool": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个pool关联的监听器配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "ipgroup": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP地址组配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "ipgroup_bindings": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个IP地址组可以关联的监听器数量配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "ipgroup_max_length": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个监听器下关联的所有IP地址组的ip列表中的IP总数不能超过ipgroup_max_length。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "ipgroups_per_listener": {
+          "type": "integer",
+          "description": "**参数解释**:单个监听器下的IP地址组配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "security_policy": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:自定义安全策略配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "listeners_per_loadbalancer": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个LB实例下的监听器配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。\n\n> 当前单个LB下监听器配额实际未限制,但建议不要超过默认配额。"
+        },
+        "pools_per_l7policy": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个转发策略下的后端服务器组配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "l7policies_per_listener": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个监听器下的转发策略配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "free_instance_members_per_pool": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个pool实例下的免费member配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        },
+        "free_instance_listeners_per_loadbalancer": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单个LB实例下的免费监听器配额。\n\n**取值范围**:\n- 大于等于0:表示当前配额数量。\n- -1:表示无配额限制。"
+        }
+      },
+      "description": "负载均衡相关各类资源的配额信息。仅返回资源的总配额,不包括剩余可用配额。",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

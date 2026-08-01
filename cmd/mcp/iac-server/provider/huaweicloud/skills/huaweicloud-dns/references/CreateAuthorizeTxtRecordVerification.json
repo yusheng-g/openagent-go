@@ -1,0 +1,112 @@
+{
+  "name": "CreateAuthorizeTxtRecordVerification",
+  "summary": "验证公网子域名授权",
+  "tags": "公网域名管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/authorize-txtrecord/{id}/verify": {
+      "post": {
+        "tags": [
+          "公网域名管理"
+        ],
+        "x-request-examples-description-1": "验证公网子域名授权请求。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/authorize-txtrecord/a86dba5800434cc6a1bb69d5e86f3ca3/verify",
+        "operationId": "CreateAuthorizeTxtRecordVerification",
+        "summary": "验证公网子域名授权",
+        "description": "用户在主域名所属DNS服务商处添加TXT类型解析记录后,调用当前接口验证子域名授权状态。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "in": "path",
+            "required": true,
+            "description": "授权请求ID。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "验证公网子域名授权响应。",
+            "schema": {
+              "$ref": "#/definitions/CreateAuthorizeTxtRecordVerificationResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "status": "VERIFIED"
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 13
+      }
+    }
+  },
+  "definitions": {
+    "CreateAuthorizeTxtRecordVerificationResponseBody": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n授权状态。\n**取值范围:**\n- CREATED:已创建\n- VERIFIED:已验证"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

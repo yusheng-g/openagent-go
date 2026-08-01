@@ -1,0 +1,578 @@
+{
+  "name": "NeutronListSecurityGroupRules",
+  "summary": "查询安全组规则列表",
+  "tags": "OpenStack - 安全组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/security-group-rules": {
+      "get": {
+        "tags": [
+          "OpenStack - 安全组"
+        ],
+        "summary": "查询安全组规则列表",
+        "description": "查询提交请求的租户有权限查看的所有安全组规则。单次查询最多返回2000条数据,超过2000后会返回分页标记。分页查询请参考分页查询",
+        "operationId": "NeutronListSecurityGroupRules",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页返回的个数",
+            "required": false,
+            "type": "integer",
+            "default": 2000,
+            "format": "int32",
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询起始的资源ID,为空时查询第一页",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "按照安全组规则对应的id过滤查询结果",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "description": "按照安全组规则的方向过滤查询结果,支持ingress和egress进行过滤",
+            "required": false,
+            "type": "string",
+            "x-order": 5,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "按照安全组规则的IP协议过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "ethertype",
+            "in": "query",
+            "description": "按照网络类型过滤查询结果,支持IPv4或者IPv6",
+            "required": false,
+            "type": "string",
+            "x-order": 7,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "按照安全组规则的描述过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 8,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "remote_ip_prefix",
+            "in": "query",
+            "description": "按照与此安全组规则匹配的远端IP网段过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 9,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "remote_group_id",
+            "in": "query",
+            "description": "按照与此安全组规则关联的远端安全组ID过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 10,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "security_group_id",
+            "in": "query",
+            "description": "按照与此安全组规则所属的安全组ID过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 11,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "port_range_max",
+            "in": "query",
+            "description": "按照最大端口过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 12,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "port_range_min",
+            "in": "query",
+            "description": "按照最小端口过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 13,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "按照安全组规则所属的项目ID过滤查询结果",
+            "required": false,
+            "type": "string",
+            "x-order": 14,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "security_group_rules": [
+                  {
+                    "remote_group_id": "1d8b19c7-7c56-48f7-a99b-4b40eb390967",
+                    "direction": "ingress",
+                    "remote_ip_prefix": null,
+                    "protocol": null,
+                    "tenant_id": "6c9298ec8c874f7f99688489ab65f90e",
+                    "port_range_max": null,
+                    "security_group_id": "1d8b19c7-7c56-48f7-a99b-4b40eb390967",
+                    "port_range_min": null,
+                    "ethertype": "IPv6",
+                    "description": null,
+                    "id": "07adc044-3f21-4eeb-bd57-5e5eb6024b7f",
+                    "project_id": "6c9298ec8c874f7f99688489ab65f90e",
+                    "created_at": "2018-09-20T02:15:34",
+                    "updated_at": "2018-09-20T02:15:34",
+                    "remote_address_group_id": null
+                  },
+                  {
+                    "remote_group_id": null,
+                    "direction": "egress",
+                    "remote_ip_prefix": null,
+                    "protocol": null,
+                    "tenant_id": "6c9298ec8c874f7f99688489ab65f90e",
+                    "port_range_max": null,
+                    "security_group_id": "328fb454-a2ee-4a11-bdb1-ee19bbdfde43",
+                    "port_range_min": null,
+                    "ethertype": "IPv6",
+                    "description": null,
+                    "id": "09358f83-f4a5-4386-9563-a1e3c373d655",
+                    "project_id": "6c9298ec8c874f7f99688489ab65f90e",
+                    "created_at": "2018-09-20T02:15:34",
+                    "updated_at": "2018-09-20T02:15:34",
+                    "remote_address_group_id": null
+                  },
+                  {
+                    "remote_group_id": "4c763030-366e-428c-be2b-d48f6baf5297",
+                    "direction": "ingress",
+                    "remote_ip_prefix": null,
+                    "protocol": null,
+                    "tenant_id": "6c9298ec8c874f7f99688489ab65f90e",
+                    "port_range_max": null,
+                    "security_group_id": "4c763030-366e-428c-be2b-d48f6baf5297",
+                    "port_range_min": null,
+                    "ethertype": "IPv6",
+                    "description": null,
+                    "id": "219a6f56-1069-458b-bec0-df9270e7a074",
+                    "project_id": "6c9298ec8c874f7f99688489ab65f90e",
+                    "created_at": "2018-09-20T02:15:34",
+                    "updated_at": "2018-09-20T02:15:34",
+                    "remote_address_group_id": null
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NeutronListSecurityGroupRulesResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询安全组规则列表",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 121,
+        "x-request-examples-description-1": "使用security_group_id过滤,可以查询某个安全组下的所有规则",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v2.0/security-group-rules?security_group_id=a56598bc-5cb6-4be6-a72c-67c0379e979f",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v2.0/security-group-rules?security_group_id=a56598bc-5cb6-4be6-a72c-67c0379e979f",
+        "x-request-examples-description-2": "查询安全组规则列表",
+        "x-request-examples-url-2": "",
+        "x-request-examples-2": "GET https://{Endpoint}/v2.0/security-group-rules",
+        "x-request-examples-text-2": "GET https://{Endpoint}/v2.0/security-group-rules",
+        "x-request-examples-description-3": "使用组合条件过滤查询结果",
+        "x-request-examples-url-3": "",
+        "x-request-examples-3": "GET https://{Endpoint}/v2.0/security-group-rules?direction=egress&ethertype=IPv4&port_range_max=33&port_range_min=33",
+        "x-request-examples-text-3": "GET https://{Endpoint}/v2.0/security-group-rules?direction=egress&ethertype=IPv4&port_range_max=33&port_range_min=33",
+        "x-request-examples-description-4": "分页过滤查询结果,每页返回的个数为limit",
+        "x-request-examples-url-4": "",
+        "x-request-examples-4": "GET https://{Endpoint}/v2.0/security-group-rules?limit=1",
+        "x-request-examples-text-4": "GET https://{Endpoint}/v2.0/security-group-rules?limit=1",
+        "x-request-examples-description-5": "分页过滤查询结果,每页返回limit个数据,从第marker数据之后返回",
+        "x-request-examples-url-5": "",
+        "x-request-examples-5": "GET https://{Endpoint}/v2.0/security-group-rules?limit=1&marker=10b932da-f95c-4003-a77d-4064b7d101cd",
+        "x-request-examples-text-5": "GET https://{Endpoint}/v2.0/security-group-rules?limit=1&marker=10b932da-f95c-4003-a77d-4064b7d101cd",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "Native",
+        "x-first-open-time": "2016-6-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronPageLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "example": "https://vpc.cn-north-1.myhuaweicloud.com/v2.0",
+          "description": "API链接",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "rel": {
+          "type": "string",
+          "example": "self",
+          "description": "API链接与该API版本的关系",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronSecurityGroupRule": {
+      "required": [
+        "created_at",
+        "description",
+        "direction",
+        "ethertype",
+        "id",
+        "port_range_max",
+        "port_range_min",
+        "project_id",
+        "protocol",
+        "remote_address_group_id",
+        "remote_group_id",
+        "remote_ip_prefix",
+        "security_group_id",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "安全组规则描述",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "direction": {
+          "type": "string",
+          "example": "egress",
+          "description": "功能说明:规则方向\n取值范围:ingress、egress",
+          "enum": [
+            "ingress",
+            "egress"
+          ],
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "ethertype": {
+          "type": "string",
+          "description": "功能说明:网络类型\n取值范围:IPv4、IPv6",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组规则ID,查询安全组规则非必选",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "port_range_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:最大端口\n取值范围:当协议类型为ICMP时,该值表示ICMP的code",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "port_range_min": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:最小端口\n当协议类型为ICMP时,该值表示ICMP的type。protocol为tcp和udp时,port_range_max和port_range_min必须同时输入,且port_range_max应大于等于port_range_min。protocol为icmp时,指定ICMP code(port_range_max)时,必须同时指定ICMP type(port_range_min)。",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:tcp/udp/icmp/icmpv6或IP协议编号(0~255)\n约束:协议为icmpv6时,网络类型应该为IPv6;协议为icmp时,网络类型应该为IPv4",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "remote_group_id": {
+          "type": "string",
+          "description": "所属安全组的对端ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "remote_ip_prefix": {
+          "type": "string",
+          "description": "对端ip网段",
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "remote_address_group_id": {
+          "type": "string",
+          "description": "功能说明:远端IP地址组ID\n约束:和remote_ip_prefix,remote_group_id互斥",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "所属安全组ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        }
+      },
+      "description": ""
+    },
+    "NeutronListSecurityGroupRulesResponseBody": {
+      "required": [
+        "security_group_rules"
+      ],
+      "properties": {
+        "security_group_rules": {
+          "type": "array",
+          "description": "安全组规则对象列表",
+          "items": {
+            "$ref": "#/definitions/NeutronSecurityGroupRule"
+          },
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "security_group_rules_links": {
+          "type": "array",
+          "description": "分页信息",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/NeutronPageLink"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hcso,ctc,tlf,obc,otc,hk,g42,hk_g42,hc"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

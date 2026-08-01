@@ -1,0 +1,416 @@
+{
+  "name": "ListTransitIps",
+  "summary": "查询中转IP列表",
+  "tags": "私网NAT中转IP",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/transit-ips": {
+      "get": {
+        "tags": [
+          "私网NAT中转IP"
+        ],
+        "summary": "查询中转IP列表",
+        "description": "查询中转IP列表。",
+        "operationId": "ListTransitIps",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数。\n取值范围:1~2000。\n默认值:2000。",
+            "required": false,
+            "type": "integer",
+            "default": 2000,
+            "x-order": 3,
+            "minimum": 1,
+            "maximum": 2000
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "功能说明:分页查询起始的资源ID,为空时查询第一页。\n值从上一次查询的PageInfo中的next_marker或者previous_marker中获取。",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "是否查询前一页。",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "中转IP的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 6,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "description": "项目的ID。",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 7,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "network_interface_id",
+            "in": "query",
+            "description": "中转IP的网络接口ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 8,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "ip_address",
+            "in": "query",
+            "description": "中转IP地址。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 9,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "gateway_id",
+            "in": "query",
+            "description": "中转IP绑定的私网NAT网关实例的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 10,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "企业项目ID。创建中转IP时,关联的企业项目ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 11,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "virsubnet_id",
+            "in": "query",
+            "description": "当前租户子网的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 12,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "transit_subnet_id",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的ID。",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 13,
+            "minItems": 1,
+            "maxItems": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询中转IP列表成功。",
+            "examples": {
+              "application/json": {
+                "request_id": "747a911c17067a39692f75ac146fb47e",
+                "transit_ips": [
+                  {
+                    "id": "3faa719d-6d18-4ccb-a5c7-33e65a09663e",
+                    "project_id": "da261828016849188f4dcc2ef94d9da9",
+                    "network_interface_id": "c91c43fb-8d66-48df-bfa9-b89053ac3737",
+                    "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                    "gateway_id": "521bb3d9-8bed-4c6c-9ee8-669bd0620f76",
+                    "ip_address": "192.168.1.68",
+                    "created_at": "2019-04-29T03:41:59",
+                    "updated_at": "2019-04-29T03:41:59",
+                    "virsubnet_id": "49ee5fb5-75bf-4320-946e-b21ef4c9c9c1",
+                    "status": "ACTIVE",
+                    "tags": [
+                      {
+                        "key": "key1",
+                        "value": "value1"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "a2845109-3b2f-4627-b08f-09a726c0a6e7",
+                    "project_id": "da261828016849188f4dcc2ef94d9da9",
+                    "network_interface_id": "adebbdca-8c26-4c14-b34f-3f53cd2c42f2",
+                    "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                    "gateway_id": "521bb3d9-8bed-4c6c-9ee8-669bd0620f76",
+                    "ip_address": "192.168.1.68",
+                    "created_at": "2019-04-29T02:16:09",
+                    "updated_at": "2019-04-29T02:16:09",
+                    "virsubnet_id": "333e5fb5-75bf-4320-946e-b21ef4c9c2g5",
+                    "status": "ACTIVE",
+                    "tags": [
+                      {
+                        "key": "key1",
+                        "value": "value1"
+                      }
+                    ]
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "56a18bb5-5861-4eaf-a284-b7fbdaf6502f,",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListTransitIpsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询中转IP列表",
+        "x-constraint": "可以在URI后面用‘?’和‘&’添加不同的查询条件组合。\n支持参数说明中所有非必选参数过滤,请参考请求样例。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 0,
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "TransitIp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "中转IP的ID。"
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "项目的ID。"
+        },
+        "network_interface_id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "中转IP的网络接口ID。"
+        },
+        "ip_address": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 35,
+          "description": "中转IP的地址。"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "中转IP的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "中转IP的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 36,
+          "description": "当前租户子网的ID。取值约束:与transit_subnet_id参数二选一。默认空字符串。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表。",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "gateway_id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "中转IP绑定的私网NAT网关实例的ID。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "企业项目ID。创建中转IP时,关联的企业项目ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT中转IP的状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "中转子网IP的响应体。",
+      "required": [
+        "id",
+        "project_id",
+        "network_interface_id",
+        "ip_address",
+        "created_at",
+        "updated_at",
+        "gateway_id",
+        "enterprise_project_id"
+      ],
+      "type": "object"
+    },
+    "PageInfo": {
+      "properties": {
+        "next_marker": {
+          "type": "string",
+          "description": "分页查询结果中最后一条记录的ID。通常用于查询下一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "previous_marker": {
+          "type": "string",
+          "description": "分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "分页查询资源时,本页的实例的个数。",
+          "minimum": 1,
+          "maximum": 2000,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "分页信息。"
+    },
+    "ListTransitIpsResponseBody": {
+      "properties": {
+        "transit_ips": {
+          "type": "array",
+          "description": "查询中转IP列表的响应体。",
+          "items": {
+            "$ref": "#/definitions/TransitIp"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "查询中转IP列表的响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,278 @@
+{
+  "name": "BatchDeleteZones",
+  "summary": "批量删除域名",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/zones": {
+      "delete": {
+        "tags": [
+          "批量操作"
+        ],
+        "x-request-examples-description-1": "批量删除域名。",
+        "x-request-examples-url-1": "DELETE https://{endpoint}/v2.1/zones",
+        "x-request-examples-1": {
+          "zone_type": "public",
+          "zone_ids": [
+            "2c9eb155587194ec01587224c9f90149",
+            "2c9eb155587194ec01587224c9f90150"
+          ]
+        },
+        "operationId": "BatchDeleteZones",
+        "summary": "批量删除域名",
+        "description": "批量删除域名。\n本接口为原子操作,所有记录应全部删除成功或全部失败。\n支持公网域名、内网域名。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BatchDeleteZonesRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteZonesRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量删除域名响应。",
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteZonesResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "links": {
+                  "self": "https://Endpoint/v2.1/zones"
+                },
+                "zones": [
+                  {
+                    "id": "2c9eb155587194ec01587224c9f90149",
+                    "name": "example.com.",
+                    "description": "This is an example zone.",
+                    "email": "xx@example.com",
+                    "ttl": 300,
+                    "serial": 0,
+                    "masters": [],
+                    "status": "ACTIVE",
+                    "links": {
+                      "self": "https://Endpoint/v2/zones/2c9eb155587194ec01587224c9f90149"
+                    },
+                    "pool_id": "00000000570e54ee01570e9939b20019",
+                    "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
+                    "zone_type": "public",
+                    "created_at": "2016-11-17T11:56:03.439",
+                    "updated_at": "2016-11-17T11:56:05.528",
+                    "record_num": 2
+                  },
+                  {
+                    "id": "2c9eb155587228570158722996c50001",
+                    "name": "example.org.",
+                    "description": "This is an example zone.",
+                    "email": "xx@example.org",
+                    "ttl": 300,
+                    "serial": 0,
+                    "masters": [],
+                    "status": "PENDING_CREATE",
+                    "links": {
+                      "self": "https://Endpoint/v2/zones/2c9eb155587228570158722996c50001"
+                    },
+                    "pool_id": "00000000570e54ee01570e9939b20019",
+                    "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
+                    "zone_type": "public",
+                    "created_at": "2016-11-17T12:01:17.996",
+                    "updated_at": "2016-11-17T12:01:18.528",
+                    "record_num": 2
+                  }
+                ],
+                "metadata": {
+                  "total_count": 2
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 0
+      }
+    }
+  },
+  "definitions": {
+    "BatchDeleteZonesResponseBody": {
+      "properties": {
+        "zones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ZoneData"
+          },
+          "description": "**参数解释:**\n域名列表信息。\n**取值范围:**\n不涉及。"
+        },
+        "metadata": {
+          "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。",
+          "$ref": "#/definitions/metadata"
+        }
+      }
+    },
+    "metadata": {
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "description": "**参数解释:**\n满足查询条件的资源总数,不受分页(即limit、offset参数)影响。\n**取值范围:**\n不涉及。",
+          "format": "int32",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。"
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "BatchDeleteZonesRequestBody": {
+      "required": [
+        "zone_type",
+        "zone_ids"
+      ],
+      "properties": {
+        "zone_type": {
+          "type": "string",
+          "pattern": "public|private",
+          "description": "**参数解释:**\n待删除域名的类型。\n**约束限制:**\n不涉及。\n**取值范围:**\n- public:公网域名\n- private:内网域名\n\n**默认取值:**\n不涉及。"
+        },
+        "zone_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 50,
+          "description": "**参数解释:**\n待删除域名ID列表。\n**约束限制:**\n最多支持50个。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        }
+      },
+      "example": {
+        "zone_type": "public",
+        "zone_ids": [
+          "2c9eb155587194ec01587224c9f90149",
+          "2c9eb155587194ec01587224c9f90150"
+        ]
+      }
+    },
+    "Link": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "当前资源的链接。"
+        }
+      },
+      "description": "指向当前资源的链接。"
+    },
+    "ZoneData": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n域名的ID,UUID形式的一个资源标识。\n**取值范围:**\n不涉及。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n域名。\n**取值范围:**\n不涉及。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释:**\n对域名的描述信息。\n**取值范围:**\n长度不超过255个字符。"
+        },
+        "email": {
+          "type": "string",
+          "description": "**参数解释:**\n管理该域名的管理员邮箱,用于生成该域名的SOA记录。\n**取值范围:**\n不涉及。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "**参数解释:**\n该域名下SOA记录中的有效缓存时间,以秒为单位。\n**取值范围:**\n1~2147483647。",
+          "format": "int32"
+        },
+        "serial": {
+          "type": "integer",
+          "description": "**参数解释:**\n该域名下SOA记录中用于标识域名文件变更的序列值,用于主从节点同步。\n该参数暂未使用。\n**取值范围:**\n不涉及。",
+          "format": "int32"
+        },
+        "masters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释:**\n主从模式中,从DNS服务器获取DNS信息。\n目前暂未使用。\n**取值范围:**\n不涉及。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n域名状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- PENDING_DISABLE:暂停中\n- DISABLE:暂停\n- ERROR:失败"
+        },
+        "pool_id": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该域名的pool,由系统分配。\n**取值范围:**\n不涉及。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释:**\n域名所属的项目ID。\n**取值范围:**\n不涉及。"
+        },
+        "zone_type": {
+          "type": "string",
+          "description": "**参数解释:**\n域名类型。\n**取值范围:**\n- public:公网域名\n- private:内网域名"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释:**\n创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释:**\n更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "record_num": {
+          "type": "integer",
+          "description": "**参数解释:**\n该域名下的记录集个数。\n**取值范围:**\n不涉及。",
+          "format": "int32"
+        },
+        "links": {
+          "$ref": "#/definitions/Link",
+          "description": "**参数解释:**\n指向当前资源的链接。\n**取值范围:**\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

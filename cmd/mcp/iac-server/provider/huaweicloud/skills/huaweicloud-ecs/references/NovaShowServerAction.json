@@ -1,0 +1,222 @@
+{
+  "name": "NovaShowServerAction",
+  "summary": "通过请求ID查询云服务器行为",
+  "tags": "云服务器操作管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers/{server_id}/os-instance-actions/{request_id}": {
+      "get": {
+        "tags": [
+          "云服务器操作管理"
+        ],
+        "summary": "通过请求ID查询云服务器行为",
+        "description": "查询弹性云服务器的某个请求行为。",
+        "operationId": "NovaShowServerAction",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "request_id",
+            "in": "path",
+            "description": "请求ID",
+            "required": true,
+            "type": "string",
+            "x-example": "req-0f1898f7-6dcc-4749-8d40-707db2fba038",
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "instanceAction": {
+                  "instance_uuid": "e723eb40-f56e-40f9-8c8c-caa517fe06ba",
+                  "user_id": "752be40780484291a9cc7ae50fff3e6d",
+                  "start_time": "2014-12-11T02:17:49.000000",
+                  "request_id": "req-5a429946-c9cc-45cc-b5bd-68864209e5cc",
+                  "action": "create",
+                  "message": null,
+                  "project_id": "89655fe61c4c4a08b9f3e7f9095441b8",
+                  "events": [
+                    {
+                      "finish_time": "2014-12-11T02:17:58.000000",
+                      "start_time": "2014-12-11T02:17:50.000000",
+                      "traceback": null,
+                      "event": "compute_build_and_run_instance",
+                      "result": "Success"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaShowServerActionResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "通过请求ID查询云服务器行为",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 81,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1/89655fe61c4c4a08b9f3e7f9095441b8/servers/e723eb40-f56e-40f9-8c8c-caa517fe06ba/os-instance-actions/req-5a429946-c9cc-45cc-b5bd-68864209e5c",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1/89655fe61c4c4a08b9f3e7f9095441b8/servers/e723eb40-f56e-40f9-8c8c-caa517fe06ba/os-instance-actions/req-5a429946-c9cc-45cc-b5bd-68864209e5c",
+        "x-registered_to": "nova",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "N",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaShowServerActionResponseBody": {
+      "required": [
+        "instanceAction"
+      ],
+      "properties": {
+        "instanceAction": {
+          "description": "云服务器行为。",
+          "$ref": "#/definitions/NovaServerActionDetail"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaServerActionDetail": {
+      "required": [
+        "action",
+        "instance_uuid",
+        "message",
+        "project_id",
+        "request_id",
+        "start_time",
+        "user_id"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "行为动作。"
+        },
+        "instance_uuid": {
+          "type": "string",
+          "description": "云服务器ID,UUID格式。"
+        },
+        "message": {
+          "type": "string",
+          "description": "行为完成状态信息。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID。"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。"
+        },
+        "start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "行为开始时间。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "用户ID。"
+        },
+        "events": {
+          "type": "array",
+          "description": "事件信息。",
+          "items": {
+            "$ref": "#/definitions/NovaServerActionEvent"
+          }
+        }
+      },
+      "description": " "
+    },
+    "NovaServerActionEvent": {
+      "required": [
+        "event",
+        "finish_time",
+        "result",
+        "start_time",
+        "traceback"
+      ],
+      "properties": {
+        "event": {
+          "type": "string",
+          "description": "行为动作名称。"
+        },
+        "finish_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "事件结束时间。"
+        },
+        "result": {
+          "type": "string",
+          "description": "执行结果。"
+        },
+        "start_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "事件开始时间。"
+        },
+        "traceback": {
+          "type": "string",
+          "description": "异常信息。"
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

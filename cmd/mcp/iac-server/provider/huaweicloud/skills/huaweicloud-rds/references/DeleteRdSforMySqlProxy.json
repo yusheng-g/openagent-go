@@ -1,0 +1,130 @@
+{
+  "name": "DeleteRdSforMySqlProxy",
+  "summary": "关闭数据库代理",
+  "tags": "数据库代理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/proxy/{proxy_id}": {
+      "delete": {
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "DELETE https://{endpoint}/v3/23a50154cf494ec9ad6883979a12db0a/instances/ba0fd7c13cca4655820e0f858d5d467bin01/proxy/4e2a0c70f70f4807940db73a30b5b522po01",
+        "x-request-examples-description-1": "关闭数据库代理。",
+        "tags": [
+          "数据库代理"
+        ],
+        "summary": "关闭数据库代理",
+        "description": "关闭数据库代理。",
+        "operationId": "DeleteRdSforMySqlProxy",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "type": "string",
+            "default": "application/json"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一Region下的project ID。\n\n获取方法请参见[获取项目ID](https://support.huaweicloud.com/api-rds/rds_03_0002.html)。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID,严格匹配UUID规则。"
+          },
+          {
+            "name": "proxy_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "数据库代理ID,严格匹配UUID规则。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ProxyCommonResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "09908118-8e32-4742-982a-7be194f59e1d"
+              }
+            }
+          },
+          "400": {
+            "description": "Client error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProxyCommonResponse": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "description": "任务ID。",
+          "type": "string",
+          "example": "a4217ac4-12cd-4fb3-acfc-db4a4a1896ea"
+        }
+      }
+    },
+    "MysqlErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

@@ -1,0 +1,359 @@
+{
+  "name": "ListJobSchedules",
+  "summary": "查询数据库定时任务策略",
+  "tags": "发布订阅(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/db-job/schedules": {
+      "get": {
+        "tags": [
+          "发布订阅(SQL Server)"
+        ],
+        "operationId": "ListJobSchedules",
+        "summary": "查询数据库定时任务策略",
+        "description": "查询数据库定时任务策略",
+        "x-file": "replicationSchedule",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "schedule_type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "策略类型,snapshot:快照策略, sync:同步策略,默认查询所有类型"
+          },
+          {
+            "name": "schedule_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "策略id"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数。默认为10,不能为负数,最小值为1,最大值为200。",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/ListJobScheduleResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "schedules": [
+                  {
+                    "id": "569d69c2-53e5-4bef-a356-d7ea2ff6fa01",
+                    "user_defined": false,
+                    "schedule_type": "snapshot",
+                    "frequency": {
+                      "freq_type": "daily",
+                      "freq_interval": 1
+                    },
+                    "daily_frequency": {
+                      "freq_subday_type": "multiple",
+                      "active_start_time": "00:00:00",
+                      "active_end_time": "23:59:59",
+                      "freq_subday_interval": 1,
+                      "freq_interval_unit": "minute"
+                    },
+                    "duration": {
+                      "active_start_date": "1990-01-01",
+                      "active_end_date": "2099-12-31"
+                    }
+                  },
+                  {
+                    "id": "569d69c2-53e5-4bef-a356-d7ea2ff6fa04",
+                    "user_defined": false,
+                    "schedule_type": "snapshot",
+                    "frequency": {
+                      "freq_type": "weekly",
+                      "freq_interval": 1,
+                      "freq_interval_weekly": [
+                        "Sunday"
+                      ]
+                    },
+                    "daily_frequency": {
+                      "freq_subday_type": "once",
+                      "active_start_time": "02:00:00"
+                    },
+                    "duration": {
+                      "active_start_date": "1990-01-01",
+                      "active_end_date": "2099-12-31"
+                    }
+                  },
+                  {
+                    "id": "569d69c2-53e5-4bef-a356-d7ea2ff6fa01",
+                    "user_defined": false,
+                    "schedule_type": "snapshot",
+                    "frequency": {
+                      "freq_type": "monthly_day",
+                      "freq_interval": 1,
+                      "freq_interval_day_monthly": 1
+                    },
+                    "daily_frequency": {
+                      "freq_subday_type": "once",
+                      "active_start_time": "02:00:00"
+                    },
+                    "duration": {
+                      "active_start_date": "1990-01-01",
+                      "active_end_date": "2099-12-31"
+                    }
+                  },
+                  {
+                    "id": "569d69c2-53e5-4bef-a356-d7ea2ff6fa01",
+                    "user_defined": false,
+                    "schedule_type": "snapshot",
+                    "frequency": {
+                      "freq_type": "monthly_week",
+                      "freq_interval": 1,
+                      "freq_interval_monthly": "Sunday",
+                      "freq_relative_interval_monthly": "first"
+                    },
+                    "daily_frequency": {
+                      "freq_subday_type": "once",
+                      "active_start_time": "02:00:00"
+                    },
+                    "duration": {
+                      "active_start_date": "1990-01-01",
+                      "active_end_date": "2099-12-31"
+                    }
+                  }
+                ],
+                "total_count": 4
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/db-job/schedules?schedule_type=snapshot"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "JobScheduleOneTimeOccurrenceInfo": {
+      "description": "执行一次执行时间。",
+      "properties": {
+        "active_start_date": {
+          "description": "执行日期 yyyy-MM-dd。取值范围1990-01-01至2099-12-31",
+          "type": "string",
+          "example": "2023-01-01"
+        },
+        "active_start_time": {
+          "description": "执行时间。HH:mm:ss",
+          "type": "string",
+          "example": "01:00:59"
+        }
+      }
+    },
+    "JobScheduleInfo": {
+      "description": "创建策略信息。",
+      "required": [
+        "id",
+        "user_defined",
+        "schedule_type",
+        "frequency",
+        "daily_frequency",
+        "duration"
+      ],
+      "properties": {
+        "id": {
+          "description": "策略id。",
+          "type": "string"
+        },
+        "user_defined": {
+          "description": "是否是用户自定义模板。false表示为系统默认模板。true表示为用户自定义模板。",
+          "type": "boolean",
+          "example": false
+        },
+        "schedule_type": {
+          "description": "策略类型,snapshot:快照策略, sync:同步策略。",
+          "type": "string",
+          "example": "snapshot"
+        },
+        "job_schedule_type": {
+          "description": "计划类型。\n\nautomatically:SQL Server代理启动时自动启动。\ncpu_idle:CPU空闲时启动。\nrecurring:重复执行。\none_time:执行一次。",
+          "type": "string"
+        },
+        "one_time_occurrence": {
+          "description": "执行一次执行时间。",
+          "$ref": "#/definitions/JobScheduleOneTimeOccurrenceInfo"
+        },
+        "frequency": {
+          "description": "策略间隔周期。",
+          "$ref": "#/definitions/JobScheduleFrequencyInfo"
+        },
+        "daily_frequency": {
+          "description": "策略每日频率。",
+          "$ref": "#/definitions/JobScheduleDailyFrequencyInfo"
+        },
+        "duration": {
+          "description": "策略有效期。",
+          "$ref": "#/definitions/JobScheduleDurationInfo"
+        }
+      }
+    },
+    "JobScheduleDurationInfo": {
+      "description": "策略有效期。",
+      "properties": {
+        "active_start_date": {
+          "description": "第一次执行日期 yyyy-MM-dd。取值范围1990-01-01至2099-12-31",
+          "type": "string",
+          "example": "2023-01-01"
+        },
+        "active_end_date": {
+          "description": "最后一次执行日期。默认不会结束 yyyy-MM-dd",
+          "type": "string",
+          "example": "2099-12-31"
+        }
+      }
+    },
+    "ListJobScheduleResponseBody": {
+      "description": "查询策略列表。",
+      "required": [
+        "schedules",
+        "total_count"
+      ],
+      "properties": {
+        "schedules": {
+          "description": "策略列表。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JobScheduleInfo"
+          }
+        },
+        "total_count": {
+          "description": "策略总数。",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "JobScheduleDailyFrequencyInfo": {
+      "description": "策略每日频率。",
+      "properties": {
+        "freq_subday_type": {
+          "description": "每日频率类型 once:每日一次, multiple:每日多次。",
+          "type": "string",
+          "example": "once"
+        },
+        "active_start_time": {
+          "description": "每日第一次执行时间。每日频率类型为每日一次时,则只执行这一次。 HH:mm:ss",
+          "type": "string",
+          "example": "01:00:59"
+        },
+        "active_end_time": {
+          "description": "最后一次执行时间。每日执行多次时该参数必传,每日执行一次时不生效。 HH:mm:ss",
+          "type": "string",
+          "example": "23:59:59"
+        },
+        "freq_subday_interval": {
+          "description": "执行间隔。每日执行多次时该参数必传,每日执行一次时不生效。取值范围1至99",
+          "type": "integer",
+          "example": "10"
+        },
+        "freq_interval_unit": {
+          "description": "执行间隔的单位。每日执行多次时该参数必传,每日执行一次时不生效。 second:秒, minute:分, hour:时",
+          "type": "string",
+          "example": "minute"
+        }
+      }
+    },
+    "JobScheduleFrequencyInfo": {
+      "description": "策略间隔周期。",
+      "properties": {
+        "freq_type": {
+          "description": "策略频率类型 daily:按天, weekly:按周, monthly_day:按月、每月按天, monthly_week:按月、每月按周。",
+          "type": "string",
+          "example": "daily"
+        },
+        "freq_interval": {
+          "description": "执行间隔。取值范围1至99。",
+          "type": "integer",
+          "example": "5"
+        },
+        "freq_interval_weekly": {
+          "description": "频率类型为按周时该参数必传,不为按周时不生效。\n每周执行哪几天。参数值:Monday,Tuesday ... Sunday",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Monday"
+          }
+        },
+        "freq_interval_day_monthly": {
+          "description": "频率类型为按月、每月按天时该参数必传,不为按月、每月按天时时不生效。\n每月执行的日期。取值范围1-31。",
+          "type": "integer",
+          "example": "31"
+        },
+        "freq_interval_monthly": {
+          "description": "频率类型为按月、每月按周时该参数必传,不为按月、每月按周时时不生效。\n每周执行哪几天。 Sunday, Monday,Tuesday ... Saturday, day, weekday, weekend",
+          "type": "string",
+          "example": "weekday"
+        },
+        "freq_relative_interval_monthly": {
+          "description": "频率类型为按月、每月按周时该参数必传,不为按月、每月按周时时不生效。\n每月在哪周执行。 first, second, third, fourth, last",
+          "type": "string",
+          "example": "fourth"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

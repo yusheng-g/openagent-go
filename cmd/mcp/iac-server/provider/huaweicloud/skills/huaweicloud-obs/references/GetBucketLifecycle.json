@@ -1,0 +1,299 @@
+{
+  "name": "GetBucketLifecycle",
+  "summary": "获取桶的生命周期配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "GetBucketLifecycle",
+        "summary": "获取桶的生命周期配置",
+        "description": "获取该桶设置的生命周期配置信息。\n\n要正确执行此操作,需要确保执行者有GetLifecycleConfiguration执行权限。默认情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "x-request-examples-url-1": "/?lifecycle",
+        "x-request-examples-1": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "lifecycle",
+            "in": "query",
+            "required": true,
+            "description": "lifecycle表示请求桶声明周期API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功请求响应。\n",
+            "schema": {
+              "$ref": "#/definitions/GetBucketLifecycleResponseBody"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|NoSuchLifecycleConfiguration|桶的生命周期配置不存在。|404 Not Found|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "NoncurrentVersionExpiration": {
+      "description": "生命周期配置中表示历史版本过期时间的Container。您可以将该动作设置在已启用多版本(或暂停)的桶,来让系统删除对象的满足特定生命周期的历史版本(仅针对历史版本)。",
+      "properties": {
+        "NoncurrentDays": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0,
+          "description": "表示对象在成为历史版本之后第几天时规则生效(仅针对历史版本)。\n如果有NoncurrentVersionExpiration或NoncurrentVersionTransition元素,则必选。"
+        }
+      }
+    },
+    "NoncurrentVersionTransition": {
+      "description": "生命周期配置中表示对象的历史版本迁移时间和迁移后对象存储级别的元素。\n",
+      "properties": {
+        "NoncurrentDays": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0,
+          "description": "表示对象在成为历史版本之后第几天时规则生效(仅针对历史版本)。\n"
+        },
+        "StorageClass": {
+          "type": "string",
+          "enum": [
+            "WARM",
+            "COLD"
+          ],
+          "description": "表示对象将被修改成存储级别。\n取值范围: WARM或COLD\n"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "Expiration": {
+      "properties": {
+        "Date": {
+          "type": "string",
+          "description": "指定OBS对该日期之前的对象执行生命周期规则。日期格式必须为ISO8601的格式,并且为UTC的零点。\n例如:2018-01-01T00:00:00.000Z,表示将最后修改时间早于2018-01-01T00:00:00.000Z的对象删除或转换成其他存储类型,等于或晚于这个时间的对象不会被删除或转储。\n\n如果没有Days元素,则必选。\n"
+        },
+        "Days": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0,
+          "description": "指定生命周期规则在对象最后更新过后多少天生效(仅针对对象的最新版本)。\n\n如果没有Date元素,则必选。"
+        }
+      }
+    },
+    "Transition": {
+      "description": "生命周期配置中表示迁移时间和迁移后对象存储级别的元素(仅针对对象的最新版本)\n\n类型:XML",
+      "properties": {
+        "Date": {
+          "type": "string",
+          "description": "指定OBS对该日期之前的对象执行生命周期规则。日期格式必须为ISO8601的格式,并且为UTC的零点。\n例如:2018-01-01T00:00:00.000Z,表示将最后修改时间早于2018-01-01T00:00:00.000Z的对象删除或转换成其他存储类型,等于或晚于这个时间的对象不会被删除或转储。\n\n如果没有Days元素,则必选。\n"
+        },
+        "Days": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0,
+          "description": "指定生命周期规则在对象最后更新过后多少天生效(仅针对对象的最新版本)。\n\n如果没有Date元素,则必选。\n"
+        },
+        "StorageClass": {
+          "type": "string",
+          "enum": [
+            "WARM",
+            "COLD"
+          ],
+          "description": "表示对象将被修改成存储级别。\n取值范围: WARM或COLD\n"
+        }
+      }
+    },
+    "SetBucketLifecycleRequestBody": {
+      "xml": {
+        "name": "LifecycleConfiguration"
+      },
+      "description": "桶的生命周期配置信息。\n\n如果桶的多版本是Enabled或者Suspended,那么可以设置NoncurrentVersionTransition或NoncurrentVersionExpiration来控制对象的历史版本的生命周期。一个历史版本的生命周期,取决于它成为历史版本的时刻(即被新版本覆盖的那个时刻)和NoncurrentDays。对于删除来说,例如NoncurrentDays配置为1的话,表示当一个版本成为历史版本之后,再过1天才能删除。对象A的版本V1创建于1号,5号的时候又上传新的版本V2,此时V1成为历史版本,那么再过1天,7号的0点,V1就过期了。如果该版本不满足删除,迁移配置NoncurrentDays为1,StorageClass为WARM的话,表示当一个版本成为历史版本之后,再过1天转为温对象。对象A的版本V1创建于1号,5号的时候又上传新的版本V2,此时V1成为历史版本,那么再过1天,7号的0点,V1就会迁移成温对象了。(备注:对象过期后被删除或对象迁移的时间可能会有一定的延迟,一般不超过48小时。)\n如果桶的多版本是Enabled或者Suspended,且最新版本对象满足Expiration规则时的处理:\n桶当前的多版本状态为Enabled:\n如果对象的最新版本不是deletemarker,则该对象会产生一个新的deletemarker;\n\n如果最新版本是deletemarker,且该对象只有这一个版本,则这个版本会被删除;\n\n如果最新版本是deletemarker,且对象还有其他版本,则该对象的所有版本维持不变,没有新增和删除,也不会被修改(即无任何变化)。\n\n桶当前的多版本状态为Suspended:\n如果对象的最新版本不是deletemarker,且版本不是null版本,则会产生一个新的null版本的deletemarker;\n\n如果对象的最新版本不是deletemarker,且版本是null版本,则这个null版本会被新产生的null版本的deletemarker覆盖;\n\n如果最新版本是deletemarker,且该对象只有这一个版本,则这个版本会被删除;\n\n如果最新版本是deletemarker,且对象还有其他版本,则该对象的所有版本维持不变,没有新增和删除,也不会被修改(即无任何变化)。\n\n如果桶的多版本是Enabled或者Suspended,且最新版本对象满足Transition规则时的处理:\n如果对象的最新版本是deletemarker,则这个版本不被迁移;\n如果最新版本不是deletemarker,且该对象满足迁移条件,则这个版本会被迁移。\n",
+      "required": [
+        "Rule"
+      ],
+      "properties": {
+        "Rule": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
+        }
+      }
+    },
+    "Rule": {
+      "description": "具体某一条生命周期配置的Container。\n",
+      "required": [
+        "Prefix",
+        "Status"
+      ],
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "一条Rule的标识,由不超过255个字符的字符串组成。\n"
+        },
+        "Prefix": {
+          "type": "string",
+          "description": "对象名前缀,用以标识哪些对象可以匹配到当前这条Rule。\n\n约束:\n1.当按前缀配置时,如果指定的前缀名与某条已配置的生命周期规则指定的前缀名存在包含关系,OBS会将两条规则视为同一条,而禁止您配置本条规则。例如,系统中已存在指定前缀名为“abc”的规则,则不允许再配置指定前缀以“abc”字段开头的规则。\n2.如果已存在按前缀配置的生命周期规则,则不允许再新增配置到整个桶的规则。\n"
+        },
+        "Status": {
+          "description": "标识当前这条Rule是否启用。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        },
+        "Expiration": {
+          "description": "生命周期配置中表示过期时间的Container(仅针对对象的最新版本)。\n如果没有Transition, NoncurrentVersionTransition, NoncurrentVersionExpiration, AbortIncompleteMultipartUpload则必选。\n",
+          "$ref": "#/definitions/Expiration"
+        },
+        "NoncurrentVersionExpiration": {
+          "description": "生命周期配置中表示历史版本过期时间的Container。您可以将该动作设置在已启用多版本(或暂停)的桶,来让系统删除对象的满足特定生命周期的历史版本(仅针对历史版本)。\n",
+          "$ref": "#/definitions/NoncurrentVersionExpiration"
+        },
+        "Transition": {
+          "description": "生命周期配置中表示迁移时间和迁移后对象存储级别的元素(仅针对对象的最新版本)。\n如果没有NoncurrentVersionTransition, Expiration, NoncurrentVersionExpiration, AbortIncompleteMultipartUpload则必选。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Transition"
+          }
+        },
+        "NoncurrentVersionTransition": {
+          "description": "生命周期配置中表示对象的历史版本迁移时间和迁移后对象存储级别的元素。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NoncurrentVersionTransition"
+          }
+        },
+        "AbortIncompleteMultipartUpload": {
+          "description": "生命周期配置中表示未合并的多段任务(碎片)的过期属性Container。\n如果没有Transition, Expiration, NoncurrentVersionExpiration, NoncurrentVersionTransition则必选。\n",
+          "$ref": "#/definitions/AbortIncompleteMultipartUpload"
+        }
+      }
+    },
+    "GetBucketLifecycleResponseBody": {
+      "properties": {
+        "LifecycleConfiguration": {
+          "$ref": "#/definitions/SetBucketLifecycleRequestBody"
+        }
+      }
+    },
+    "AbortIncompleteMultipartUpload": {
+      "description": "生命周期配置中表示未合并的多段任务(碎片)的过期属性Container。\n如果没有Transition, Expiration, NoncurrentVersionExpiration, NoncurrentVersionTransition则必选。\n",
+      "properties": {
+        "DaysAfterInitiation": {
+          "description": "指定未合并的多段任务(碎片)的生命周期规则,在多段任务初始化过后多少天生效。\n如果有AbortIncompleteMultipartUpload则必选。\n",
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

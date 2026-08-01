@@ -1,0 +1,250 @@
+{
+  "name": "ListFlavorsResize",
+  "summary": "查询数据库可变更规格接口",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/flavors-resize": {
+      "get": {
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/054e292c9880d4992f02c0196d3ea468/instances/d674b54d5e0241c49eeb50c82ef3efe0in03/flavors-resize",
+        "x-request-examples-description-1": "查询数据库可变更规格",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "查询数据库可变更规格接口",
+        "description": "查询数据库可变更规格接口",
+        "operationId": "ListFlavorsResize",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常响应",
+            "schema": {
+              "$ref": "#/definitions/QueryFlavorsForResizeResponse"
+            },
+            "examples": {
+              "application/json": {
+                "flavor_groups": [
+                  {
+                    "group_type": "general",
+                    "compute_flavors": [
+                      {
+                        "id": "400fd0df-0502-34f1-99be-ccf2a04241ae",
+                        "code": "rds.pg.n1.medium.2",
+                        "vcpus": "1",
+                        "ram": "2",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      },
+                      {
+                        "id": "b7adc282-7efb-37d3-9e34-afb8279b5436",
+                        "code": "rds.pg.n1.large.2",
+                        "vcpus": "2",
+                        "ram": "4",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      },
+                      {
+                        "id": "42a4a62c-5fa8-3cd8-9856-51ebcca6e2a8",
+                        "code": "rds.pg.n1.large.4",
+                        "vcpus": "2",
+                        "ram": "8",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      },
+                      {
+                        "id": "9cbf4c9f-413b-3d07-bd4c-3b9432c0e662",
+                        "code": "rds.pg.n1.xlarge.2",
+                        "vcpus": "4",
+                        "ram": "8",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      },
+                      {
+                        "id": "4937f920-ba42-37a8-a375-ab46ef030814",
+                        "code": "rds.pg.n1.xlarge.4",
+                        "vcpus": "4",
+                        "ram": "16",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      },
+                      {
+                        "id": "32a8aa95-72cc-34c7-873b-827e23f3ccec",
+                        "code": "rds.pg.n1.2xlarge.2",
+                        "vcpus": "8",
+                        "ram": "16",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      },
+                      {
+                        "id": "98c033ca-a0f2-34be-8b27-c5dda5e6bee1",
+                        "code": "rds.pg.n1.2xlarge.4",
+                        "vcpus": "8",
+                        "ram": "32",
+                        "az_status": {
+                          "cn-southwest-244b": "normal"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "500": {
+            "description": "异常响应",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_code": "DBS. 200005",
+                " error_msg": "server error."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComputeFlavor": {
+      "type": "object",
+      "description": "查询数据库可变更规格接口,响应体中的计算规格详情",
+      "required": [
+        "id",
+        "code",
+        "vcpus",
+        "ram",
+        "az_status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "规格ID,该字段唯一。"
+        },
+        "code": {
+          "type": "string",
+          "description": "资源规格编码。例如:rds.pg.m1.xlarge.rr。\n\n更多规格说明请参考数据库实例规格。\n\n“rds”代表RDS产品。\n“pg”代表数据库引擎。\n“m1.xlarge”代表性能规格,为高内存类型。\n“rr”表示只读实例(“.ha”表示主备实例)。"
+        },
+        "vcpus": {
+          "type": "string",
+          "description": "CPU大小。例如:1表示1U。"
+        },
+        "ram": {
+          "type": "string",
+          "description": "内存大小,单位为GB。"
+        },
+        "az_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "规格所在az的状态,包含以下状态:\n\nnormal:在售。\nunsupported:暂不支持该规格。\nsellout:售罄。"
+        }
+      }
+    },
+    "QueryFlavorsForResizeResponse": {
+      "type": "object",
+      "description": "查询数据库可变更规格响应体",
+      "required": [
+        "flavor_groups"
+      ],
+      "properties": {
+        "flavor_groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ComputeFlavorGroup"
+          },
+          "description": "规格组列表\n\nnormal:通用增强型。\nnormal2:通用增强II型。\narmFlavors:鲲鹏通用增强型。\ndedicicateNormal(dedicatedNormalLocalssd):x86独享型。\narmLocalssd:鲲鹏通用型。\nnormalLocalssd:x86通用型。\ngeneral:通用型。\ndedicated\n对于PostgreSQL引擎:独享型"
+        }
+      }
+    },
+    "ComputeFlavorGroup": {
+      "type": "object",
+      "description": "查询数据库可变更规格接口中,规格组类型",
+      "required": [
+        "group_type",
+        "compute_flavors"
+      ],
+      "properties": {
+        "group_type": {
+          "type": "string",
+          "description": "性能规格,包含以下状态:\n\nnormal:通用增强型。\nnormal2:通用增强II型。\narmFlavors:鲲鹏通用增强型。\ndedicicateNormal(dedicatedNormalLocalssd):x86独享型。\narmLocalssd:鲲鹏通用型。\nnormalLocalssd:x86通用型。\ngeneral:通用型。\ndedicated\n对于PostgreSQL引擎:独享型"
+        },
+        "compute_flavors": {
+          "type": "array",
+          "description": "计算规格列表",
+          "items": {
+            "$ref": "#/definitions/ComputeFlavor"
+          }
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

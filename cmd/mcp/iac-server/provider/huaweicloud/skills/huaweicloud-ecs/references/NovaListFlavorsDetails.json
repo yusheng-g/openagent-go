@@ -1,0 +1,355 @@
+{
+  "name": "NovaListFlavorsDetails",
+  "summary": "查询云服务器规格详情列表",
+  "tags": "规格管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/flavors/detail": {
+      "get": {
+        "tags": [
+          "规格管理"
+        ],
+        "summary": "查询云服务器规格详情列表",
+        "description": "查询云服务器规格信息列表。",
+        "operationId": "NovaListFlavorsDetails",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "minDisk",
+            "in": "query",
+            "description": "最小的硬盘规格,单位GB,大于等于此规格的都可以查询到。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "x-order": 3
+          },
+          {
+            "name": "minRam",
+            "in": "query",
+            "description": "最小的内存规格,单位MB,大于等于此规格的都可以查询到。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 1024,
+            "x-order": 4
+          },
+          {
+            "name": "sort_dir",
+            "in": "query",
+            "description": "升序/降序排序,默认值为:asc。可以指定的参数为asc/desc。",
+            "required": false,
+            "type": "string",
+            "default": "asc",
+            "x-example": "asc",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "x-order": 6
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "description": "排序字段,默认值为:flavorid。可以指定的其他key为name/ memory_mb/vcpus/root_gb/flavorid。",
+            "required": false,
+            "type": "string",
+            "default": "flavorid",
+            "x-example": "flavorid",
+            "enum": [
+              "name",
+              "memory_mb",
+              "vcpus",
+              "root_gb",
+              "flavorid"
+            ],
+            "x-order": 7
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "以单页最后一条flavor的ID作为分页标记。",
+            "required": false,
+            "type": "string",
+            "x-example": "5",
+            "x-order": 8
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询返回server group数量限制。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1000,
+            "maximum": 1000,
+            "minimum": 1,
+            "x-example": 1000,
+            "x-order": 9
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "flavors": [
+                  {
+                    "name": "c3.2xlarge.2",
+                    "links": [
+                      {
+                        "href": "https://compute.region.xxx.com/v2.1/743b4c0428d94531b9f2add666642e6b/flavors/c3.2xlarge.2",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "https://compute.region.xxx.com/743b4c0428d94531b9f2add666642e6b/flavors/c3.2xlarge.2",
+                        "rel": "bookmark"
+                      }
+                    ],
+                    "ram": 16384,
+                    "OS-FLV-DISABLED:disabled": false,
+                    "vcpus": 8,
+                    "swap": "",
+                    "os-flavor-access:is_public": true,
+                    "rxtx_factor": 1,
+                    "OS-FLV-EXT-DATA:ephemeral": 0,
+                    "disk": 0,
+                    "id": "c3.2xlarge.2"
+                  },
+                  {
+                    "name": "c3.2xlarge.4",
+                    "links": [
+                      {
+                        "href": "https://compute.region.xxx.com/v2.1/743b4c0428d94531b9f2add666642e6b/flavors/c3.2xlarge.4",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "https://compute.region.xxx.com/743b4c0428d94531b9f2add666642e6b/flavors/c3.2xlarge.4",
+                        "rel": "bookmark"
+                      }
+                    ],
+                    "ram": 32768,
+                    "OS-FLV-DISABLED:disabled": false,
+                    "vcpus": 8,
+                    "swap": "",
+                    "os-flavor-access:is_public": true,
+                    "rxtx_factor": 1,
+                    "OS-FLV-EXT-DATA:ephemeral": 0,
+                    "disk": 0,
+                    "id": "c3.2xlarge.4"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaListFlavorsDetailsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云服务器规格详情列表",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 38,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1/743b4c0428d94531b9f2add666642e6b/flavors/detail",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1/743b4c0428d94531b9f2add666642e6b/flavors/detail",
+        "x-registered_to": "nova",
+        "x-support_json": "是",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "N",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaListFlavorsDetailsResponseBody": {
+      "required": [
+        "flavors"
+      ],
+      "properties": {
+        "flavors": {
+          "type": "array",
+          "description": "云服务器规格详情列表。",
+          "items": {
+            "$ref": "#/definitions/NovaFlavor"
+          }
+        },
+        "flavors_links": {
+          "type": "array",
+          "description": "分页查询时,查询下一页数据链接。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/PageLink"
+          },
+          "x-obc": "",
+          "x-admin": "",
+          "x-internal": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "有三种取值。self:自助链接包含版本链接的资源。立即链接后使用这些链接。bookmark:书签链接提供了一个永久资源的永久链接,该链接适合于长期存储。alternate:备用链接可以包含资源的替换表示形式。例如,OpenStack计算映像可能在OpenStack映像服务中有一个替代表示。",
+          "enum": [
+            "self",
+            "bookmark",
+            "alternate",
+            "describedby"
+          ]
+        }
+      },
+      "description": " "
+    },
+    "PageLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "对应快捷链接。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": " "
+    },
+    "NovaFlavor": {
+      "required": [
+        "OS-FLV-EXT-DATA:ephemeral",
+        "description",
+        "disk",
+        "id",
+        "links",
+        "name",
+        "ram",
+        "rxtx_factor",
+        "swap",
+        "vcpus"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云服务器规格ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云服务器规格名称。"
+        },
+        "vcpus": {
+          "type": "integer",
+          "format": "int32",
+          "description": "该云服务器规格对应的CPU核数。"
+        },
+        "ram": {
+          "type": "integer",
+          "format": "int32",
+          "description": "该云服务器规格对应的内存大小,单位为MB。"
+        },
+        "disk": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云服务器规格对应要求系统盘大小。\n\n当前未使用该参数,缺省值为0。"
+        },
+        "swap": {
+          "type": "string",
+          "description": "云服务器规格对应要求的交换分区大小。\n\n当前未使用该参数,缺省值为\"\"。"
+        },
+        "OS-FLV-EXT-DATA:ephemeral": {
+          "type": "integer",
+          "format": "int32",
+          "description": "\t\n扩展属性,临时盘大小。\n\n当前未使用该参数,缺省值为0。"
+        },
+        "OS-FLV-DISABLED:disabled": {
+          "type": "boolean",
+          "description": "\t\n扩展属性,该云服务器规格是否禁用。\n\n当前未使用该参数,缺省值为false。"
+        },
+        "rxtx_factor": {
+          "type": "number",
+          "format": "float",
+          "description": "云服务器可使用网络带宽与网络硬件带宽的比例。\n\n当前未使用该参数,缺省值为1.0。"
+        },
+        "os-flavor-access:is_public": {
+          "type": "boolean",
+          "description": "\t\n扩展属性,flavor是否给所有租户使用。\n\ntrue:表示给所有租户使用。\nfalse:表示给指定租户使用。\n缺省值为true。"
+        },
+        "links": {
+          "type": "array",
+          "description": "规格相关快捷链接地址。",
+          "items": {
+            "$ref": "#/definitions/NovaLink"
+          }
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

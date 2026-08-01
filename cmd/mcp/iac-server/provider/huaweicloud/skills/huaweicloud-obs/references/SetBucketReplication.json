@@ -1,0 +1,241 @@
+{
+  "name": "SetBucketReplication",
+  "summary": "设置桶的跨区域复制配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketReplication",
+        "summary": "设置桶的跨区域复制配置",
+        "description": "跨区域复制是指跨不同区域中的桶自动、异步地复制对象。通过激活跨区域复制,OBS可将新创建的对象及修改的对象从一个源桶复制到不同区域中的目标桶。\n\n设置桶的跨区域复制,需要满足以下两个要求:\n\n1.要求源桶和目标桶多版本状态保持一致,否则不能设置replication。如何设置桶的多版本,请参见[设置桶的多版本状态](https://support.huaweicloud.com/api-obs/obs_04_0037.html)。\n2.源桶的拥有者和代理人(OBS)必须要有目标桶的写权限(目标桶需要配置BucketPolicy),同时代理人(OBS)还要有源桶的读权限。这需要通过“BucketPolicy”来实现这个权限委托:\n如何设置桶策略,请参见[设置桶策略](https://support.huaweicloud.com/api-obs/obs_04_0027.html)。设置桶策略后,“代理人”(obs)就有权限可以读取源桶的对象,也有权限将对象复制到目标桶中。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?replication",
+        "x-request-examples-1": "PUT /?replication HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Wed, 27 Jun 2018 13:39:15 +0000\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:CdeqU0Vg9xNdJMZ0PGPgh5EnkO0=\nContent-MD5: l/Z8mfSX+VyV8k5EhIQz5Q==\nContent-Length: 330\n\n<ReplicationConfiguration>\n   <Agency>testAcy</Agency>\n   <Rule>\n       <ID>Rule-1</ID>\n       <Status>Enabled</Status>\n       <Prefix></Prefix>\n       <Destination>\n          <Bucket>dstbucket</Bucket>\n          <StorageClass>STANDARD</StorageClass>\n          <DeleteData>Enabled</DeleteData>\n       </Destination>\n       <HistoricalObjectReplication>Enabled</HistoricalObjectReplication>\n     </Rule>\n</ReplicationConfiguration>",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "description": "按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串。也支持设置Content-SHA256头域,其值为消息体256-bit SHA256值经过base64编码后得到的字符串,Content-MD5和Content-SHA256二选一。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "replication",
+            "in": "query",
+            "required": true,
+            "description": "replication表示请求桶的跨区域复制配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "in": "body",
+            "name": "SetBucketReplicationRequestBody",
+            "description": "在此请求中,需要在请求的消息体中配置桶的复制配置,通知的配置信息以XML格式上传。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketReplicationRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ReplicationConfigurationRuleDestination": {
+      "description": "目标桶信息的容器。\n",
+      "properties": {
+        "Bucket": {
+          "description": "存储被规则标识的对象副本的桶名称。\n\n如果在复制配置中有多条规则,这些规则必须都要标识同一个桶作为目标桶。\n",
+          "type": "string"
+        },
+        "StorageClass": {
+          "description": "对象的存储类型。\n",
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "WARM",
+            "COLD"
+          ]
+        },
+        "DeleteData": {
+          "description": "删除同步复制关键字,如果为Enabled,源桶的对象删除操作会复制到目标端。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        }
+      }
+    },
+    "SetBucketReplicationRequestBody": {
+      "xml": {
+        "name": "ReplicationConfiguration"
+      },
+      "description": "复制规则的容器,最多可以达到100条规则,所有的复制配置大小可达到50KB。\n",
+      "required": [
+        "Agency",
+        "Rule"
+      ],
+      "properties": {
+        "Agency": {
+          "description": "用户创建的委托名字,最大长度为64字符。\n",
+          "type": "string"
+        },
+        "Rule": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReplicationConfigurationRule"
+          }
+        }
+      }
+    },
+    "ReplicationConfigurationRule": {
+      "description": "一条特定复制规则信息的容器。\n\n复制配置必须至少配置一条规则,最多能达到100条规则。\n",
+      "required": [
+        "Status",
+        "Prefix",
+        "Destination",
+        "Bucket"
+      ],
+      "properties": {
+        "ID": {
+          "description": "规则的特殊辨识符,最大长度为255字符。\n",
+          "type": "string",
+          "maxLength": 255
+        },
+        "Status": {
+          "description": "如果Status为Disabled,这条规则会被忽略。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        },
+        "Prefix": {
+          "description": "对象键值名的前缀,适配于一个或者多个对象。\n\n最大前缀长度可达到为1024个字节,不支持重叠的前缀。\n",
+          "type": "string",
+          "maxLength": 1024
+        },
+        "Destination": {
+          "$ref": "#/definitions/ReplicationConfigurationRuleDestination"
+        },
+        "HistoricalObjectReplication": {
+          "description": "历史对象复制关键字,如果为Enabled,会复制符合这条规则的历史对象。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

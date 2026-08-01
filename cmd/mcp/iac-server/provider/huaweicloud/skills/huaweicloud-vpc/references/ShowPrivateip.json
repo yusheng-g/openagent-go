@@ -1,0 +1,222 @@
+{
+  "name": "ShowPrivateip",
+  "summary": "查询私有IP",
+  "tags": "私有IP",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/privateips/{privateip_id}": {
+      "get": {
+        "tags": [
+          "私有IP"
+        ],
+        "summary": "查询私有IP",
+        "description": "指定ID查询私有IP。",
+        "operationId": "ShowPrivateip",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "privateip_id",
+            "in": "path",
+            "description": "私有IP ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "privateip": {
+                  "status": "DOWN",
+                  "id": "d600542a-b231-45ed-af05-e9930cb14f78",
+                  "subnet_id": "531dec0f-3116-411b-a21b-e612e42349fd",
+                  "tenant_id": "8b7e35ad379141fc9df3e178bd64f55c",
+                  "device_owner": "",
+                  "ip_address": "192.168.1.11"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PrivateipResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询私有IP",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "查询私有IP详情",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v1/{project_id}/privateips/{privateip_id}",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v1/{project_id}/privateips/{privateip_id}",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "PrivateipResponseBody": {
+      "required": [
+        "privateip"
+      ],
+      "properties": {
+        "privateip": {
+          "description": "私有IP对象",
+          "$ref": "#/definitions/Privateip",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "Privateip": {
+      "required": [
+        "device_owner",
+        "id",
+        "ip_address",
+        "status",
+        "subnet_id",
+        "tenant_id"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "私有IP的状态\n - ACTIVE:活动的\n - DOWN:不可用",
+          "enum": [
+            "ACTIVE",
+            "DOWN"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "私有IP ID"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "分配IP的子网标识"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID"
+        },
+        "device_owner": {
+          "type": "string",
+          "description": "私有IP的使用者,空表示未使用\n取值范围:network:dhcp,network:router_interface_distributed,compute:xxx(xxx对应具体的az名称,例如compute:aa-bb-cc表示是被aa-bb-cc上的虚拟机使用)\n约束:此处的取值范围只是本服务支持的类型,其他类型未做标注",
+          "enum": [
+            "network:dhcp",
+            "network:router_interface_distributed",
+            "compute:xxx"
+          ]
+        },
+        "ip_address": {
+          "type": "string",
+          "description": "申请到的私有IP"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

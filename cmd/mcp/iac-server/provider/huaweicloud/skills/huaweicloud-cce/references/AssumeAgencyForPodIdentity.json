@@ -1,0 +1,220 @@
+{
+  "name": "AssumeAgencyForPodIdentity",
+  "summary": "获取pod-identity关联相关委托凭据",
+  "tags": "权限管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/assume-agency-for-pod-identity": {
+      "post": {
+        "tags": [
+          "权限管理"
+        ],
+        "summary": "获取pod-identity关联相关委托凭据",
+        "description": "该API用于通过ServiceAccount token来assume获取ServiceAccount所关联的pod-identity关联中绑定的IAM委托凭据。",
+        "operationId": "AssumeAgencyForPodIdentity",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "AssumeAgencyForPodIdentityRequestBody",
+            "in": "body",
+            "description": "**参数解释**:\n获取pod-identity关联相关委托凭据的请求体\n**约束限制**:\n无",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AssumeAgencyForPodIdentityRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取pod-identity关联相关委托凭据成功",
+            "schema": {
+              "description": "**参数解释**:\npod-identity关联相关委托凭据信息\n**约束限制**:\n不涉及",
+              "$ref": "#/definitions/AssumeAgencyForPodIdentityResp"
+            },
+            "examples": {
+              "application/json": {
+                "assumedAgency": {
+                  "urn": "sts::27680d67da6b47eb82d00a1a1xxxxxx5::assumed-agency:example-agency/cce-{cluster_id}-{pod_id}-{random_UUID}",
+                  "id": "011e7f329d2241e981a3d63bexxxxxx5:cce-{cluster_id}-{pod_id}-{random_UUID}"
+                },
+                "audience": "service.cce.pods",
+                "credentials": {
+                  "accessKeyId": "HSTANO...XBS55JLJ3",
+                  "secretAccessKey": "EoWCQrr...SCcw4Whkt2aXKWAr",
+                  "securityToken": "hQpjbi1XXXXXX...XXXXXKbhBbA0TQ==",
+                  "expiration": "2022-09-07T03:27:51.158Z"
+                },
+                "podIdentityAssociationId": "402358e8-2e3a-4531-bae7-fe9cbxxxxxx1",
+                "subject": {
+                  "namespace": "example-namespace",
+                  "serviceAccount": "example-serviceaccount"
+                }
+              }
+            }
+          }
+        },
+        "x-name": "获取pod-identity关联相关委托凭据",
+        "deprecated": false,
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "获取pod-identity关联相关委托凭据",
+        "x-request-examples-url-1": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/assume-agency-for-pod-identity",
+        "x-request-examples-1": {
+          "token": "hQpjbi1XXXXXX...XXXXXKbhBbA0TQ=="
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AssumedAgency": {
+      "description": "委托元数据信息",
+      "type": "object",
+      "properties": {
+        "urn": {
+          "type": "string",
+          "description": "**参数解释**:\n委托的唯一身份标识信息,形如: sts::{account_id}::assumed-agency:{agency_name}/{agency_session_name}\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n委托的id属性,形如: {agency_id}:{agency_session_name}\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        }
+      }
+    },
+    "AssumeAgencyForPodIdentityRequestBody": {
+      "description": "使用ServiceAccount token获取对应的pod-identity关联相关委托临时凭据请求参数",
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "**参数解释:**\npod-identity关联所绑定的ServiceAccount token。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n无"
+        }
+      },
+      "required": [
+        "token"
+      ]
+    },
+    "AssumeAgencyForPodIdentityResp": {
+      "description": "使用ServiceAccount token获取对应的pod-identity关联相关委托凭据请求结果",
+      "type": "object",
+      "properties": {
+        "assumedAgency": {
+          "description": "**参数解释**:\n凭据对应的委托元数据信息。 该属性只在pod-identity关联绑定信任委托时返回\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+          "$ref": "#/definitions/AssumedAgency"
+        },
+        "audience": {
+          "type": "string",
+          "description": "**参数解释:**\n凭据签发时传入的audience属性,通过pod-identity关联获取委托凭据的场景下,该值固定为 service.cce.pods。 该属性只在pod-identity关联绑定信任委托时返回\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "credentials": {
+          "description": "**参数解释**:\n凭据详情\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+          "$ref": "#/definitions/Credentials"
+        },
+        "podIdentityAssociationId": {
+          "type": "string",
+          "description": "**参数解释:**\n委托凭据所属的pod-identity关联id。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "subject": {
+          "description": "**参数解释**:\n委托凭据所属的ServiceAccount归属信息\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+          "$ref": "#/definitions/PodIdentitySubject"
+        }
+      }
+    },
+    "PodIdentitySubject": {
+      "description": "委托凭据所属的ServiceAccount归属信息",
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "description": "**参数解释**:\nServiceAccount所属的命名空间\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "serviceAccount": {
+          "type": "string",
+          "description": "**参数解释:**\nServiceAccount名称\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        }
+      }
+    },
+    "Credentials": {
+      "description": "委托凭据信息",
+      "type": "object",
+      "properties": {
+        "accessKeyId": {
+          "type": "string",
+          "description": "**参数解释**:\n临时安全凭证的AK\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "secretAccessKey": {
+          "type": "string",
+          "description": "**参数解释:**\n临时安全凭证的SK\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "securityToken": {
+          "type": "string",
+          "description": "**参数解释**:\n临时安全凭证的security_token\n**约束限制**:\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "expiration": {
+          "type": "string",
+          "description": "**参数解释:**\n临时安全凭证的失效时间\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

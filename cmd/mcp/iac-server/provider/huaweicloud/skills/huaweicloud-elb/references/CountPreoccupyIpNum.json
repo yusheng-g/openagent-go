@@ -1,0 +1,210 @@
+{
+  "name": "CountPreoccupyIpNum",
+  "summary": "计算预占IP数",
+  "tags": "预占IP",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/preoccupy-ip-num": {
+      "get": {
+        "tags": [
+          "预占IP"
+        ],
+        "summary": "计算预占IP数",
+        "description": "计算以下几种场景的预占用IP数量:\n\n- 计算创建LB所需IP数量:传入字段availability_zone_id,及可选字段l7_flavor_id、ip_target_enable、ip_version,不能传loadbalancer_id。\n- 计算创建LB的第一个七层监听器后新增占用IP数量:传入loadbalancer_id,其他字段不传。\n- 计算LB变更(规格变更或特性开启)新增占用IP数量:传入字段loadbalancer_id,及l7_flavor_id不为空或ip_target_enable为true。可以同时传入多个字段,表示同时进行多种变更所需要新增的占用IP数量。\n- 计算共享型ELB升级为独享型ELB所需新增占用IP数量:传入sence、loadbalancer_id,其他字段不传。\n- 计算ELB实例开启NAT64特性所需新增占用IP数量:传入nat64_enable、loadbalancer_id,其他字段不传。\n\n注意:\n- 计算出来的预占IP数大于等于最终实际占用的IP数。\n- 只计算新增占用IP数量,不包含已占用的IP数。",
+        "operationId": "CountPreoccupyIpNum",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "l7_flavor_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器七层规格的ID。传入该字段表示计算创建该规格的LB的预占IP数量,或变更LB的原七层规格到该规格所需要的新增预占IP数量。\n\n**约束限制**:仅支持创建LB、变更LB规格场景。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "ip_target_enable",
+            "in": "query",
+            "description": "**参数解释**:IP类型后端转发开关。\n\n**约束限制**:仅支持创建LB、LB开启IP类型后端转发场景。\n\n**取值范围**:\n- 取值true表示计算创建开启IP类型后端转发的LB的预占IP数量,或开启IP类型后端转发所需要的新增预占IP数量。\n- 取值false表示计算创建不开启IP类型后端转发的LB的预占IP。\n- 不传等价false。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 4
+          },
+          {
+            "name": "ip_version",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器IP地址类型,取值4、6 。\n\n**约束限制**:仅支持创建LB场景。\n\n**取值范围**:\n- 取值4表示计算创建支持IPv4地址的LB的预占IP。\n- 取值6表示计算创建支持IPv6地址的LB的预占IP。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 5
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器ID。计算LB变更或创建LB中的第一个七层监听器的新增预占IP。\n\n**约束限制**:仅支持变更LB规格、开启IP类型后端转发、开启/不开启地址转换功能、创建LB中的第一个七层监听器场景。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 6
+          },
+          {
+            "name": "availability_zone_id",
+            "in": "query",
+            "description": "**参数解释**:计算创建AZ列表为availability_zone_id的负载均衡器实例的预占IP。\n\n**约束限制**:\n- 仅支持创建LB场景。\n- 传入loadbalancer_id时,该参数无效。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "scene",
+            "in": "query",
+            "description": "**参数解释**:计算共享型升级为独享型ELB负载均衡器实例的所需预占IP。\n\n**约束限制**:\n- 仅支持共享型升级为独享型ELB场景。\n- 必须同时传入loadbalancer_id。\n\n**取值范围**:UPGRADE - 共享型升级为独享型ELB场景。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 7
+          },
+          {
+            "name": "nat64_enable",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:开启地址转换。传入该字段表示计算创建LB及该LB下开启/不开启地址转换特性的监听器所需要的预占IP,或者指定LB创建开启/不开启地址转换特性的监听器所需要的新增预占IP。\n\n**约束限制**:\n- 仅支持计算ELB实例开启NAT64特性场景。\n\n**取值范围**:\n- true:开启地址转换特性。\n- false:不开启地址转换特性。\n\n**默认取值**:false",
+            "type": "boolean",
+            "x-order": 8
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "preoccupy_ip": {
+                  "total": 20
+                },
+                "request_id": "63388ec8-fa3c-4c99-b9c8-d2c83b2a9a68"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CountPreoccupyIpNumResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "计算预占IP数",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 14,
+        "x-request-examples-description-1": "查询变更负载均衡的七层规格需要预占的ip数",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/060576782980d5762f9ec014dd2f1148/elb/preoccupy-ip-num?loadbalancer_id=aff4fc31-d635-4f59-a862-edadf32e407d&l7_flavor_id=0051bc4c-a562-4b7c-953b-a250b51d992b",
+        "x-request-examples-1": {
+          "preoccupy_ip": {
+            "total": 6
+          },
+          "request_id": "8844e9a0-6a2d-44b7-aad9-15a7f75e4059"
+        },
+        "x-request-examples-text-1": {
+          "preoccupy_ip": {
+            "total": 6
+          },
+          "request_id": "8844e9a0-6a2d-44b7-aad9-15a7f75e4059"
+        },
+        "x-request-examples-description-2": "查询创建一个双az且开启IP类型的负载均衡需要预占的IP数",
+        "x-request-examples-url-2": "GET https://{ELB_Endpoint} /v3/060576782980d5762f9ec014dd2f1148/elb/preoccupy-ip-num?l7_flavor_id=8278944d-f92c-4393-82b2-6fb9cc1d7e53&availability_zone_id=az1&availability_zone_id=az2&ip_target_enable=true",
+        "x-request-examples-2": {
+          "preoccupy_ip": {
+            "total": 20
+          },
+          "request_id": "63388ec8-fa3c-4c99-b9c8-d2c83b2a9a68"
+        },
+        "x-request-examples-text-2": {
+          "preoccupy_ip": {
+            "total": 20
+          },
+          "request_id": "63388ec8-fa3c-4c99-b9c8-d2c83b2a9a68"
+        },
+        "x-request-examples-description-3": "查询指定负载均衡中创建第一个7层监听器所需预占的IP数",
+        "x-request-examples-url-3": "GET https://{ELB_Endpoint} /v3/060576782980d5762f9ec014dd2f1148/elb/preoccupy-ip-num?loadbalancer_id=aff4fc31-d635-4f59-a862-edadf32e407d",
+        "x-request-examples-3": {
+          "preoccupy_ip": {
+            "total": 2
+          },
+          "request_id": "febfce48-318d-45ba-a9d9-855462123f3b"
+        },
+        "x-request-examples-text-3": {
+          "preoccupy_ip": {
+            "total": 2
+          },
+          "request_id": "febfce48-318d-45ba-a9d9-855462123f3b"
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,ctc,tm,cmcc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "PreoccupyIp": {
+      "required": [
+        "total"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:预占IP总数。\n\n**取值范围**:大于等于0整数。"
+        }
+      },
+      "description": ""
+    },
+    "CountPreoccupyIpNumResponseBody": {
+      "required": [
+        "preoccupy_ip",
+        "request_id"
+      ],
+      "properties": {
+        "preoccupy_ip": {
+          "description": "**参数解释**:预占IP信息。",
+          "$ref": "#/definitions/PreoccupyIp"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

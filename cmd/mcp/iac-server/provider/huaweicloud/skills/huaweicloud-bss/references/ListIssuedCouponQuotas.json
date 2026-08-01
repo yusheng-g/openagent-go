@@ -1,0 +1,432 @@
+{
+  "name": "ListIssuedCouponQuotas",
+  "summary": "查询已发放的代金券额度",
+  "tags": "管理云经销商优惠券(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/issued-coupon-quotas": {
+      "get": {
+        "summary": "查询已发放的代金券额度",
+        "description": "华为云总经销商(一级经销商)可以查看发放给云经销商(二级经销商)的代金券额度列表。\n\n一级经销商登录伙伴中心,进入“客户业务** **\\> 代金券管理”,选择“已发放代金券额度”可查看代金券额度列表。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>调用该接口之前,需通过客户经理联系华为运营人员,为合作伙伴设置代金券发放额度。",
+        "tags": [
+          "管理云经销商优惠券(伙伴)"
+        ],
+        "operationId": "ListIssuedCouponQuotas",
+        "x-constraint": "该接口只能给合作伙伴使用,调用的时候必须传递合作伙伴的AK/SK或者Token",
+        "x-externalURL": "/v2/partners/issued-coupon-quotas",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-06-08",
+        "x-operation-data-level": "L3",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "quota_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商的代金券额度ID。获取方法请参见查询优惠券额度。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "CS19040119281JMYC",
+            "x-allowNull": false
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。如果需要查询云经销商伙伴的代金券额度,必须携带该字段。除此之外,此参数不做处理。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "c9e731c4663646988ef4cdb3122837b6",
+            "x-allowNull": false,
+            "x-site": "HC"
+          },
+          {
+            "name": "parent_quota_id",
+            "in": "query",
+            "required": false,
+            "description": "父额度ID,即华为云总经销商用于发放给云经销商代金券额度的额度ID。此参数不携带时,不作为筛选条件;携带值为空或携带值为空串时,作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "CS19040119281JMYD",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "x-allowNull": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询记录数。默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "x-allowNull": true
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/partners/issued-coupon-quotas?quota_id=2020061902584509&indirect_partner_id=05bad7a90700d5bf0ff6c00ae40d0ca0&parent_quota_id=2020010206413502&offset=0&limit=10",
+        "responses": {
+          "200": {
+            "description": "查询已发放的代金券额度响应",
+            "schema": {
+              "$ref": "#/definitions/QueryIssuedCouponQuotasRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "quotas": [
+                  {
+                    "quota_id": "2020061902584509",
+                    "quota_type": 0,
+                    "create_time": "2020-06-19T02:58:54Z",
+                    "last_update_time": "2020-06-19T02:59:25Z",
+                    "quota_value": 0.01,
+                    "quota_status": 6,
+                    "balance": 0.01,
+                    "measure_id": 1,
+                    "currency": "CNY",
+                    "effective_time": "2020-01-01T16:00:00Z",
+                    "expire_time": "2020-12-31T15:59:59Z",
+                    "limit_infos": [
+                      {
+                        "limit_key": "associationType",
+                        "limit_values": [
+                          {
+                            "value1": "3",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "couponFaceValueMax",
+                        "limit_values": [
+                          {
+                            "value1": "-1.00",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "couponFaceValueMin",
+                        "limit_values": [
+                          {
+                            "value1": "-1.00",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "couponNumMax",
+                        "limit_values": [
+                          {
+                            "value1": "-1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "couponSummaryValueMax",
+                        "limit_values": [
+                          {
+                            "value1": "-1.00",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "isFirstAssociated",
+                        "limit_values": [
+                          {
+                            "value1": "0",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "minBaseValueRatio",
+                        "limit_values": [
+                          {
+                            "value1": "-1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "minConsumeDiscount",
+                        "limit_values": [
+                          {
+                            "value1": "-1.00000",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithEmpowerDiscount",
+                        "limit_values": [
+                          {
+                            "value1": "0",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "canSetValidTime",
+                        "limit_values": [
+                          {
+                            "value1": "0",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithDiscountCoupon",
+                        "limit_values": [
+                          {
+                            "value1": "0",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "chargeScene",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": "1"
+                          },
+                          {
+                            "value1": "5",
+                            "value2": "-1"
+                          },
+                          {
+                            "value1": "2",
+                            "value2": "-1"
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithPromotionDiscount",
+                        "limit_values": [
+                          {
+                            "value1": "0",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithPromotionProduct",
+                        "limit_values": [
+                          {
+                            "value1": "0",
+                            "value2": null
+                          }
+                        ]
+                      }
+                    ],
+                    "indirect_partner_id": "05bad7a90700d5bf0ff6c00ae40d0ca0",
+                    "indirect_partner_account_name": "d_1945",
+                    "indirect_partner_name": "Partner1945",
+                    "parent_quota_id": "2020010206413502"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败。|"
+          }
+        },
+        "x-category": "管理云经销商优惠券(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "LimitValue": {
+      "properties": {
+        "value1": {
+          "type": "string",
+          "description": "属性值1。",
+          "example": ""
+        },
+        "value2": {
+          "type": "string",
+          "description": "属性值2。",
+          "example": ""
+        }
+      }
+    },
+    "QueryIssuedCouponQuotasRsp": {
+      "properties": {
+        "total_count": {
+          "description": "查询的记录总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "10"
+        },
+        "quotas": {
+          "description": "额度记录列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IssuedCouponQuota"
+          }
+        }
+      }
+    },
+    "IssuedCouponQuota": {
+      "properties": {
+        "quota_id": {
+          "type": "string",
+          "description": "已发放的代金券额度ID。",
+          "example": "CS19040119281JMYC"
+        },
+        "quota_type": {
+          "description": "额度类型: 0:代金券额度",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2019-09-27T10:27:35Z"
+        },
+        "last_update_time": {
+          "type": "string",
+          "description": "最后一次更新时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2020-05-27T10:27:35Z"
+        },
+        "quota_value": {
+          "description": "代金券额度的值,精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": "100.01"
+        },
+        "quota_status": {
+          "description": "代金券额度的状态: 0:正常3:失效(包括过期失效和人工设置失效)4:额度调整中(伙伴可以查看该额度,但不能使用该额度发放代金券)5:冻结6:回收",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0"
+        },
+        "balance": {
+          "description": "剩余的代金券额度,精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": "80.01"
+        },
+        "measure_id": {
+          "description": "代金券额度的单位。 1:元。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币",
+          "example": "CNY"
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2019-10-27T10:27:35Z"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2020-05-27T10:27:35Z"
+        },
+        "limit_infos": {
+          "description": "代金券额度上的限制属性,具体参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QuotaLimitInfo"
+          }
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。",
+          "example": "c9e731c4663646988ef4cdb3122837b6",
+          "x-site": "HC"
+        },
+        "indirect_partner_account_name": {
+          "type": "string",
+          "description": "云经销商账号名。",
+          "example": "test001",
+          "x-site": "HC"
+        },
+        "indirect_partner_name": {
+          "type": "string",
+          "description": "云经销商名称。",
+          "example": "test002",
+          "x-site": "HC"
+        },
+        "parent_quota_id": {
+          "type": "string",
+          "description": "父额度ID,即华为云总经销商用于发放给云经销商代金券额度的额度ID。",
+          "example": "CS19040119281JMYD"
+        }
+      }
+    },
+    "QuotaLimitInfo": {
+      "properties": {
+        "limit_key": {
+          "type": "string",
+          "description": "属性key值。",
+          "example": ""
+        },
+        "limit_values": {
+          "description": "属性值,具体参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LimitValue"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

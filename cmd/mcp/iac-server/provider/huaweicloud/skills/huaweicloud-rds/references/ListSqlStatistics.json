@@ -1,0 +1,134 @@
+{
+  "name": "ListSqlStatistics",
+  "summary": "查询sql统计列表",
+  "tags": "sql统计",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/sql-statistics": {
+      "get": {
+        "tags": [
+          "sql统计"
+        ],
+        "operationId": "ListSqlStatistics",
+        "summary": "查询sql统计列表",
+        "description": "查询sql统计列表",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "projectId"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "instanceId"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询记录数。默认为1000,不能为负数,最小值为1,最大值为1000。",
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/QuerySqlStatisticsRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "QuerySqlStatisticsRsp": {
+      "type": "object",
+      "required": [
+        "total_count",
+        "list"
+      ],
+      "properties": {
+        "reset_view_last_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "最新重置时间"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "总的个数"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Statistic"
+          },
+          "description": "数据列表"
+        }
+      }
+    },
+    "Statistic": {
+      "type": "object",
+      "properties": {
+        "user_name": {
+          "type": "string",
+          "description": "用户名称"
+        },
+        "database": {
+          "type": "string",
+          "description": "数据库名称"
+        },
+        "query_id": {
+          "type": "string",
+          "description": "由SQL的语法解析树计算出的内部哈希码。"
+        },
+        "calls": {
+          "type": "integer",
+          "format": "int64",
+          "description": "调用次数"
+        },
+        "query": {
+          "type": "string",
+          "description": "SQL语句的文本形式。"
+        },
+        "rows": {
+          "type": "integer",
+          "format": "int64",
+          "description": "扫描行数"
+        },
+        "canUse": {
+          "type": "boolean",
+          "description": "是否可以执行sql限流"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

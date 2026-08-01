@@ -1,0 +1,526 @@
+{
+  "name": "AddSecurityGroups",
+  "summary": "端口插入安全组",
+  "tags": "端口",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/ports/{port_id}/insert-security-groups": {
+      "put": {
+        "tags": [
+          "端口"
+        ],
+        "summary": "端口插入安全组",
+        "description": "端口插入安全组",
+        "operationId": "AddSecurityGroups",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "AddSecurityGroupsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddSecurityGroupsRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "port_id",
+            "in": "path",
+            "description": "端口的唯一标识",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "port": {
+                  "name": "",
+                  "id": "99fd0c77-56b4-4bf6-8365-df352e45d5fc",
+                  "admin_state_up": true,
+                  "status": "DOWN",
+                  "project_id": "f5dab68cd75740e68c599e9af5fe0aed",
+                  "device_id": "",
+                  "mac_address": "fa:16:3e:1f:17:df",
+                  "device_owner": "",
+                  "description": "",
+                  "vpc_id": null,
+                  "zone_id": "",
+                  "scope": "center",
+                  "position_type": "center",
+                  "vtep_ip": null,
+                  "created_at": "2023-05-10T01:35:02",
+                  "updated_at": "2023-05-10T01:35:02",
+                  "port_security_enabled": true,
+                  "tags": [],
+                  "security_groups": [
+                    "567be4e3-d171-46ce-9e8a-c15e91cfe86a",
+                    "8edd3747-ccd4-49a1-82b9-a165eec314b4",
+                    "6c2d4540-3b7d-4207-a319-a7231b439995",
+                    "4940b983-5992-4663-bed9-d1d1e15d1009"
+                  ],
+                  "allowed_address_pairs": [],
+                  "extra_dhcp_opts": [],
+                  "instance_info": null,
+                  "instance_id": "",
+                  "instance_type": "",
+                  "ecs_flavor": "",
+                  "enable_efi": false,
+                  "virsubnet_id": "3847b263-2370-45c0-8236-38a1de568049",
+                  "private_ips": [
+                    {
+                      "subnet_cidr_id": "ffe98087-6d4f-45cd-988b-1c87f75d2d53",
+                      "ip_address": "192.168.158.228"
+                    }
+                  ],
+                  "vpc_tenant_id": null,
+                  "binding:host_id": "",
+                  "binding:vif_type": "unbound",
+                  "binding:vnic_type": "normal",
+                  "binding:vif_details": {},
+                  "binding:profile": {},
+                  "binding:migration_info": {}
+                },
+                "request_id": "458691c0-7db2-43d8-9400-053800c5ff53"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/AddSecurityGroupsResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "x-name": "端口插入安全组",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 9,
+        "x-request-examples-description-1": "指定端口插入安全组,端口99fd0c77-56b4-4bf6-8365-df352e45d5fc已关联的安全组列表为[\"567be4e3-d171-46ce-9e8a-c15e91cfe86a\", \"4940b983-5992-4663-bed9-d1d1e15d1009\"],要将新安全组插入到第1个安全组567be4e3-d171-46ce-9e8a-c15e91cfe86a后面,此时新安全组插入的index为1。",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/f5dab68cd75740e68c599e9af5fe0aed/ports/99fd0c77-56b4-4bf6-8365-df352e45d5fc/insert-security-groups",
+        "x-request-examples-1": {
+          "port": {
+            "security_groups": [
+              "8edd3747-ccd4-49a1-82b9-a165eec314b4",
+              "6c2d4540-3b7d-4207-a319-a7231b439995"
+            ],
+            "index": 1
+          }
+        },
+        "x-request-examples-text-1": "{\n        \"port\": {\n                \"security_groups\": [\n                        \"8edd3747-ccd4-49a1-82b9-a165eec314b4\",\n                        \"6c2d4540-3b7d-4207-a319-a7231b439995\"\n                ],\n                \"index\": 1\n        }\n}",
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AddSecurityGroupsResponseBody": {
+      "required": [
+        "port",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID"
+        },
+        "port": {
+          "description": "端口插入安全组的响应体",
+          "$ref": "#/definitions/Port"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "Port": {
+      "required": [
+        "admin_state_up",
+        "binding:host_id",
+        "binding:profile",
+        "binding:vif_details",
+        "binding:vif_type",
+        "binding:vnic_type",
+        "created_at",
+        "updated_at",
+        "description",
+        "device_id",
+        "device_owner",
+        "ecs_flavor",
+        "id",
+        "instance_id",
+        "instance_type",
+        "mac_address",
+        "name",
+        "port_security_enabled",
+        "private_ips",
+        "project_id",
+        "security_groups",
+        "status",
+        "tenant_id",
+        "virsubnet_id",
+        "vpc_id",
+        "vpc_tenant_id",
+        "vtep_ip",
+        "enable_efi",
+        "scope",
+        "zone_id",
+        "binding:migration_info",
+        "extra_dhcp_opts",
+        "position_type",
+        "instance_info",
+        "tags",
+        "allowed_address_pairs"
+      ],
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:\n端口的管理状态。\n**取值范围**:\ntrue,false,默认值true。"
+        },
+        "binding:host_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所在的主机ID。\n**取值范围**:\n不涉及。"
+        },
+        "binding:profile": {
+          "type": "object",
+          "description": "**参数解释**:\n端口的用户自定义信息。\n**取值范围**:\n不涉及。"
+        },
+        "binding:vif_details": {
+          "description": "**参数解释**:\nVIF的详细信息。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/BindingVifDetails"
+        },
+        "binding:vif_type": {
+          "type": "string",
+          "description": "**参数解释**:\n端口绑定的虚拟接口类型 (ovs/hw_veb等),扩展属性。\n**取值范围**:\n- ovs:表示使用 Open vSwitch(OVS)作为虚拟交换机\n- bridge:表示使用 Linux 内核桥接(bridge)实现虚拟网络\n- hw_veb:表示硬件虚拟以太网桥(Hardware Virtual Ethernet Bridge),通常用于支持 SR-IOV 的硬件网卡\n- vhostuser:表示使用 vhost-user 协议(基于 Unix 域套接字)与外部虚拟交换机通信\n- distributed:表示用于分布式虚拟交换机\n- binding_failed:表示端口绑定失败\n- unbound:表示该端口未绑定到任何网络后端"
+        },
+        "binding:vnic_type": {
+          "type": "string",
+          "description": "**参数解释**:\n绑定的vNIC类型。\n**取值范围**:\n- normal: 软交换。\n- direct: SRIOV硬直通(不支持)。\n- baremetal:用于裸金属服务器。"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n端口的创建时间。\n**取值范围**:\nUTC时间,格式: yyyy-MM-ddTHH:mm:ss。"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n端口的最近一次更新的时间。\n**取值范围**:\nUTC时间,格式: yyyy-MM-ddTHH:mm:ss。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n端口的描述信息。\n**取值范围**:\n0-255个字符,不能包含“<”和“>”。"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的设备ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "device_owner": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的设备名称。\n**取值范围**:\n- network:dhcp, 表示DHCP服务\n- network:router_interface_distributed, 表示子网网关地址\n- compute:xxx, 表示云服务器网卡私有IP地址,其中XXX对应具体的可用区名称,例如compute:aa-bb-cc表示私有IP地址被可用区aa-bb-cc内的云服务器使用\n- neutron:VIP_PORT, 表示虚拟IP地址\n- neutron:LOADBALANCERV2, 表示共享型ELB\n- neutron:LOADBALANCERV3, 表示独享型ELB\n- network:endpoint_interface, 表示VPC终端节点\n- network:nat_gateway, 表示NAT网关\n- network:ucmp, 表示UCMP端口,为企业路由器服务所用"
+        },
+        "ecs_flavor": {
+          "type": "string",
+          "description": "**参数解释**:\n标识此端口所属云服务器的flavor。\n**取值范围**:\n不涉及。"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口的资源ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的云服务实例ID,例如RDS实例ID。\n**取值范围**:\n不涉及。"
+        },
+        "instance_type": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的云服务实例类型,例如“RDS”。\n**取值范围**:\n不涉及。"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "**参数解释**:\n端口的MAC地址。\n**取值范围**:\n不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n端口的名称。\n**取值范围**:\n默认为空,最大长度不超过255。"
+        },
+        "port_security_enabled": {
+          "type": "boolean",
+          "description": "**参数解释**:\n端口的安全使能标记,如果不使能,则安全组和DHCP防欺骗不生效。\n**取值范围**:\n- true:使能端口安全。\n- false:未使能端口安全。"
+        },
+        "private_ips": {
+          "type": "array",
+          "description": "**参数解释**:\n端口的私有IP地址。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/PrivateIpInfo"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的项目ID。\n**取值范围**:\n不涉及。"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "**参数解释**:\n端口绑定的安全组列表。\n**取值范围**:\n不涉及。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释**:\n端口的状态。\n**取值范围**:\n- ACTIVE:端口处于活动状态,可以正常进行网络通信。\n- BUILD:端口正在创建或配置中。\n- DOWN:端口处于非活动状态,不能进行网络通信。Hana 硬直通虚拟机端口状态总为DOWN。"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的租户ID。\n**取值范围**:\n不涉及。"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所在的虚拟子网ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所在的VPC的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "vpc_tenant_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所在的VPC的租户ID。\n**取值范围**:\n不涉及。"
+        },
+        "vtep_ip": {
+          "type": "string",
+          "description": "**参数解释**:\n端口的VTEP IP地址,即虚拟隧道端点的 IP 地址。\n**取值范围**:\n不涉及。"
+        },
+        "enable_efi": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否使能efi,使能则表示端口支持vRoCE能力。\n**取值范围**:\n- true:使能efi。\n- false:未使能efi。"
+        },
+        "scope": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所在子网的作用域(边缘云场景)。\n**取值范围**:\n- center:表示作用域为中心。\n- {publicBorderGroup}:表示作用域为具体的公网边界组。公网边界组限制子网的可用区范围,可关联多个边缘可用区。"
+        },
+        "zone_id": {
+          "type": "string",
+          "description": "**参数解释**:\n端口所属的可用分区的ID。\n**取值范围**:\n不涉及。"
+        },
+        "binding:migration_info": {
+          "type": "object",
+          "description": "**参数解释**:\n端口迁移的目的节点信息,包括目的节点的binding:vif_details和binding:vif_type。\n**取值范围**:\n不涉及。"
+        },
+        "extra_dhcp_opts": {
+          "type": "array",
+          "description": "**参数解释**:\nDHCP的扩展属性。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/PortExtraDhcpOpt"
+          }
+        },
+        "position_type": {
+          "type": "string",
+          "description": "**参数解释**:\n边缘场景端口的位置类型。\n**取值范围**:\n默认值center。"
+        },
+        "instance_info": {
+          "type": "object",
+          "description": "**参数解释**:\n端口绑定的实例信息。\n**取值范围**:\n不涉及。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "**参数解释**:\n端口的标签信息,包括标签键和标签值,可用来分类和标识资源。详情请参见Tag对象。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/ResponseTag"
+          }
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "**参数解释**:\n端口的IP/Mac对列表。\n**取值范围**:\n- IP地址不允许为 “0.0.0.0/0”。\n- 如果allowed_address_pairs配置地址池较大的IP网段(掩码小于24位),建议为该端口配置一个单独的安全组。\n- 如果allowed_address_pairs的IP地址为“1.1.1.1/0”,表示关闭源目地址检查开关。\n- 被绑定的云服务器网卡allowed_address_pairs的IP地址填“1.1.1.1/0”。",
+          "items": {
+            "$ref": "#/definitions/AllowedAddressPair"
+          }
+        }
+      },
+      "description": "功能说明:端口对象。",
+      "type": "object"
+    },
+    "PortExtraDhcpOpt": {
+      "type": "object",
+      "required": [
+        "opt_name",
+        "opt_value"
+      ],
+      "properties": {
+        "opt_name": {
+          "type": "string",
+          "description": "**参数解释**:\nDHCP属性名称。在DHCP服务器为客户端分配IP地址时,传递的额外的控制信息或网络配置参数的名称。\n**取值范围**:\n不涉及。"
+        },
+        "opt_value": {
+          "type": "string",
+          "description": "**参数解释**:\nDHCP属性值。在DHCP服务器为客户端分配IP地址时,传递的额外的控制信息或网络配置参数的值。\n**取值范围**:\n不涉及。"
+        }
+      }
+    },
+    "AllowedAddressPair": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "功能说明:IP地址约束:不支持0.0.0.0如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组。"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "功能说明:MAC地址"
+        }
+      },
+      "description": ""
+    },
+    "BindingVifDetails": {
+      "type": "object",
+      "properties": {
+        "primary_interface": {
+          "type": "boolean",
+          "description": "**参数解释**:\n表示该网卡是否为云服务器的主网卡。\n**取值范围**:\n- true:该网卡是云服务器的主网卡。\n- false:该网卡不是云服务器的主网卡。"
+        },
+        "port_filter": {
+          "type": "boolean",
+          "description": "**参数解释**:\n表示该网络服务提供端口过滤特性,如安全组和反MAC/IP欺骗。\n**取值范围**:\n- true:提供端口过滤特性。\n- false:未提供端口过滤特性。"
+        },
+        "ovs_hybrid_plug": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否为ovs/bridge混合模式。\n**取值范围**:\n- true:ovs/bridge混合模式。\n- false:非ovs/bridge混合模式。"
+        },
+        "vlan_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n辅助弹性网卡的vlan ID。\n**取值范围**:\n不涉及。"
+        },
+        "parent_id": {
+          "type": "string",
+          "description": "**参数解释**:\n辅助弹性网卡的宿主网卡ID。\n**取值范围**:\n不涉及。"
+        },
+        "parent_device_id": {
+          "type": "string",
+          "description": "**参数解释**:\n辅助弹性网卡的宿主网卡所属的设备ID。\n**取值范围**:\n不涉及。"
+        }
+      }
+    },
+    "PrivateIpInfo": {
+      "required": [
+        "ip_address",
+        "subnet_cidr_id"
+      ],
+      "properties": {
+        "subnet_cidr_id": {
+          "type": "string",
+          "description": "端口所属子网ID"
+        },
+        "ip_address": {
+          "type": "string",
+          "description": "端口私有IP地址"
+        }
+      },
+      "description": "端口私有IP信息"
+    },
+    "InsertSecurityGroupOption": {
+      "required": [
+        "security_groups"
+      ],
+      "properties": {
+        "security_groups": {
+          "type": "array",
+          "description": "功能说明:安全组的ID列表;例如:\"security_groups\": [\"a0608cbf-d047-4f54-8b28-cd7b59853fff\"]",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "安全组插入的位置,从0开始计数。\n举例:\n1. 要插入到已关联安全组列表的首位,index=0;\n2. 要插入到已关联安全组列表的第n个安全组后面,index=n。\n默认插入到端口已关联的安全组列表末尾。"
+        }
+      },
+      "description": ""
+    },
+    "AddSecurityGroupsRequestBody": {
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "port": {
+          "description": "端口插入安全组请求体",
+          "$ref": "#/definitions/InsertSecurityGroupOption"
+        },
+        "dry_run": {
+          "type": "boolean",
+          "description": "功能说明:是否只预检此次请求\n取值范围:\n-true:发送检查请求,不会执行端口插入安全组。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应码202。\n-false(默认值):发送正常请求,并直接执行端口插入安全组。"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResponseTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:\n标签键。\n**取值范围**:\n  - 最大长度128个unicode字符, key不能为空。\n  - 同一资源的key不能重复。\n  - 可以包含的字符范围:\n\t- 英文字母\n    - 数字\n    - 特殊字符:下划线(_)、点(.)、冒号(:)、加号(+)、中划线(-)、等号(=)\n    - 中文字符",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:\n标签值。\n**取值范围**:\n  - 每个值最大长度255个unicode字符,value可以为空。\n  - 可以包含的字符范围:\n\t- 英文字母\n    - 数字\n    - 特殊字符:下划线(_)、点(.)、冒号(:)、加号(+)、中划线(-)、等号(=)\n    - 中文字符",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

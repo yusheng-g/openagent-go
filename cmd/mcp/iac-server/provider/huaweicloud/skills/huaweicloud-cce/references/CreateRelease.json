@@ -1,0 +1,345 @@
+{
+  "name": "CreateRelease",
+  "summary": "创建模板实例",
+  "tags": "模板管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/cce/cam/v3/clusters/{cluster_id}/releases": {
+      "post": {
+        "x-request-examples-url-1": "POST /cce/cam/v3/clusters/{cluster_id}/releases",
+        "x-request-examples-1": {
+          "name": "koi-neo4j",
+          "project_id": "0abdd2dce980d4162f8ac006608ee02d",
+          "cluster_id": "7378a198-a3fe-11eb-ad37-0255ac100b07",
+          "namespace": "default",
+          "chart_id": "e99a7e86-afdd-11eb-aca3-0255ac100b0e",
+          "description": "",
+          "version": "3.0.1",
+          "values": {
+            "acceptLicenseAgreement": "no",
+            "affinity": {},
+            "authEnabled": true,
+            "clusterDomain": "cluster.local",
+            "core": {
+              "initContainers": [],
+              "numberOfServers": 3,
+              "persistentVolume": {
+                "enabled": true,
+                "mountPath": "/data",
+                "size": "10Gi"
+              },
+              "sidecarContainers": []
+            },
+            "defaultDatabase": "neo4j",
+            "image": "neo4j",
+            "imagePullPolicy": "IfNotPresent",
+            "imageTag": "4.0.3-enterprise",
+            "name": "neo4j",
+            "nodeSelector": {},
+            "podDisruptionBudget": {},
+            "readReplica": {
+              "autoscaling": {
+                "enabled": false,
+                "maxReplicas": 3,
+                "minReplicas": 1,
+                "targetAverageUtilization": 70
+              },
+              "initContainers": [],
+              "numberOfServers": 0,
+              "resources": {},
+              "sidecarContainers": []
+            },
+            "resources": {},
+            "testImage": "markhneedham/k8s-kubectl",
+            "testImageTag": "master",
+            "tolerations": [],
+            "useAPOC": "true"
+          }
+        },
+        "tags": [
+          "模板管理"
+        ],
+        "summary": "创建模板实例",
+        "description": "创建模板实例",
+        "operationId": "CreateRelease",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "x-example": {
+              "name": "nino21",
+              "namespace": "project01",
+              "chart_id": "3c138b72-7ce4-6d76-7c55-604cdb2ce423",
+              "values": {
+                "imageTag": "v2",
+                "imagePullPolicy": "IfNotPresent"
+              },
+              "parameters": {
+                "dry_run": false,
+                "no_hooks": false,
+                "replace": false,
+                "name_template": ""
+              }
+            },
+            "x-order": 3,
+            "description": "创建release请求体",
+            "name": "CreateReleaseRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateReleaseReqBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/ReleaseResp"
+            }
+          }
+        },
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "创建模板实例",
+        "x-order": 2,
+        "x-publishpath": "",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateReleaseReqBody": {
+      "description": "创建模板实例的请求体",
+      "required": [
+        "chart_id",
+        "name",
+        "namespace",
+        "values",
+        "version"
+      ],
+      "properties": {
+        "chart_id": {
+          "type": "string",
+          "description": "模板ID",
+          "example": "af4b699e-018c-11ec-b8b0-0255ac100b05"
+        },
+        "description": {
+          "type": "string",
+          "description": "模板实例描述",
+          "example": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "模板实例名称",
+          "example": "testwww"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "模板实例所在的命名空间",
+          "example": "monitoring"
+        },
+        "version": {
+          "type": "string",
+          "description": "模板实例版本号",
+          "example": "1.0.0"
+        },
+        "parameters": {
+          "$ref": "#/definitions/ReleaseReqBodyParams"
+        },
+        "values": {
+          "type": "object",
+          "description": "模板实例的值",
+          "properties": {
+            "imagePullPolicy": {
+              "type": "string",
+              "example": "IfNotPresent",
+              "description": "镜像拉取策略"
+            },
+            "imageTag": {
+              "type": "string",
+              "example": "v2",
+              "description": "镜像标签"
+            }
+          }
+        }
+      }
+    },
+    "ReleaseResp": {
+      "properties": {
+        "chart_name": {
+          "type": "string",
+          "description": "模板名称",
+          "example": "magento-mysql"
+        },
+        "chart_public": {
+          "type": "boolean",
+          "description": "是否公开模板",
+          "example": false
+        },
+        "chart_version": {
+          "type": "string",
+          "description": "模板版本",
+          "example": "1.0.0"
+        },
+        "cluster_id": {
+          "type": "string",
+          "description": "集群ID",
+          "example": "a870253f-5dc7-11ee-bf71-0255ac100b03"
+        },
+        "cluster_name": {
+          "type": "string",
+          "description": "集群名称",
+          "example": "sfs-turbo-test"
+        },
+        "create_at": {
+          "type": "string",
+          "description": "创建时间",
+          "example": "2023-11-14T20:30:57+08:00"
+        },
+        "description": {
+          "type": "string",
+          "description": "模板实例描述",
+          "example": "Initial install underway"
+        },
+        "name": {
+          "type": "string",
+          "description": "模板实例名称",
+          "example": "testwww"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "模板实例所在的命名空间",
+          "example": "monitoring"
+        },
+        "parameters": {
+          "type": "string",
+          "description": "模板实例参数",
+          "example": ""
+        },
+        "resources": {
+          "type": "string",
+          "description": "模板实例需要的资源",
+          "example": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "模板实例状态\n- DEPLOYED:已部署,表示模板实例处于正常状态。\n- DELETED:已删除,表示模板实例已经被删除。\n- FAILED:失败,表示模板实例部署失败。\n- DELETING:删除中,表示模板实例正处于删除过程中。\n- PENDING_INSTALL:待安装,表示模板正在等待安装。\n- PENDING_UPGRADE:待升级,表示模板正在等待升级。\n- PENDING_ROLLBACK:待回滚,表示模板正在等待回滚。\n- UNKNOWN:未知,表示模板状态异常,可尝试手动删除后重新安装。",
+          "example": "PENDING_INSTALL"
+        },
+        "status_description": {
+          "type": "string",
+          "description": "模板实例状态描述",
+          "example": "Initial install underway"
+        },
+        "update_at": {
+          "type": "string",
+          "description": "更新时间",
+          "example": "2023-11-14T20:30:57+08:00"
+        },
+        "values": {
+          "type": "string",
+          "description": "模板实例的值",
+          "example": "{\"basic\":{\"admin_password\":\"magentorocks1\",\"admin_username\":\"admin\",\"app_name\":\"magento\",\"mysql_database\":\"magento\",\"mysql_name\":\"mysql\",\"mysql_password\":\"magento\",\"mysql_port\":3306,\"mysql_root_password\":\"changeme\",\"mysql_user\":\"magento\",\"storage_class\":\"csi-nas\",\"storage_mode\":\"ReadWriteMany\",\"storage_size\":\"10G\"},\"global\":{\"magento_EIP\":\"100.95.154.255\",\"magento_EPORT\":32080,\"namespace\":\"default\"},\"image\":{\"magento_image\":\"swr.cn-north-7.myhuaweicloud.com/everest/magento:latest\",\"mysql_image\":\"swr.cn-north-7.myhuaweicloud.com/everest/mysql:5.7.14\"}}"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "模板实例版本",
+          "example": 1
+        }
+      }
+    },
+    "ReleaseReqBodyParams": {
+      "description": "模板实例参数",
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "example": false,
+          "description": "开启后,仅验证模板参数,不进行安装"
+        },
+        "name_template": {
+          "type": "string",
+          "description": "实例名称模板"
+        },
+        "no_hooks": {
+          "type": "boolean",
+          "example": false,
+          "description": "安装时是否禁用hooks"
+        },
+        "replace": {
+          "type": "boolean",
+          "example": false,
+          "description": "模板实例更新时是否保留values,该字段仅在更新指定模板实例时生效"
+        },
+        "recreate": {
+          "type": "boolean",
+          "example": false,
+          "description": "模板实例更新时是否重建实例,该字段仅在更新指定模板实例时生效"
+        },
+        "reset_values": {
+          "type": "boolean",
+          "example": false,
+          "description": "模板实例更新时是否重置values,该字段仅在更新指定模板实例时生效"
+        },
+        "release_version": {
+          "type": "integer",
+          "example": 1,
+          "description": "回滚实例的版本",
+          "format": "int32"
+        },
+        "include_hooks": {
+          "type": "boolean",
+          "example": false,
+          "description": "更新或者删除时启用hooks"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

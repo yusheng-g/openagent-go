@@ -1,0 +1,272 @@
+{
+  "name": "KeystoneListUsers",
+  "summary": "管理员查询IAM用户列表",
+  "tags": "IAM用户管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/users": {
+      "get": {
+        "tags": [
+          "IAM用户管理"
+        ],
+        "summary": "管理员查询IAM用户列表",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户列表。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneListUsers",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "domain_id",
+            "in": "query",
+            "description": "IAM用户所属账号ID,获取方式请参见:[获取账号ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": false,
+            "type": "string",
+            "x-example": "d78cbac186b744899480f25bd022f468",
+            "x-order": 2
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "description": "是否启IAM用户,true为启用,false为停用,默认为true。",
+            "required": false,
+            "type": "boolean",
+            "x-example": true,
+            "x-order": 3
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "IAM用户名。",
+            "required": false,
+            "type": "string",
+            "x-example": "IAMUser",
+            "x-order": 4
+          },
+          {
+            "name": "password_expires_at",
+            "in": "query",
+            "description": "密码过期时间,格式为:password_expires_at={operator}:{timestamp}。timestamp格式为:YYYY-MM-DDTHH:mm:ssZ。示例:\n\n```\npassword_expires_at=lt:2016-12-08T22:02:00Z\n```\n> - operator取值范围:lt,lte,gt,gte,eq,neq。\n> - lt:过期时间小于timestamp。\n> - lte:过期时间小于等于timestamp。\n> - gt:过期时间大于timestamp。\n> - gte:过期时间大于等于timestamp。\n> - eq:过期时间等于timestamp。\n> - neq:过期时间不等于timestamp。",
+            "required": false,
+            "type": "string",
+            "x-example": "lt:2016-12-08T22:02:00Z",
+            "x-order": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "links": {
+                  "next": null,
+                  "previous": null,
+                  "self": "https://iam.huaweicloud.com/v3/users"
+                },
+                "users": [
+                  {
+                    "domain_id": "d78cbac186b744899480f25bd022f468",
+                    "name": "IAMUserA",
+                    "description": "IAMDescriptionA",
+                    "password_expires_at": null,
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.huaweicloud.com/v3/users/07667db96a00265f1fc0c003a3b1c6cd"
+                    },
+                    "id": "07667db96a00265f1fc0c003a3b1c6cd",
+                    "enabled": true
+                  },
+                  {
+                    "pwd_status": true,
+                    "domain_id": "d78cbac186b744899480f25bd022f468",
+                    "last_project_id": "065a7c66da0010992ff7c0031e5a5e7d",
+                    "name": "IAMUserB",
+                    "description": "IAMDescriptionB",
+                    "password_expires_at": null,
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.huaweicloud.com/v3/users/07609fb9358010e21f7bc003751c7c32"
+                    },
+                    "id": "07609fb9358010e21f7bc003751c7c32",
+                    "enabled": true
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneListUsersResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "资源冲突。"
+          },
+          "500": {
+            "description": "请求体过大。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "管理员查询IAM用户列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 35,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/users",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/users",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneListUsersResponseBody": {
+      "required": [
+        "links",
+        "users"
+      ],
+      "properties": {
+        "links": {
+          "description": "资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "users": {
+          "type": "array",
+          "description": "IAM用户信息列表。",
+          "items": {
+            "$ref": "#/definitions/KeystoneListUsersResult"
+          }
+        }
+      },
+      "description": ""
+    },
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneListUsersResult": {
+      "required": [
+        "domain_id",
+        "enabled",
+        "id",
+        "links",
+        "name",
+        "password_expires_at"
+      ],
+      "properties": {
+        "pwd_status": {
+          "type": "boolean",
+          "example": false,
+          "description": "IAM用户密码状态。true:需要修改密码,false:不需要修改密码。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "IAM用户所属账号ID。"
+        },
+        "last_project_id": {
+          "type": "string",
+          "example": "aa2d97d7e62c4b7da3ffdfc11551f878",
+          "description": "IAM用户退出系统前,在控制台最后访问的项目ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMUser",
+          "description": "IAM用户名。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "IAM用户描述信息。"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "example": "null",
+          "description": "IAM用户密码过期时间(UTC时间),“null”表示密码不过期。"
+        },
+        "links": {
+          "description": "IAM用户的资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "id": {
+          "type": "string",
+          "example": "076652f08880266a1f0bc003ec005cd2",
+          "description": "IAM用户ID。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": false,
+          "description": "IAM用户是否启用。true表示启用,false表示停用,默认为true。"
+        },
+        "pwd_strength": {
+          "type": "string",
+          "example": "high",
+          "description": "IAM用户的密码强度。high:密码强度高;mid:密码强度中等;low:密码强度低。"
+        },
+        "access_mode": {
+          "type": "string",
+          "example": "default",
+          "description": "IAM用户访问方式。\n- default:默认访问模式,编程访问和管理控制台访问。\n- programmatic:编程访问。\n- console:管理控制台访问。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

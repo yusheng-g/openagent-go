@@ -1,0 +1,92 @@
+{
+  "name": "RevokeRoleFromUserOnEnterpriseProject",
+  "summary": "删除企业项目直接关联用户的权限",
+  "tags": "企业项目管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-PERMISSION/enterprise-projects/{enterprise_project_id}/users/{user_id}/roles/{role_id}": {
+      "delete": {
+        "x-apiErrorCodes": "[]",
+        "tags": [
+          "企业项目管理"
+        ],
+        "summary": "删除企业项目直接关联用户的权限",
+        "description": "删除企业项目直接关联用户的权限。\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "RevokeRoleFromUserOnEnterpriseProject",
+        "parameters": [
+          {
+            "name": "enterprise_project_id",
+            "in": "path",
+            "description": "企业项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "用户ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "description": "权限ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "已认证的拥有iam:permissions:revokeRoleFromUserOnEnterpriseProject细粒度权限或Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-order": 5
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求成功。"
+          },
+          "400": {
+            "description": "请求参数出错。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "找不到指定资源。"
+          },
+          "500": {
+            "description": "系统异常。"
+          }
+        },
+        "x-name": "删除企业项目直接关联用户的权限",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": "",
+        "x-request-examples-url-1": "DELETE https://iam.myhuaweicloud.com/v3.0/OS-PERMISSION/enterprise-projects/{enterprise_project_id}/users/{user_id}/roles/{role_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

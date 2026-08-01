@@ -1,0 +1,282 @@
+{
+  "name": "ShowQuota",
+  "summary": "查询配额",
+  "tags": "配额",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/quotas": {
+      "get": {
+        "tags": [
+          "配额"
+        ],
+        "summary": "查询配额",
+        "description": "您可以通过此接口查询VPC服务相关资源的配额,包括安全组配额、安全组规则配额等。",
+        "operationId": "ShowQuota",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n网络ACL所属的项目ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET操作正常返回",
+            "schema": {
+              "$ref": "#/definitions/ShowQuotaRespBody"
+            },
+            "x-response-examples-tags-1": "hws,hws_hk",
+            "x-response-examples-1": {
+              "application/json": {
+                "quota": {
+                  "vpc": -1,
+                  "security_group": 100,
+                  "security_group_rule": 5000,
+                  "peering": 50,
+                  "address_group": 50,
+                  "address_group_contain_ipset": 100,
+                  "vpc_contain_virsubnet": -1,
+                  "secgroup_referred_by_nic": 50000,
+                  "secgroup_contain_rules": 50,
+                  "vpc_contain_eni": -1,
+                  "eni_contain_secgroup": -1,
+                  "acl_policy_contain_rules": 40,
+                  "vip": 10,
+                  "edge_gateway": 3,
+                  "vpc_contain_vip": -1,
+                  "subnet_contain_eni": -1,
+                  "traffic_mirror_session": 20000,
+                  "traffic_mirror_filter": 2000,
+                  "traffic_mirror_filter_referred_by_session": 1000,
+                  "traffic_mirror_filter_contain_rules_each_direction": 10,
+                  "traffic_mirror_target_elb_referred_by_session": 200,
+                  "traffic_mirror_target_eni_referred_by_session": 10,
+                  "traffic_mirror_source_referred_by_session": 3,
+                  "traffic_mirror_session_contain_sources": 10,
+                  "security_group_contain_ingress_ipv4_composite_rules": 120,
+                  "security_group_contain_ingress_ipv6_composite_rules": 120,
+                  "security_group_contain_egress_ipv4_composite_rules": 120,
+                  "security_group_contain_egress_ipv6_composite_rules": 120,
+                  "firewall_policy_contain_ipv4_composite_rules": 120,
+                  "firewall_policy_contain_ipv6_composite_rules": 120,
+                  "virsubnet_contain_ipv4_cidr_reservations": 10,
+                  "virsubnet_contain_ipv6_cidr_reservations": 10,
+                  "virsubnet": -1
+                },
+                "request_id": "c36874fe67538207eff03797e6a50734"
+              }
+            }
+          }
+        },
+        "x-api-type": "open-api",
+        "x-is-translated": "N",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": false,
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/{project_id}/vpc/quotas",
+        "x-request-examples-description-1": "查询配额。"
+      }
+    }
+  },
+  "definitions": {
+    "VpcQuotas": {
+      "type": "object",
+      "properties": {
+        "acl_policy_contain_rules": {
+          "type": "integer",
+          "format": "int32",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n网络ACL单方向规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "address_group": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\nIP地址组数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "address_group_contain_ipset": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\nIP地址组包含的IP地址集数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "edge_gateway": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n边缘网关数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "eni_contain_secgroup": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n弹性网卡关联的安全组数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "firewall_policy_contain_ipv4_composite_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n网络ACL中配置了IP地址组或不连续端口的IPv4规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "firewall_policy_contain_ipv6_composite_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n网络ACL中配置了IP地址组或不连续端口的IPv6规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "peering": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n对等连接数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "secgroup_contain_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个安全组包含的规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "secgroup_referred_by_nic": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个安全组关联的网卡数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "security_group": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n安全组数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "security_group_contain_egress_ipv4_composite_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n安全组中配置了IP地址组、不连续端口或远端安全组的IPv4出方向规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "security_group_contain_egress_ipv6_composite_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n安全组中配置了IP地址组、不连续端口或远端安全组的IPv6出方向规则数配。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "security_group_contain_ingress_ipv4_composite_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n安全组中配置了IP地址组、不连续端口或远端安全组的IPv4入方向规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "security_group_contain_ingress_ipv6_composite_rules": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n安全组中配置了IP地址组、不连续端口或远端安全组的IPv6入方向规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "security_group_rule": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n安全组规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "subnet_contain_eni": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个子网包含的弹性网卡数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_filter": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n流量镜像筛选条件数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_filter_referred_by_session": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个流量镜像筛选条件被镜像会话引用数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_filter_contain_rules_each_direction": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n流量镜像筛选条件单方向规则数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_session": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n流量镜像会话数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_session_contain_sources": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个流量镜像会话关联的镜像源数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_source_referred_by_session": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个镜像源被流量镜像会话引用次数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_target_elb_referred_by_session": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n私网弹性负载均衡类型的镜像目的被会话引用次数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "traffic_mirror_target_eni_referred_by_session": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n弹性网卡类型的镜像目的被会话引用次数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "vip": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n虚拟IP数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "virsubnet": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n子网数配额。\n**取值范围**:\n整数,-1表示此配额未上线,请通过[v1查询配额接口](vpc_quota_0001.xml)。"
+        },
+        "virsubnet_contain_ipv4_cidr_reservations": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单子网包含IPv4子网预留网段数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "virsubnet_contain_ipv6_cidr_reservations": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单子网包含IPv6子网预留网段数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "vpc": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\nVPC数配额。\n**取值范围**:\n整数,-1表示此配额未上线,请通过[v1查询配额接口](vpc_quota_0001.xml)。"
+        },
+        "vpc_contain_eni": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个VPC包含弹性网卡数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "vpc_contain_vip": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个VPC包含虚拟IP数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        },
+        "vpc_contain_virsubnet": {
+          "type": "integer",
+          "x-open-region-cloud": "hws,hws_hk",
+          "description": "**参数解释**:\n单个VPC包含子网数配额。\n**取值范围**:\n整数,-1表示此配额未上线。"
+        }
+      }
+    },
+    "ShowQuotaRespBody": {
+      "type": "object",
+      "required": [
+        "quota",
+        "request_id"
+      ],
+      "properties": {
+        "quota": {
+          "description": "**参数解释**:\n查询配额的响应体。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/VpcQuotas"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:\n请求ID。\n**取值范围**:\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

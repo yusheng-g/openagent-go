@@ -1,0 +1,245 @@
+{
+  "name": "ListTasks",
+  "summary": "查询即时任务列表",
+  "tags": "任务管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/tasklist": {
+      "get": {
+        "x-request-examples-description-1": "查询任务列表。",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/54623db08b174c858ba779d2aa7923a3/tasklist?offset=1&limit=3&start_time=1747919701390&end_time=1748524501390",
+        "tags": [
+          "任务管理"
+        ],
+        "summary": "查询即时任务列表",
+        "description": "查询即时任务列表。",
+        "operationId": "ListTasks",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "索引位置,偏移量。\n\n从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "default": 0,
+            "minimum": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "查询记录数。默认为10,不能为负数,最小值为1,最大值为50。",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 50
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "任务ID,按任务ID过滤。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "required": false,
+            "description": "实例ID,按实例ID过滤。",
+            "type": "string"
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": false,
+            "description": "订单ID,按订单ID过滤。",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "任务名称,按任务名称称过滤。",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "任务状态,按任务状态过滤。\nRunning:运行中\nCompleted:已完成\nFailed:已失败",
+            "type": "string",
+            "enum": [
+              "Running",
+              "Completed",
+              "Failed"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "type": "string",
+            "description": "任务的创建时间,按时间范围进行过滤,“start_time”有值时,“end_time”必选。格式为UTC时间戳。",
+            "required": false,
+            "x-example": 1594233788000
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "string",
+            "description": "任务的结束时间,按时间范围进行过滤,“start_time”有值时,“end_time”必选。格式为UTC时间戳。",
+            "required": false,
+            "x-example": 1595443388000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ListTask"
+            },
+            "examples": {
+              "application/json": {
+                "tasks": [
+                  {
+                    "id": "676e9f17f9b74289883a44a47b8101f5",
+                    "name": "RestoreSqlserverInInstance",
+                    "instance_id": "4d00c7e9d22145deb889937a72b59c8ein01",
+                    "instance_name": "rds-local-scale",
+                    "instance_status": "FAILED",
+                    "order_id": "CS2506041000FOJXC",
+                    "process": "",
+                    "create_time": "2020-07-15T07:46:10+0000",
+                    "end_time": "2020-07-15T09:46:10+0000",
+                    "status": "Completed"
+                  }
+                ],
+                "actions": [
+                  "RestoreSqlserverInInstance"
+                ],
+                "total_count": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListTask": {
+      "type": "object",
+      "required": [
+        "tasks",
+        "actions",
+        "total_count"
+      ],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "example": 1,
+          "description": "任务总数。"
+        },
+        "actions": {
+          "type": "array",
+          "description": "任务名称列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tasks": {
+          "type": "array",
+          "description": "任务列表。",
+          "items": {
+            "$ref": "#/definitions/Task"
+          }
+        }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "5ed6a9e95f2747f7bac1b5899ddd1316",
+          "description": "任务ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "RESIZE_FLAVOR",
+          "description": "任务名称。"
+        },
+        "instance_id": {
+          "type": "string",
+          "example": "3d2929b2c7ea4fe9bd27f21061d037ccin04",
+          "description": "实例ID。"
+        },
+        "instance_name": {
+          "type": "string",
+          "example": "rds-test",
+          "description": "实例名称。"
+        },
+        "instance_status": {
+          "type": "string",
+          "example": "ACTIVE",
+          "description": "实例状态。\n- 值为“BUILD”,表示实例正在创建。\n- 值为“CREATE FAIL”,表示实例创建失败。\n- 值为“ACTIVE”,表示实例正常。\n- 值为“FAILED”,表示实例异常。\n- 值为“FROZEN”,表示实例冻结。\n- 值为“MODIFYING”,表示实例正在扩容。\n- 值为“REBOOTING”,表示实例正在重启。\n- 值为“RESTORING”,表示实例正在恢复。\n- 值为“MODIFYING INSTANCE TYPE”,表示实例正在转主备。\n- 值为“SWITCHOVER”,表示实例正在主备切换。\n- 值为“MIGRATING”,表示实例正在迁移。\n- 值为“BACKING UP”,表示实例正在进行备份。\n- 值为“MODIFYING DATABASE PORT”,表示实例正在修改数据库端口。\n- 值为“STORAGE FULL”,表示实例磁盘空间满。"
+        },
+        "order_id": {
+          "type": "string",
+          "example": "CS2506041000FOJXC",
+          "description": "订单ID。"
+        },
+        "process": {
+          "type": "string",
+          "example": "100",
+          "description": "任务进度,单位百分比,取值范围:0-100。当任务成功或者失败状态下,该值为空字符串。"
+        },
+        "fail_reason": {
+          "type": "string",
+          "example": "创建虚拟机失败",
+          "description": "失败原因。"
+        },
+        "create_time": {
+          "type": "string",
+          "example": "2020-07-15T07:46:10+0000",
+          "description": "任务创建时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "end_time": {
+          "type": "string",
+          "example": "2020-07-15T09:46:10+0000",
+          "description": "任务计划结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "status": {
+          "type": "string",
+          "example": "Completed",
+          "description": "任务状态。取值范围如下:\nRunning:运行中\nCompleted:已完成\nFailed:已失败"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

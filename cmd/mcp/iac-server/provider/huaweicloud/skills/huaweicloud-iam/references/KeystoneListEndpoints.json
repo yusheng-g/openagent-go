@@ -1,0 +1,247 @@
+{
+  "name": "KeystoneListEndpoints",
+  "summary": "查询终端节点列表",
+  "tags": "服务和终端节点",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/endpoints": {
+      "get": {
+        "tags": [
+          "服务和终端节点"
+        ],
+        "summary": "查询终端节点列表",
+        "description": "该接口可以用于查询终端节点列表。终端节点用来提供服务访问入口。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneListEndpoints",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "interface",
+            "in": "query",
+            "description": "终端节点平面。可能取值为:public、internal或admin。public: 用户可在公共网络接口上看到。internal:用户可在内部网络接口上看到。admin:管理员可以在安全的网络接口上看到。",
+            "required": false,
+            "type": "string",
+            "x-example": "public",
+            "enum": [
+              "public",
+              "internal",
+              "admin"
+            ],
+            "x-order": 2
+          },
+          {
+            "name": "service_id",
+            "in": "query",
+            "description": "服务ID。",
+            "required": false,
+            "type": "string",
+            "x-example": "43cbe5e77aaf4665bbb962062dc1fc9d",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "endpoints": [
+                  {
+                    "service_id": "3e93d3eb20b34bfbbdcc81a79c1c3045",
+                    "region_id": "cn-southwest-2",
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.myhuaweicloud.com/v3/endpoints/0046cca357c94165b7a10ec2c01bdf60"
+                    },
+                    "id": "0046cca357c94165b7a10ec2c01bdf60",
+                    "interface": "public",
+                    "region": "cn-southwest-2",
+                    "url": "https://ims.cn-southwest-2.myhuaweicloud.com",
+                    "enabled": true
+                  },
+                  {
+                    "service_id": "5186586acd38461d84b3dbf9f02e33ae",
+                    "region_id": "cn-north-1",
+                    "links": {
+                      "next": null,
+                      "previous": null,
+                      "self": "https://iam.myhuaweicloud.com/v3/endpoints/00d546d4823e452491407284ab26612c"
+                    },
+                    "id": "00d546d4823e452491407284ab26612c",
+                    "interface": "public",
+                    "region": "cn-north-1",
+                    "url": "https://ges.cn-north-1.myhuaweicloud.com/v1.0/$(tenant_id)s",
+                    "enabled": true
+                  }
+                ],
+                "links": {
+                  "next": null,
+                  "previous": null,
+                  "self": "https://iam.myhuaweicloud.com/v3/endpoints"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneListEndpointsResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "501": {
+            "description": "接口没有实现。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询终端节点列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 77,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/endpoints",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/endpoints",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneListEndpointsResponseBody": {
+      "required": [
+        "endpoints",
+        "links"
+      ],
+      "properties": {
+        "links": {
+          "description": "资源链接地址。",
+          "$ref": "#/definitions/Links"
+        },
+        "endpoints": {
+          "type": "array",
+          "description": "终端节点信息列表。",
+          "items": {
+            "$ref": "#/definitions/Endpoint"
+          }
+        }
+      },
+      "description": ""
+    },
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    },
+    "Endpoint": {
+      "required": [
+        "enabled",
+        "id",
+        "interface",
+        "links",
+        "region",
+        "region_id",
+        "service_id",
+        "url"
+      ],
+      "properties": {
+        "service_id": {
+          "type": "string",
+          "example": "053d21d488d1463c818132d9d08fb617",
+          "description": "终端节点所属服务的ID。"
+        },
+        "region_id": {
+          "type": "string",
+          "example": "cn-southwest-2",
+          "description": "终端节点所属区域的ID。"
+        },
+        "links": {
+          "description": "终端节点的资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "id": {
+          "type": "string",
+          "example": "162277d696f54cf592f19b569f85d158",
+          "description": "终端节点ID。"
+        },
+        "interface": {
+          "type": "string",
+          "example": "public",
+          "description": "终端节点平面。"
+        },
+        "region": {
+          "type": "string",
+          "example": "cn-southwest-2",
+          "description": "终端节点所属区域。"
+        },
+        "url": {
+          "type": "string",
+          "example": "https://ims.cn-southwest-2.myhuaweicloud.com",
+          "description": "终端节点的地址。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "终端节点是否可用。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

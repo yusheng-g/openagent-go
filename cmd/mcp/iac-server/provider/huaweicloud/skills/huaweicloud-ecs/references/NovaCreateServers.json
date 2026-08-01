@@ -1,0 +1,621 @@
+{
+  "name": "NovaCreateServers",
+  "summary": "创建云服务器",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers": {
+      "post": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "创建云服务器",
+        "description": "创建一台弹性云服务器。\n\n弹性云服务器创建完成后,如需开启自动恢复功能,可以调用配置云服务器自动恢复的接口,具体使用请参见管理云服务器自动恢复动作。\n\n该接口在云服务器创建失败后不支持自动回滚。若需要自动回滚能力,可以调用POST /v1/{project_id}/cloudservers接口,具体使用请参见创建云服务器(按需)。",
+        "operationId": "NovaCreateServers",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "NovaCreateServersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NovaCreateServersRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "server": {
+                  "security_groups": [
+                    {
+                      "name": "name_xx5_sg"
+                    }
+                  ],
+                  "OS-DCF:diskConfig": " MANUAL",
+                  "id": "567c1557-0eca-422c-bfce-149d6b8f1bb8",
+                  "links": [
+                    {
+                      "href": "http://192.168.82.230:8774/v2/dc4059e8e7994f2498b514ca04cdaf44/servers/567c1557-0eca-422c-bfce-149d6b8f1bb8",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "http://192.168.82.230:8774/dc4059e8e7994f2498b514ca04cdaf44/servers/567c1557-0eca-422c-bfce-149d6b8f1bb8",
+                      "rel": "bookmark"
+                    }
+                  ],
+                  "adminPass": "name_xx1"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaCreateServersResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建云服务器",
+        "x-constraint": "1. 该接口为原生接口,不支持整机镜像创建弹性云服务器功能。如需使用整机镜像创建弹性云服务器,请使用ECS接口创建云服务器(按需)。\n2. 该接口为原生接口,不支持创建竞价实例。如需创建竞价实例,请使用ECS接口创建云服务器或者创建云服务器云主机(按需)。\n3. 该接口为原生接口,不支持创建包周期计费模式的实例。如需创建包周期计费模式的云服务器请使用ECS接口创建云服务器。\n4. 使用该接口创建的云服务器,不支持在创建过程中绑定弹性公网IP,推荐使用ECS接口创建云服务器云主机(按需)创建云服务器并绑定弹性公网IP。\n5. 网络的三个参数(port、uuid和fixed_ip)中,port优先级最高;指定fixed_ip时必须指明uuid。\n6. 注入文件失败,将导致创建弹性云服务器失败。\n7. 使用镜像创建弹性云服务器时,存在下面约束:\n\t- 不支持指定Host创建弹性云服务器。\n\t- 租户如果对弹性云服务器中的卷进行了备份,则需要租户自行删除该卷所对应的快照等数据后,才能删除卷。\n\t- 调整镜像创建的弹性云服务器规格时,不支持resource_type不同的flavor之间的规格调整。\n8. 公有云平台提供的原生接口/v2/{project_id}/servers 和 /v2.1/{project_id}/servers 是基于社区版OpenStack原生接口加固而成的,兼容社区版OpenStack原生接口。\n    较之社区版的OpenStack原生接口,在使用指定镜像的方式创建弹性云服务器时存在如下差异:\n\t- 社区OpenStack原生接口:默认使用服务器本地磁盘创建弹性云服务器。\n\t- 公有云平台提供的原生接口:为了保障可靠性,使用共享存储作为系统盘创建弹性云服务器。\n    该差异的具体表现为,当您使用提供的原生接口创建云服务器时:\n    - 可以查询到云服务器挂载的系统盘信息。\n    - 云服务器的系统盘会占用云硬盘的配额。\n    - 不支持使用image过滤查询指定镜像方式创建的弹性云服务器。\n9. 公有云场景下,后端卷弹性云服务器必须与卷创建在相同的被级联OpenStack。\n10. 用户创建弹性云服务器时在block_device_mapping_v2设置的device_name字段不会生效,系统会默认生成一个device_name。\n11. 请勿使用“provider:network_type”为“geneve”的网络来创建弹性云服务器。\n    > 说明:\n    > “provider:network_type”为“geneve”时,表示裸金属服务器使用的内部高速网络。\n12. 创建云服务器时,除非全局配置项allow_duplicate_networks开启,否则多个端口不能属于同一个网络。\n13. 如果使用密钥方式远程登录云服务器,请使用key_name参数。如果使用密码方式远程登录云服务器,可使用adminPass参数;对于Linux弹性云服务器,还可使用user_data进行注入,对于Windows弹性云服务器,还可通过元数据admin_pass进行注入。",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/{project_id}/servers",
+        "x-request-examples-1": {
+          "server": {
+            "flavorRef": "2",
+            "name": "wjvm48",
+            "metadata": {
+              "name": "name_xx1",
+              "id": "id_xxxx1"
+            },
+            "block_device_mapping_v2": [
+              {
+                "source_type": "volume",
+                "destination_type": "volume",
+                "uuid": "bd7e4f86-b004-4745-bea2-a55b1085f107",
+                "delete_on_termination": "False",
+                "boot_index": "0",
+                "volume_type": "dsware",
+                "volume_size": "40"
+              }
+            ],
+            "security_groups": [
+              {
+                "name": "name_xx5_sg"
+              }
+            ],
+            "networks": [
+              {
+                "uuid": "fd40e6f8-942d-4b4e-a7ae-465287b02a2c",
+                "port": "e730a11c-1a19-49cc-8797-cee2ad67af6f",
+                "fixed_ip": "10.20.30.137"
+              }
+            ],
+            "key_name": "test",
+            "user_data": "ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb3ZlcyBpbiBqdXN0IHN1Y2ggYSBkaXJlY3Rpb24gYW5kIGF0IHN1Y2ggYSBzcGVlZC4uLkl0IGZlZWxzIGFuIGltcHVsc2lvbi4uLnRoaXMgaXMgdGhlIHBsYWNlIHRvIGdvIG5vdy4gQnV0IHRoZSBza3kga25vd3MgdGhlIHJlYXNvbnMgYW5kIHRoZSBwYXR0ZXJucyBiZWhpbmQgYWxsIGNsb3VkcywgYW5kIHlvdSB3aWxsIGtub3csIHRvbywgd2hlbiB5b3UgbGlmdCB5b3Vyc2VsZiBoaWdoIGVub3VnaCB0byBzZWUgYmV5b25kIGhvcml6b25zLiINCg0KLVJpY2hhcmQgQmFjaA==",
+            "availability_zone": "name_xx5az2"
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"server\": {\n\t\t\"flavorRef\": \"2\",\n\t\t\"name\": \"wjvm48\",\n\t\t\"metadata\": {\n\t\t\t\"name\": \"name_xx1\",\n\t\t\t\"id\": \"id_xxxx1\"\n\t\t},\n\t\t\"block_device_mapping_v2\": [{\n\t\t\t\"source_type\": \"volume\",\n\t\t\t\"destination_type\": \"volume\",\n\t\t\t\"uuid\": \"bd7e4f86-b004-4745-bea2-a55b1085f107\",\n\t\t\t\"delete_on_termination\": \"False\",\n\t\t\t\"boot_index\": \"0\",\n\t\t\t\"volume_type\": \"dsware\",\n\t\t\t\"volume_size\": \"40\"\n\t\t}],\n\t\t\"security_groups\": [{\n\t\t\t\"name\": \"name_xx5_sg\"\n\t\t}],\n\t\t\"networks\": [{\n\t\t\t\"uuid\": \"fd40e6f8-942d-4b4e-a7ae-465287b02a2c\",\n\t\t\t\"port\": \"e730a11c-1a19-49cc-8797-cee2ad67af6f\",\n\t\t\t\"fixed_ip\": \"10.20.30.137\"\n\t\t}],\n\t\t\"key_name\": \"test\",\n\t\t\"user_data\": \"ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb3ZlcyBpbiBqdXN0IHN1Y2ggYSBkaXJlY3Rpb24gYW5kIGF0IHN1Y2ggYSBzcGVlZC4uLkl0IGZlZWxzIGFuIGltcHVsc2lvbi4uLnRoaXMgaXMgdGhlIHBsYWNlIHRvIGdvIG5vdy4gQnV0IHRoZSBza3kga25vd3MgdGhlIHJlYXNvbnMgYW5kIHRoZSBwYXR0ZXJucyBiZWhpbmQgYWxsIGNsb3VkcywgYW5kIHlvdSB3aWxsIGtub3csIHRvbywgd2hlbiB5b3UgbGlmdCB5b3Vyc2VsZiBoaWdoIGVub3VnaCB0byBzZWUgYmV5b25kIGhvcml6b25zLiINCg0KLVJpY2hhcmQgQmFjaA==\",\n\t\t\"availability_zone\": \"name_xx5az2\"\n\t}\n}",
+        "x-request-examples-description-2": "",
+        "x-request-examples-url-2": "",
+        "x-request-examples-2": {
+          "server": {
+            "flavorRef": "2",
+            "name": "wjvm48",
+            "metadata": {
+              "name": "name_xx1",
+              "id": "id_xxxx1"
+            },
+            "adminPass": "name_xx1",
+            "block_device_mapping_v2": [
+              {
+                "source_type": "image",
+                "destination_type": "volume",
+                "uuid": "bd7e4f86-b004-4745-bea2-a55b1085f107",
+                "delete_on_termination": "False",
+                "boot_index": "0"
+              }
+            ],
+            "security_groups": [
+              {
+                "name": "name_xx5_sg"
+              }
+            ],
+            "networks": [
+              {
+                "uuid": "fd40e6f8-942d-4b4e-a7ae-465287b02a2c",
+                "port": "e730a11c-1a19-49cc-8797-cee2ad67af6f",
+                "fixed_ip": "10.20.30.137"
+              }
+            ],
+            "key_name": "test",
+            "user_data": "ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb3ZlcyBpbiBqdXN0IHN1Y2ggYSBkaXJlY3Rpb24gYW5kIGF0IHN1Y2ggYSBzcGVlZC4uLkl0IGZlZWxzIGFuIGltcHVsc2lvbi4uLnRoaXMgaXMgdGhlIHBsYWNlIHRvIGdvIG5vdy4gQnV0IHRoZSBza3kga25vd3MgdGhlIHJlYXNvbnMgYW5kIHRoZSBwYXR0ZXJucyBiZWhpbmQgYWxsIGNsb3VkcywgYW5kIHlvdSB3aWxsIGtub3csIHRvbywgd2hlbiB5b3UgbGlmdCB5b3Vyc2VsZiBoaWdoIGVub3VnaCB0byBzZWUgYmV5b25kIGhvcml6b25zLiINCg0KLVJpY2hhcmQgQmFjaA==",
+            "availability_zone": "name_xx5az2"
+          }
+        },
+        "x-request-examples-text-2": "{\n    \"server\": {\n        \"flavorRef\": \"2\",\n        \"name\": \"wjvm48\",\n        \"metadata\": {\n            \"name\": \"name_xx1\",\n            \"id\": \"id_xxxx1\"\n        },\n        \"adminPass\": \"name_xx1\",\n        \"block_device_mapping_v2\": [\n            {\n                \"source_type\": \"image\",\n                \"destination_type\": \"volume\",\n                \"uuid\": \"bd7e4f86-b004-4745-bea2-a55b1085f107\",\n                \"delete_on_termination\": \"False\",\n                \"boot_index\": \"0\"\n            }\n        ],\n        \"security_groups\": [\n            {\n                \"name\": \"name_xx5_sg\"\n            }\n        ],\n        \"networks\": [\n            {\n                \"uuid\": \"fd40e6f8-942d-4b4e-a7ae-465287b02a2c\",\n                \"port\": \"e730a11c-1a19-49cc-8797-cee2ad67af6f\",\n                \"fixed_ip\": \"10.20.30.137\"\n            }\n        ],\n        \"key_name\": \"test\",\n        \"user_data\": \"ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb3ZlcyBpbiBqdXN0IHN1Y2ggYSBkaXJlY3Rpb24gYW5kIGF0IHN1Y2ggYSBzcGVlZC4uLkl0IGZlZWxzIGFuIGltcHVsc2lvbi4uLnRoaXMgaXMgdGhlIHBsYWNlIHRvIGdvIG5vdy4gQnV0IHRoZSBza3kga25vd3MgdGhlIHJlYXNvbnMgYW5kIHRoZSBwYXR0ZXJucyBiZWhpbmQgYWxsIGNsb3VkcywgYW5kIHlvdSB3aWxsIGtub3csIHRvbywgd2hlbiB5b3UgbGlmdCB5b3Vyc2VsZiBoaWdoIGVub3VnaCB0byBzZWUgYmV5b25kIGhvcml6b25zLiINCg0KLVJpY2hhcmQgQmFjaA==\",\n        \"availability_zone\": \"name_xx5az2\"\n    }\n}",
+        "x-request-examples-description-3": "",
+        "x-request-examples-url-3": "",
+        "x-request-examples-3": {
+          "server": {
+            "flavorRef": "2",
+            "name": "wjvm48",
+            "metadata": {
+              "name": "name_xx1",
+              "id": "id_xxxx1"
+            },
+            "adminPass": "name_xx1",
+            "imageRef": "6b344c54-d606-4e1a-a99e-a7d0250c3d14",
+            "security_groups": [
+              {
+                "name": "name_xx5_sg"
+              }
+            ],
+            "networks": [
+              {
+                "uuid": "fd40e6f8-942d-4b4e-a7ae-465287b02a2c",
+                "port": "e730a11c-1a19-49cc-8797-cee2ad67af6f",
+                "fixed_ip": "10.20.30.137"
+              }
+            ],
+            "key_name": "test",
+            "user_data": "ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb3ZlcyBpbiBqdXN0IHN1Y2ggYSBkaXJlY3Rpb24gYW5kIGF0IHN1Y2ggYSBzcGVlZC4uLkl0IGZlZWxzIGFuIGltcHVsc2lvbi4uLnRoaXMgaXMgdGhlIHBsYWNlIHRvIGdvIG5vdy4gQnV0IHRoZSBza3kga25vd3MgdGhlIHJlYXNvbnMgYW5kIHRoZSBwYXR0ZXJucyBiZWhpbmQgYWxsIGNsb3VkcywgYW5kIHlvdSB3aWxsIGtub3csIHRvbywgd2hlbiB5b3UgbGlmdCB5b3Vyc2VsZiBoaWdoIGVub3VnaCB0byBzZWUgYmV5b25kIGhvcml6b25zLiINCg0KLVJpY2hhcmQgQmFjaA==",
+            "availability_zone": "name_xx5az2"
+          }
+        },
+        "x-request-examples-text-3": "{\n\t\"server\": {\n\t\t\"flavorRef\": \"2\",\n\t\t\"name\": \"wjvm48\",\n\t\t\"metadata\": {\n\t\t\t\"name\": \"name_xx1\",\n\t\t\t\"id\": \"id_xxxx1\"\n\t\t},\n\t\t\"adminPass\": \"name_xx1\",\n\t\t\"imageRef\": \"6b344c54-d606-4e1a-a99e-a7d0250c3d14\",\n\t\t\"security_groups\": [{\n\t\t\t\"name\": \"name_xx5_sg\"\n\t\t}],\n\t\t\"networks\": [{\n\t\t\t\"uuid\": \"fd40e6f8-942d-4b4e-a7ae-465287b02a2c\",\n\t\t\t\"port\": \"e730a11c-1a19-49cc-8797-cee2ad67af6f\",\n\t\t\t\"fixed_ip\": \"10.20.30.137\"\n\t\t}],\n\t\t\"key_name\": \"test\",\n\t\t\"user_data\": \"ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb3ZlcyBpbiBqdXN0IHN1Y2ggYSBkaXJlY3Rpb24gYW5kIGF0IHN1Y2ggYSBzcGVlZC4uLkl0IGZlZWxzIGFuIGltcHVsc2lvbi4uLnRoaXMgaXMgdGhlIHBsYWNlIHRvIGdvIG5vdy4gQnV0IHRoZSBza3kga25vd3MgdGhlIHJlYXNvbnMgYW5kIHRoZSBwYXR0ZXJucyBiZWhpbmQgYWxsIGNsb3VkcywgYW5kIHlvdSB3aWxsIGtub3csIHRvbywgd2hlbiB5b3UgbGlmdCB5b3Vyc2VsZiBoaWdoIGVub3VnaCB0byBzZWUgYmV5b25kIGhvcml6b25zLiINCg0KLVJpY2hhcmQgQmFjaA==\",\n\t\t\"availability_zone\": \"name_xx5az2\"\n\t}\n}",
+        "x-request-examples-description-4": "",
+        "x-request-examples-url-4": "",
+        "x-request-examples-4": {
+          "server": {
+            "availability_zone": "az1.dc1",
+            "name": "test",
+            "imageRef": "10ff4f01-35b6-4209-8397-359cb4475fa0",
+            "flavorRef": "s1.medium",
+            "return_reservation_id": "true",
+            "networks": [
+              {
+                "uuid": "51bead38-d1a3-4d08-be20-0970c24b7cab"
+              }
+            ],
+            "min_count": "2",
+            "max_count": "3"
+          }
+        },
+        "x-request-examples-text-4": "{\n    \"server\": {\n        \"availability_zone\": \"az1.dc1\",\n        \"name\": \"test\",\n        \"imageRef\": \"10ff4f01-35b6-4209-8397-359cb4475fa0\",\n        \"flavorRef\": \"s1.medium\",\n        \"return_reservation_id\": \"true\",\n        \"networks\": [\n            {\n                \"uuid\": \"51bead38-d1a3-4d08-be20-0970c24b7cab\"\n            }\n        ],\n        \"min_count\": \"2\",\n        \"max_count\": \"3\"\n    }\n}",
+        "x-registered_to": "apicom",
+        "x-support_json": "是",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaCreateServersSchedulerHint": {
+      "properties": {
+        "group": {
+          "type": "string",
+          "description": "反亲和性组信息。\n\nUUID格式。"
+        },
+        "different_host": {
+          "type": "array",
+          "description": "与指定弹性云服务器满足反亲和性。 \n\n当前不支持该功能。",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "same_host": {
+          "type": "array",
+          "description": "与指定的弹性云服务器满足亲和性。\n\n 当前不支持该功能。",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "将弹性云服务器scheduler到指定网段的host上,host网段的cidr。\n\n 当前不支持该功能。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "build_near_host_ip": {
+          "type": "string",
+          "description": "将弹性云服务器scheduler到指定网段的host上,host IP地址。\n\n 当前不支持该功能。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenancy": {
+          "type": "string",
+          "description": "在专属主机或共享池中创建弹性云服务器。默认为在共享池创建。\n值为: shared 或dedicated。\nshared:表示共享池。\ndedicated:表示专属主机。\n创建与查询此值均有效。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "dedicated_host_id": {
+          "type": "string",
+          "description": "专属主机ID。\n此属性仅在tenancy值为dedicated时有效。\n不指定此属性,系统将自动分配租户可自动放置弹性云服务器的专属主机。\n创建与查询此值均有效。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": " 弹性云服务器调度信息。\n\n裸金属服务器场景不支持。"
+    },
+    "NovaLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "有三种取值。self:自助链接包含版本链接的资源。立即链接后使用这些链接。bookmark:书签链接提供了一个永久资源的永久链接,该链接适合于长期存储。alternate:备用链接可以包含资源的替换表示形式。例如,OpenStack计算映像可能在OpenStack映像服务中有一个替代表示。",
+          "enum": [
+            "self",
+            "bookmark",
+            "alternate",
+            "describedby"
+          ]
+        }
+      },
+      "description": " "
+    },
+    "NovaCreateServersOption": {
+      "required": [
+        "flavorRef",
+        "name",
+        "networks"
+      ],
+      "properties": {
+        "auto_terminate_time": {
+          "type": "string",
+          "example": "2020-01-19T03:30:52Z",
+          "description": "弹性云服务器自动删除时间。\n\n时间格式例如:2020-01-19T03:30:52Z"
+        },
+        "imageRef": {
+          "type": "string",
+          "example": "3b8d6fef-af77-42ab-b8b7-5a7f0f0af8f2",
+          "description": "镜像ID或者镜像资源的URL。\n\n- 镜像ID示例:3b8d6fef-af77-42ab-b8b7-5a7f0f0af8f2\n- 镜像URL示例:http://glance.openstack.example.com/images/3b8d6fef-af77-42ab-b8b7-5a7f0f0af8f2\n- 指定卷作为系统卷创弹性云服务器时,不需填写该参数;非卷创建弹性云服务器时需填写有效的UUID参数,否则API将返回400错误。\n\n> 说明:\n> - 对于部分规格的弹性云服务器,不能支持公有云平台提供的所有公共镜像。具体规格的镜像支持列表,请登录管理控制台,以“创建弹性云服务器”页面系统自动过滤的镜像信息为准,并在镜像服务页面查询镜像ID。\n> - 如果创建失败,请尝试修改参数配置。"
+        },
+        "flavorRef": {
+          "type": "string",
+          "example": "c1.2xlarge",
+          "description": "规格ID或URL。"
+        },
+        "name": {
+          "type": "string",
+          "example": "test-server",
+          "description": "弹性云服务器名称,长度大于0小于256字节。\n\n> 说明:\n> \n> 云服务器内部主机名(hostname)命名规则遵循 [RFC 952](https://tools.ietf.org/html/rfc952)和[RFC 1123](https://tools.ietf.org/html/rfc1123)命名规范,建议使用a-zA-z或0-9以及中划线\"-\"组成的名称命名,\"_\"将在弹性云服务器内部默认转化为\"-\"。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "metadata": {
+          "type": "object",
+          "description": "用户自定义字段键值对。\n\n> - key的长度大于0小于256字节\n> - value的长度大于等于0小于256字节\n\n\n系统预留字段\n\n1. admin_pass:弹性云服务器密码\n \t\n    Windows弹性云服务器Administrator用户的密码。\n    > 说明:\n    > 创建密码方式鉴权的Windows弹性云服务器时为必选字段。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "adminPass": {
+          "type": "string",
+          "example": "1qazXSW@",
+          "description": "如果需要使用密码方式登录云服务器,可使用adminPass字段指定云服务器管理员帐户初始登录密码。其中,Linux管理员帐户为root,Windows管理员帐户为Administrator。"
+        },
+        "block_device_mapping_v2": {
+          "type": "array",
+          "description": "扩展属性,指定弹性云服务器存储设备的v2接口。是存储资源的新版本接口,指定卷场景不能批创弹性云服务器。\n\n裸金属服务器场景不支持。",
+          "items": {
+            "$ref": "#/definitions/NovaServerBlockDeviceMapping"
+          }
+        },
+        "config_drive": {
+          "type": "string",
+          "description": "扩展属性,开启后在弹性云服务器创建时挂载config_drive向弹性云服务器内部传递信息。\n\n当前不支持该功能。",
+          "x-huawei-extraAnnotation": "",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "扩展属性,指定弹性云服务器的安全组,默认为default。\n\n指定network创建弹性云服务器时该字段有效。对于已存在端口,安全组请求无效。",
+          "items": {
+            "$ref": "#/definitions/NovaServerSecurityGroup"
+          }
+        },
+        "networks": {
+          "type": "array",
+          "description": "扩展属性,指定弹性云服务器的网卡信息。有多个租户网络时必须指定。 ",
+          "items": {
+            "$ref": "#/definitions/NovaServerNetwork"
+          }
+        },
+        "key_name": {
+          "type": "string",
+          "example": "test",
+          "description": "扩展属性,指定keypair的名称。"
+        },
+        "user_data": {
+          "type": "string",
+          "example": "ICAgICAgDQoiQSBjbG91ZCBkb2VzIG5vdCBrbm93IHdoeSBpdCBtb",
+          "description": "扩展属性,字符串长度小于65535,且必须是base64加密的。",
+          "minLength": 0,
+          "maxLength": 65535
+        },
+        "availability_zone": {
+          "type": "string",
+          "example": "az1.dc1",
+          "description": "扩展属性,指定弹性云服务器所在的AZ。\n\n创建弹性云服务器时需要填入该参数。"
+        },
+        "return_reservation_id": {
+          "type": "boolean",
+          "example": false,
+          "description": "扩展属性,是否支持返回批量创建弹性云服务器的reservation_id。通过返回的reservation_id,可以过滤查询到本次创建的弹性云服务器。\n\n- true,返回reservation_id。\n- false,返回弹性云服务器信息。\n\n> 说明:\n> \n> 批量创建弹性云服务器时,支持使用该字段。"
+        },
+        "min_count": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "扩展属性,表示创建弹性云服务器最小数量。\n\n默认值为1。\n\n> 说明:\n> \n> 指定镜像创建弹性云服务器时,支持使用该字段。",
+          "default": 1
+        },
+        "max_count": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "表示创建弹性云服务器最大数量。\n\n默认值与min_count的取值一致。\n\n约束:\n\n参数max_count的取值必须大于参数min_count的取值。\n\n当min_count、max_count同时设置时,创弹性云服务器的数量取决于服务器的资源情况。根据资源情况,在min_count至max_count的取值范围内创建最大数量的弹性云服务器。\n\n- 说明:\n- \n- 指定镜像创建弹性云服务器时,支持使用该字段。"
+        },
+        "OS-DCF:diskConfig": {
+          "type": "string",
+          "example": "MANUAL",
+          "description": "diskConfig的方式,取值为AUTO、MANUAL。\n\n- MANUAL,镜像空间不会扩展。\n- AUTO,系统盘镜像空间会自动扩展为与flavor大小一致。\n\n当前不支持该功能。",
+          "enum": [
+            "AUTO",
+            "MANUAL"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "example": "test server",
+          "description": "扩展属性,表示弹性云服务器描述信息,默认为空字符串。\n\n- 长度最多允许85个字符。\n- 不能包含“<” 和 “>”等特殊符号。\n\n> 说明:\n> \n> - V2接口不支持该字段。\n> - V2.1接口支持该字段,此时,需在请求Header中增加一组Key-Value值。其中,Key固定为“X-OpenStack-Nova-API-Version” ,Value为微版本号,当Value的值为2.19时,支持使用该字段。",
+          "minLength": 0,
+          "maxLength": 85
+        }
+      },
+      "description": " 弹性云服务器信息"
+    },
+    "NovaCreateServersResponseBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "server": {
+          "description": "弹性云服务器信息",
+          "$ref": "#/definitions/NovaCreateServersResult"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaCreateServersRequestBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "server": {
+          "description": "弹性云服务器信息",
+          "$ref": "#/definitions/NovaCreateServersOption"
+        },
+        "os:scheduler_hints": {
+          "description": "弹性云服务器调度信息。裸金属服务器场景不支持。",
+          "$ref": "#/definitions/NovaCreateServersSchedulerHint"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "NovaServerSecurityGroup": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "name_xx5_sg",
+          "description": "安全组名称或者uuid。"
+        }
+      },
+      "description": " "
+    },
+    "NovaServerBlockDeviceMapping": {
+      "required": [
+        "source_type"
+      ],
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "example": "volume",
+          "description": "卷设备的源头类型,当前只支持volume、image、snapshot、blank类型。\n\n当使用卷创建云服务器时,source_type设置为volume;当使用镜像创建云服务器时,source_type设置为image;当使用快照创建云服务器时,source_type设置为snapshot;当创建空数据卷时,source_type设置为blank。\n\n- 说明:\n- \n- 当卷设备的源头类型为snapshot时,且boot_index为0,则该快照对应的云硬盘必须为系统盘。",
+          "enum": [
+            "blank",
+            "snapshot",
+            "volume",
+            "image"
+          ]
+        },
+        "destination_type": {
+          "type": "string",
+          "example": "volume",
+          "description": "卷设备的目标类型,当前仅支持volume类型。\n\n- volume:卷。\n- local:本地文件,当前不支持该类型。",
+          "enum": [
+            "volume"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "guest_format": {
+          "type": "string",
+          "description": "local文件系统格式,例如:swap, ext4。\n\n当前不支持该功能。"
+        },
+        "device_name": {
+          "type": "string",
+          "example": "/dev/sda",
+          "description": "卷设备名称。\n\n> 说明:\n> \n> 该字段已经废弃。\n> \n> 用户指定的device_name不会生效,系统会默认生成一个device_name。"
+        },
+        "delete_on_termination": {
+          "type": "boolean",
+          "example": false,
+          "description": "删除弹性云服务器时,是否删除卷,默认值false。\n\ntrue:删除弹性云服务器时,删除卷\n\nfalse:删除弹性云服务器时,不删除卷",
+          "default": false
+        },
+        "boot_index": {
+          "type": "string",
+          "example": "0",
+          "description": "启动标识,“0”代表启动盘,“-1“代表非启动盘。\n\n> 说明:\n> \n> 当卷设备的源头类型全为volume时,boot_index的值有一个为0。"
+        },
+        "uuid": {
+          "type": "string",
+          "example": "b023fe17-11db-4efb-b800-78882a0e394b",
+          "description": "当source_type值是volume时,uuid为卷的uuid;\n\n当source_type值是snapshot时,uuid为快照的uuid;\n\n当source_type值是image时,uuid为镜像的uuid;"
+        },
+        "volume_size": {
+          "type": "integer",
+          "format": "int32",
+          "example": 40,
+          "description": "卷大小,整数,在source_type是image或blank,destination_type是volume的时候必选。\n\n单位为GB。"
+        },
+        "volume_type": {
+          "type": "string",
+          "example": "SSD",
+          "description": "卷类型,在source_type是image,destination_type是volume时建议填写。\n\n卷类型取值范围请参考 EVS 服务 [磁盘类型介绍](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": " 扩展属性,指定弹性云服务器存储设备的v2接口。是存储资源的新版本接口,指定卷场景不能批创弹性云服务器。\n\n裸金属服务器场景不支持。"
+    },
+    "NovaCreateServersResult": {
+      "required": [
+        "OS-DCF:diskConfig",
+        "adminPass",
+        "id",
+        "links",
+        "security_groups"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "弹性云服务器uuid。"
+        },
+        "links": {
+          "type": "array",
+          "description": "弹性云服务器URI自描述信息。",
+          "items": {
+            "$ref": "#/definitions/NovaLink"
+          }
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "弹性云服务器所在安全组。",
+          "items": {
+            "$ref": "#/definitions/NovaServerSecurityGroup"
+          }
+        },
+        "OS-DCF:diskConfig": {
+          "type": "string",
+          "description": "diskConfig方式。\n\n- MANUAL,镜像空间不会扩展。\n- AUTO,系统盘镜像空间会自动扩展为与flavor大小一致。",
+          "enum": [
+            "MANUAL",
+            "AUTO"
+          ]
+        },
+        "reservation_id": {
+          "type": "string",
+          "description": "通过返回的reservation_id,可以过滤查询到本次创建的弹性云服务器。\n\n> 说明:\n> \n> 批量创建弹性云服务器时,支持使用该字段。"
+        },
+        "adminPass": {
+          "type": "string",
+          "description": "Windows弹性云服务器Administrator用户的密码。"
+        }
+      },
+      "description": " "
+    },
+    "NovaServerNetwork": {
+      "properties": {
+        "port": {
+          "type": "string",
+          "example": "fd40e6f8-942d-4b4e-a7ae-465287b02a2c",
+          "description": "网络port uuid。\n\n没有指定网络uuid时必须指定。"
+        },
+        "uuid": {
+          "type": "string",
+          "example": "fd40e6f8-942d-4b4e-a7ae-465287b02a2c",
+          "description": "网络uuid。\n\n没有指定网络port时必须指定。"
+        },
+        "fixed_ip": {
+          "type": "string",
+          "example": "10.20.30.137",
+          "description": "指定的IP地址。网络的三个参数(port、uuid和fixed_ip)中,port优先级最高;指定fixed_ip时必须指明uuid。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

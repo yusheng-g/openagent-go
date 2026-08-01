@@ -1,0 +1,318 @@
+{
+  "name": "ShowPool",
+  "summary": "查询后端云服务器组详情",
+  "tags": "后端云服务器组",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/pools/{pool_id}": {
+      "get": {
+        "tags": [
+          "后端云服务器组"
+        ],
+        "summary": "查询后端云服务器组详情",
+        "description": "根据指定ID查询后端云服务器组详情。",
+        "operationId": "ShowPool",
+        "parameters": [
+          {
+            "name": "pool_id",
+            "in": "path",
+            "description": "后端云服务器组id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "pool": {
+                  "id": "0551cd66-97bd-4f45-a2e7-9cbda1f126ef",
+                  "project_id": "08e8157e9200d3ad2fdcc0076d50c484",
+                  "tenant_id": "08e8157e9200d3ad2fdcc0076d50c484",
+                  "name": "mypool",
+                  "description": "some description",
+                  "admin_state_up": true,
+                  "loadbalancers": [
+                    {
+                      "id": "10ecacba-c30b-4d5b-b228-7ba012dd1fcf"
+                    }
+                  ],
+                  "listeners": [
+                    {
+                      "id": "56bb30ae-c067-42a9-bf02-dd1f26c01355"
+                    }
+                  ],
+                  "members": [
+                    {
+                      "id": "577f907d-3bde-496d-a6e2-7d618fe3ff18"
+                    }
+                  ],
+                  "healthmonitor_id": "884dbec7-a8e3-4cb1-819c-2f53a1511a91",
+                  "session_persistence": null,
+                  "protocol": "TCP",
+                  "lb_algorithm": "ROUND_ROBIN",
+                  "protection_status": "nonProtection",
+                  "protection_reason": ""
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowPoolResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询后端云服务器组详情",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 31,
+        "x-request-examples-1": "GET https://{ELB_Endpoint}/v2/08e8157e9200d3ad2fdcc0076d50c484/elb/pools/0551cd66-97bd-4f45-a2e7-9cbda1f126ef",
+        "x-request-examples-text-1": "GET https://{ELB_Endpoint}/v2/08e8157e9200d3ad2fdcc0076d50c484/elb/pools/0551cd66-97bd-4f45-a2e7-9cbda1f126ef",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ocb,ctc,ct",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "PoolResp": {
+      "required": [
+        "id",
+        "project_id",
+        "tenant_id",
+        "name",
+        "description",
+        "admin_state_up",
+        "loadbalancers",
+        "listeners",
+        "members",
+        "healthmonitor_id",
+        "session_persistence",
+        "protocol",
+        "lb_algorithm"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "后端云服务器组的ID"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "后端云服务器组所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "后端云服务器组所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "后端云服务器组的名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "后端云服务器组的描述信息",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "后端云服务器组的管理状态。只支持设定为true,该字段的值无实际意义。"
+        },
+        "loadbalancers": {
+          "type": "array",
+          "description": "后端云服务器组绑定的负载均衡器ID的列表。",
+          "items": {
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "listeners": {
+          "type": "array",
+          "description": "后端云服务器组关联的监听器ID的列表。",
+          "items": {
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "members": {
+          "type": "array",
+          "description": "后端云服务器组关联的后端云服务器ID的列表。",
+          "items": {
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "healthmonitor_id": {
+          "type": "string",
+          "description": "后端云服务器组关联的健康检查的ID。"
+        },
+        "session_persistence": {
+          "description": "后端云服务器组的会话持久性。当开启会话保持后,在一定时间内,来自同一客户端的请求会发送到同一个后端云服务器上。当会话保持关闭时,该字段取值为null。",
+          "$ref": "#/definitions/SessionPersistence"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "后端云服务器组的后端协议。",
+          "enum": [
+            "UDP",
+            "TCP",
+            "HTTP"
+          ]
+        },
+        "lb_algorithm": {
+          "type": "string",
+          "description": "后端云服务器组的负载均衡算法,取值:ROUND_ROBIN:加权轮询算法;LEAST_CONNECTIONS:加权最少连接算法;SOURCE_IP:源IP算法。当该字段的取值为SOURCE_IP时,后端云服务器组绑定的后端云服务器的weight字段无效。",
+          "enum": [
+            "ROUND_ROBIN",
+            "LEAST_CONNECTIONS",
+            "SOURCE_IP"
+          ]
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "修改保护状态, 取值:\n- nonProtection: 不保护,默认值为nonProtection\n- consoleProtection: 控制台修改保护",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ],
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "设置保护的原因\n>仅当protection_status为consoleProtection时有效。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": "后端云服务器组响应体",
+      "type": "object"
+    },
+    "ShowPoolResponseBody": {
+      "required": [
+        "pool"
+      ],
+      "properties": {
+        "pool": {
+          "description": "后端云服务器组对象",
+          "$ref": "#/definitions/PoolResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceList": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "资源ID"
+        }
+      },
+      "description": "资源对象id列表。"
+    },
+    "SessionPersistence": {
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "会话保持的类型。SOURCE_IP:根据请求的源IP,将同一IP的请求发送到同一个后端云服务器上。HTTP_COOKIE:客户端第一次发送请求时,负载均衡器自动生成cookie并将该cookie插入响应消息中,后续请求会发送到处理第一个请求的后端云服务器上。APP_COOKIE:客户端第一次发送请求时,后端服务器生成cookie并将该cookie插入响应消息中,后续请求会发送到处理第一个请求的后端云服务器上。当后端云服务器的protocol为TCP时,只按SOURCE_IP生效当后端云服务器的protocol为HTTP时,只按HTTP_COOKIE或APP_COOKIE生效",
+          "enum": [
+            "SOURCE_IP",
+            "HTTP_COOKIE",
+            "APP_COOKIE"
+          ]
+        },
+        "cookie_name": {
+          "type": "string",
+          "description": "cookie的名称。只有当会话保持的类型是APP_COOKIE时可以指定。"
+        },
+        "persistence_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "会话保持的超时时间。取值范围:[1,60](分钟):当后端云服务器的protocol为TCP、UDP时[1,1440](分钟):当后端云服务器的protocol为HTTP时。当type为APP_COOKIE时该字段不生效。"
+        }
+      },
+      "description": "后端云服务器组的会话持久性。\n当开启会话保持后,在一定时间内,来自同一客户端的请求会发送到同一个后端云服务器上。\n当会话保持关闭时,该字段取值为null。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

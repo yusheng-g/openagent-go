@@ -1,0 +1,198 @@
+{
+  "name": "EnableConfiguration",
+  "summary": "应用参数模板",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations/{config_id}/apply": {
+      "put": {
+        "tags": [
+          "参数配置"
+        ],
+        "operationId": "EnableConfiguration",
+        "summary": "应用参数模板",
+        "description": "应用参数模板。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- MySQL:仅支持5.6,5.7。\n- Microsoft SQL Server:仅支持2014 SE、2014 EE、2016 SE、2016 EE、2008 R2 EE、2008 R2 WEB、2014 WEB、2016 WEB。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "config_id",
+            "in": "path",
+            "description": "参数模板ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "ApplyConfigurationRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ApplyConfigurationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ApplyConfigurationResponse"
+            },
+            "examples": {
+              "application/json": {
+                "configuration_id": "cf49bbd7d2384878bc3808733c9e9d8bpr01",
+                "configuration_name": "paramsGroup-bcf9",
+                "apply_results": [
+                  {
+                    "instance_id": "fe5f5a07539c431181fc78220713aebein01",
+                    "instance_name": "zyy1",
+                    "restart_required": false,
+                    "success": true
+                  },
+                  {
+                    "instance_id": "73ea2bf70c73497f89ee0ad4ee008aa2in01",
+                    "instance_name": "zyy2",
+                    "restart_required": false,
+                    "success": true
+                  }
+                ],
+                "success": true
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/configurations/463b4b58-d0e8-4e2b-9560-5dea4552fde9/apply",
+        "x-request-examples-1": {
+          "instance_ids": [
+            "73ea2bf70c73497f89ee0ad4ee008aa2in01",
+            "fe5f5a07539c431181fc78220713aebein01"
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ApplyConfigurationRequest": {
+      "required": [
+        "instance_ids"
+      ],
+      "properties": {
+        "instance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "实例ID列表。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ApplyConfigurationResponse": {
+      "required": [
+        "configuration_id",
+        "configuration_name",
+        "success",
+        "apply_results"
+      ],
+      "properties": {
+        "configuration_id": {
+          "type": "string",
+          "description": "参数组ID。",
+          "example": "cf49bbd7d2384878bc3808733c9e9d8bpr01"
+        },
+        "configuration_name": {
+          "type": "string",
+          "description": "参数组名称。"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "参数模板是否都应用成功。\n\n- “true”表示参数模板都应用成功。\n- “false”表示存在应用失败的参数模板。"
+        },
+        "apply_results": {
+          "type": "array",
+          "description": "对每个实例的应用结果。",
+          "items": {
+            "required": [
+              "instance_id",
+              "instance_name",
+              "restart_required",
+              "success"
+            ],
+            "properties": {
+              "instance_id": {
+                "type": "string",
+                "description": "实例ID。"
+              },
+              "instance_name": {
+                "type": "string",
+                "description": "实例名称。"
+              },
+              "restart_required": {
+                "type": "boolean",
+                "description": "实例是否需要重启。\n\n- “true”需要重启。\n- “false”不需要重启。"
+              },
+              "success": {
+                "type": "boolean",
+                "description": "参数模板是否应用成功。\n\n- “true”表示参数模板应用成功。\n- “false”表示参数模板应用失败。"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

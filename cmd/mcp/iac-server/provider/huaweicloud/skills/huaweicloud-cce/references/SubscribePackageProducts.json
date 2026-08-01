@@ -1,0 +1,166 @@
+{
+  "name": "SubscribePackageProducts",
+  "summary": "订购套餐包",
+  "tags": "套餐包管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/package-products/subscribe": {
+      "post": {
+        "tags": [
+          "套餐包管理"
+        ],
+        "summary": "订购套餐包",
+        "description": "订购套餐包",
+        "operationId": "SubscribePackageProducts",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "SubscribePackageProductsRequestBody",
+            "description": "订购套餐包请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubscribePackageProductsRequestBody"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "/v5/package-products/subscribe",
+        "x-request-examples-text-1": {
+          "package_products": [
+            {
+              "resource_spec_code": "autopilot.default.mem.1000GB-hour.monthly",
+              "subscription_num": 1
+            }
+          ]
+        },
+        "x-request-examples-1": {
+          "package_products": [
+            {
+              "resource_spec_code": "autopilot.default.mem.1000GB-hour.monthly",
+              "subscription_num": 1
+            }
+          ]
+        },
+        "x-request-examples-description-1": "订购规格为autopilot.default.mem.1000GB-hour.monthly且数量为1的套餐包",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/SubscribePackageProductsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "order_id": "CS2507151708JQ6QD"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "订购套餐包",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-order": 2,
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SubscribePackageProductsRequestBody": {
+      "required": [
+        "package_products"
+      ],
+      "properties": {
+        "package_products": {
+          "type": "array",
+          "description": "套餐包列表。",
+          "items": {
+            "$ref": "#/definitions/PackageProductRequestDetail"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      },
+      "description": "订购套餐包-response结构体。"
+    },
+    "SubscribePackageProductsResponseBody": {
+      "required": [
+        "order_id"
+      ],
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "订购套餐包生成的订单号。"
+        }
+      },
+      "description": "订购套餐包-response结构体。"
+    },
+    "PackageProductRequestDetail": {
+      "required": [
+        "resource_spec_code",
+        "subscription_num"
+      ],
+      "properties": {
+        "resource_spec_code": {
+          "type": "string",
+          "description": "**参数解释:**\n套餐包规格,通过套餐包列表接口获取。\n**约束限制:**\n不涉及\n**取值范围:**\n只支持通过套餐包列表接口获取的套餐包规格。\n**默认取值:**\n不涉及\n",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9\\-.]+$"
+        },
+        "subscription_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n套餐包订购数量。\n**约束限制:**\n不涉及\n**取值范围:**\n[1-10]\n**默认取值:**\n0\n",
+          "default": 0,
+          "minimum": 1,
+          "maximum": 10
+        }
+      },
+      "description": "订购套餐包的套餐包请求详情。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16384,
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式)。\n**约束限制:**\nGET方法不做校验。\n**取值范围:**\n  - application/json\n  - application/json;charset=utf-8\n  - application/x-pem-file\n  - multipart/form-data(注:存在FormData参数时使用)\n\n**默认取值:**\n不涉及\n",
+      "enum": [
+        "application/json",
+        "application/json;charset=utf-8",
+        "application/x-pem-file",
+        "multipart/form-data"
+      ],
+      "required": true,
+      "type": "string",
+      "x-order": 1,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v5",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,381 @@
+{
+  "name": "UpdateSubnet",
+  "summary": "更新子网",
+  "tags": "子网",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/vpcs/{vpc_id}/subnets/{subnet_id}": {
+      "put": {
+        "tags": [
+          "子网"
+        ],
+        "summary": "更新子网",
+        "description": "更新子网。",
+        "operationId": "UpdateSubnet",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "vpc_id",
+            "in": "path",
+            "description": "子网对应的vpc_id",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+            "x-order": 3
+          },
+          {
+            "name": "subnet_id",
+            "in": "path",
+            "description": "子网ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+            "x-order": 4
+          },
+          {
+            "in": "body",
+            "name": "subnet",
+            "description": "更新子网对象",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSubnetRequestBody"
+            },
+            "x-order": 5,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "subnet": {
+                  "id": "4779ab1c-7c1a-44b1-a02e-93dfc361b32d",
+                  "name": "subnet02",
+                  "description": "",
+                  "cidr": "192.168.20.0/24",
+                  "dnsList": [
+                    "114.xx.xx.114",
+                    "114.xx.xx.115"
+                  ],
+                  "status": "ACTIVE",
+                  "vpc_id": "3ec3b33f-ac1c-4630-ad1c-7dba1ed79d85",
+                  "gateway_ip": "192.168.20.1",
+                  "ipv6_enable": false,
+                  "dhcp_enable": false,
+                  "primary_dns": "114.xx.xx.114",
+                  "secondary_dns": "114.xx.xx.115",
+                  "availability_zone": "aa-bb-cc",
+                  "neutron_network_id": "4779ab1c-7c1a-44b1-a02e-93dfc361b32d",
+                  "neutron_subnet_id": "213cb9d-3122-2ac1-1a29-91ffc1231a12",
+                  "extra_dhcp_opts": [
+                    {
+                      "opt_value": "10.100.0.33,10.100.0.34",
+                      "opt_name": "ntp"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateSubnetResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新子网",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 14,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v1/{project_id}/vpcs/{vpc_id}/subnets/{subnet_id}",
+        "x-request-examples-1": {
+          "subnet": {
+            "name": "subnet02",
+            "primary_dns": "114.xx.xx.114",
+            "secondary_dns": "114.xx.xx.115",
+            "extra_dhcp_opts": [
+              {
+                "opt_value": "10.100.0.33,10.100.0.34",
+                "opt_name": "ntp"
+              }
+            ]
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"subnet\": {\n        \"name\": \"subnet02\",\n        \"primary_dns\": \"114.xx.xx.114\",\n        \"secondary_dns\": \"114.xx.xx.115\",\n        \"extra_dhcp_opts\": [\n            {\n                \"opt_value\": \"10.100.0.33,10.100.0.34\",\n                \"opt_name\": \"ntp\"\n            }\n        ]\n    }\n}",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateSubnetRequestBody": {
+      "required": [
+        "subnet"
+      ],
+      "properties": {
+        "subnet": {
+          "description": "",
+          "$ref": "#/definitions/UpdateSubnetOption",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "UpdateSubnetResponseBody": {
+      "required": [
+        "subnet"
+      ],
+      "properties": {
+        "subnet": {
+          "description": "subnet对象",
+          "$ref": "#/definitions/SubnetResult",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "UpdateSubnetOption": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:子网名称\n取值范围:1-64,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:子网描述\n取值范围:0-255个字符,不能包含“<”和“>”。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "ipv6_enable": {
+          "type": "boolean",
+          "description": "功能说明:是否创建ipv6子网\n取值范围:true(开启),false(关闭)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "dhcp_enable": {
+          "type": "boolean",
+          "description": "功能说明:子网是否开启dhcp功能\n取值范围:true(开启),false(关闭)\n约束:不填时默认为true。当设置为false时,会导致新创建的ECS无法获取IP地址,cloudinit无法注入账号密码,请谨慎操作。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "primary_dns": {
+          "type": "string",
+          "description": "功能说明:子网dns服务器地址1\n约束:ip格式\n默认值:不填时为空\n[内网DNS地址请参见](https://support.huaweicloud.com/dns_faq/dns_faq_002.html)\n[通过API获取请参见](https://support.huaweicloud.com/api-dns/dns_api_69001.html)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "secondary_dns": {
+          "type": "string",
+          "description": "功能说明:子网dns服务器地址2\n约束:ip格式\n默认值:不填时为空\n[内网DNS地址请参见](https://support.huaweicloud.com/dns_faq/dns_faq_002.html)\n[通过API获取请参见](https://support.huaweicloud.com/api-dns/dns_api_69001.html)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "dnsList": {
+          "type": "array",
+          "description": "功能说明:子网dns服务器地址的集合;如果想使用两个以上dns服务器,请使用该字段。\n约束:是子网dns服务器地址1跟子网dns服务器地址2的合集的父集\n默认值:不填时为空,无法使用云内网DNS功能\n[内网DNS地址请参见](https://support.huaweicloud.com/dns_faq/dns_faq_002.html)\n[通过API获取请参见](https://support.huaweicloud.com/api-dns/dns_api_69001.html)",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "extra_dhcp_opts": {
+          "type": "array",
+          "description": "子网配置的NTP地址或租约时间",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ExtraDhcpOption"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "enable_network_address_usage_metrics": {
+          "type": "boolean",
+          "description": "功能说明:是否开启当前子网的IPv4地址使用量指标监控。\n取值范围:\ntrue:开启\nfalse:不开启",
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": ""
+    },
+    "SubnetResult": {
+      "required": [
+        "id",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "uuid形式的一个资源标识。",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:子网的状态。  \n取值范围:ACTIVE,UNKNOWN,ERROR  \n    ACTIVE表示子网已挂载到ROUTER上  \n    UNKNOWN表示子网还未挂载到ROUTER上  \n    ERROR表示子网状态故障",
+          "enum": [
+            "ACTIVE",
+            "UNKNOWN",
+            "ERROR"
+          ],
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ExtraDhcpOption": {
+      "required": [
+        "opt_name"
+      ],
+      "properties": {
+        "opt_name": {
+          "type": "string",
+          "description": "功能说明:子网配置的NTP地址名称或子网配置的租约到期名称。\n约束:目前只支持字段“ntp”或“addresstime”",
+          "enum": [
+            "ntp",
+            "addresstime"
+          ],
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "opt_value": {
+          "type": "string",
+          "description": "功能说明:子网配置的NTP地址或子网配置的租约到期时间。\n约束:opt_name配置为“ntp”,则表示是子网ntp地址,目前只支持IPv4地址,每个IP地址以逗号隔开,IP地址个数不能超过4个,不能存在相同地址。\n该字段为null表示取消该子网NTP的设置,不能为””(空字符串)。\nopt_name配置为“addresstime”,则该值表示是子网租约到期时间,取值格式有两种,取-1,表示无限租约;数字+h,数字范围是1~30000,比如5h。",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "子网配置的NTP地址或租约时间对象"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,226 @@
+{
+  "name": "KeystoneUpdateProject",
+  "summary": "修改项目信息",
+  "tags": "项目管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/projects/{project_id}": {
+      "patch": {
+        "tags": [
+          "项目管理"
+        ],
+        "summary": "修改项目信息",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)修改项目信息。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneUpdateProject",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "待修改的项目ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "23da5961c8214f5caf701c27d9703959",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "KeystoneUpdateProjectRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneUpdateProjectRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "project": {
+                  "is_domain": false,
+                  "description": "IAMDescription",
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/projects/07707ab14980265e2f5fc003a021bbc3"
+                  },
+                  "extra": {},
+                  "enabled": true,
+                  "id": "07707ab14980265e2f5fc003a021bbc3",
+                  "parent_id": "aa2d97d7e62c4b7da3ffdfc11551f878",
+                  "domain_id": "d78cbac186b744899480f25bd022f468",
+                  "name": "cn-north-1_IAMNewProject"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneUpdateProjectResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "409": {
+            "description": "资源冲突。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改项目信息",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 20,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PATCH https://iam.myhuaweicloud.com/v3/projects/{project_id}",
+        "x-request-examples-1": {
+          "project": {
+            "name": "cn-north-1_IAMNewProject",
+            "description": "IAMDescription"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"project\":{\n        \"name\":\"cn-north-1_IAMNewProject\",\n        \"description\":\"IAMDescription\"\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneUpdateProjectResult": {
+      "required": [
+        "description",
+        "domain_id",
+        "enabled",
+        "id",
+        "is_domain",
+        "links",
+        "name",
+        "parent_id"
+      ],
+      "properties": {
+        "is_domain": {
+          "type": "boolean",
+          "example": false,
+          "description": "false."
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "项目描述信息。"
+        },
+        "extra": {
+          "type": "object",
+          "description": "项目的其他信息。"
+        },
+        "links": {
+          "description": "项目的资源链接。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "项目是否可用。"
+        },
+        "id": {
+          "type": "string",
+          "example": "06f1cbbaf280106b2f14c00313a9d065",
+          "description": "项目ID。"
+        },
+        "parent_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "区域对应的项目ID,例如区域“华北-北京一”区域对应的项目ID为:04dd42abe48026ad2fa3c01ad7fa.....。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "项目所属账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "af-south-1",
+          "description": "项目名称。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneUpdateProjectResponseBody": {
+      "required": [
+        "project"
+      ],
+      "properties": {
+        "project": {
+          "description": "项目信息。",
+          "$ref": "#/definitions/KeystoneUpdateProjectResult"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneUpdateProjectOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "cn-north-1_IAMNewProject",
+          "description": "项目名称,必须以存在的\"区域ID_\"开头,长度小于等于64字符。项目所属区域不能改变,即原项目名为“cn-north-1_IAMProject”时,新项目名只能以“cn-north-1_”开头。“name”与\"description\"至少填写一个。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "项目描述,长度小于等于255字符。“name”与\"description\"至少填写一个。"
+        }
+      },
+      "description": "修改的项目信息。"
+    },
+    "KeystoneUpdateProjectRequestBody": {
+      "required": [
+        "project"
+      ],
+      "properties": {
+        "project": {
+          "description": "需要修改的项目信息。",
+          "$ref": "#/definitions/KeystoneUpdateProjectOption"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "patch",
+  "uri": null
+}

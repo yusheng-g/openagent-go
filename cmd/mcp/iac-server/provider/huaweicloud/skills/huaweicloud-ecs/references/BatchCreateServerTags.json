@@ -1,0 +1,164 @@
+{
+  "name": "BatchCreateServerTags",
+  "summary": "批量添加云服务器标签",
+  "tags": "标签管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/tags/action": {
+      "post": {
+        "tags": [
+          "标签管理"
+        ],
+        "summary": "批量添加云服务器标签",
+        "description": "- 为指定云服务器批量添加标签。\n\n- 标签管理服务TMS使用该接口批量管理云服务器的标签。",
+        "operationId": "BatchCreateServerTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "BatchCreateServerTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchCreateServerTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量添加云服务器标签",
+        "x-constraint": "- 每个云服务器最多10个标签。\n\n- 此接口为幂等接口:创建时,如果创建的标签已经存在(key/value均相同视为重复),默认处理成功。\n\n- key相同,value不同时会覆盖原有标签。",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 45,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/tags/action",
+        "x-request-examples-1": {
+          "action": "create",
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value3"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n\t\"action\": \"create\",\n\t\"tags\": [{\n\t\t\"key\": \"key1\",\n\t\t\"value\": \"value1\"\n\t},\n\t{\n\t\t\"key\": \"key2\",\n\t\t\"value\": \"value3\"\n\t}]\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-5-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "BatchAddServerTag": {
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "example": "key",
+          "description": "键。\n\n- 不能为空。\n\n- 对于同一资源键值唯一。\n\n- 长度不超过36个字符。\n\n- 字符集:A-Z,a-z , 0-9,‘-’,‘_’,UNICODE字符(\\一-\\鿿)。\n",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "value": {
+          "type": "string",
+          "example": "value",
+          "description": "值。\n\n- 长度不超过43个字符。\n\n- 字符集:A-Z,a-z , 0-9,‘.’,‘-’,‘_’,UNICODE字符(\\一-\\鿿)。\n\n- 只能包含数字、字母、中划线“-”、下划线“_”。",
+          "minLength": 0,
+          "maxLength": 43,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "云服务器标签。"
+    },
+    "BatchCreateServerTagsRequestBody": {
+      "required": [
+        "action",
+        "tags"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "example": "create",
+          "description": "操作标识(仅支持小写):create(创建)。",
+          "enum": [
+            "create"
+          ],
+          "x-obc": "",
+          "x-admin": "",
+          "x-internal": ""
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表。",
+          "items": {
+            "$ref": "#/definitions/BatchAddServerTag"
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

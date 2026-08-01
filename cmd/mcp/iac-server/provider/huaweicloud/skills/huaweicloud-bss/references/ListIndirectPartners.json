@@ -1,0 +1,215 @@
+{
+  "name": "ListIndirectPartners",
+  "summary": "查询云经销商列表",
+  "tags": "管理云经销商(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/indirect-partners/query": {
+      "post": {
+        "summary": "查询云经销商列表",
+        "description": "华为云总经销商(一级经销商)可以查询云经销商(二级经销商)列表。\n\n一级经销商在伙伴中心查询二级经销商列表的方式请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/dp_120210.html)。",
+        "tags": [
+          "管理云经销商(伙伴)"
+        ],
+        "operationId": "ListIndirectPartners",
+        "x-constraint": "该接口只允许使用华为云伙伴能力中心的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/partners/indirect-partners/query",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L3",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询云经销商列表请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QueryIndirectPartnersReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/indirect-partners/query",
+        "x-request-examples-1": {
+          "account_name": "account_name",
+          "associated_on_begin": "2017-12-17T10:32:02Z",
+          "associated_on_end": "2017-12-17T10:32:02Z",
+          "offset": 0,
+          "limit": 10,
+          "indirect_partner_id": "c9e731c4663646988ef4cdb3122837b6"
+        },
+        "responses": {
+          "200": {
+            "description": "查询云经销商列表响应",
+            "schema": {
+              "$ref": "#/definitions/QueryIndirectPartnersRsp"
+            },
+            "examples": {
+              "application/json": {
+                "count": 1,
+                "indirect_partners": [
+                  {
+                    "indirect_partner_id": "c9e731c4663646988ef4cdb3122837b6",
+                    "mobile_phone": "186xxxxxxxxx",
+                    "email": "xxx@huawei.com",
+                    "account_name": "account_name",
+                    "name": "account_name2",
+                    "associated_on": "2017-12-17T10:32:02Z",
+                    "account_manager_id": "manager_id",
+                    "account_manager_name": "manager_name"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理云经销商(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "IndirectPartnerInfo": {
+      "properties": {
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。",
+          "example": "c9e731c4663646988ef4cdb3122837b6",
+          "x-site": "HC"
+        },
+        "mobile_phone": {
+          "type": "string",
+          "description": "云经销商的手机号码。",
+          "example": "186xxxxxxxxx"
+        },
+        "email": {
+          "type": "string",
+          "description": "云经销商的邮箱。",
+          "example": "xxx@website.com"
+        },
+        "account_name": {
+          "type": "string",
+          "description": "云经销商的账户名。",
+          "example": "account_name"
+        },
+        "name": {
+          "type": "string",
+          "description": "云经销商的名称。",
+          "example": "account_name2"
+        },
+        "associated_on": {
+          "type": "string",
+          "description": "云经销商关联华为云总经销商的时间。 UTC时间(包括时区),例如2016-03-28T00:00:00Z。",
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "account_manager_id": {
+          "type": "string",
+          "description": "客户经理登录账户名。",
+          "example": "account_manager_id"
+        },
+        "account_manager_name": {
+          "type": "string",
+          "description": "客户经理的名称。",
+          "example": "account_manager_name"
+        }
+      }
+    },
+    "QueryIndirectPartnersRsp": {
+      "properties": {
+        "count": {
+          "description": "符合条件的记录个数,只有成功的时候出现。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 0
+        },
+        "indirect_partners": {
+          "description": "云经销商列表,具体参见表1。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IndirectPartnerInfo"
+          }
+        }
+      }
+    },
+    "QueryIndirectPartnersReq": {
+      "properties": {
+        "account_name": {
+          "type": "string",
+          "description": "云经销商伙伴的账号名。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "account_name"
+        },
+        "associated_on_begin": {
+          "type": "string",
+          "description": "云经销商关联华为云总经销商的开始时间。 UTC时间(包括时区),比如2016-03-28T00:00:00Z。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "associated_on_end": {
+          "type": "string",
+          "description": "云经销商关联华为云总经销商的结束时间。 UTC时间(包括时区),比如2016-03-28T00:00:00Z。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "offset": {
+          "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0",
+          "maximum": 2147483647,
+          "minimum": 0,
+          "default": 0
+        },
+        "limit": {
+          "description": "每次查询的数量限制。默认值为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "10",
+          "maximum": 100,
+          "minimum": 1,
+          "default": 10
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。 如果需要查询具体某个云经销商伙伴,必须携带该字段。除此之外,此参数不做处理。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "c9e731c4663646988ef4cdb3122837b6",
+          "x-site": "HC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

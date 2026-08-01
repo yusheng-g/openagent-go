@@ -1,0 +1,515 @@
+{
+  "name": "BatchCreateAddonPrecheck",
+  "summary": "批量创建插件检查任务",
+  "tags": "插件管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/addons/precheck": {
+      "post": {
+        "x-api-type": "open-api",
+        "tags": [
+          "插件管理"
+        ],
+        "summary": "批量创建插件检查任务",
+        "description": "该API用于在指定集群下批量创建插件检查任务。",
+        "operationId": "BatchCreateAddonPrecheck",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "BatchCreateAddonCheckRequestBody",
+            "description": "批量创建插件检查任务的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddonCheckRequest"
+            },
+            "x-order": 501
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "表示在指定集群下批量创建插件检查任务下发成功。",
+            "examples": {
+              "application/json": {
+                "kind": "AddonCheck",
+                "apiVersion": "v3",
+                "spec": {
+                  "clusterID": "6b400e1c-4368-11f0-ba56-0255ac100037",
+                  "addonList": [
+                    {
+                      "addonTemplateName": "coredns",
+                      "addonInstanceID": "8fcaa506-809d-4f33-91b3-b27efcbeb540",
+                      "type": "addonUpgrade",
+                      "values": {
+                        "basic": {
+                          "cluster_ip": "10.247.3.10",
+                          "image_version": "1.17.15",
+                          "platform": "linux-amd64",
+                          "rbac_enabled": true,
+                          "swr_addr": "",
+                          "swr_user": "hwofficial"
+                        },
+                        "custom": {
+                          "cluster_id": "8fcaa506-809d-4f33-91b3-b27efcbeb540",
+                          "stub_domains": {},
+                          "tenant_id": "0504201b6c80256b2f08c0099f0c8fe4",
+                          "upstream_nameservers": []
+                        },
+                        "flavor": {
+                          "name": 2500,
+                          "replicas": 2,
+                          "resources": [
+                            {
+                              "limitsCpu": "500m",
+                              "limitsMem": "512Mi",
+                              "name": "coredns",
+                              "requestsCpu": "500m",
+                              "requestsMem": "512Mi"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "status": {
+                  "items": [
+                    {
+                      "metadata": {
+                        "type": "addonUpgrade",
+                        "taskID": "22386048-d955-4409-bc71-20cc2b774245",
+                        "addonTemplateName": "coredns",
+                        "addonInstanceName": "cceaddon-coredns",
+                        "addonInstanceID": "8fcaa506-809d-4f33-91b3-b27efcbeb540",
+                        "createTimeStamp": "2025-08-13T11:24:37.312017086+08:00"
+                      },
+                      "spec": {
+                        "addonTargetVersion": "1.27.1"
+                      },
+                      "status": {
+                        "status": "Init",
+                        "riskList": [
+                          {
+                            "riskName": "K8sResourceModified",
+                            "status": "Init",
+                            "level": "Warning"
+                          },
+                          {
+                            "riskName": "AddonValidate",
+                            "status": "Init",
+                            "level": "Warning"
+                          },
+                          {
+                            "riskName": "AddonStatus",
+                            "status": "Init",
+                            "level": "Warning"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/AddonCheckResponse"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建插件检查任务",
+        "x-scope": "Commercial",
+        "x-order": 500,
+        "x-request-examples-tags-1": "hws,hws_hk",
+        "x-request-examples-description-1": "创建一个coredns插件的检查任务,检查类型为插件升级。\n",
+        "x-request-examples-url-1": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/addons/precheck",
+        "x-request-examples-1": {
+          "kind": "AddonCheck",
+          "apiVersion": "v3",
+          "spec": {
+            "clusterID": "6b400e1c-4368-11f0-ba56-0255ac100037",
+            "addonList": [
+              {
+                "addonTemplateName": "coredns",
+                "addonInstanceID": "8fcaa506-809d-4f33-91b3-b27efcbeb540",
+                "type": "addonUpgrade",
+                "values": {
+                  "basic": {
+                    "cluster_ip": "10.247.3.10",
+                    "image_version": "1.17.15",
+                    "platform": "linux-amd64",
+                    "rbac_enabled": true,
+                    "swr_addr": "",
+                    "swr_user": "hwofficial"
+                  },
+                  "custom": {
+                    "cluster_id": "8fcaa506-809d-4f33-91b3-b27efcbeb540",
+                    "stub_domains": {},
+                    "tenant_id": "0504201b6c80256b2f08c0099f0c8fe4",
+                    "upstream_nameservers": []
+                  },
+                  "flavor": {
+                    "name": 2500,
+                    "replicas": 2,
+                    "resources": [
+                      {
+                        "limitsCpu": "500m",
+                        "limitsMem": "512Mi",
+                        "name": "coredns",
+                        "requestsCpu": "500m",
+                        "requestsMem": "512Mi"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "x-request-examples-description-2": "创建一个coredns插件的检查任务,检查类型为插件巡检。\n",
+        "x-request-examples-url-2": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/addons/precheck",
+        "x-request-examples-2": {
+          "kind": "AddonCheck",
+          "apiVersion": "v3",
+          "spec": {
+            "clusterID": "6b400e1c-4368-11f0-ba56-0255ac100037",
+            "addonList": [
+              {
+                "addonTemplateName": "coredns",
+                "addonInstanceID": "8fcaa506-809d-4f33-91b3-b27efcbeb540",
+                "type": "addonStatic"
+              }
+            ]
+          }
+        },
+        "x-publishpath": "BatchCreateAddonPrecheck",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs,ocb,hws_ocb,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "AddonCheckRequest": {
+      "required": [
+        "apiVersion",
+        "kind",
+        "spec"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI类型\n**约束限制:**\n该值不可修改\n**取值范围:**\n固定值\"AddonCheck\"\n**默认取值:**\nAddonCheck",
+          "default": "AddonCheck"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI版本\n**约束限制:**\n该值不可修改\n**取值范围:**\n固定值\"v3\"\n**默认取值:**\nv3",
+          "default": "v3"
+        },
+        "spec": {
+          "description": "**参数解释:**\nspec是集合类的元素类型,内容为插件检查具体信息,检查配置的详细描述主体部分都在spec中给出\n**约束限制:**\n不涉及",
+          "$ref": "#/definitions/AddonCheckSpec"
+        }
+      },
+      "description": "插件检查-request结构体"
+    },
+    "CheckTaskSpec": {
+      "properties": {
+        "addonTargetVersion": {
+          "type": "string",
+          "description": "**参数解释:**\n插件升级目标版本\n**取值范围:**\n不涉及"
+        }
+      }
+    },
+    "AddonInfo": {
+      "required": [
+        "addonTemplateName",
+        "addonInstanceID",
+        "type"
+      ],
+      "properties": {
+        "addonTemplateName": {
+          "type": "string",
+          "description": "**参数解释:**\n插件模板名称\n**约束限制:**\n不涉及\n**取值范围:**\ncce服务支持的插件模板\n**默认取值:**\n不涉及"
+        },
+        "addonInstanceID": {
+          "type": "string",
+          "description": "**参数解释:**\n插件实例ID,可以通过[获取AddonInstance列表](cce_02_0326.xml)中的items[].metadata.uid字段获取\n**约束限制:**\n此参数必填\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "targetVersion": {
+          "type": "string",
+          "description": "**参数解释:**\n插件升级的目标版本\n**约束限制:**\n插件升级场景下,此参数必填。\n**取值范围:**\ncce服务提供的插件版本,可以通过[查询AddonTemplates列表](cce_02_0321.xml)中的items[].spec.versions.version字段获取\n**默认取值:**\n不涉及"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查类型\n**约束限制:**\n此参数必填。\n**取值范围:**\n- addonStatic: 运行中插件巡检\n- addonUpgrade: 插件升级前检查\n\n**默认取值:**\n不涉及",
+          "enum": [
+            "addonStatic",
+            "addonUpgrade"
+          ]
+        },
+        "values": {
+          "type": "object",
+          "description": "**参数解释:**\n插件模板编辑/升级参数(各插件不同),请根据具体插件模板信息填写参数\n**约束限制:**\n不涉及",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "CheckTaskMetadata": {
+      "required": [
+        "type",
+        "taskID",
+        "addonTemplateName",
+        "createTimeStamp"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查类型\n**取值范围:**\n- addonStatic: 运行中插件巡检\n- addonUpgrade: 插件升级前检查",
+          "enum": [
+            "addonStatic",
+            "addonUpgrade"
+          ]
+        },
+        "taskID": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查任务ID,用于任务检查结果查询\n**取值范围:**\n不涉及"
+        },
+        "addonTemplateName": {
+          "type": "string",
+          "description": "**参数解释:**\n插件模板名称\n**取值范围:**\ncce服务提供的插件模板,可以通过[查询AddonTemplates列表](cce_02_0321.xml)中的items[].metadata.name字段获取"
+        },
+        "addonInstanceName": {
+          "type": "string",
+          "description": "**参数解释:**\n插件实例名称\n**取值范围:**\n不涉及"
+        },
+        "addonInstanceID": {
+          "type": "string",
+          "description": "**参数解释:**\n插件实例ID\n**取值范围:**\n不涉及"
+        },
+        "createTimeStamp": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查任务创建时间\n**取值范围:**\n不涉及"
+        },
+        "expireTimeStamp": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查任务超时时间,仅终态(Failed/Success)任务存在此字段\n**取值范围:**\n不涉及"
+        }
+      }
+    },
+    "AddonCheckStatus": {
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "**参数解释:**\n插件检查任务信息列表,包含了插件检查任务ID,插件模板名称,插件实例ID等。\n**约束限制:**\n不涉及",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AddonCheckTask"
+          }
+        }
+      }
+    },
+    "AddonCheckTask": {
+      "required": [
+        "metadata",
+        "status"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/definitions/CheckTaskMetadata",
+          "description": "**参数解释:**\n基本信息,为集合类的元素类型,包含一组由不同名称定义的属性\n**约束限制:**\n不涉及"
+        },
+        "spec": {
+          "$ref": "#/definitions/CheckTaskSpec",
+          "description": "**参数解释:**\n插件检查目标信息,包含插件升级的目标版本和集群升级的目标版本\n**约束限制:**\n不涉及"
+        },
+        "status": {
+          "$ref": "#/definitions/CheckTaskStatus",
+          "description": "**参数解释**:\n插件检查任务状态信息\n**约束限制**:\n不涉及"
+        }
+      }
+    },
+    "CheckTaskRisk": {
+      "required": [
+        "riskName",
+        "status",
+        "level"
+      ],
+      "properties": {
+        "riskName": {
+          "type": "string",
+          "description": "**参数解释:**\n风险项名称\n**取值范围:**\n不涉及"
+        },
+        "level": {
+          "type": "string",
+          "description": "**参数解释:**\n风险等级\n**取值范围:**\n- Warning: 中危,允许跳过\n- Fatal: 高危,不允许跳过",
+          "enum": [
+            "Warning",
+            "Fatal"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n风险项检查状态\n**取值范围:**\n- Init: 风险项检查状态,初始化\n- Running: 风险项检查状态,检查中\n- Failed: 风险项检查状态,检查完成有风险\n- Success: 风险项检查状态,检查完成无风险",
+          "enum": [
+            "Init",
+            "Running",
+            "Failed",
+            "Success"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "**参数解释:**\n风险检查结果说明\n**取值范围:**\n不涉及"
+        }
+      }
+    },
+    "CheckTaskStatus": {
+      "required": [
+        "status",
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查状态\n**取值范围:**\n- Init: 插件检查状态,初始化\n- Running: 插件检查状态,检查中\n- Failed: 插件检查状态,检查完成有风险\n- Success: 插件检查状态,检查完成无风险",
+          "enum": [
+            "Init",
+            "Running",
+            "Failed",
+            "Success"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "**参数解释:**\n插件检查结果信息\n**取值范围:**\n不涉及"
+        },
+        "riskList": {
+          "type": "array",
+          "description": "**参数解释:**\n插件检查风险项列表,不同插件对应的风险检查项不同。\n**约束限制:**\n不涉及",
+          "items": {
+            "$ref": "#/definitions/CheckTaskRisk",
+            "description": ""
+          }
+        }
+      }
+    },
+    "AddonCheckResponse": {
+      "required": [
+        "apiVersion",
+        "kind",
+        "spec",
+        "status"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI类型\n**约束限制:**\n该值不可修改\n**取值范围:**\n固定值\"AddonCheck\"\n**默认取值:**\nAddonCheck",
+          "default": "AddonCheck"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI版本\n**约束限制:**\n该值不可修改\n**取值范围:**\n固定值\"v3\"\n**默认取值:**\nv3",
+          "default": "v3"
+        },
+        "spec": {
+          "description": "**参数解释:**\nspec是集合类的元素类型,内容为插件检查具体信息,检查配置的详细描述主体部分都在spec中给出\n**约束限制:**\n不涉及",
+          "$ref": "#/definitions/AddonCheckSpec"
+        },
+        "status": {
+          "description": "**参数解释:**\nstatus是集合类的元素类型,内容为插件检查任务的创建结果,包含task_id用于插件检查结果查询\n**约束限制:**\n不涉及",
+          "$ref": "#/definitions/AddonCheckStatus"
+        }
+      },
+      "description": "插件检查任务创建-response结构体"
+    },
+    "AddonCheckSpec": {
+      "required": [
+        "clusterID",
+        "addonList"
+      ],
+      "properties": {
+        "clusterID": {
+          "type": "string",
+          "description": "**参数解释:**\n集群ID\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "addonList": {
+          "type": "array",
+          "description": "**参数解释:**\n插件检查信息列表,包含了需要检查的插件模板名称,插件实例ID,插件升级配置等。\n**约束限制:**\n不涉及",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AddonInfo"
+          }
+        }
+      },
+      "description": "插件检查Spec-request结构体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

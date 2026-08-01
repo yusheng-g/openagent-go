@@ -1,0 +1,276 @@
+{
+  "name": "ScaleNodePool",
+  "summary": "伸缩节点池",
+  "tags": "节点池管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodepools/{nodepool_id}/operation/scale": {
+      "post": {
+        "tags": [
+          "节点池管理"
+        ],
+        "summary": "伸缩节点池",
+        "description": "该API用于伸缩指定的节点池\n> 集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径",
+        "operationId": "ScaleNodePool",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_path_nodepool_id"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "ScaleNodePoolRequestBody",
+            "description": "伸缩节点池的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScaleNodePoolRequestBody"
+            },
+            "x-order": 5
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "表示节点池伸缩已经被接受,节点池将根据伸缩后的节点池期望节点数增加或者删除节点池中的节点",
+            "schema": {
+              "$ref": "#/definitions/ScaleNodePoolResponseBody",
+              "examples": {
+                "application/json": {
+                  "orderID": "CS2504231542LJVS6"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "伸缩节点池",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 22,
+        "x-request-examples-description-1": "扩容节点池默认伸缩组(按需)",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": {
+          "kind": "NodePool",
+          "apiVersion": "v3",
+          "spec": {
+            "desiredNodeCount": 1,
+            "scaleGroups": [
+              "default"
+            ]
+          }
+        },
+        "x-request-examples-description-2": "扩容节点池默认伸缩组(包年包月)",
+        "x-request-examples-url-2": "",
+        "x-request-examples-2": {
+          "kind": "NodePool",
+          "apiVersion": "v3",
+          "spec": {
+            "desiredNodeCount": 1,
+            "scaleGroups": [
+              "default"
+            ],
+            "options": {
+              "billingConfigOverride": {
+                "billingMode": 1,
+                "extendParam": {
+                  "periodNum": 1,
+                  "periodType": "month",
+                  "isAutoRenew": false,
+                  "isAutoPay": false
+                }
+              }
+            }
+          }
+        },
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs,ocb,hws_ocb,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "ScaleNodePoolOptions": {
+      "description": "节点池伸缩选项配置",
+      "properties": {
+        "scalableChecking": {
+          "type": "string",
+          "description": "扩容状态检查策略: instant(同步检查), async(异步检查)。默认同步检查instant",
+          "default": "instant"
+        },
+        "scalePolicy": {
+          "type": "string",
+          "description": "**参数解释**:\n扩容的策略,允许为空,该参数scaleGroups传多项时有效。\n**约束限制**:\n不涉及\n**取值范围**:\n- AZBalance:AZ优先策略,扩容节点池时,系统会使各个AZ间的节点数尽可能的均衡,规格会在所选伸缩组中随机指定。该策略适用于对节点成本和可用区无特殊要求的场景,优点是配置简便、降低单点故障风险。注意:如果某个AZ资源不足,该AZ期望的扩容节点会向其他AZ扩容,可能会使AZ间节点不均衡。如需解决该问题,可在该AZ资源充足时尝试再次扩容。\n  > 在ECS资源充足情况下,多伸缩组AZ优先策略(AZBalance)扩容示例如下:初始节点数为flavor1-az1: 5,flavor2-az1: 5,flavor3-az2: 0。扩容10个节点时,az1分配0个,az2分配10个,最终节点数为flavor1-az1: 5,flavor2-az1: 5,flavor3-az2: 10。扩容20个节点时,az1分配5个,az2分配15个,最终节点数为flavor1-az1: 7(或8),flavor2-az1: 8(或7),flavor3-az2: 15。\n- Random:随机策略,扩容节点池时,系统会从下发的规格scaleGroups列表中随机选择伸缩组扩容(优先会对各伸缩组平均分配)。\n\n**默认取值**:\nRandom",
+          "enum": [
+            "AZBalance",
+            "Random"
+          ]
+        },
+        "billingConfigOverride": {
+          "description": "节点池扩容时覆盖节点的默认计费模式配置",
+          "$ref": "#/definitions/ScaleUpBillingConfigOverride"
+        }
+      }
+    },
+    "ScaleNodePoolSpec": {
+      "description": "伸缩节点池请求详细参数",
+      "required": [
+        "desiredNodeCount",
+        "scaleGroups"
+      ],
+      "properties": {
+        "desiredNodeCount": {
+          "type": "integer",
+          "description": "**参数解释**:\n节点池的预期总数量。执行扩容操作时,需将当前节点数与扩容数量相加;执行缩容操作时,需从当前节点数中减去缩容数量。\n**约束限制**:\n必填参数,如果省略则默认值为0,会导致删除节点池伸缩组下的所有节点\n**取值范围**:\n0或正整数\n**默认取值**:\n0"
+        },
+        "scaleGroups": {
+          "type": "array",
+          "description": "**参数解释**:\n节点池中的伸缩组名称,通过[获取指定的节点池](cce_02_0355.xml)接口获取伸缩组名称,默认伸缩组名称为\"default\",扩展伸缩组名称可通过extensionScaleGroups字段的元数据名称获取。扩容时可选择多个伸缩组,系统将按照尽量均分或随机策略在所选(伸缩组的)可用区之间分配扩容节点数,缩容时则仅能指定单个伸缩组进行操作。\n**约束限制**:\n如果要伸缩默认伸缩组填\"default\"\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "items": {
+            "type": "string",
+            "description": "伸缩组名称"
+          }
+        },
+        "options": {
+          "description": "节点池伸缩选项配置",
+          "$ref": "#/definitions/ScaleNodePoolOptions"
+        }
+      }
+    },
+    "ScaleNodePoolResponseBody": {
+      "description": "伸缩节点池响应参数",
+      "properties": {
+        "orderID": {
+          "type": "string",
+          "description": "**参数解释**:\n订单ID,仅扩容包周期节点时返回\n**取值范围**:\n不涉及"
+        }
+      }
+    },
+    "ScaleUpBillingConfigOverride": {
+      "description": "节点池扩容时覆盖节点的默认计费模式配置",
+      "properties": {
+        "billingMode": {
+          "type": "integer",
+          "description": "**参数解释**:\n节点计费类型\n**约束限制**:\n选填参数,不填表示使用节点池默认计费配置\n**取值范围**:\n- 0:按需\n- 1:包周期\n**默认取值**:\n不涉及"
+        },
+        "extendParam": {
+          "description": "**参数解释**:\n包周期计费模式配置参数\n**约束限制**:\n- 按需计费模式忽略此字段\n- 包周期计费模式此字段为必填参数。",
+          "$ref": "#/definitions/ScaleUpExtendParam"
+        }
+      }
+    },
+    "ScaleNodePoolRequestBody": {
+      "description": "伸缩节点池的请求体",
+      "required": [
+        "kind",
+        "apiVersion",
+        "spec"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值“NodePool”。",
+          "default": "NodePool"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值“v3”。",
+          "default": "v3"
+        },
+        "spec": {
+          "description": "伸缩节点池请求详细参数",
+          "$ref": "#/definitions/ScaleNodePoolSpec"
+        }
+      }
+    },
+    "ScaleUpExtendParam": {
+      "description": "节点池扩容时节点的计费配置",
+      "required": [
+        "periodNum",
+        "periodType"
+      ],
+      "properties": {
+        "periodNum": {
+          "type": "integer",
+          "description": "包周期时长, 包月1-9, 包年1-3"
+        },
+        "periodType": {
+          "type": "string",
+          "description": "包周期类型, year(包年), month(包月)"
+        },
+        "isAutoRenew": {
+          "type": "boolean",
+          "description": "是否自动续费,可选参数,如果不填写,以节点池isAutoRenew属性为准。"
+        },
+        "isAutoPay": {
+          "type": "boolean",
+          "description": "是否自动付费,可选参数,如果不填写,以节点池isAutoPay属性为准。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_nodepool_id": {
+      "name": "nodepool_id",
+      "in": "path",
+      "description": "节点池ID",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 4
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

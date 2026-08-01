@@ -1,0 +1,121 @@
+{
+  "name": "DeleteLogLtsConfigs",
+  "summary": "解除LTS配置信息",
+  "tags": "获取日志信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/{engine}/instances/logs/lts-configs": {
+      "delete": {
+        "x-publishpath": "LTS",
+        "tags": [
+          "获取日志信息"
+        ],
+        "summary": "解除LTS配置信息",
+        "description": "解除LTS配置信息",
+        "operationId": "DeleteLogLtsConfigs",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。获取方法请参见获取项目ID。"
+          },
+          {
+            "name": "engine",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "引擎,暂只支持mysql。",
+            "enum": [
+              "mysql"
+            ]
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。",
+            "type": "string",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": false,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "log_configs",
+            "in": "body",
+            "required": true,
+            "description": "待解除Lts配置请求体",
+            "schema": {
+              "$ref": "#/definitions/DeleteLogConfigResponseBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success."
+          },
+          "default": {
+            "description": "Client or server error."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DeleteLogConfigResponseBody": {
+      "type": "object",
+      "required": [
+        "log_configs"
+      ],
+      "properties": {
+        "log_configs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeleteLogConfigs"
+          },
+          "description": "实例日志配置信息。"
+        }
+      }
+    },
+    "DeleteLogConfigs": {
+      "type": "object",
+      "required": [
+        "instance_id",
+        "log_type"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例ID。"
+        },
+        "log_type": {
+          "type": "string",
+          "description": "日志类型。",
+          "enum": [
+            "error_log",
+            "slow_log",
+            "audit_log"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

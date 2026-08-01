@@ -1,0 +1,188 @@
+{
+  "name": "CreateAutopilotPostCheck",
+  "summary": "集群升级后确认",
+  "tags": "集群升级(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/projects/{project_id}/clusters/{cluster_id}/operation/postcheck": {
+      "post": {
+        "tags": [
+          "集群升级(Autopilot)"
+        ],
+        "operationId": "CreateAutopilotPostCheck",
+        "summary": "集群升级后确认",
+        "description": "集群升级后确认,该接口建议配合Console使用,主要用于升级步骤完成后,客户确认集群状态和业务正常后做反馈。",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "in": "body",
+            "name": "PostcheckClusterRequestBody",
+            "description": "集群升级后确认请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostcheckClusterRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "集群升级后确认成功。",
+            "examples": {
+              "application/json": {
+                "kind": "PostCheckTask",
+                "apiVersion": "v3",
+                "metadata": {
+                  "uid": "e99fedf8-348c-4084-b0fd-81bf187df4e0"
+                },
+                "spec": {
+                  "clusterID": "8978deaa-1743-11ee-8e46-0255ac10004c",
+                  "clusterVersion": "v1.15.11-r1",
+                  "targetVersion": "v1.19.16-r80"
+                },
+                "status": {
+                  "phase": "Success"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PostcheckClusterResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "集群升级后确认",
+        "x-order": 10,
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-request-examples-description-1": "集群升级后确认",
+        "x-request-examples-url-1": "POST /autopilot/v3/projects/{project_id}/clusters/{cluster_id}/operation/postcheck",
+        "x-request-examples-1": {
+          "kind": "PostCheckTask",
+          "apiVersion": "v3",
+          "spec": {
+            "clusterID": "8978deaa-1743-11ee-8e46-0255ac10004c",
+            "clusterVersion": "v1.15.11-r1",
+            "targetVersion": "v1.19.16-r80"
+          }
+        },
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "PostcheckClusterRequestBody": {
+      "required": [
+        "kind",
+        "apiVersion",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,默认为v3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型"
+        },
+        "spec": {
+          "description": "spec是升级后确认的配置信息。",
+          "$ref": "#/definitions/PostcheckSpec"
+        }
+      }
+    },
+    "PostcheckClusterResponseBody": {
+      "description": "升级后确认返回体",
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型"
+        },
+        "metadata": {
+          "description": "升级后确认元数据",
+          "$ref": "#/definitions/PostcheckCluserResponseMetadata"
+        },
+        "spec": {
+          "description": "集群升级后确认的配置信息",
+          "$ref": "#/definitions/PostcheckSpec"
+        },
+        "status": {
+          "description": "集群升级后确认的状态信息",
+          "properties": {
+            "phase": {
+              "description": "状态,取值如下\n- Success 成功\n- Failed 失败\n- Error 错误",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "PostcheckSpec": {
+      "properties": {
+        "clusterID": {
+          "type": "string",
+          "description": "集群ID"
+        },
+        "clusterVersion": {
+          "type": "string",
+          "description": "集群升级源版本"
+        },
+        "targetVersion": {
+          "type": "string",
+          "description": "集群升级目标版本"
+        }
+      }
+    },
+    "PostcheckCluserResponseMetadata": {
+      "description": "升级后确认元数据",
+      "properties": {
+        "uid": {
+          "description": "任务ID",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

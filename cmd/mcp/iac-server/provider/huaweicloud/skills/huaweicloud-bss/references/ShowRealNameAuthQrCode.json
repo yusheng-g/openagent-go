@@ -1,0 +1,81 @@
+{
+  "name": "ShowRealNameAuthQrCode",
+  "summary": "获取人脸实名认证二维码",
+  "tags": "实名认证(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/customers/real-name-auth-qrcode": {
+      "get": {
+        "summary": "获取人脸实名认证二维码",
+        "description": "功能描述:客户在agent使用时获取人脸实名认证二维码地址,扫码完成实名认证",
+        "tags": [
+          "实名认证(客户)"
+        ],
+        "operationId": "ShowRealNameAuthQrCode",
+        "x-constraint": "该接口只允许客户的AK/SK或者Token调用",
+        "x-externalURL": "/v2/customers/real-name-auth-qrcode",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": 1000,
+        "x-operation-data-level": "L2",
+        "x-apigateway-request-type": "public",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "|客户token|",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|获取人脸实名认证二维码响应| |成功:success| |参数约束及描述:获取人脸实名认证二维码响应|",
+            "schema": {
+              "$ref": "#/definitions/RealNameAuthQrcodeRsp"
+            },
+            "examples": {
+              "application/json": {
+                "qr_code_url": "https://xxx.com/qrcode/xxx"
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "实名认证(客户)",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/customers/real-name-auth-qrcode"
+      }
+    }
+  },
+  "definitions": {
+    "RealNameAuthQrcodeRsp": {
+      "properties": {
+        "qr_code_url": {
+          "type": "string",
+          "description": "人脸实名认证二维码地址。该二维码仅限单次使用,扫描后将自动失效。若未在10分钟内完成扫描,系统将自动作废。",
+          "maxLength": 512,
+          "minLength": 0,
+          "example": "https://xxx.com/qrcode/xxx"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

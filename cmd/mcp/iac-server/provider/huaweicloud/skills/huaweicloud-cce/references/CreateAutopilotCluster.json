@@ -1,0 +1,623 @@
+{
+  "name": "CreateAutopilotCluster",
+  "summary": "创建集群",
+  "tags": "集群管理(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/projects/{project_id}/clusters": {
+      "post": {
+        "tags": [
+          "集群管理(Autopilot)"
+        ],
+        "summary": "创建集群",
+        "description": "该API用于创建一个空集群(即只有控制节点Master,没有工作节点Node)。\n\n\n>   - 集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。\n>   - 调用该接口创建集群时,默认不安装ICAgent,若需安装ICAgent,可在请求Body参数的annotations中加入\"cluster.install.addons.external/install\":\"[{\"addonTemplateName\":\"icagent\"}]\"的集群注解,将在创建集群时自动安装ICAgent。ICAgent是应用性能管理APM的采集代理,运行在应用所在的服务器上,用于实时采集探针所获取的数据,安装ICAgent是使用应用性能管理APM的前提。",
+        "operationId": "CreateAutopilotCluster",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "CreateClusterRequestBody",
+            "description": "集群规格信息请求体",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AutopilotCluster"
+            },
+            "x-order": 500
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "表示创建集群作业下发成功。",
+            "examples": {
+              "application/json": {
+                "kind": "Cluster",
+                "apiVersion": "v3",
+                "metadata": {
+                  "name": "test-cluster-autopilot",
+                  "uid": "e18f8b25-2270-11ef-a160-0255ac100100",
+                  "creationTimestamp": "2024-06-04 12:49:28.773718231 +0000 UTC",
+                  "updateTimestamp": "2024-06-04 12:49:28.773718305 +0000 UTC",
+                  "annotations": {
+                    "jobid": "e1c49157-2270-11ef-a160-0255ac100100",
+                    "resourceJobId": "e18fa26f-2270-11ef-a160-0255ac100100"
+                  }
+                },
+                "spec": {
+                  "category": "Turbo",
+                  "type": "VirtualMachine",
+                  "flavor": "cce.autopilot.cluster",
+                  "version": "v1.28",
+                  "platformVersion": "cce.4.0",
+                  "hostNetwork": {
+                    "vpc": "c6549063-d459-4ae1-9550-b5fec6741b0f",
+                    "subnet": "3b18c2d5-b352-4f59-b421-c2d2d48a1333"
+                  },
+                  "containerNetwork": {
+                    "mode": "eni"
+                  },
+                  "eniNetwork": {
+                    "subnets": [
+                      {
+                        "subnetID": "186f9322-50c5-4e5a-91e3-47da86959afc"
+                      }
+                    ]
+                  },
+                  "serviceNetwork": {
+                    "IPv4CIDR": "10.247.0.0/16"
+                  },
+                  "authentication": {
+                    "mode": "rbac"
+                  },
+                  "billingMode": 0,
+                  "kubernetesSvcIpRange": "10.247.0.0/16",
+                  "kubeProxyMode": "iptables",
+                  "extendParam": {
+                    "enterpriseProjectId": "0"
+                  },
+                  "enableSWRImageAccess": true,
+                  "enableSnat": true
+                },
+                "status": {
+                  "phase": "Creating",
+                  "jobID": "e1c49157-2270-11ef-a160-0255ac100100"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/AutopilotCluster"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建集群",
+        "x-constraint": "调用CCE接口创建集群之前,请检查是否已满足如下条件:\n\n- 创建集群之前,您必须先确保已存在**虚拟私有云**,否则无法创建集群。若您已有虚拟私有云,可重复使用,无需重复创建。虚拟私有云为CCE集群提供一个隔离的、用户自主配置和管理的虚拟网络环境。若您没有虚拟私有云,请先进行创建,详情请参见[创建VPC](https://support.huaweicloud.com/api-vpc/vpc_api01_0001.html)\n\n- 创建集群之前,请提前规划好容器网段和服务网段。网段参数在集群创建后不可更改,需要重新创建集群才能调整,请谨慎选择。\n\n- 请确保已正确创建委托,并确保委托未被删除,委托校验失败将导致集群创建失败。建议登录CCE控制台,如没有创建委托,会提示您创建,如已经创建则无提示。\n\n- 默认情况下,一个帐户只能创建5个集群(每个Region下),如果您需要创建更多的集群,请申请增加配额。详情请参见[如何申请扩大配额](https://support.huaweicloud.com/cce_faq/cce_faq_00154.html#section2)",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "创建一个v1.28版本的Autopilot集群,[计费模式为按需计费,](tag:hws,hws_hk)。\n",
+        "x-request-examples-url-1": "/autopilot/v3/projects/{project_id}/clusters",
+        "x-request-examples-1": {
+          "kind": "Cluster",
+          "apiVersion": "v3",
+          "metadata": {
+            "name": "test-cluster-autopilot",
+            "annotations": {
+              "cluster.install.addons/install": "[{\"addonTemplateName\":\"coredns\",\"values\":{\"flavor\":{\"category\":[\"Autopilot\"],\"is_default\":true,\"name\":\"autopilot-flavor1\",\"replicas\":2,\"resources\":[{\"limitsCpu\":1,\"limitsMem\":\"2Gi\",\"name\":\"coredns\",\"requestsCpu\":1,\"requestsMem\":\"2Gi\"}]}}},{\"addonTemplateName\":\"everest\"},{\"addonTemplateName\":\"metrics-server\",\"values\":{\"flavor\":{\"category\":[\"Autopilot\"],\"description\":\"custom resources in autopilot cluster\",\"is_default\":true,\"name\":\"autopilot-flavor1\",\"replicas\":2,\"resources\":[{\"limitsCpu\":1,\"limitsMem\":\"2Gi\",\"name\":\"metrics-server\",\"requestsCpu\":1,\"requestsMem\":\"2Gi\"}]}}}]"
+            }
+          },
+          "spec": {
+            "category": "Turbo",
+            "flavor": "cce.autopilot.cluster",
+            "type": "VirtualMachine",
+            "version": "v1.28",
+            "hostNetwork": {
+              "vpc": "c6549063-d459-4ae1-9550-b5fec6741b0f"
+            },
+            "extendParam": {
+              "enterpriseProjectId": "0"
+            },
+            "containerNetwork": {
+              "mode": "eni"
+            },
+            "description": "",
+            "billingMode": 0,
+            "eniNetwork": {
+              "subnets": [
+                {
+                  "subnetID": "186f9322-50c5-4e5a-91e3-47da86959afc"
+                }
+              ]
+            },
+            "enableSWRImageAccess": true,
+            "enableSnat": true,
+            "serviceNetwork": {
+              "IPv4CIDR": "10.247.0.0/16"
+            }
+          }
+        },
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "AutopilotContainerNetwork": {
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "容器网络类型\n- eni:云原生网络2.0,深度整合VPC原生ENI弹性网卡能力,采用VPC网段分配容器地址,支持ELB直通容器,享有高性能,创建集群时指定。",
+          "minLength": 0,
+          "maxLength": 64,
+          "enum": [
+            "eni"
+          ]
+        }
+      },
+      "description": "Container network parameters."
+    },
+    "AutopilotClusterExtendParam": {
+      "properties": {
+        "enterpriseProjectId": {
+          "type": "string",
+          "description": "集群所属的企业项目ID。\n>   - 需要开通企业项目功能后才可配置企业项目。\n>   - 集群所属的企业项目与集群下所关联的其他云服务资源所属的企业项目必须保持一致。"
+        },
+        "upgradefrom": {
+          "type": "string",
+          "description": "记录集群通过何种升级方式升级到当前版本。"
+        }
+      }
+    },
+    "AutopilotCluster": {
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值“Cluster”或“cluster”,该值不可修改。",
+          "default": "Cluster"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值“v3”,该值不可修改。",
+          "default": "v3"
+        },
+        "metadata": {
+          "description": "集群的基本信息,为集合类的元素类型,包含一组由不同名称定义的属性。",
+          "$ref": "#/definitions/AutopilotClusterMetadata"
+        },
+        "spec": {
+          "description": "spec是集合类的元素类型,您对需要管理的集群对象进行详细描述的主体部分都在spec中给出。CCE通过spec的描述来创建或更新对象。",
+          "$ref": "#/definitions/AutopilotClusterSpec"
+        },
+        "status": {
+          "description": "集合类的元素类型,用于记录对象在系统中的当前状态信息,包含了集群状态和本次创建集群作业的jobID",
+          "$ref": "#/definitions/AutopilotClusterStatus"
+        }
+      },
+      "description": ""
+    },
+    "AutopilotAuthentication": {
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "集群认证模式。默认取值为“rbac”。"
+        }
+      },
+      "description": ""
+    },
+    "AutopilotResourceTag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Key值。\n- 不能为空,最多支持128个字符\n- 可用UTF-8格式表示的汉字、字母、数字和空格\n- 支持部分特殊字符:_.:/=+-@\n- 不能以\"\\_sys\\_\"开头",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "Value值。\n- 可以为空但不能缺省,最多支持255个字符\n- 可用UTF-8格式表示的汉字、字母、数字和空格\n- 支持部分特殊字符:_.:/=+-@",
+          "maxLength": 255
+        }
+      },
+      "description": "CCE资源标签"
+    },
+    "AutopilotEniNetwork": {
+      "required": [
+        "subnets"
+      ],
+      "properties": {
+        "subnets": {
+          "type": "array",
+          "description": "ENI所在子网的IPv4子网ID列表。获取方法如下:\n\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找IPv4子网ID。\n- 方法2:通过虚拟私有云服务的查询子网列表接口查询。\n  链接请参见[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)",
+          "items": {
+            "description": "IPv4子网ID",
+            "$ref": "#/definitions/AutopilotNetworkSubnet"
+          }
+        }
+      },
+      "description": "ENI网络配置。",
+      "x-open-region-cloud": "hws,hws_hk"
+    },
+    "AutopilotPackageConfiguration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "组件名称"
+        },
+        "configurations": {
+          "type": "array",
+          "description": "组件配置项",
+          "items": {
+            "$ref": "#/definitions/AutopilotConfigurationItem"
+          }
+        }
+      }
+    },
+    "AutopilotClusterStatus": {
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "集群状态,取值如下\n- Available:可用,表示集群处于正常状态。\n- Unavailable:不可用,表示集群异常,需手动删除。\n- Creating:创建中,表示集群正处于创建过程中。\n- Deleting:删除中,表示集群正处于删除过程中。\n- Upgrading:升级中,表示集群正处于升级过程中。\n- RollingBack:回滚中,表示集群正处于回滚过程中。\n- RollbackFailed:回滚异常,表示集群回滚异常。\n- Error:错误,表示集群资源异常,可尝试手动删除。"
+        },
+        "jobID": {
+          "type": "string",
+          "description": "任务ID,集群当前状态关联的任务ID。当前支持:\n- 创建集群时返回关联的任务ID,可通过任务ID查询创建集群的附属任务信息;\n- 删除集群或者删除集群失败时返回关联的任务ID,此字段非空时,可通过任务ID查询删除集群的附属任务信息。\n> 任务信息具有一定时效性,仅用于短期跟踪任务进度,请勿用于集群状态判断等额外场景。"
+        },
+        "reason": {
+          "type": "string",
+          "description": "集群变为当前状态的原因,在集群在非“Available”状态下时,会返回此参数。"
+        },
+        "message": {
+          "type": "string",
+          "description": "集群变为当前状态的原因的详细信息,在集群在非“Available”状态下时,会返回此参数。"
+        },
+        "endpoints": {
+          "description": "集群中 kube-apiserver 的访问地址。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AutopilotClusterEndpoints"
+          }
+        },
+        "isLocked": {
+          "type": "boolean",
+          "description": "CBC资源锁定",
+          "x-open-region-cloud": "hws,hws_hk"
+        },
+        "lockScene": {
+          "type": "string",
+          "description": "CBC资源锁定场景",
+          "x-open-region-cloud": "hws,hws_hk"
+        },
+        "lockSource": {
+          "type": "string",
+          "description": "锁定资源",
+          "x-open-region-cloud": "hws,hws_hk"
+        },
+        "lockSourceId": {
+          "type": "string",
+          "description": "锁定的资源ID",
+          "x-open-region-cloud": "hws,hws_hk"
+        },
+        "deleteOption": {
+          "type": "object",
+          "description": "删除配置状态(仅删除请求响应包含)"
+        },
+        "deleteStatus": {
+          "type": "object",
+          "description": "删除状态信息(仅删除请求响应包含)"
+        }
+      },
+      "description": ""
+    },
+    "AutopilotNetworkSubnet": {
+      "required": [
+        "subnetID"
+      ],
+      "properties": {
+        "subnetID": {
+          "type": "string",
+          "description": "用于创建控制节点的subnet的IPv4子网ID(暂不支持IPv6)。获取方法如下:\n\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找IPv4子网ID。\n- 方法2:通过虚拟私有云服务的查询子网列表接口查询。\n  链接请参见[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)",
+          "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+        }
+      },
+      "description": "ENI网络配置,创建集群指定subnets字段使用时必填。"
+    },
+    "AutopilotConfigurationItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "组件配置项名称"
+        },
+        "value": {
+          "type": "object",
+          "description": "组件配置项值",
+          "properties": {}
+        }
+      }
+    },
+    "AutopilotCustomSan": {
+      "type": "array",
+      "description": "集群的API Server服务端证书中的自定义SAN(Subject Alternative Name)字段,遵从SSL标准X509定义的格式规范。\n\n1. 不允许出现同名重复。\n2. 格式符合IP和域名格式。\n\n示例:\n```\nSAN 1: DNS Name=example.com\nSAN 2: DNS Name=www.example.com\nSAN 3: DNS Name=example.net\nSAN 4: IP Address=93.184.216.34\n```",
+      "items": {
+        "type": "string",
+        "description": "",
+        "maxLength": 255,
+        "minLength": 0
+      },
+      "maxItems": 128,
+      "minItems": 0
+    },
+    "AutopilotClusterEndpoints": {
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "集群中 kube-apiserver 的访问地址"
+        },
+        "type": {
+          "type": "string",
+          "description": "集群访问地址的类型\n- Internal:用户子网内访问的地址\n- External:公网访问的地址"
+        }
+      }
+    },
+    "AutopilotClusterMetadata": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "集群名称。\n\n命名规则:以小写字母开头,由小写字母、数字、中划线(-)组成,长度范围4-128位,且不能以中划线(-)结尾。",
+          "minLength": 4,
+          "maxLength": 128
+        },
+        "uid": {
+          "type": "string",
+          "description": "集群ID,资源唯一标识,创建成功后自动生成,填写无效。在创建包周期集群时,响应体不返回集群ID。",
+          "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+        },
+        "alias": {
+          "type": "string",
+          "description": "集群显示名,用于在 CCE 界面显示,该名称创建后可修改。\n\n命名规则:以小写字母开头,由小写字母、数字、中划线(-)组成,长度范围4-128位,且不能以中划线(-)结尾。\n\n显示名和其他集群的名称、显示名不可以重复。\n\n在创建集群、更新集群请求体中,集群显示名alias未指定或取值为空,表示与集群名称name一致。在查询集群等响应体中,集群显示名alias将必然返回,未配置时将返回集群名称name。",
+          "minLength": 4,
+          "maxLength": 128
+        },
+        "annotations": {
+          "type": "object",
+          "description": "集群注解,由key/value组成:\n\n```\n\"annotations\": {\n   \"key1\" : \"value1\",\n   \"key2\" : \"value2\"\n}\n```\n\n>    - Annotations不用于标识和选择对象。Annotations中的元数据可以是small或large,structured或unstructured,并且可以包括标签不允许使用的字符。\n>    - 该字段不会被数据库保存,当前仅用于指定集群待安装插件。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "labels": {
+          "type": "object",
+          "description": "集群标签,key/value对格式。\n\n>  该字段值由系统自动生成,用于升级时前端识别集群支持的特性开关,用户指定无效。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "description": "集群创建时间"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "description": "集群更新时间"
+        }
+      },
+      "description": "支持通过 annotations[\"cluster.install.addons/install\"] 来指定创建集群时需要安装的插件"
+    },
+    "AutopilotHostNetwork": {
+      "required": [
+        "subnet",
+        "vpc"
+      ],
+      "properties": {
+        "vpc": {
+          "type": "string",
+          "description": "用于创建控制节点的VPC的ID。\n\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,在虚拟私有云的详情页面查找VPC ID。\n- 方法2:通过虚拟私有云服务的API接口查询。\n  链接请参见[查询VPC列表](https://support.huaweicloud.com/api-vpc/vpc_api01_0003.html)",
+          "minLength": 0,
+          "maxLength": 64
+        },
+        "subnet": {
+          "type": "string",
+          "description": "用于创建控制节点的subnet的网络ID。获取方法如下:\n\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找网络ID。\n- 方法2:通过虚拟私有云服务的查询子网列表接口查询。\n  链接请参见[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)",
+          "minLength": 0,
+          "maxLength": 64
+        }
+      },
+      "description": "Node network parameters."
+    },
+    "AutopilotClusterSpec": {
+      "required": [
+        "containerNetwork",
+        "flavor",
+        "hostNetwork"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "集群类别。",
+          "enum": [
+            "Turbo"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "description": "集群Master节点架构:\n\n- VirtualMachine:Master节点为x86架构服务器",
+          "enum": [
+            "VirtualMachine"
+          ]
+        },
+        "flavor": {
+          "type": "string",
+          "description": "集群规格,cce.autopilot.cluster"
+        },
+        "version": {
+          "type": "string",
+          "description": "集群版本,与Kubernetes社区基线版本保持一致,建议选择最新版本。\n\n在CCE控制台支持创建两种最新版本的集群。可登录CCE控制台创建集群,在“版本”处获取到集群版本。\n其它集群版本,当前仍可通过api创建,但后续会逐渐下线,具体下线策略请关注CCE官方公告。\n\n>    - 若不配置,默认创建最新版本的集群。"
+        },
+        "platformVersion": {
+          "type": "string",
+          "description": "CCE集群平台版本号,表示集群版本(version)下的内部版本。用于跟踪某一集群版本内的迭代,集群版本内唯一,跨集群版本重新计数。不支持用户指定,集群创建时自动选择对应集群版本的最新平台版本。\n\nplatformVersion格式为:cce.X.Y\n- X: 表示内部特性版本。集群版本中特性或者补丁修复,或者OS支持等变更场景。其值从1开始单调递增。\n- Y: 表示内部特性版本的补丁版本。仅用于特性版本上线后的软件包更新,不涉及其他修改。其值从0开始单调递增。"
+        },
+        "description": {
+          "type": "string",
+          "description": "集群描述,对于集群使用目的的描述,可根据实际情况自定义,默认为空。集群创建成功后可通过接口[更新指定的集群](cce_02_0240.xml)来做出修改,也可在CCE控制台中对应集群的“集群详情”下的“描述”处进行修改。仅支持utf-8编码。",
+          "minLength": 0,
+          "maxLength": 200,
+          "pattern": "[\\~\\$\\%\\^\\&\\*\\<\\>\\[\\]\\{\\}\\(\\)\\'\\\"\\#\\\\]"
+        },
+        "customSan": {
+          "$ref": "#/definitions/AutopilotCustomSan"
+        },
+        "enableSnat": {
+          "type": "boolean",
+          "description": "集群是否配置SNAT。开启后您的集群可以通过NAT网关访问公网,默认使用所选的VPC中已有的NAT网关,否则系统将会为您自动创建一个默认规格的NAT网关并绑定弹性公网IP,自动配置SNAT规则。"
+        },
+        "enableSWRImageAccess": {
+          "type": "boolean",
+          "description": "集群是否配置镜像访问。为确保您的集群节点可以从容器镜像服务中拉取镜像,默认使用所选VPC中已有的SWR和OBS终端节点,否则将会为您自动新建SWR和OBS终端节点。"
+        },
+        "ipv6enable": {
+          "type": "boolean",
+          "description": "集群是否使用IPv6模式。"
+        },
+        "hostNetwork": {
+          "description": "节点网络参数,包含了虚拟私有云VPC和子网的ID信息,而VPC是集群内节点之间的通信依赖,所以是必选的参数集。",
+          "$ref": "#/definitions/AutopilotHostNetwork"
+        },
+        "containerNetwork": {
+          "description": "容器网络参数,包含了容器网络类型和容器网段的信息。",
+          "$ref": "#/definitions/AutopilotContainerNetwork"
+        },
+        "eniNetwork": {
+          "description": "云原生网络2.0网络配置。",
+          "$ref": "#/definitions/AutopilotEniNetwork",
+          "x-open-region-cloud": "hws,hws_hk"
+        },
+        "serviceNetwork": {
+          "description": "服务网段参数,包含IPv4 CIDR。",
+          "$ref": "#/definitions/AutopilotServiceNetwork"
+        },
+        "authentication": {
+          "description": "集群认证方式相关配置。",
+          "$ref": "#/definitions/AutopilotAuthentication"
+        },
+        "billingMode": {
+          "type": "integer",
+          "format": "int32",
+          "description": "集群的计费方式。\n- 0: 按需计费\n\n默认为“按需计费”。",
+          "default": 0
+        },
+        "kubernetesSvcIpRange": {
+          "type": "string",
+          "description": "服务网段参数,kubernetes clusterIP取值范围。创建集群时如若未传参,默认为\"10.247.0.0/16\"。该参数废弃中,推荐使用新字段serviceNetwork,包含IPv4服务网段。"
+        },
+        "clusterTags": {
+          "type": "array",
+          "description": "集群资源标签",
+          "items": {
+            "description": "集群资源标签",
+            "$ref": "#/definitions/AutopilotResourceTag"
+          },
+          "maxItems": 5,
+          "minItems": 0
+        },
+        "kubeProxyMode": {
+          "type": "string",
+          "description": "服务转发模式:\n\n- iptables:社区传统的kube-proxy模式,完全以iptables规则的方式来实现service负载均衡。该方式最主要的问题是在服务多的时候产生太多的iptables规则,非增量式更新会引入一定的时延,大规模情况下有明显的性能问题。\n\n> 默认使用iptables转发模式。",
+          "enum": [
+            "iptables"
+          ]
+        },
+        "az": {
+          "type": "string",
+          "description": "可用区(仅查询返回字段)。\n\nCCE支持的可用区请参考[地区和终端节点](https://developer.huaweicloud.com/endpoint?CCE)"
+        },
+        "extendParam": {
+          "$ref": "#/definitions/AutopilotClusterExtendParam",
+          "description": "集群扩展字段,可配置多可用区集群、专属CCE集群,以及将集群创建在特定的企业项目下等。"
+        },
+        "configurationsOverride": {
+          "type": "array",
+          "description": "覆盖集群默认组件配置\n\n若指定了不支持的组件或组件不支持的参数,该配置项将被忽略。\n\n当前支持的可配置组件及其参数详见\n[配置管理](https://support.huaweicloud.com/usermanual-cce/cce_10_0213.html)",
+          "items": {
+            "$ref": "#/definitions/AutopilotPackageConfiguration"
+          }
+        }
+      },
+      "description": "集群参数定义。"
+    },
+    "AutopilotServiceNetwork": {
+      "properties": {
+        "IPv4CIDR": {
+          "type": "string",
+          "description": "kubernetes clusterIP IPv4 CIDR取值范围。创建集群时若未传参,默认为\"10.247.0.0/16\"。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,305 @@
+{
+  "name": "ListVirsubnetCidrReservations",
+  "summary": "查询子网预留网段列表",
+  "tags": "子网预留网段",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/virsubnet-cidr-reservations": {
+      "get": {
+        "tags": [
+          "子网预留网段"
+        ],
+        "summary": "查询子网预留网段列表",
+        "description": "当您的子网预留网段创建成功后,您可以通过调用该接口查询所有子网预留网段信息,包括子网预留网段名称、IP网段等。",
+        "operationId": "ListVirsubnetCidrReservations",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n项目ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:\n每页返回的资源个数。\n**取值范围**:\n0~2000",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:\n分页查询起始的资源ID,为空时查询第一页。\n**取值范围**:\n子网预留网段的资源ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段的资源ID。可以使用该字段过滤子网预留网段,支持传入多个ID过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 5,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "virsubnet_id",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段所在的子网ID。可以使用该字段过滤子网预留网段,支持传入多个ID过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cidr",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段的IP网段。可以使用该字段过滤子网预留网段,支持传入多个IP网段过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ip_version",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段所在子网的IP版本。可以使用该字段过滤子网预留网段,支持传入多个IP版本过滤。\n**取值范围**:\n- 4:过滤出IPv4子网预留网段。\n- 6:过滤出IPv6子网预留网段。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段的名称。可以使用该字段过滤满足条件的子网预留网段,支持传入多个名称过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段的描述信息。可以使用该字段过滤子网预留网段,支持传入多个描述信息进行过滤。\n**取值范围**:\n不涉及。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:\n子网预留网段所属的企业项目ID。可以使用该字段过滤某个企业项目下的子网预留网段。\n**取值范围**:\n- 最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。\n- 若需要查询当前用户所有有权限查看企业项目绑定的子网预留网段,请传参all_granted_eps。",
+            "required": false,
+            "type": "string",
+            "x-order": 8,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,ctc,fcs_vm,sbc,dt"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET操作正常返回,更多状态码请参见[状态码](vpc_api_0002.xml)。",
+            "examples": {
+              "application/json": "{\n    \"virsubnet_cidr_reservations\": [\n        {\n            \"id\": \"987d7959-9c48-ad49-2fdd-bf4146d6ebc4\",\n            \"virsubnet_id\": \"fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19\",\n            \"vpc_id\": \"cef5d621-6c20-d5df-74e8-746271fba734\",\n            \"ip_version\": 4,\n            \"cidr\": \"192.168.21.96/28\",\n            \"name\": \"test\",\n            \"description\": \"for test\",\n            \"project_id\": \"11e8dd119c77479db890e266e68c1ecf\",\n            \"created_at\": \"2024-09-09T10:20:35Z\",\n            \"updated_at\": \"2024-09-09T10:20:35Z\",\n        },\n        {\n            \"id\": \"ed4edb94-754c-7848-bb77-2d381906c535\",\n            \"virsubnet_id\": \"fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19\",\n            \"vpc_id\": \"cef5d621-6c20-d5df-74e8-746271fba734\",\n            \"ip_version\": 4,\n            \"cidr\": \"192.168.21.128/27\",\n            \"name\": \"test2\",\n            \"description\": \"for test\",\n            \"project_id\": \"11e8dd119c77479db890e266e68c1ecf\",\n            \"created_at\": \"2024-09-09T11:56:27Z\",\n            \"updated_at\": \"2024-09-09T11:56:27Z\",\n        }\n    ],\n    \"page_info\": {\n        \"previous_marker\": \"987d7959-9c48-ad49-2fdd-bf4146d6ebc4\",\n        \"current_count\": 2\n    },\n    \"request_id\": \"5cd6bbc22313ccb6933540d6f9302d81\"\n}"
+            },
+            "schema": {
+              "$ref": "#/definitions/ListVirsubnetCidrReservationsResponseBody"
+            }
+          }
+        },
+        "x-is-translated": "N",
+        "x-name": "查询子网预留网段列表",
+        "x-version": "v3",
+        "x-constraint": "查询提交请求的租户有权限查看的所有子网预留网段信息,单次查询最多返回2000条数据,超过2000后会返回分页标记。",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "查询子网预留网段列表。",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/{project_id}/vpc/virsubnet-cidr-reservations",
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListVirsubnetCidrReservationsResponseBody": {
+      "type": "object",
+      "required": [
+        "page_info",
+        "request_id",
+        "virsubnet_cidr_reservations"
+      ],
+      "properties": {
+        "virsubnet_cidr_reservations": {
+          "type": "array",
+          "description": "**参数解释**:\n查询子网预留网段列表的响应体。\n**取值范围**:\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/VirsubnetCidrReservation"
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:\n请求ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "page_info": {
+          "description": "**参数解释**:\n分页信息。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "PageInfo": {
+      "required": [
+        "current_count",
+        "previous_marker"
+      ],
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "当前页第一条记录",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前页总数",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "当前页最后一条记录,最后一页时无next_marker字段",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "VirsubnetCidrReservation": {
+      "type": "object",
+      "required": [
+        "cidr",
+        "created_at",
+        "description",
+        "id",
+        "ip_version",
+        "name",
+        "project_id",
+        "updated_at",
+        "virsubnet_id",
+        "vpc_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的资源ID。子网预留网段创建成功后,会生成一个子网预留网段 ID,是子网预留网段对应的唯一标识。\n**取值范围**:\n带“-”的标准UUID格式。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所在子网的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所在VPC的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n子网预留网段的IP版本。\n**取值范围**:\n- 4:IPv4\n- 6:IPv6"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的IP网段。\n**取值范围**:\nCIDR格式,掩码长度最小值为“所属子网的网段掩码 + 2”,最大值为32(IPv4)或128(IPv6)。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的名称。\n**取值范围**:\n1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的描述信息。\n**取值范围**:\n0-255个字符,不能包含“<”和“>”。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所属的项目ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网预留网段的创建时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ssZ。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网预留网段最近一次更新的时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ssZ。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

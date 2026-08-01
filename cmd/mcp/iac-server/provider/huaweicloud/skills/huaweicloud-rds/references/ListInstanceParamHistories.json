@@ -1,0 +1,208 @@
+{
+  "name": "ListInstanceParamHistories",
+  "summary": "查询实例参数修改历史",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/configuration-histories": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/1922f9c9144a421d9d1dfcb7377a849ain04/configuration-histories",
+        "tags": [
+          "参数配置"
+        ],
+        "summary": "查询实例参数修改历史",
+        "description": "实例参数修改历史。",
+        "operationId": "ListInstanceParamHistories",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "分页参数",
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "分页参数",
+            "type": "integer",
+            "format": "int32",
+            "default": 10
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": false,
+            "description": "开始时间 默认为当前时间的前7天 格式如 2020-09-01T18:50:20Z",
+            "type": "string"
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false,
+            "description": "结束时间 默认为当前时间 格式如 2020-09-01T18:50:20Z",
+            "type": "string"
+          },
+          {
+            "name": "param_name",
+            "in": "query",
+            "required": false,
+            "description": "参数名称",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "examples": {
+              "application/json": {
+                "total_count": 3,
+                "histories": [
+                  {
+                    "parameter_name": "fill factor (%)",
+                    "old_value": "0",
+                    "new_value": "2",
+                    "update_result": "SUCCESS",
+                    "applied": true,
+                    "update_time": "2022-10-29T09:39:21+0000",
+                    "apply_time": "2022-10-31T01:46:29+0000"
+                  },
+                  {
+                    "parameter_name": "remote login timeout (s)",
+                    "old_value": "10",
+                    "new_value": "20",
+                    "update_result": "SUCCESS",
+                    "applied": true,
+                    "update_time": "2022-10-29T09:38:36+0000",
+                    "apply_time": "2022-10-29T09:38:36+0000"
+                  },
+                  {
+                    "parameter_name": "remote query timeout (s)",
+                    "old_value": "600",
+                    "new_value": "601",
+                    "update_result": "SUCCESS",
+                    "applied": true,
+                    "update_time": "2022-10-29T09:40:30+0000",
+                    "apply_time": "2022-10-29T09:40:30+0000"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ParamGroupHistoryListResponseBody"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ParamGroupHistoryListResponseBody": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "历史记录总数"
+        },
+        "histories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParamGroupHistoryResult"
+          },
+          "description": "host列表"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ParamGroupHistoryResult": {
+      "type": "object",
+      "properties": {
+        "parameter_name": {
+          "type": "string",
+          "description": "参数名称"
+        },
+        "old_value": {
+          "type": "string",
+          "description": "旧值"
+        },
+        "new_value": {
+          "type": "string",
+          "description": "新值"
+        },
+        "update_result": {
+          "type": "string",
+          "description": "更新结果\n成功:SUCCESS\n失败: FAILED"
+        },
+        "applied": {
+          "type": "boolean",
+          "description": "是否已应用\ntrue:已应用\nfalse:未应用"
+        },
+        "update_time": {
+          "type": "string",
+          "description": "修改时间"
+        },
+        "apply_time": {
+          "type": "string",
+          "description": "应用时间"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

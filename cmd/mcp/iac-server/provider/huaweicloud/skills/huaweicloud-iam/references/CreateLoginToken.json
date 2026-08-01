@@ -1,0 +1,307 @@
+{
+  "name": "CreateLoginToken",
+  "summary": "获取自定义代理登录票据",
+  "tags": "自定义代理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-AUTH/securitytoken/logintokens": {
+      "post": {
+        "tags": [
+          "自定义代理"
+        ],
+        "summary": "获取自定义代理登录票据",
+        "description": "该接口用于用于获取自定义代理登录票据logintoken。logintoken是系统颁发给自定义代理用户的登录票据,承载用户的身份、session等信息。调用自定义代理URL登录云服务控制台时,可以使用本接口获取的logintoken进行认证。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。\n\n> - logintoken的有效期为10分钟。",
+        "operationId": "CreateLoginToken",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateLoginTokenRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateLoginTokenRequestBody"
+            },
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。\n\n示例1:通过token获取临时访问密钥和securitytoken。\n\n示例2:通过委托获取临时访问密钥和securitytoken且请求体中填写session_user.name参数。",
+            "examples": {
+              "application/json": {
+                "logintoken": {
+                  "domain_id": "05262121fb00d5c30fbec013bc17a4a0",
+                  "expires_at": "2020-01-20T08:18:36.447000Z",
+                  "method": "token",
+                  "user_id": "0526213b8a80d38a1f31c013edef9a3e",
+                  "user_name": "IAMUser",
+                  "session_id": "40b328b6683a41b9bf8e7185e9523425"
+                }
+              },
+              "application/json-1": {
+                "logintoken": {
+                  "domain_id": "05262121fb00d5c30fbec013bc17a4a0",
+                  "session_name": "SessionUserName",
+                  "session_user_id": "SessionUserId",
+                  "expires_at": "2020-01-23T03:27:26.728000Z",
+                  "method": "federation_proxy",
+                  "user_id": "07826f367b80d2474ff9c013a48903ee",
+                  "user_name": "IAMDomainA/IAMAgency",
+                  "session_id": "0012c8e6adda4ce787e90585d10e3e63",
+                  "assumed_by": {
+                    "user": {
+                      "domain": {
+                        "name": "IAMDomainB",
+                        "id": "0659ef9c9c80d4560f14c009acf9c4a0"
+                      },
+                      "name": "IAMUserB",
+                      "password_expires_at": "2020-02-16T02:44:57.000000Z",
+                      "id": "0659ef9d4d00d3b81f26c009fee32b57"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Subject-LoginToken": {
+                "type": "string",
+                "description": "签名后的logintoken。"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateLoginTokenResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取自定义代理登录票据",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 106,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3.0/OS-AUTH/securitytoken/logintokens",
+        "x-request-examples-1": {
+          "auth": {
+            "securitytoken": {
+              "access": "LUJHNN4WB569PGAPBDFT",
+              "secret": "7qtrm2cku0XubixiVkBOcvMfpnu7H2mLNCUsuFR8",
+              "id": "gQpjbi1ub3J0a...",
+              "duration_seconds": 600
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"auth\": {\n        \"securitytoken\": {\n            \"access\": \"LUJHNN4WB569PGAPBDFT\",\n            \"secret\": \"7qtrm2cku0XubixiVkBOcvMfpnu7H2mLNCUsuFR8\",\n            \"id\": \"gQpjbi1ub3J0a...\",\n            \"duration_seconds\": 600\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "LoginTokenUser": {
+      "properties": {
+        "domain": {
+          "description": "被委托方用户所属账号信息。",
+          "$ref": "#/definitions/LoginTokenDomain"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMUserB",
+          "description": "被委托方用户名。"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "description": "被委托方用户的密码过期时间。"
+        },
+        "id": {
+          "type": "string",
+          "example": "05fdcf44990033a21fbec00e2873a...",
+          "description": "被委托方用户ID。"
+        }
+      },
+      "description": ""
+    },
+    "LoginTokenDomain": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "domain002",
+          "description": "被委托方用户所属账号名称。"
+        },
+        "id": {
+          "type": "string",
+          "example": "05fdcf2c188033a70f78c00e6cbd0...",
+          "description": "被委托方用户所属账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "LoginTokenAssumedBy": {
+      "properties": {
+        "user": {
+          "description": "被委托方用户信息。",
+          "$ref": "#/definitions/LoginTokenUser"
+        }
+      },
+      "description": ""
+    },
+    "LoginTokenSecurityToken": {
+      "required": [
+        "access",
+        "id",
+        "secret"
+      ],
+      "properties": {
+        "access": {
+          "type": "string",
+          "example": "LUJHNN4WB569PGAPBDFT",
+          "description": "AK。"
+        },
+        "secret": {
+          "type": "string",
+          "example": "7qtrm2cku0XubixiVkBOcvMfpnu7H2mLNCUsuFR8",
+          "description": "SK。"
+        },
+        "id": {
+          "type": "string",
+          "example": "gQpjbi1ub3J0a..",
+          "description": "securitytoken,即临时身份的安全token。\n\n支持使用自定义代理用户或普通用户获取的securitytoken换取logintoken,详情请参见:[通过token获取临时访问密钥和securitytoken](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=CreateTemporaryAccessKeyByToken)。\n\n支持委托的方式,但获取securitytoken时,请求体中必须填写session_user.name参数,详情请参见:[通过委托获取临时访问密钥和securitytoken](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=CreateTemporaryAccessKeyByAgency)。"
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "format": "int32",
+          "example": 600,
+          "description": "自定义代理登录票据logintoken的有效时间,时间单位为秒。默认10分钟,取值范围10min~12h,且取值不能大于临时安全凭证securitytoken的过期时间。",
+          "minimum": 600,
+          "maximum": 43200,
+          "default": 600
+        }
+      },
+      "description": ""
+    },
+    "LoginToken": {
+      "required": [
+        "domain_id",
+        "expires_at",
+        "method",
+        "session_id",
+        "user_id",
+        "user_name"
+      ],
+      "properties": {
+        "domain_id": {
+          "type": "string",
+          "example": "05fdcf2c188033a70f78c00e6cbd0...",
+          "description": "账号ID。"
+        },
+        "expires_at": {
+          "type": "string",
+          "example": "2019-09-02T08:18:38.562000Z",
+          "description": "logintoken的过期时间,默认10min。"
+        },
+        "method": {
+          "type": "string",
+          "example": "token",
+          "description": "认证方法。当认证用户为华为云用户时,该字段内容为“token”,当认证用户为自定义代理用户时,该字段内容为“federation_proxy”。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "用户ID。"
+        },
+        "user_name": {
+          "type": "string",
+          "description": "用户名。"
+        },
+        "session_id": {
+          "type": "string",
+          "example": "0eb62fa2e9124375ba0e114e8f149...",
+          "description": "会话ID。"
+        },
+        "session_user_id": {
+          "type": "string",
+          "example": "0eb62fa2esdfcsf24455e114e8f149...",
+          "description": "自定义代理用户ID。"
+        },
+        "session_name": {
+          "type": "string",
+          "example": "SessionUserName",
+          "description": "自定义代理用户名。\n> - [通过委托获取临时访问密钥和securitytoken](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=CreateTemporaryAccessKeyByAgency)且请求体中填写session_user.name参数时,会返回该字段。该字段的值即为session_user.name所填写的值。"
+        },
+        "assumed_by": {
+          "description": "被委托方用户信息。\n> - [通过委托获取临时访问密钥和securitytoken](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=CreateTemporaryAccessKeyByAgency)且请求体中填写session_user.name参数时,会返回该字段。",
+          "$ref": "#/definitions/LoginTokenAssumedBy"
+        }
+      },
+      "description": ""
+    },
+    "CreateLoginTokenResponseBody": {
+      "required": [
+        "logintoken"
+      ],
+      "properties": {
+        "logintoken": {
+          "description": "自定义代理登录票据信息。",
+          "$ref": "#/definitions/LoginToken"
+        }
+      },
+      "description": ""
+    },
+    "CreateLoginTokenRequestBody": {
+      "required": [
+        "auth"
+      ],
+      "properties": {
+        "auth": {
+          "description": "认证信息。",
+          "$ref": "#/definitions/LoginTokenAuth"
+        }
+      },
+      "description": ""
+    },
+    "LoginTokenAuth": {
+      "required": [
+        "securitytoken"
+      ],
+      "properties": {
+        "securitytoken": {
+          "description": "认证参数。",
+          "$ref": "#/definitions/LoginTokenSecurityToken"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

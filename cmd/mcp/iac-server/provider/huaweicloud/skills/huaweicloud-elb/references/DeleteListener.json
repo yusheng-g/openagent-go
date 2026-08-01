@@ -1,0 +1,112 @@
+{
+  "name": "DeleteListener",
+  "summary": "删除监听器",
+  "tags": "监听器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/listeners/{listener_id}": {
+      "delete": {
+        "tags": [
+          "监听器"
+        ],
+        "summary": "删除监听器",
+        "description": "根据指定ID删除监听器。",
+        "operationId": "DeleteListener",
+        "parameters": [
+          {
+            "name": "listener_id",
+            "in": "path",
+            "description": "监听器id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除操作正常返回"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除监听器",
+        "x-constraint": "(不再支持)cascade取false时,删除listener之前必须删除或解绑与其关联的pool,并且删除与其关联的l7policy。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 44,
+        "x-request-examples-1": "DELETE https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/listeners/90f7c765-0bc9-47c4-8513-4cc0c264c8f8",
+        "x-request-examples-text-1": "DELETE https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/listeners/90f7c765-0bc9-47c4-8513-4cc0c264c8f8",
+        "x-request-examples-2": "DELETE https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/listeners/90f7c765-0bc9-47c4-8513-4cc0c264c8f8?cascade=true",
+        "x-request-examples-text-2": "DELETE https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/listeners/90f7c765-0bc9-47c4-8513-4cc0c264c8f8?cascade=true",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

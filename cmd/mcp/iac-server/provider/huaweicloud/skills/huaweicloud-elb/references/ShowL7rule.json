@@ -1,0 +1,224 @@
+{
+  "name": "ShowL7rule",
+  "summary": "查询转发规则详情",
+  "tags": "转发规则",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/l7policies/{l7policy_id}/rules/{l7rule_id}": {
+      "get": {
+        "tags": [
+          "转发规则"
+        ],
+        "summary": "查询转发规则详情",
+        "description": "根据指定ID查询某转发策略下关联的转发规则详情。",
+        "operationId": "ShowL7rule",
+        "parameters": [
+          {
+            "name": "l7policy_id",
+            "in": "path",
+            "description": "转发策略id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "l7rule_id",
+            "in": "path",
+            "description": "转发规则id",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "rule": {
+                  "compare_type": "EQUAL_TO",
+                  "provisioning_status": "ACTIVE",
+                  "admin_state_up": true,
+                  "tenant_id": "a31d2bdcf7604c0faaddb058e1e08819",
+                  "project_id": "a31d2bdcf7604c0faaddb058e1e08819",
+                  "invert": false,
+                  "value": "/index.html",
+                  "key": null,
+                  "type": "PATH",
+                  "id": "67d8a8fa-b0dd-4bd4-a85b-671db19b2ef3"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowL7ruleResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询转发规则详情",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 57,
+        "x-request-examples-1": "GET https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/5ae0e1e7-5f0f-47a1-b39f-5d4c428a1586/rules/67d8a8fa-b0dd-4bd4-a85b-671db19b2ef3",
+        "x-request-examples-text-1": "GET https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/5ae0e1e7-5f0f-47a1-b39f-5d4c428a1586/rules/67d8a8fa-b0dd-4bd4-a85b-671db19b2ef3",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "L7ruleResp": {
+      "required": [
+        "admin_state_up",
+        "compare_type",
+        "id",
+        "invert",
+        "key",
+        "project_id",
+        "provisioning_status",
+        "tenant_id",
+        "type",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "转发规则ID"
+        },
+        "provisioning_status": {
+          "type": "string",
+          "description": "转发规则的配置状态;该字段为预留字段,暂未启用。默认为ACTIVE。"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "转发规则所在的项目ID。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "project_id": {
+          "type": "string",
+          "description": "转发规则所在的项目ID。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "转发规则的管理状态;该字段为预留字段,暂未启用。默认为true。"
+        },
+        "type": {
+          "type": "string",
+          "description": "转发规则的匹配内容",
+          "enum": [
+            "HOST_NAME",
+            "PATH"
+          ]
+        },
+        "compare_type": {
+          "type": "string",
+          "description": "转发规则的匹配方式。type为HOST_NAME时可以为EQUAL_TO。type为PATH时可以为REGEX, STARTS_WITH,EQUAL_TO。"
+        },
+        "invert": {
+          "type": "boolean",
+          "description": "是否反向匹配。使用说明:固定为false。该字段能更新但不会生效。"
+        },
+        "key": {
+          "type": "string",
+          "description": "匹配内容的键值。目前匹配内容为HOST_NAME和PATH时,该字段不生效。该字段能更新但不会生效。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "value": {
+          "type": "string",
+          "description": "匹配内容的值。其值不能包含空格。使用说明:当type为HOST_NAME时,取值范围:String(100),字符串只能包含英文字母、数字、“-”或“.”,且必须以字母或数字开头。当type为PATH时,取值范围:String(128)。当转发规则的compare_type为STARTS_WITH,EQUAL_TO时,字符串只能包含英文字母、数字、^-%#&$.*+?,=!:| \\/()[]{},且必须以\"/\"开头。",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "description": "转发规则对象"
+    },
+    "ShowL7ruleResponseBody": {
+      "required": [
+        "rule"
+      ],
+      "properties": {
+        "rule": {
+          "description": "转发规则对象",
+          "$ref": "#/definitions/L7ruleResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

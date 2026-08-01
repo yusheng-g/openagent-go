@@ -1,0 +1,205 @@
+{
+  "name": "TransferBackup",
+  "summary": "手动转储备份",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/backups/transfer": {
+      "post": {
+        "x-api-type": "open-api",
+        "tags": [
+          "备份与恢复"
+        ],
+        "x-request-examples-url-1": "POST https://{Endpoint}/v3/{project_id}/instances/{instance_id}/backups/transfer",
+        "x-request-examples-description-1": "备份转储请求示例",
+        "x-request-examples-text-1": {
+          "instance_id": "9addef3bcf264a8a82e710d62b3f1439in01",
+          "backups": [
+            "38e7f95bc332408e9b4d6409fc28f9a0br01"
+          ],
+          "destination": "obs-test",
+          "prefix": "test/"
+        },
+        "x-request-examples-1": {
+          "instance_id": "9addef3bcf264a8a82e710d62b3f1439in01",
+          "backups": [
+            "38e7f95bc332408e9b4d6409fc28f9a0br01"
+          ],
+          "destination": "obs-test",
+          "prefix": "test/"
+        },
+        "x-constraint": "- 该接口仅支持MySQL引擎。",
+        "operationId": "TransferBackup",
+        "summary": "手动转储备份",
+        "description": "手动转储备份",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "in": "body",
+            "name": "TransferBackupRequestBody",
+            "description": "转储任务请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransferBackupRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": false,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "手动转储备份返回体",
+            "schema": {
+              "$ref": "#/definitions/TransferBackupResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "results": [
+                  {
+                    "backupId": "38e7f95bc332408e9b4d6409fc28f9a0br01",
+                    "status": "Success",
+                    "jobId": "9b0b2a50-e2ea-468a-90ce-a777217b7570"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "TransferBackupRequestBody": {
+      "type": "object",
+      "description": "手动转储任务请求体",
+      "properties": {
+        "backups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "备份id列表",
+          "example": [
+            "7d9f5dbb159d46fab91e1f883128abbbbr01",
+            "8d2f5dbb159d46fab91e1f883128abbcbr01"
+          ],
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "实例id"
+        },
+        "destination": {
+          "type": "string",
+          "description": "目标OBS桶名",
+          "maxLength": 128,
+          "minLength": 0
+        },
+        "prefix": {
+          "type": "string",
+          "description": "目标前缀",
+          "example": "test\\",
+          "maxLength": 128,
+          "minLength": 0
+        }
+      },
+      "required": [
+        "backups",
+        "instance_id",
+        "destination"
+      ]
+    },
+    "TransferBackupResponseBody": {
+      "type": "object",
+      "description": "手动转储备份的返回体",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "backup_id": {
+                "type": "string",
+                "description": "备份id"
+              },
+              "status": {
+                "type": "string",
+                "description": "任务提交状态"
+              },
+              "job_id": {
+                "type": "string",
+                "description": "任务id"
+              }
+            }
+          },
+          "description": "转储任务结果"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

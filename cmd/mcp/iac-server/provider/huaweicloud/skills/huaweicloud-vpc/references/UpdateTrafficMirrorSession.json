@@ -1,0 +1,274 @@
+{
+  "name": "UpdateTrafficMirrorSession",
+  "summary": "更新流量镜像会话",
+  "tags": "流量镜像会话",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/traffic-mirror-sessions/{traffic_mirror_session_id}": {
+      "put": {
+        "tags": [
+          "流量镜像会话"
+        ],
+        "summary": "更新流量镜像会话",
+        "description": "更新流量镜像会话",
+        "operationId": "UpdateTrafficMirrorSession",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateTrafficMirrorSessionRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateTrafficMirrorSessionRequestBody"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "traffic_mirror_session_id",
+            "in": "path",
+            "description": "流量镜像会话ID",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "traffic_mirror_session": {
+                  "name": "test-session",
+                  "created_at": "2023-03-23T10:53:12Z",
+                  "updated_at": "2023-03-23T10:56:54Z",
+                  "id": "16538eda-7e94-4b90-b5f3-a653f62dc817",
+                  "project_id": "7365fcd452924e398ec4cc1fe39c0d12",
+                  "description": "",
+                  "traffic_mirror_filter_id": "b765ba87-c0b4-4f1a-9ec3-d5b1d1ddb137",
+                  "traffic_mirror_sources": [
+                    "6134900d-31a6-4b71-8453-dbca7f26982a"
+                  ],
+                  "traffic_mirror_target_id": "c9f8acef-d550-4fbe-be7c-e8bfd3501dc1",
+                  "traffic_mirror_target_type": "elb",
+                  "virtual_network_id": 1,
+                  "packet_length": 96,
+                  "priority": 11,
+                  "enabled": true,
+                  "type": "eni"
+                },
+                "request_id": "a7ee4a0e-12e9-457a-b739-46bffb2e7bbb"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/TrafficMirrorSessionResponseBody"
+            }
+          }
+        },
+        "x-name": "更新流量镜像会话",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "更新ID为16538eda-7e94-4b90-b5f3-a653f62dc817的流量镜像会话,镜像目的类型为elb,镜像目的ID为c9f8acef-d550-4fbe-be7c-e8bfd3501dc1。",
+        "x-request-examples-url-1": "PUT http://{endpoint}/v3/{project_id}/vpc/traffic-mirror-sessions/16538eda-7e94-4b90-b5f3-a653f62dc817",
+        "x-request-examples-1": {
+          "traffic_mirror_session": {
+            "traffic_mirror_target_id": "c9f8acef-d550-4fbe-be7c-e8bfd3501dc1",
+            "traffic_mirror_target_type": "elb"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"traffic_mirror_session\": {\n        \"traffic_mirror_target_id\":\"c9f8acef-d550-4fbe-be7c-e8bfd3501dc1\",\n        \"traffic_mirror_target_type\":\"elb\"\n    }\n}",
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TrafficMirrorSessionResponseBody": {
+      "required": [
+        "request_id",
+        "traffic_mirror_session"
+      ],
+      "properties": {
+        "traffic_mirror_session": {
+          "description": "流量镜像会话对象",
+          "$ref": "#/definitions/TrafficMirrorSession"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "TrafficMirrorSession": {
+      "required": [
+        "created_at",
+        "description",
+        "enabled",
+        "id",
+        "name",
+        "packet_length",
+        "priority",
+        "project_id",
+        "traffic_mirror_filter_id",
+        "traffic_mirror_sources",
+        "traffic_mirror_target_id",
+        "traffic_mirror_target_type",
+        "type",
+        "updated_at",
+        "virtual_network_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:流量镜像会话ID"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:项目ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:流量镜像会话名称\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:流量镜像会话的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”"
+        },
+        "traffic_mirror_filter_id": {
+          "type": "string",
+          "description": "功能说明:流量镜像筛选条件ID"
+        },
+        "traffic_mirror_sources": {
+          "type": "array",
+          "description": "功能说明:镜像源ID列表,支持弹性网卡作为镜像源。\n约束:一个镜像会话默认最大支持10个镜像源。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "traffic_mirror_target_id": {
+          "type": "string",
+          "description": "功能说明:镜像目的ID"
+        },
+        "traffic_mirror_target_type": {
+          "type": "string",
+          "description": "功能说明:镜像目的类型\n取值范围:\n    eni:弹性网卡\n    elb:私网弹性负载均衡"
+        },
+        "virtual_network_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:指定VNI,用于区分不同会话的镜像流量\n取值范围:0~16777215\n默认值:1"
+        },
+        "packet_length": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:最大传输单元MTU\n取值范围:1~1460\n默认值:96"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:会话优先级\n取值范围:1~32766"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "功能说明:是否开启会话\n取值范围:true、false\n默认值:false"
+        },
+        "type": {
+          "type": "string",
+          "description": "功能说明:支持的镜像源类型\n取值范围:\n    eni:弹性网卡"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "功能说明:创建时间戳"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "功能说明:更新时间戳"
+        }
+      },
+      "description": ""
+    },
+    "UpdateTrafficMirrorSessionRequestBody": {
+      "required": [
+        "traffic_mirror_session"
+      ],
+      "properties": {
+        "traffic_mirror_session": {
+          "description": "流量镜像会话对象",
+          "$ref": "#/definitions/UpdateTrafficMirrorSessionOption"
+        }
+      },
+      "description": ""
+    },
+    "UpdateTrafficMirrorSessionOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:流量镜像会话名称\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:流量镜像会话的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”"
+        },
+        "traffic_mirror_filter_id": {
+          "type": "string",
+          "description": "功能说明:流量镜像筛选条件ID"
+        },
+        "traffic_mirror_target_id": {
+          "type": "string",
+          "description": "功能说明:镜像目标ID"
+        },
+        "traffic_mirror_target_type": {
+          "type": "string",
+          "description": "功能说明:镜像目的类型\n取值范围:\n    eni:弹性网卡\n    elb:私网弹性负载均衡"
+        },
+        "virtual_network_id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:指定VNI,用于在镜像目的区分不同会话的镜像流量\n取值范围:0~16777215"
+        },
+        "packet_length": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:最大传输单元MTU\n取值范围:1~1460"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:会话优先级\n取值范围:1~32766"
+        },
+        "enabled": {
+          "type": "string",
+          "description": "功能说明:是否开启会话\n取值范围:true、false"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

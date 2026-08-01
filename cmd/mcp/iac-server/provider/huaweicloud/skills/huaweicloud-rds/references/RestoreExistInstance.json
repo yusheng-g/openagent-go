@@ -1,0 +1,210 @@
+{
+  "name": "RestoreExistInstance",
+  "summary": "恢复到已有实例",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.1/{project_id}/instances/recovery": {
+      "post": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "RestoreExistInstance",
+        "summary": "恢复到已有实例",
+        "description": "恢复到已有实例。",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-constraint": "- 恢复到已有实例时,该接口存在如下约束:\n  - 源实例和目标实例的数据库类型必须一致,如都是MySQL。\n  - MySQL和PostgreSQL源实例和目标实例的数据库版本必须一致,如都是MySQL 5.7或PostgreSQL 9.5,SQL Server支持同版本或者高版本,SQL Server版本约束,详见表1。\n  - 目标实例的数据卷总大小,大于或等于源实例的数据卷总大小。\n  - 不支持跨区域恢复操作。\n- 恢复到当前实例时,该接口存在如下约束:\n  - 该接口仅支持实例的数据库引擎Microsoft SQL Server。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "RestoreExistingInstanceRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RestoreExistingInstanceRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "使用备份文件恢复部分数据库到已有实例",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3.1/054e292c9880d4992f02c0196d3ea468/instances/recovery",
+        "x-request-examples-1": {
+          "source": {
+            "instance_id": "61879e6085bc44d1831b0ce62d988fd9in04",
+            "type": "backup",
+            "backup_id": "b021670e69ba4538b7b2ed07257306aebr04",
+            "database_name": {
+              "db1": "dbtest1",
+              "db2": "dbtest2"
+            }
+          },
+          "target": {
+            "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin04"
+          }
+        },
+        "x-request-examples-description-2": "按时间点恢复全部数据库到已有实例",
+        "x-request-examples-url-2": "POST https://rds.cn-north-1.myhuaweicloud.com/v3.1/054e292c9880d4992f02c0196d3ea468/instances/recovery",
+        "x-request-examples-2": {
+          "source": {
+            "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin01",
+            "type": "timestamp",
+            "restore_time": 1532001446987,
+            "restore_alldatabase": true
+          },
+          "target": {
+            "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin01"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JobId": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "TargetInstanceRequest": {
+      "required": [
+        "instance_id"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例ID"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "RestoreExistingInstanceRequestBody": {
+      "required": [
+        "source",
+        "target"
+      ],
+      "properties": {
+        "source": {
+          "description": "恢复数据源对象。",
+          "properties": {
+            "instance_id": {
+              "description": "实例ID。",
+              "type": "string"
+            },
+            "type": {
+              "description": "表示恢复方式,枚举值:\n\n- “backup”,表示使用备份文件恢复,按照此方式恢复时,“type”字段为非必选,“backup_id”必选。\n- “timestamp”,表示按时间点恢复,按照此方式恢复时,“type”字段必选,“restore_time”必选。",
+              "type": "string",
+              "enum": [
+                "backup",
+                "timestamp"
+              ]
+            },
+            "backup_id": {
+              "description": "用于恢复的备份ID。当使用备份文件恢复时需要指定该参数。",
+              "type": "string"
+            },
+            "restore_time": {
+              "description": "恢复数据的时间点,格式为UNIX时间戳,单位是毫秒,时区为UTC。",
+              "type": "integer",
+              "format": "int64"
+            },
+            "database_name": {
+              "description": "仅适用于SQL Server引擎,当有此参数时表示支持局部恢复和重命名恢复,恢复数据以局部恢复为主。不填写该字段时,默认恢复全部数据库。\n- 新数据库名称不可与源实例或目标实例数据库名称重名,新数据库名称为空,默认按照原数据库名进行恢复。\n- 新数据库名不能包含rdsadmin、master、msdb、tempdb、model或resource字段(不区分大小写)。\n- 数据库名称长度在1~64个字符之间,包含字母、数字、下划线或中划线,不能包含其他特殊字符。",
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "example": {
+                "oldDbName": "newDbName"
+              }
+            },
+            "restore_all_database": {
+              "description": "该字段仅适用于SQL Server引擎。是否恢复所有数据库,不填写该字段默认为false,不会恢复所有数据库到目标实例。\n- 须知: 如果您想恢复所有数据库到已有实例,必须设置restore_all_database为true。",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "instance_id"
+          ]
+        },
+        "target": {
+          "description": "恢复目标对象。",
+          "$ref": "#/definitions/TargetInstanceRequest"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

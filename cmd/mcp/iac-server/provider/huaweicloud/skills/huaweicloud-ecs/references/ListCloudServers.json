@@ -1,0 +1,690 @@
+{
+  "name": "ListCloudServers",
+  "summary": "查询云服务器列表接口",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1.1/{project_id}/cloudservers/detail": {
+      "get": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "查询云服务器列表接口",
+        "description": "查询云服务器列表接口。",
+        "operationId": "ListCloudServers",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "云服务器ID,格式为UUID,匹配规则为精确匹配。",
+            "required": false,
+            "type": "string",
+            "x-example": "441d5677-b76a-4dd4-a97a-ef7fd6336666",
+            "x-order": 2
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "云服务器名称,匹配规则为模糊匹配。",
+            "required": false,
+            "type": "string",
+            "x-example": "test",
+            "x-order": 3
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "云服务器状态。\n\n取值范围:\n\nACTIVE, BUILD,ERROR,HARD_REBOOT,MIGRATING,REBOOT,RESIZE,REVERT_RESIZE,SHELVED,SHELVED_OFFLOADED,SHUTOFF,UNKNOWN,VERIFY_RESIZE\n\n弹性云服务器状态说明请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)",
+            "required": false,
+            "type": "string",
+            "x-example": "ACTIVE",
+            "x-order": 4
+          },
+          {
+            "name": "in_recycle_bin",
+            "in": "query",
+            "description": "云服务器是否处于回收站中",
+            "required": false,
+            "type": "boolean",
+            "x-example": "1",
+            "x-order": 6
+          },
+          {
+            "name": "spod_id",
+            "in": "query",
+            "description": "共池裸机按整机柜发放的同一批次的批创id。",
+            "required": false,
+            "type": "string",
+            "x-example": "441d5677-b76a-4dd4-a97a-ef7fd6336666",
+            "x-order": 7
+          },
+          {
+            "name": "flavor_name",
+            "in": "query",
+            "description": "云服务器规格名称。",
+            "required": false,
+            "type": "string",
+            "x-order": 8
+          },
+          {
+            "name": "image_id",
+            "in": "query",
+            "description": "镜像ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 9
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "元数据过滤,支持key=value过滤。",
+            "required": false,
+            "type": "string",
+            "x-order": 10
+          },
+          {
+            "name": "metadata-key",
+            "in": "query",
+            "description": "元数据key过滤。",
+            "required": false,
+            "type": "string",
+            "x-order": 11
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "查询tag字段中包含该值的云服务器。",
+            "required": false,
+            "type": "string",
+            "x-order": 12
+          },
+          {
+            "name": "not-tags",
+            "in": "query",
+            "description": " 查询tag字段中不包含该值的云服务器",
+            "required": false,
+            "type": "string",
+            "x-order": 13
+          },
+          {
+            "name": "availability_zone",
+            "in": "query",
+            "description": "云服务器所在的AZ,匹配规则为模糊匹配。",
+            "required": false,
+            "type": "string",
+            "x-order": 14
+          },
+          {
+            "name": "availability_zone_eq",
+            "in": "query",
+            "description": "云服务器所在的AZ,匹配规则为精确匹配。",
+            "required": false,
+            "type": "string",
+            "x-order": 15
+          },
+          {
+            "name": "charging_mode",
+            "in": "query",
+            "description": "云服务器的计费类型。",
+            "required": false,
+            "type": "string",
+            "x-order": 16
+          },
+          {
+            "name": "key_name",
+            "in": "query",
+            "description": "云服务器使用的密钥对名称。",
+            "required": false,
+            "type": "string",
+            "x-order": 17
+          },
+          {
+            "name": "launched_since",
+            "in": "query",
+            "description": "过滤在launched_since时间之后启动的云服务器。格式为ISO8601时间格式,例如:2013-06-09T06:42:18Z。",
+            "required": false,
+            "type": "string",
+            "x-order": 18
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "过滤绑定某个企业项目的云服务器。\n若需要查询当前用户所有企业项目绑定的云服务,请传参all_granted_eps。",
+            "required": false,
+            "type": "string",
+            "x-order": 19
+          },
+          {
+            "name": "expect-fields",
+            "in": "query",
+            "description": "控制查询输出的字段。在默认字段的基础上选择是否查询。\n  launched_at:云服务器启动时间。\n  key_name:云服务器使用的密钥对名称。\n  locked:云服务器是否为锁定状态。\n  root_device_name:云服务器系统盘的设备名称。\n  tenancy:在专属主机或共享池中创建云服务器。\n  dedicated_host_id:专属主机ID。\n  enterprise_project_id:查询绑定某个企业项目的云服务器。\n  tags:云服务器的标签列表。\n  metadata:云服务器元数据。\n  addresses:云服务器对应的网络地址信息。\n  security_groups:云服务器的安全组信息。\n  volumes_attached:云服务器挂载磁盘信息。\n  image:云服务器镜像信息。\n  power_state:云服务器电源状态。\n  cpu_options:自定义CPU选项。\n  market_info:云服务器计费信息,包含计费类型、到期时间等字段。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 20
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询返回VM数量限制。\nlimit 默认为10,最大为100。",
+            "required": false,
+            "type": "integer",
+            "minimum": 0,
+            "default": 10,
+            "maximum": 100,
+            "x-order": 21
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "以单页最后一条server的ID作为分页标记。",
+            "required": false,
+            "type": "string",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+            "x-order": 22
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ListCloudServersResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云服务器列表接口",
+        "x-constraint": "无",
+        "x-version": "v1.1",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1.1/{project_id}/cloudservers/detail",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1.1/{project_id}/cloudservers/detail",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NetworkAddresses": {
+      "required": [
+        "OS-EXT-IPS-MAC:mac_addr",
+        "OS-EXT-IPS:type",
+        "addr",
+        "version",
+        "OS-EXT-IPS:port_id"
+      ],
+      "type": "object",
+      "properties": {
+        "addr": {
+          "type": "string",
+          "description": "IP地址。"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int32",
+          "enum": [
+            4,
+            6
+          ],
+          "description": "IP地址类型,值为4或6。\n\n4:IP地址类型是IPv4\n6:IP地址类型是IPv6"
+        },
+        "OS-EXT-IPS:port_id": {
+          "type": "string",
+          "description": "IP地址对应的端口ID。"
+        },
+        "OS-EXT-IPS-MAC:mac_addr": {
+          "type": "string",
+          "description": "扩展属性,MAC地址。"
+        },
+        "OS-EXT-IPS:type": {
+          "type": "string",
+          "description": "扩展属性,分配IP地址方式。\n\nfixed:代表私有IP地址。\nfloating:代表浮动IP地址。"
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "是否是主网卡。\n\ntrue:主网卡。\nfalse:辅助网卡。"
+        }
+      }
+    },
+    "CloudServer": {
+      "required": [
+        "id",
+        "name",
+        "status",
+        "tenant_id",
+        "user_id",
+        "availability_zone",
+        "vm_state",
+        "task_state",
+        "created",
+        "updated",
+        "flavor",
+        "fault",
+        "in_recycle_bin",
+        "spod_id"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云服务器唯一标识。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云服务器名称。"
+        },
+        "status": {
+          "type": "string",
+          "description": "云服务器当前状态信息。"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "云服务器所属租户ID。即项目id,与project_id表示相同的概念。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "云服务器所属用户ID。"
+        },
+        "market_info": {
+          "$ref": "#/definitions/MarketModel"
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "可用分区"
+        },
+        "vm_state": {
+          "type": "string",
+          "description": "云服务器的状态。"
+        },
+        "task_state": {
+          "type": "string",
+          "description": "云服务器任务状态。"
+        },
+        "power_state": {
+          "type": "integer",
+          "description": "云服务器电源状态。"
+        },
+        "created": {
+          "type": "string",
+          "description": "云服务器创建时间。 时间格式例如:2020-05-22T07:48:53Z。"
+        },
+        "in_recycle_bin": {
+          "type": "boolean",
+          "description": "云服务器是否处于回收站中"
+        },
+        "spod_id": {
+          "type": "string",
+          "description": "共池裸机按整机柜发放的同一批次的批创ID"
+        },
+        "updated": {
+          "type": "string",
+          "description": "云服务器上一次更新时间。时间格式例如:2020-05-22T07:48:53Z"
+        },
+        "launched_at": {
+          "type": "string",
+          "description": "云服务器启动时间。时间格式例如:2020-05-22T07:48:53.000000。"
+        },
+        "description": {
+          "type": "string",
+          "description": "云服务器的描述信息。"
+        },
+        "key_name": {
+          "type": "string",
+          "description": "云服务器使用的密钥对名称。"
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "云服务器是否为锁定状态。\n\ntrue:锁定\nfalse:未锁定"
+        },
+        "root_device_name": {
+          "type": "string",
+          "description": "云服务器系统盘的设备名称,例如当系统盘的磁盘模式是VDB时,为/dev/vda。"
+        },
+        "tenancy": {
+          "type": "string",
+          "description": "在专属主机或共享池中创建云服务器。默认为在共享池创建。值为: shared或dedicated。\n\nshared:表示共享池。\ndedicated:表示专属主机。"
+        },
+        "dedicated_host_id": {
+          "type": "string",
+          "description": "专属主机ID。此属性仅在tenancy值为dedicated时有效,不指定此属性,系统将自动分配租户可自动放置云服务器的专属主机。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "查询绑定某个企业项目的云服务器。\n若需要查询当前用户所有企业项目绑定的云服务,请传参all_granted_eps。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云服务器元数据。",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "云服务器的标签列表。",
+          "x-ifnull": "show-provided",
+          "items": {
+            "type": "string"
+          }
+        },
+        "addresses": {
+          "type": "object",
+          "description": "云服务器对应的网络地址信息。",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/NetworkAddresses"
+            }
+          }
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "云服务器的安全组信息。",
+          "items": {
+            "$ref": "#/definitions/SecurityGroup"
+          }
+        },
+        "volumes_attached": {
+          "type": "array",
+          "description": "云服务器挂载磁盘信息。",
+          "items": {
+            "$ref": "#/definitions/VolumeAttach"
+          }
+        },
+        "image": {
+          "$ref": "#/definitions/Image"
+        },
+        "flavor": {
+          "$ref": "#/definitions/FlavorQuasar"
+        },
+        "fault": {
+          "$ref": "#/definitions/Fault"
+        },
+        "cpu_options": {
+          "$ref": "#/definitions/CpuOptions"
+        }
+      }
+    },
+    "PageLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "对应快捷链接。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": " "
+    },
+    "ListCloudServersResponseBody": {
+      "required": [
+        "servers"
+      ],
+      "properties": {
+        "servers": {
+          "type": "array",
+          "description": "查询云服务器信息列表。",
+          "items": {
+            "$ref": "#/definitions/CloudServer"
+          }
+        },
+        "servers_links": {
+          "type": "array",
+          "description": "分页查询时,查询下一页数据链接。",
+          "items": {
+            "$ref": "#/definitions/PageLink"
+          }
+        },
+        "request_id": {
+          "type": "string"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "SecurityGroup": {
+      "type": "object",
+      "description": "云服务器所属安全组信息。",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "安全组名称。"
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组ID。"
+        }
+      }
+    },
+    "GpuInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "GPU设备名称。"
+        },
+        "count": {
+          "type": "integer",
+          "description": "GPU设备数量。"
+        },
+        "memory_mb": {
+          "type": "integer",
+          "description": "GPU设备的内存,单位为MB。"
+        }
+      }
+    },
+    "Image": {
+      "required": [
+        "id"
+      ],
+      "type": "object",
+      "description": "云服务器镜像信息。",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "镜像ID。"
+        }
+      }
+    },
+    "MarketModel": {
+      "type": "object",
+      "x-ifnull": "hide",
+      "properties": {
+        "charge_mode": {
+          "description": "计费类型",
+          "type": "string",
+          "enum": [
+            "spot",
+            "prepaid",
+            "postpaid"
+          ],
+          "default": "postpaid"
+        },
+        "prepaid_info": {
+          "x-ifnull": "hide",
+          "type": "object",
+          "properties": {
+            "expired_time": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Fault": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "错误码。",
+          "format": "int32"
+        },
+        "created": {
+          "type": "string",
+          "description": "异常出现的时间。"
+        },
+        "message": {
+          "type": "string",
+          "description": "异常描述信息。"
+        },
+        "details": {
+          "type": "string",
+          "description": "异常详情信息。"
+        }
+      }
+    },
+    "VolumeAttach": {
+      "required": [
+        "id"
+      ],
+      "type": "object",
+      "description": "云服务器挂载磁盘信息。",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云磁盘ID。"
+        },
+        "delete_on_termination": {
+          "type": "boolean",
+          "description": "一个标志,指示在删除服务器时是否删除附加的卷。\n默认情况下,这是False",
+          "default": false
+        },
+        "device": {
+          "description": "挂载点",
+          "type": "string"
+        },
+        "bootIndex": {
+          "description": "盘在云服务器上的挂载顺序,0表示启动盘。",
+          "type": "string",
+          "default": "-1"
+        },
+        "size": {
+          "type": "integer",
+          "description": "云盘大小(单位:GB)。"
+        }
+      }
+    },
+    "CpuOptions": {
+      "properties": {
+        "hw:cpu_threads": {
+          "type": "integer",
+          "format": "int32",
+          "description": "CPU超线程数, 决定CPU是否开启超线程。取值范围:1,2。\n\n- 1: 关闭超线程。\n- 2: 打开超线程。\n\n取值不能大于flavor中的   hw:cpu_threads,并且目标flavor配置需满足 \"hw:cpu_policy\": \"dedicated\",\"hw:cpu_threads\": \"2\"需要同时满足如下条件,才能设置为“关闭超线程”\n\n- 只能在实例创建或者resize时指定。\n- 只有目标flavor的extra_specs参数:\n- 存在“hw:cpu_policy”并取值为“dedicated”。\n- 存在“hw:cpu_threads”并取值为“2”。",
+          "enum": [
+            1,
+            2
+          ]
+        }
+      },
+      "description": "自定义CPU选项。"
+    },
+    "FlavorQuasar": {
+      "type": "object",
+      "description": "云服务器规格信息。",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云服务器类型ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云服务器规格名称。"
+        },
+        "vcpus": {
+          "type": "integer",
+          "description": "该云服务器规格对应的CPU核数。"
+        },
+        "ram": {
+          "type": "integer",
+          "description": "该云服务器规格对应的内存大小,单位为MB."
+        },
+        "disk": {
+          "type": "integer",
+          "description": "该云服务器规格对应要求系统盘大小,0为不限制。"
+        },
+        "gpus": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GpuInfo"
+          },
+          "x-ifnull": "show-provided"
+        },
+        "asic_accelerators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ASICAcceleratorInfo"
+          },
+          "x-ifnull": "show-provided"
+        }
+      }
+    },
+    "ASICAcceleratorInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "ASIC设备名称。"
+        },
+        "count": {
+          "type": "integer",
+          "description": "ASIC设备数量。"
+        },
+        "memory_mb": {
+          "type": "integer",
+          "description": "ASIC设备的内存,单位为MB。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

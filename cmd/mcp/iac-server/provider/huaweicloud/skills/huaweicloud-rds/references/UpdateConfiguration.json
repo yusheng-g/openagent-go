@@ -1,0 +1,160 @@
+{
+  "name": "UpdateConfiguration",
+  "summary": "修改参数模板参数",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations/{config_id}": {
+      "put": {
+        "tags": [
+          "参数配置"
+        ],
+        "operationId": "UpdateConfiguration",
+        "summary": "修改参数模板参数",
+        "description": "修改参数模板参数。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- MySQL:仅支持5.6,5.7。\n- Microsoft SQL Server:仅支持2014 SE、2014 EE、2016 SE、2016 EE、2008 R2 EE、2008 R2 WEB、2014 WEB、2016 WEB。\n- 修改参数模板名称“name”不能与默认参数模板或已有参数模板的名称重复,默认参数模板不允许修改。\n- 修改的参数必须在指定数据库版本的默认参数范围内,具体可配置范围请参见《关系型数据库用户指南》中“编辑参数模板”的内容。\n- 敏感参数,例如:“lower_case_table_names”,修改存在风险,详情请参见《关系型数据库用户指南》中“MySQL参数修改注意事项”的内容。\n- 要修改的参数信息,不可全部为空。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "config_id",
+            "in": "path",
+            "description": "参数模板ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "UpdateConfigurationRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigurationForUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/UpdateConfigurationRsp"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/configurations/463b4b58-d0e8-4e2b-9560-5dea4552fde9",
+        "x-request-examples-1": {
+          "name": "configuration_test",
+          "description": "configuration_test",
+          "values": {
+            "max_connections": "10",
+            "autocommit": "OFF"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ConfigurationForUpdate": {
+      "properties": {
+        "name": {
+          "description": "参数模板名称。最长64个字符,只允许大写字母、小写字母、数字、和“-_.”特殊字符。",
+          "type": "string"
+        },
+        "description": {
+          "description": "参数模板描述。最长256个字符,不支持>!<\"&'=特殊字符。默认为空。",
+          "type": "string"
+        },
+        "values": {
+          "description": "参数值对象,用户基于默认参数模板自定义的参数值。为空时不修改参数值。\n\n- key:参数名称,\"max_connections\":\"10\"。为空时不修改参数值,key不为空时value也不可为空。\n- value:参数值,\"max_connections\":\"10\"。",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "example": {
+            "max_connections": "10"
+          }
+        }
+      }
+    },
+    "UpdateConfigurationRsp": {
+      "type": "object",
+      "description": "更新参数模板的结果",
+      "properties": {
+        "configuration": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "参数模板ID。"
+            },
+            "name": {
+              "type": "string",
+              "description": "参数模板名称。"
+            },
+            "ignored_params": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "请求参数“values”中被忽略掉,没有生效的参数名称列表。\n当参数不存在时,参数修改不会下发,并通过此参数返回所有被忽略的参数名称。"
+            }
+          },
+          "description": "参数模板信息"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

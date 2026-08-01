@@ -1,0 +1,144 @@
+{
+  "name": "SendSmsVerificationCode",
+  "summary": "发送短信验证码",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/sm-verification-code": {
+      "post": {
+        "summary": "发送短信验证码",
+        "description": "企业主账号在自建平台发送短信验证码。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "SendSmsVerificationCode",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/sm-verification-code",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "发送短信验证码请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SendSmVerificationCodeReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/sm-verification-code",
+        "x-request-examples-1": {
+          "sm_template_args": [
+            {
+              "value": "sub***001",
+              "key": "sub_customer_name"
+            }
+          ],
+          "mobile_phone": "188****8888",
+          "language": "zh-cn",
+          "timeout": 10
+        },
+        "responses": {
+          "204": {
+            "description": "发送短信验证码响应"
+          },
+          "400": {
+            "description": "|CBC.0100:parameter error|"
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TemplateArgs": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "模板参数名。 目前仅支持sub_customer_name:表明企业主创建企业子的名字",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        },
+        "value": {
+          "type": "string",
+          "description": "模板参数值。 key对应的取值。",
+          "minLength": 1,
+          "maxLength": 255,
+          "example": ""
+        }
+      }
+    },
+    "SendSmVerificationCodeReq": {
+      "required": [
+        "mobile_phone",
+        "sm_template_args"
+      ],
+      "properties": {
+        "mobile_phone": {
+          "type": "string",
+          "description": "接受短信验证码的手机号码。",
+          "minLength": 1,
+          "maxLength": 20,
+          "example": ""
+        },
+        "timeout": {
+          "description": "超时时间,默认值为10分钟。 单位:分钟",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1",
+          "default": 10,
+          "maximum": 100,
+          "minimum": 0
+        },
+        "language": {
+          "type": "string",
+          "description": "发送的短信的语言。 zh-cn: 中文en-us: 英语 默认为偏好设置的默认语言。",
+          "minLength": 0,
+          "maxLength": 5,
+          "example": "zh-cn"
+        },
+        "sm_template_args": {
+          "description": "短信发送模板中的变量,具体参见表1。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/definitions/TemplateArgs"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

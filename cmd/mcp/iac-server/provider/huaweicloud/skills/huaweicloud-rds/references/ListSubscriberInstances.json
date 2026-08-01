@@ -1,0 +1,186 @@
+{
+  "name": "ListSubscriberInstances",
+  "summary": "查询可配置为当前实例订阅服务器的实例列表",
+  "tags": "发布订阅(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/replication/subscribers": {
+      "get": {
+        "tags": [
+          "发布订阅(SQL Server)"
+        ],
+        "operationId": "ListSubscriberInstances",
+        "summary": "查询可配置为当前实例订阅服务器的实例列表",
+        "description": "查询可配置为当前实例订阅服务器的实例列表",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "subscriber_instance_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "订阅实例ID"
+          },
+          {
+            "name": "subscriber_instance_name",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "订阅实例名"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数。默认为10,不能为负数,最小值为1,最大值为100。",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/ReplicationInstanceResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "instances": [
+                  {
+                    "instance_id": "1aa833000a124455a6801e83cca37e6ein04",
+                    "instance_name": "rds-instance-0101",
+                    "data_vip": "172.168.11.22"
+                  },
+                  {
+                    "instance_id": "ce39f2fc82cb414bb0840a1f2543cda7in04",
+                    "instance_name": "rds-instance-0102",
+                    "data_vip": "172.168.11.41"
+                  }
+                ],
+                "total_count": 2
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/1aa833000a124455a6801e83cca37e6ein04/replication/subscribers?subscriber_instance_id=4027eb1052fc460d9576b0d64c1fb6efin04&subscriber_instance_name=test&limit=20&offset=0"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ReplicationInstanceResponseBody": {
+      "description": "可配置为当前实例订阅服务器的实例列表响应体。",
+      "required": [
+        "instances",
+        "total_count"
+      ],
+      "properties": {
+        "instances": {
+          "description": "实例列表。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReplicationInstanceInfo"
+          }
+        },
+        "total_count": {
+          "description": "总数。",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "ReplicationInstanceInfo": {
+      "description": "实例详情。",
+      "required": [
+        "instance_id",
+        "instance_name",
+        "data_vip"
+      ],
+      "properties": {
+        "instance_id": {
+          "description": "实例id",
+          "type": "string",
+          "example": "1aa833000a124455a6801e83cca37e6ein04"
+        },
+        "instance_name": {
+          "description": "实例名称。",
+          "type": "string",
+          "example": "rds-instance-0101"
+        },
+        "data_vip": {
+          "description": "内网地址。",
+          "type": "string",
+          "example": "172.168.11.22"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

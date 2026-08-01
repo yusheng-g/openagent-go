@@ -1,0 +1,149 @@
+{
+  "name": "ShowVersion",
+  "summary": "查询API版本信息列表",
+  "tags": "API版本信息",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "API版本信息"
+        ],
+        "summary": "查询API版本信息列表",
+        "description": "该API用于查询CCE服务当前支持的API版本信息列表。",
+        "operationId": "ShowVersion",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "表示查询API版本信息列表成功。",
+            "schema": {
+              "$ref": "#/definitions/APIVersionList"
+            },
+            "examples": {
+              "application/json": {
+                "versions": [
+                  {
+                    "id": "v3",
+                    "links": [
+                      {
+                        "href": "https://cce.region.***.com/v3",
+                        "rel": "self"
+                      }
+                    ],
+                    "min_version": "",
+                    "status": "CURRENT",
+                    "updated": "2018-09-15 00:00:00Z",
+                    "version": ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "查询API版本信息列表",
+        "x-order": 3,
+        "x-publishpath": "",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-api-type": "open-api",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,g42,hk_g42,hcso,hcs,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "APIVersionDetail": {
+      "description": "API版本的详细信息",
+      "required": [
+        "id",
+        "links",
+        "min_version",
+        "status",
+        "updated",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "API版本ID。例如v3。"
+        },
+        "links": {
+          "type": "array",
+          "description": "API版本的URL链接信息。",
+          "items": {
+            "$ref": "#/definitions/APIVersionLink"
+          }
+        },
+        "min_version": {
+          "type": "string",
+          "description": "如果API的这个版本支持微版本,则支持最小的微版本。如果不支持微版本,这将是空字符串。"
+        },
+        "status": {
+          "type": "string",
+          "description": "API版本的状态。\n可以是:\n- CURRENT这是使用的API的首选版本;\n- SUPPORTED:这是一个较老的,但仍然支持的API版本;\n- DEPRECATED:一个被废弃的API版本,该版本将被删除",
+          "enum": [
+            "CURRENT",
+            "SUPPORTED",
+            "DEPRECATED"
+          ]
+        },
+        "updated": {
+          "type": "string",
+          "description": "API发布时间(UTC格式)。例如API版本为v3时,值为'2018-09-15 00:00:00Z'。"
+        },
+        "version": {
+          "type": "string",
+          "description": "如果API的这个版本支持微版本,则支持最大的微版本。如果不支持微版本,这将是空字符串。"
+        }
+      }
+    },
+    "APIVersionLink": {
+      "description": "API版本的URL链接信息。",
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "API版本信息的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "链接属性。self:自助链接包含版本链接的资源。立即链接后使用这些链接。",
+          "enum": [
+            "self"
+          ]
+        }
+      }
+    },
+    "APIVersionList": {
+      "description": "API版本的详细信息",
+      "required": [
+        "versions"
+      ],
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "API版本信息列表",
+          "items": {
+            "$ref": "#/definitions/APIVersionDetail"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

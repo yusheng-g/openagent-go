@@ -1,0 +1,177 @@
+{
+  "name": "ShowMultiAccountTransferAmount",
+  "summary": "查询企业主账号可拨款余额",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/transfer-amount": {
+      "get": {
+        "summary": "查询企业主账号可拨款余额",
+        "description": "企业主账号在自建平台查询自己的可拨款余额。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "ShowMultiAccountTransferAmount",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/transfer-amount",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-07-15",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "balance_type",
+            "in": "query",
+            "required": true,
+            "description": "账户类型:BALANCE_TYPE_DEBIT:余额账户BALANCE_TYPE_CREDIT:信用账户",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "BALANCE_TYPE_DEBIT",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,默认值为0。只有信用账户有效。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询条数,默认值为10。只有信用账户有效。",
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "default": 10
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/transfer-amount?balance_type=BALANCE_TYPE_DEBIT&offset=0&limit=10",
+        "responses": {
+          "200": {
+            "description": "查询企业主账号可拨款余额响应",
+            "schema": {
+              "$ref": "#/definitions/QueryMultiAccountTransferAmountRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "amount_infos": [
+                  {
+                    "avail_transfer_amount": 9.99,
+                    "measure_id": 1,
+                    "currency": "CNY",
+                    "amount": null,
+                    "credit_amount": null,
+                    "expire_time": null
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:parameter error|"
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryMultiAccountTransferAmountRsp": {
+      "properties": {
+        "total_count": {
+          "description": "记录条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "amount_infos": {
+          "description": "可拨款余额信息,如果是余额账户,只会有一条记录。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransferAmountInfoV2"
+          }
+        }
+      }
+    },
+    "TransferAmountInfoV2": {
+      "properties": {
+        "avail_transfer_amount": {
+          "description": "可拨款的金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": "0.01"
+        },
+        "measure_id": {
+          "description": "金额单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币",
+          "example": "CNY"
+        },
+        "amount": {
+          "description": "账户余额(仅balance_type=信用账户时才有这个字段)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "credit_amount": {
+          "description": "信用额度(仅balance_type=信用账户时才有这个字段)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "信用额度过期时间。 UTC时间,格式为:2016-03-28T14:45:38Z。 (仅balance_type=信用账户时才有这个字段)。 如果查询信用账户可拨款余额的查询结果没有失效时间,表示永久有效。",
+          "example": "2016-03-28T14:45:38Z"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

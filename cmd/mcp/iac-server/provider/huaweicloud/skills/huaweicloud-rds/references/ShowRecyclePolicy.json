@@ -1,0 +1,83 @@
+{
+  "name": "ShowRecyclePolicy",
+  "summary": "查询回收站的回收策略。",
+  "tags": "回收站",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/recycle-policy": {
+      "get": {
+        "tags": [
+          "回收站"
+        ],
+        "operationId": "ShowRecyclePolicy",
+        "summary": "查询回收站的回收策略。",
+        "description": "查询回收站的回收策略。",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-constraint": "支持所有引擎",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "schema": {
+              "$ref": "#/definitions/QueryRecyclePolicyRespV2"
+            },
+            "examples": {
+              "application/json": {
+                "retention_period_in_days": 7
+              }
+            }
+          }
+        },
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "x-request-examples-description-1": "查询回收策略",
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/054e292c9880d4992f02c0196d3ea468/instances/recycle-policy"
+      }
+    }
+  },
+  "definitions": {
+    "QueryRecyclePolicyRespV2": {
+      "type": "object",
+      "properties": {
+        "retention_period_in_days": {
+          "type": "integer",
+          "format": "int32",
+          "description": "回收站实例保留天数"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

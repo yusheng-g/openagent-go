@@ -1,0 +1,338 @@
+{
+  "name": "GetObject",
+  "summary": "获取对象内容",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "get": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "GetObject",
+        "summary": "获取对象内容",
+        "description": "GET操作从对象存储下载对象。使用GET接口前,请确认必须拥有对象的READ权限。如果对象Owner向匿名用户授予READ访问权限,则可以在不使用鉴权头域的情况下访问该对象。\n\n#### 服务端加密 ####\n如果客户端的对象上传时,使用了客户提供的加密密钥进行服务端加密,当下载对象时,同样也必须在消息中提供密钥。\n\n#### 多版本 ####\n默认情况下,获取的是最新版本的对象。如果最新版本的对象是删除标记,则返回对象不存在。如果要获取指定版本的对象,请求可携带versionId消息参数。\n\n#### 归档存储对象 ####\n如果要下载的对象是归档存储类对象,由于对象存储在存档设备中,您必须先使用对象取回,然后才能下载该归档存储对象。对象处于不同的取回状态时,给出不同响应:如果对象已取回,下载对象成功时需要返回x-obs-restore头域指示取回失效时间。对未取回或正在取回的归档存储对象发送下载请求时,会返回错误403 Forbidden。\n",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/octet-stream"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-support-debug": "N",
+        "x-request-examples-url-1": "GET /object01 HTTP/1.1",
+        "x-request-examples-description-1": "下载整个对象\n",
+        "x-request-examples-1": "GET /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:24:33 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:NxtSMS0jaVxlLnxlO9awaMTn47s=\n",
+        "x-request-examples-url-2": "GET /object01 HTTP/1.1",
+        "x-request-examples-description-2": "指定Range下载对象(下载对象单个区间内容)\n",
+        "x-request-examples-2": "GET /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Mon, 14 Sep 2020 09:59:04 GMT\nRange:bytes=20-30\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:mNPLWQMDWg30PTkAWiqJaLl3ALg=\n",
+        "x-request-examples-url-3": "GET /object01 HTTP/1.1",
+        "x-request-examples-description-3": "指定Range下载对象(下载对象多个区间内容)\n",
+        "x-request-examples-3": "GET /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Mon, 14 Sep 2020 10:02:43 GMT\nRange:bytes=20-30,40-50\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:ZwM7Vk2d7sD9o8zRsRKehgKQDkk=\n",
+        "x-request-examples-url-4": "GET /example.jpg?x-image-process=image/resize,w_100 HTTP/1.1",
+        "x-request-examples-description-4": "下载缩放图片\n",
+        "x-request-examples-4": "GET /example.jpg?x-image-process=image/resize,w_100 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:20:51 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:9Nsx45WjaVxlLnxlO9awasXn83N=\n",
+        "x-request-examples-url-5": "GET /object01 HTTP/1.1",
+        "x-request-examples-description-5": "如果对象Etag值匹配则下载该对象\n",
+        "x-request-examples-5": "GET /object01 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:24:33 GMT\nIf-Match: 682e760adb130c60c120da3e333a8b09\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:NxtSMS0jaVxlLnxlO9awaMTn47s=\n",
+        "x-request-examples-url-6": "GET /object02?AccessKeyId=H4IPJX0TQTHTHEBQQCEC&Expires=1532688887&Signature=EQmDuOhaLUrzrzRNZxwS72CXeXM%3D HTTP/1.1",
+        "x-request-examples-description-6": "在URL中携带签名下载对象\n",
+        "x-request-examples-6": "GET /object02?AccessKeyId=H4IPJX0TQTHTHEBQQCEC&Expires=1532688887&Signature=EQmDuOhaLUrzrzRNZxwS72CXeXM%3D HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Fri, 27 Jul 2018 10:52:31 GMT\n",
+        "x-request-examples-url-7": "GET /object01?response-content-disposition=attachment; filename*=utf-8'name1 HTTP/1.1",
+        "x-request-examples-description-7": "下载对象并重命名,使用response-content-disposition参数实现\n",
+        "x-request-examples-7": "GET /object01?response-content-disposition=attachment; filename*=utf-8''name1 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:24:33 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:NxtSMS0jaVxlLnxlO9awaMTn47s=\n",
+        "x-request-examples-url-8": "GET /object01?attname=name1 HTTP/1.1",
+        "x-request-examples-description-8": "下载对象并重命名,使用attname参数实现\n",
+        "x-request-examples-8": "GET /object01?attname=name1 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:24:33 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:NxtSMS0jaVxlLnxlO9awaMTn47s=\n",
+        "parameters": [
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "通过此请求下载的对象名称。\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "response-content-type",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Content-Type头。\n",
+            "type": "string"
+          },
+          {
+            "name": "response-content-language",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Content-Language头。\n",
+            "type": "string"
+          },
+          {
+            "name": "response-expires",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Expires头。\n",
+            "type": "string"
+          },
+          {
+            "name": "response-cache-control",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Cache-Control头。\n",
+            "type": "string"
+          },
+          {
+            "name": "response-content-disposition",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Content-Disposition头。\n\n示例:response-content-disposition=attachment; filename*=utf-8''name1\n\n下载对象重命名为“name1”,如果name1中存在中文,需要将中文进行URL编码。\n",
+            "type": "string"
+          },
+          {
+            "name": "response-content-encoding",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Content-Encoding头。\n",
+            "type": "string"
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "description": "指定获取对象的版本号。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-image-process",
+            "in": "query",
+            "required": false,
+            "description": "图片处理服务。\n\n示例:\n\n命令方式:x-image-process=image/commands\n\n样式方式:x-image-process=style/stylename\n\n详见[《图片处理特性指南》](https://support.huaweicloud.com/usermanual-obs/obs_01_0001.html)。\n",
+            "type": "string"
+          },
+          {
+            "name": "attname",
+            "in": "query",
+            "required": false,
+            "description": "重写响应中的Content-Disposition头。\n\n示例:attname=name1\n\n下载对象重命名为“name1”。\n",
+            "type": "string"
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "required": false,
+            "description": "获取对象时,获取在Range范围内的对象内容。如果Range不合法则忽略此字段获取整个对象。\n\nRange是一个范围,它的起始值最小为0,最大为对象长度减1。Range范围的起始值为必填项,如果Range只包含起始值,表示获取起始值到对象长度减1这个区间的对象内容。\n\n携带Range头域后,响应消息的ETag仍是对象的ETag,而不是Range范围内对象的ETag。\n\nbytes=byte_range\n\n示例1:bytes=0-4\n示例2:bytes=1024\n示例3:bytes=10-20,30-40(表示多个区间)\n",
+            "type": "string"
+          },
+          {
+            "name": "If-Modified-Since",
+            "in": "header",
+            "required": false,
+            "description": "如果对象在请求中指定的时间之后有修改,则返回对象内容;否则的话返回304(not modified)。\n\n类型:符合http://www.ietf.org/rfc/rfc2616.txt规定格式的HTTP时间字符串。\n",
+            "type": "string"
+          },
+          {
+            "name": "If-Unmodified-Since",
+            "in": "header",
+            "required": false,
+            "description": "如果对象在请求中指定的时间之后没有修改,则返回对象内容;否则的话返回412(precondition failed)。\n\n类型:符合http://www.ietf.org/rfc/rfc2616.txt规定格式的HTTP时间字符串。\n",
+            "type": "string"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "description": "如果对象的ETag和请求中指定的ETag相同,则返回对象内容,否则的话返回412(precondition failed)。\n\n(ETag值,例:0f64741bf7cb1089e988e4585d0d3434。)\n",
+            "type": "string"
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "required": false,
+            "description": "如果对象的ETag和请求中指定的ETag不相同,则返回对象内容,否则的话返回304(not modified)。\n\n(ETag值,例:0f64741bf7cb1089e988e4585d0d3434。)\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-algorithm",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的算法。\n\n示例:x-obs-server-side-encryption-customer-algorithm:AES256\n\n约束:需要和x-obs-server-side-encryption-customer-key, x-obs-server-side-encryption-customer-key-MD5一起使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-key",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的密钥。该密钥用于解密对象。\n\n示例:x-obs-server-side-encryption-customer-key:K7QkYpBkM5+hca27fsNkUnNVaobncnLht/rCB2o/9Cw=\n\n约束:该头域由256-bit的密钥经过base64-encoded得到,需要和x-obs-server-side-encryption-customer-algorithm,x-obs-server-side-encryption-customer-key-MD5一起使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-customer-key-MD5",
+            "in": "header",
+            "required": false,
+            "description": "SSE-C方式下使用该头域,该头域表示加密使用的密钥的MD5值。MD5值用于验证密钥传输过程中没有出错。\n\n示例:x-obs-server-side-encryption-customer-key-MD5:4XvB3tbNTN+tIEVa0/fGaQ==\n\n约束:该头域由密钥的128-bit MD5值经过base64-encoded得到,需要和x-obs-server-side-encryption-customer-algorithm,x-obs-server-side-encryption-customer-key一起使用。\n",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-expiration": {
+                "description": "当对象单独设置了对象lifecycle,过期时间以对象lifecycle为准,该消息头用expiry-date描述对象的详细过期信息;如果对象没有设置对象lifecycle,设置了桶级别lifecycle,过期时间以桶级别lifecycle为准,该消息头用expiry-date和rule-id两个键值对描述对象的详细过期信息;否则不显示该头域。\n",
+                "type": "string"
+              },
+              "x-obs-website-redirect-location": {
+                "description": "当桶设置了Website配置,就可以设置对象元数据的这个属性,Website接入点返回301重定向响应,将请求重定向到该属性指定的桶内的另一个对象或外部的URL。\n",
+                "type": "string"
+              },
+              "x-obs-delete-marker": {
+                "description": "标识对象是否是删除标记。如果不是,则响应中不会出现该消息头。\n",
+                "type": "boolean"
+              },
+              "x-obs-version-id": {
+                "description": "对象的版本号。如果该对象无版本号,则响应中不会出现该消息头。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-kms-key-id": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域,该头域表示主密钥。\n格式为: regionID:domainID(租户ID):key/key_id\n\n其中regionID是使用密钥所属region的ID;domainID是使用密钥所属租户的租户ID;key_id是本次加密使用的密钥ID。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-algorithm": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示解密使用的算法。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-key-MD5": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示解密使用的密钥的MD5值。\n",
+                "type": "string"
+              },
+              "x-obs-object-type": {
+                "description": "对象为非Normal对象时,会返回此头域,可取值为:Appendable。\n",
+                "type": "string"
+              },
+              "x-obs-next-append-position": {
+                "description": "对象为Appendable对象时,会返回此头域。\n",
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "schema": {
+              "type": "file"
+            },
+            "x-response-examples-description-1": "下载整个对象\n",
+            "x-response-examples-1": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 8DF400000163D3F2A89604C49ABEE55E\nAccept-Ranges: bytes\nETag: \"3b46eaf02d3b6b1206078bb86a7b7013\"\nLast-Modified: WED, 01 Jul 2015 01:20:29 GMT\nContent-Type: binary/octet-stream\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSQwxJ2I1VvxD/Xgwuw2G2RQax30gdXU\nDate: WED, 01 Jul 2015 04:24:33 GMT\nContent-Length: 4572\n\n[4572 Bytes object content]\n",
+            "x-response-examples-description-2": "指定Range下载对象(下载对象单个区间内容)\n",
+            "x-response-examples-2": "HTTP/1.1 206 Partial Content\nServer: OBS\nx-obs-request-id: 000001748C0DBC35802E360C9E869F31\nAccept-Ranges: bytes\nETag: \"2200446c2082f27ed2a569601ca4e360\"\nLast-Modified: Mon, 14 Sep 2020 01:16:20 GMT\nContent-Range: bytes 20-30/4583\nContent-Type: binary/octet-stream\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSn2JHu4okx9NBRNZAvBGawa3lt3g31g\nDate: Mon, 14 Sep 2020 09:59:04 GMT\nContent-Length: 11\n\n[ 11 Bytes object content]\n",
+            "x-response-examples-description-3": "指定Range下载对象(下载对象多个区间内容)\n",
+            "x-response-examples-3": "HTTP/1.1 206 Partial Content\nServer: OBS\nx-obs-request-id: 8DF400000163D3F2A89604C49ABEE55E\nAccept-Ranges: bytes\nETag: \"2200446c2082f27ed2a569601ca4e360\"\nLast-Modified: Mon, 14 Sep 2020 01:16:20 GMT\nContent-Type: multipart/byteranges;boundary=35bcf444-e65f-4c76-9430-7e4a68dd3d26\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSIBWFOVW8eeWujkqSnoIANC2mNR1cdF\nDate: Mon, 14 Sep 2020 10:02:43 GMT\nContent-Length: 288\n\n--35bcf444-e65f-4c76-9430-7e4a68dd3d26\nContent-type: binary/octet-stream\nContent-range: bytes 20-30/4583\n[ 11 Bytes object content]\n--35bcf444-e65f-4c76-9430-7e4a68dd3d26\nContent-type: binary/octet-stream\nContent-range: bytes 40-50/4583\n[ 11 Bytes object content]\n--35bcf444-e65f-4c76-9430-7e4a68dd3d\n",
+            "x-response-examples-description-4": "下载缩放图片\n",
+            "x-response-examples-4": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 8DF400000163D3F2A89604C49ABEE55E\nx-image-process:image/resize,w_100\nAccept-Ranges: bytes\nETag: \"3b46eaf02d3b6b1206078bb86a7b7013\"\nLast-Modified: WED, 01 Jul 2015 01:20:29 GMT\nContent-Type: image/jpeg\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSQwxJ2I1VvxD/Xgwuw2G2RQax30gdXU\nDate: WED, 01 Jul 2015 04:20:51 GMT\nContent-Length: 49\n\n[ 49 Bytes object content]\n",
+            "x-response-examples-description-5": "如果存储的对象的Etag值是682e760adb130c60c120da3e333a8b09,则下载成功\n",
+            "x-response-examples-5": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 5DEB00000164A21E1FC826C58F6BA001\nAccept-Ranges: bytes\nETag: \"682e760adb130c60c120da3e333a8b09\"\nLast-Modified: Mon, 16 Jul 2015 08:03:34 GMT\nContent-Type: application/octet-stream\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSbkdml1sLSvKnoHaRcOwRI+6+ustDwk\nDate: Mon, 16 Jul 2015 08:04:00 GMT\nContent-Length: 8\n\n[ 8 Bytes object content]\n",
+            "x-response-examples-description-6": "在URL中携带签名下载对象\n",
+            "x-response-examples-6": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 804F00000164DB5E5B7FB908D3BA8E00\nETag: \"682e760adb130c60c120da3e333a8b09\"\nLast-Modified: Mon, 16 Jul 2015 08:03:34 GMT\nContent-Type: application/octet-stream\nx-obs-id-2: 32AAAUJAIAABAAAQAAEAABAAAQAAEAABCTlpxILjhVK/heKOWIP8Wn2IWmQoerfw\nDate: Fri, 27 Jul 2018 10:52:31 GMT\nContent-Length: 8\n\n[ 8 Bytes object content]\n",
+            "x-response-examples-description-7": "下载对象并重命名,使用response-content-disposition参数实现\n",
+            "x-response-examples-7": "GET /object01?response-content-disposition=attachment; filename*=utf-8''name1 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:24:33 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:NxtSMS0jaVxlLnxlO9awaMTn47s=\n",
+            "x-response-examples-description-8": "上传对象\n",
+            "x-response-examples-8": ""
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

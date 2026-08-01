@@ -1,0 +1,98 @@
+{
+  "name": "AssociateAgencyWithProjectPermission",
+  "summary": "为委托授予项目服务权限",
+  "tags": "委托管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-AGENCY/projects/{project_id}/agencies/{agency_id}/roles/{role_id}": {
+      "put": {
+        "tags": [
+          "委托管理"
+        ],
+        "summary": "为委托授予项目服务权限",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)为委托授予项目服务权限。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "AssociateAgencyWithProjectPermission",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "委托方的项目ID,获取方式请参见:[获取项目名称、项目ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "0945241c5ebc4660bac540d48f2a2c14",
+            "x-order": 2
+          },
+          {
+            "name": "agency_id",
+            "in": "path",
+            "description": "委托ID,获取方式请参见:[获取委托名、委托ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "37f90258b820472bbc8a0f4f0bfd720d",
+            "x-order": 3
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "description": "权限ID,获取方式请参见:[获取权限名、权限ID](https://support.huaweicloud.com/api-iam/iam_10_0001.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "0f3a2d418ed747fa8be46e92757be9ff",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "授权成功。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "为委托授予项目服务权限",
+        "x-constraint": "URL中role_id对应的权限由黑名单控制,不能是secu_admin、te_agency。",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 69,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-AGENCY/projects/{project_id}/agencies/{agency_id}/roles/{role_id}",
+        "x-request-examples-text-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-AGENCY/projects/{project_id}/agencies/{agency_id}/roles/{role_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

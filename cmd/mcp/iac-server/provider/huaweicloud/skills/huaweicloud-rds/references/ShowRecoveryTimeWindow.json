@@ -1,0 +1,130 @@
+{
+  "name": "ShowRecoveryTimeWindow",
+  "summary": "查询wal日志恢复时间窗",
+  "tags": "配置只读延迟库(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/recovery-time": {
+      "get": {
+        "tags": [
+          "配置只读延迟库(PostgreSQL)"
+        ],
+        "x-request-examples-url-1": "https://rds.cn-north-1.myhuaweicloud.com/v3/0483b6b16e954cb88930a360d2c4e663/instances/794c38e5309344818f4b33b86ebce9b4in03/recovery-time",
+        "x-request-examples-description-1": "查询wal日志恢复时间窗",
+        "operationId": "ShowRecoveryTimeWindow",
+        "summary": "查询wal日志恢复时间窗",
+        "description": "查询wal日志恢复时间窗",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "操作的实例ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询wal日志恢复时间窗成功",
+            "schema": {
+              "$ref": "#/definitions/QueryRecoveryTimeWindowResp"
+            },
+            "examples": {
+              "application/json": {
+                "recovery_min_time": "2024-08-17 19:17:35+10",
+                "recovery_max_time": "2024-08-20 22:53:28+10"
+              }
+            }
+          },
+          "400": {
+            "description": "查询wal日志恢复时间窗失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_code": "DBS.200005",
+                "error_msg": "Parameter error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "QueryRecoveryTimeWindowResp": {
+      "type": "object",
+      "description": "查询wal日志恢复时间窗响应",
+      "required": [
+        "recovery_min_time",
+        "recovery_max_time"
+      ],
+      "properties": {
+        "recovery_min_time": {
+          "description": "恢复时间窗左边界(不包含)",
+          "type": "string"
+        },
+        "recovery_max_time": {
+          "description": "恢复时间窗右边界(包含)",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

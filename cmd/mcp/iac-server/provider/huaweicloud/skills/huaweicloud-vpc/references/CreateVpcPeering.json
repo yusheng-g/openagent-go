@@ -1,0 +1,381 @@
+{
+  "name": "CreateVpcPeering",
+  "summary": "创建对等连接",
+  "tags": "对等连接",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/vpc/peerings": {
+      "post": {
+        "tags": [
+          "对等连接"
+        ],
+        "summary": "创建对等连接",
+        "description": "创建对等连接。",
+        "operationId": "CreateVpcPeering",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "in": "body",
+            "name": "peering",
+            "description": "peering对象",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateVpcPeeringRequestBody"
+            },
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "peering": {
+                  "name": "test",
+                  "id": "22b76469-08e3-4937-8c1d-7aad34892be1",
+                  "request_vpc_info": {
+                    "vpc_id": "9daeac7c-a98f-430f-8e38-67f9c044e299",
+                    "tenant_id": "f65e9ebc-ed5d-418b-a931-9a723718ba4e"
+                  },
+                  "accept_vpc_info": {
+                    "vpc_id": "f583c072-0bb8-4e19-afb2-afb7c1693be5",
+                    "tenant_id": "f65e9ebc-ed5d-418b-a931-9a723718ba4e"
+                  },
+                  "status": "ACTIVE",
+                  "description": "test description"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/VpcPeeringResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建对等连接",
+        "x-constraint": "同一租户下创建对等连接时,无需对端接受对等连接请求即可创建成功。\n不同租户创建对等连接时,需要对端租户接受请求才可以创建成功。对端租户拒绝请求时,对等连接无法创建。",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 35,
+        "x-request-examples-description-1": "创建对等连接",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/vpc/peerings",
+        "x-request-examples-1": {
+          "peering": {
+            "name": "test",
+            "request_vpc_info": {
+              "vpc_id": "9daeac7c-a98f-430f-8e38-67f9c044e299"
+            },
+            "accept_vpc_info": {
+              "vpc_id": "f583c072-0bb8-4e19-afb2-afb7c1693be5"
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"peering\": {\n        \"name\": \"test\",\n        \"request_vpc_info\": {\n            \"vpc_id\": \"9daeac7c-a98f-430f-8e38-67f9c044e299\"\n        },\n        \"accept_vpc_info\": {\n            \"vpc_id\": \"f583c072-0bb8-4e19-afb2-afb7c1693be5\"\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2017-9-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "VpcPeeringResponseBody": {
+      "required": [
+        "peering"
+      ],
+      "properties": {
+        "peering": {
+          "description": "peering对象",
+          "$ref": "#/definitions/VpcPeering",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "CreateVpcPeeringRequestBody": {
+      "required": [
+        "peering"
+      ],
+      "properties": {
+        "peering": {
+          "description": "peering对象",
+          "$ref": "#/definitions/CreateVpcPeeringOption",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorResp": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "NeutronError对象",
+          "$ref": "#/definitions/NeutronError"
+        }
+      },
+      "description": ""
+    },
+    "CreateVpcPeeringOption": {
+      "required": [
+        "accept_vpc_info",
+        "name",
+        "request_vpc_info"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "peering-01",
+          "description": "功能说明:对等连接名称\n取值范围:支持1~64个字符",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:对等连接的描述\n取值范围:0-255个字符,不能包含“<”和“>”。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "request_vpc_info": {
+          "description": "对等连接发起端vpc信息",
+          "$ref": "#/definitions/VpcInfo",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "accept_vpc_info": {
+          "description": "对等连接接受端vpc信息",
+          "$ref": "#/definitions/VpcInfo",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "peering对象"
+    },
+    "NeutronError": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Resource could not be found",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "example": "ResourceNotFound",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "VpcPeering": {
+      "required": [
+        "accept_vpc_info",
+        "created_at",
+        "description",
+        "id",
+        "name",
+        "request_vpc_info",
+        "status",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "对等连接ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "name": {
+          "type": "string",
+          "example": "peering-01",
+          "description": "功能说明:对等连接名称\n取值范围:支持1~64个字符",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "status": {
+          "type": "string",
+          "example": "ACTIVE",
+          "description": "功能说明:对等连接状态\n取值范围:\n- PENDING_ACCEPTANCE:等待接受\n- REJECTED:已拒绝。\n- EXPIRED:已过期。\n- DELETED:已删除。\n- ACTIVE:活动的。",
+          "enum": [
+            "PENDING_ACCEPTANCE",
+            "REJECTED",
+            "EXPIRED",
+            "DELETED",
+            "ACTIVE"
+          ],
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "request_vpc_info": {
+          "description": "对等连接发起端vpc信息",
+          "$ref": "#/definitions/VpcInfo",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "accept_vpc_info": {
+          "description": "对等连接接受端vpc信息",
+          "$ref": "#/definitions/VpcInfo",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "对等连接描述",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        }
+      },
+      "description": "peering对象"
+    },
+    "VpcInfo": {
+      "required": [
+        "vpc_id"
+      ],
+      "properties": {
+        "vpc_id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "对等连接其中一端vpc ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "b433fedb577940bfa59abff86482ed1a",
+          "description": "对等连接其中一端vpc所属的租户ID\n约束:跨租户VPC创建对等连接时必选",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,123 @@
+{
+  "name": "ListSmallVersion",
+  "summary": "查询小版本号",
+  "tags": "查询版本",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/datastores/{database_name}/small-version": {
+      "get": {
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "description": "查询小版本号",
+        "summary": "查询小版本号",
+        "operationId": "ListSmallVersion",
+        "tags": [
+          "查询版本"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "database_name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "数据库引擎名。\n取值范围:\n支持的引擎如下,不区分大小写:\nPostgreSQL"
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "required": true,
+            "description": "数据库版本号。(可输入小版本号)",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "参数解释:\n索引位置,偏移量。从第一条数据偏移offset条数据后开始查询。\n约束限制:必须为数字,不能为负数。\n取值范围:大于等于0的整数。\n默认取值:0",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "参数解释:\n查询记录数。\n约束限制:不涉及。\n取值范围:默认为100,不能为负数,最小值为1,最大值为100。\n默认取值:100",
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回信息",
+            "schema": {
+              "$ref": "#/definitions/QueryDatabaseSmallVersionResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DatabaseSmallVersion": {
+      "type": "object",
+      "description": "版本信息对象",
+      "required": [
+        "id",
+        "name",
+        "favored"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "参数解释:\n数据库版本ID,该字段不会有重复。"
+        },
+        "name": {
+          "type": "string",
+          "description": "参数解释:\n数据库版本号。"
+        },
+        "favored": {
+          "type": "boolean",
+          "description": "参数解释:\n是否优选版本。"
+        }
+      }
+    },
+    "QueryDatabaseSmallVersionResponse": {
+      "type": "object",
+      "description": "小版本查询返回对象",
+      "required": [
+        "data_stores",
+        "count"
+      ],
+      "properties": {
+        "data_stores": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DatabaseSmallVersion"
+          },
+          "description": "参数解释:\n数据库版本信息列表。"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "参数解释:\n查询总个数。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

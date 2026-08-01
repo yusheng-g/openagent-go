@@ -1,0 +1,261 @@
+{
+  "name": "BatchDeleteSubnetTags",
+  "summary": "批量删除子网资源标签",
+  "tags": "子网资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/{project_id}/subnets/{subnet_id}/tags/action": {
+      "post": {
+        "tags": [
+          "子网资源标签管理"
+        ],
+        "summary": "批量删除子网资源标签",
+        "description": "为指定的子网资源实例批量删除标签\n此接口为幂等接口:删除时,如果删除的标签不存在,默认处理成功;删除时不对标签字符集范围做校验。删除时tags结构体不能缺失,key不能为空,或者空字符串。",
+        "operationId": "BatchDeleteSubnetTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchDeleteSubnetTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteSubnetTagsRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "b433fedb577940bfa59abff86482ed1a",
+            "x-order": 2
+          },
+          {
+            "name": "subnet_id",
+            "in": "path",
+            "description": "子网ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "正常返回"
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量删除子网资源标签",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 54,
+        "x-request-examples-description-1": "example-1:创建资源标签",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/{project_id}/subnets/{subnet_id}/tags/action",
+        "x-request-examples-1": {
+          "action": "create",
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value3"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n    \"action\": \"create\",\n    \"tags\": [\n        {\n            \"key\": \"key1\",\n            \"value\": \"value1\"\n        },\n        {\n            \"key\": \"key2\",\n            \"value\": \"value3\"\n        }\n    ]\n}",
+        "x-request-examples-description-2": "example-2:删除资源标签",
+        "x-request-examples-url-2": "POST https://{Endpoint}/v2.0/{project_id}/subnets/{subnet_id}/tags/action",
+        "x-request-examples-2": {
+          "action": "delete",
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value3"
+            }
+          ]
+        },
+        "x-request-examples-text-2": "{\n    \"action\": \"delete\",\n    \"tags\": [\n        {\n            \"key\": \"key1\",\n            \"value\": \"value1\"\n        },\n        {\n            \"key\": \"key2\",\n            \"value\": \"value3\"\n        }\n    ]\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "BatchDeleteSubnetTagsRequestBody": {
+      "required": [
+        "action",
+        "tags"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "功能说明:操作标识\n取值范围:delete",
+          "enum": [
+            "delete"
+          ],
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,tlf,ctc,hcso,obc"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "NeutronErrorResp": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "NeutronError对象",
+          "$ref": "#/definitions/NeutronError"
+        }
+      },
+      "description": ""
+    },
+    "NeutronError": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Resource could not be found",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "example": "ResourceNotFound",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 0,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "minLength": 0,
+          "maxLength": 43,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

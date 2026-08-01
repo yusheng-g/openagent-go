@@ -1,0 +1,152 @@
+{
+  "name": "ListDatastores",
+  "summary": "查询数据库引擎的版本",
+  "tags": "引擎版本和规格",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/datastores/{database_name}": {
+      "get": {
+        "tags": [
+          "引擎版本和规格"
+        ],
+        "operationId": "ListDatastores",
+        "x-support-sdk": "Y",
+        "summary": "查询数据库引擎的版本",
+        "description": "查询数据库引擎的版本。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "database_name",
+            "in": "path",
+            "description": "数据库引擎。支持的引擎如下,不区分大小写:\nMySQL\nPostgreSQL\nSQLServer",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "MySQL",
+              "PostgreSQL",
+              "SQLServer",
+              "MariaDB"
+            ],
+            "x-example": "MySQL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DatastoreResponse"
+            },
+            "examples": {
+              "application/json": {
+                "dataStores": [
+                  {
+                    "id": "87620726-6802-46c0-9028-a8785e1f1921",
+                    "name": "8.0.21"
+                  },
+                  {
+                    "id": "87620726-6802-46c0-9028-a8785e1f1922",
+                    "name": "5.7.33"
+                  },
+                  {
+                    "id": "e8a8b8cc-63f8-4fb5-8d4a-24c502317a62",
+                    "name": "5.6.51"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/datastores/mysql"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "DatastoreResponse": {
+      "required": [
+        "dataStores"
+      ],
+      "properties": {
+        "dataStores": {
+          "description": "数据库引擎信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LDatastore"
+          }
+        }
+      }
+    },
+    "LDatastore": {
+      "description": "数据库版本信息。",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "数据库版本ID。",
+          "example": "87620726-6802-46c0-9028-a8785e1f1922"
+        },
+        "name": {
+          "type": "string",
+          "description": "数据库版本号。\n- 对于MySQL引擎可以返回小版本号,例如MySQL 5.6.51版本,将返回5.6.51。\n- 对于PostgreSQL和SQL Server引擎,只返回两位数的大版本号,例如PostgreSQL 9.6.X版本,仅返回9.6。",
+          "example": "5.7"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

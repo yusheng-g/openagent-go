@@ -1,0 +1,131 @@
+{
+  "name": "ListPackageProducts",
+  "summary": "查询套餐包列表",
+  "tags": "套餐包管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/package-products": {
+      "get": {
+        "tags": [
+          "套餐包管理"
+        ],
+        "summary": "查询套餐包列表",
+        "description": "查询套餐包列表",
+        "operationId": "ListPackageProducts",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n参数表示用户的语言/所在区域。根据 locale 参数,系统会返回适合该语言/区域的套餐包名称。\n**约束限制:**\n不涉及\n**取值范围**:\n- zh-cn: 显示中文名称,例如:“Autopilot 通用型 1,000 核时CPU月包”\n- en-us: 显示英文名称,例如:“Autopilot General Computing 1,000 vCPU-hours CPU monthly package”\n\n**默认取值:**\nzh-cn",
+            "type": "string",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ListPackageProductResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "package_products": [
+                  {
+                    "product_name": "Autopilot 通用型 1,000 核时CPU月包",
+                    "resource_spec_code": "autopilot.default.cpu.1000vCPU-hour.monthly",
+                    "period_type": "month",
+                    "instance_type": "general-computing"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询套餐包列表",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-order": 1,
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "PackageProductDetail": {
+      "required": [
+        "product_name",
+        "resource_spec_code",
+        "period_type",
+        "instance_type"
+      ],
+      "properties": {
+        "product_name": {
+          "type": "string",
+          "description": "套餐包名称。"
+        },
+        "resource_spec_code": {
+          "type": "string",
+          "description": "套餐包规格。"
+        },
+        "period_type": {
+          "type": "string",
+          "description": "周期类型,如month(表示月包)、year(表示年包)。"
+        },
+        "instance_type": {
+          "type": "string",
+          "description": "实例类型,如general-computing。"
+        }
+      },
+      "description": "套餐包详情。"
+    },
+    "ListPackageProductResponseBody": {
+      "required": [
+        "package_products"
+      ],
+      "properties": {
+        "package_products": {
+          "type": "array",
+          "description": "套餐包列表。",
+          "items": {
+            "$ref": "#/definitions/PackageProductDetail"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      },
+      "description": "套餐包列表-response结构体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16384,
+      "x-order": 2
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

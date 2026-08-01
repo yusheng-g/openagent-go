@@ -1,0 +1,221 @@
+{
+  "name": "UpgradeLoadbalancer",
+  "summary": "升级负载均衡器类型",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/upgrade": {
+      "post": {
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/060576798a80d5762fafc01a9b5eedc7/elb/loadbalancers/2c0b5b97-221b-4136-afc2-15d6570f31cb/upgrade",
+        "x-request-examples-description-1": "共享型实例升级为独享型实例:开始升级",
+        "x-request-examples-text-1": {
+          "action": "start",
+          "availability_zone_list": [
+            "AZ1"
+          ],
+          "elb_virsubnet_ids": [
+            "5eddff5a-f45f-46d7-9f2b-70dc669feff9"
+          ],
+          "l4_flavor_id": "f3c46bc2-1304-40b4-902b-cefae3858d17",
+          "l7_flavor_id": "1b333094-bd31-4cb8-97e2-ea762fde3576"
+        },
+        "x-request-examples-1": {
+          "action": "start",
+          "availability_zone_list": [
+            "AZ1"
+          ],
+          "elb_virsubnet_ids": [
+            "5eddff5a-f45f-46d7-9f2b-70dc669feff9"
+          ],
+          "l4_flavor_id": "f3c46bc2-1304-40b4-902b-cefae3858d17",
+          "l7_flavor_id": "1b333094-bd31-4cb8-97e2-ea762fde3576"
+        },
+        "tags": [
+          "负载均衡器"
+        ],
+        "summary": "升级负载均衡器类型",
+        "description": "升级负载均衡器类型。支持将共享型ELB升级为独享型ELB,但不支持独享型降级为共享型。",
+        "operationId": "UpgradeLoadbalancer",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:要升级的负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "UpgradeLoadbalancerRequestBody",
+            "description": "**参数解释**:负载均衡器升级请求体。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpgradeV3RequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "操作正常返回。",
+            "schema": {
+              "$ref": "#/definitions/UpgradeLoadBalancerResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "request_id": "841e0da7-5835-4130-9a47-01688f34a154",
+                "job_id": "062804a2-9e39-4dde-bd9b-271859ee312b"
+              }
+            }
+          }
+        },
+        "x-name": "升级负载均衡器类型",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 16,
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2024-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "UpgradeLoadBalancerResponseBody": {
+      "type": "object",
+      "description": "**参数解释**:升级负载均衡器的响应体。",
+      "required": [
+        "request_id",
+        "job_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "job_id": {
+          "type": "string",
+          "description": "**参数解释**:升级的任务ID。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "UpgradeV3RequestBody": {
+      "type": "object",
+      "description": "**参数解释**:升级负载均衡器请求体。\n\n**约束限制**:不涉及",
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "**参数解释**:升级过程的操作。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- start:开始升级。只有当负载均衡器的provisioning_status为ACTIVE时,才能开始升级。\n- complete:确认升级完成。只有当实例的provisioning_status为UPGRADED时,才能确认升级完成。确认后,实例无法再执行回退。\n- rollback:回退升级,只有当实例的provisioning_status为UPGRADED、UPGRADE_FAILED或ROLLBACK_FAILED时,才能回退升级。\n\n**默认取值**:不涉及",
+          "enum": [
+            "start",
+            "complete",
+            "rollback"
+          ]
+        },
+        "l4_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:四层规格ID。仅action为start时生效。\n\n**约束限制**:\n- 负载均衡器有四层监听器时该字段必须指定。\n- l4_flavor_id和l7_flavor_id不能同时为空。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "l7_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:七层规格ID。仅action为start时生效。\n\n**约束限制**:\n- 负载均衡器有七层监听器时该字段必须指定。\n- l4_flavor_id和l7_flavor_id不能同时为空。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "availability_zone_list": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "cn-southwest-1a"
+          ],
+          "description": "**参数解释**:可用区列表。仅在action为start时生效,且action为start时,该字段必传。\n可通过GET https://{ELB_Endpoint}/v3/{project_id}/elb/availability-zones 接口来查询可用区集合列表。创建负载均衡器时,从查询结果选择某一个可用区集合,并从中选择一个或多个可用区。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "ipv6_vip_virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器所在子网的IPv6网络ID。\n可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的id得到。\n\n**约束限制**:\n- 若实例升级到独享型后期望使用IPv6功能,则升级时该字段必传。\n- ipv6_vip_virsubnet_id所属VPC必须与原共享型实例所属VPC相同。\n- ipv6_vip_virsubnet_id所属子网需要开启IPv6。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的IPv6私网IP。\n\n**约束限制**:\n- 该地址必须包含在所属子网的IPv6网段内,且未被占用。\n- 传入ipv6_vip_address时必须传入ipv6_vip_virsubnet_id。\n- 不传入ipv6_vip_address,但传入ipv6_vip_virsubnet_id,则自动分配IPv6私网IP。\n- 不传入ipv6_vip_address,且不传ipv6_vip_virsubnet_id,则不分配私网IP,ipv6_vip_address=null。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "elb_virsubnet_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "5eddff5a-f45f-46d7-9f2b-70dc669feff9"
+          ],
+          "description": "**参数解释**:下联面子网的网络ID列表。\n可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的neutron_network_id得到。\n\n**约束限制**:\n- 仅action为start时生效。\n- 若不指定该字段,则选择vip_subnet_cidr_id子网对应的网络ID。\n- 下联面子网必须属于该LB所在的VPC。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      }
+    },
+    "UpgradePrepaidOption": {
+      "required": [
+        "period_type",
+        "resource_package_type"
+      ],
+      "properties": {
+        "period_type": {
+          "type": "string",
+          "description": "**参数解释**:预付费实例的订购周期类型,当前支持月和年。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- month:月\n- year:年\n\n**默认取值**:不涉及",
+          "enum": [
+            "month",
+            "year"
+          ]
+        },
+        "period_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:预付费实例的订购周期数。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- period_type为month时,为[1,9]。\n- period_type为year时,为[1,3]。\n\n**默认取值**:不涉及",
+          "minimum": 1,
+          "maximum": 9,
+          "default": 1
+        },
+        "resource_package_type": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**:购买定向套餐包。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "auto_pay": {
+          "type": "boolean",
+          "description": "**参数解释**:自动支付开关。下单订购后,是否自动从客户的账户中支付。\n\n**约束限制**:开启自动支付时,只能使用账户的现金支付。如果要使用代金券,请选择关闭自动支付,然后在用户费用中心,选择代金券支付。\n\n**取值范围**:\n - true:开启自动支付。\n - false:关闭自动支付。\n**默认取值**:false",
+          "default": false
+        }
+      },
+      "description": "**参数解释**:创建负载均衡器实例的预付费计费配置。若传入该结构体,则创建预付费类型的负载均衡器实例。\n\n**约束限制**:不涉及",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,261 @@
+{
+  "name": "ListSlowlogStatistics",
+  "summary": "获取慢日志统计信息",
+  "tags": "获取日志信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/slowlog/statistics": {
+      "get": {
+        "tags": [
+          "获取日志信息"
+        ],
+        "operationId": "ListSlowlogStatistics",
+        "summary": "获取慢日志统计信息",
+        "x-support-sdk": "Y",
+        "description": "获取慢日志统计信息",
+        "x-constraint": "- 该接口仅支持MySQL引擎。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "cur_page",
+            "in": "query",
+            "description": "当前页号",
+            "required": true,
+            "type": "integer",
+            "x-example": 1
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "每页多少条记录,取值范围0~100",
+            "required": true,
+            "type": "integer",
+            "x-example": 100
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+            "required": true,
+            "type": "string",
+            "x-example": "2020-02-06T10:41:14+0800"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+            "required": true,
+            "type": "string",
+            "x-example": "2020-02-08T10:41:14+0800"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "语句类型,ALL表示查询所有语句类型,也可指定日志类型\n- INSERT\n- UPDATE\n- SELECT\n- DELETE\n- CREATE\n- ALL",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "INSERT",
+              "UPDATE",
+              "SELECT",
+              "DELETE",
+              "CREATE",
+              "ALL"
+            ]
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "取值范围:\"executeTime\",表示按执行时间降序排序,不传或者传其他表示按执行次数降序排序",
+            "required": false,
+            "type": "string",
+            "x-example": "executeTime"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/SlowlogStatisticsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "pageNumber": 1,
+                "pageRecord": 100,
+                "slowLogList": [],
+                "totalRecord": 0
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "迁移主备实例的备机",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/slowlog/statistics?cur_page=1&per_page=2&type=INSERT&start_date=2020-02-06T10:41:14+0800&end_date=2020-02-07T10:41:14+0800"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "SlowlogStatisticsResponse": {
+      "required": [
+        "pageNumber",
+        "pageRecord",
+        "slowLogList",
+        "totalRecord"
+      ],
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "description": "当前页码"
+        },
+        "pageRecord": {
+          "type": "integer",
+          "description": "每页条数"
+        },
+        "slowLogList": {
+          "type": "array",
+          "description": "慢日志列表",
+          "items": {
+            "$ref": "#/definitions/SlowLogStatistics"
+          }
+        },
+        "totalRecord": {
+          "type": "integer",
+          "description": "总条数"
+        },
+        "startTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "开始时间"
+        },
+        "endTime": {
+          "type": "integer",
+          "format": "int64",
+          "description": "结束时间"
+        }
+      }
+    },
+    "SlowLogStatistics": {
+      "description": "慢日志信息。",
+      "required": [
+        "count",
+        "time",
+        "lockTime",
+        "rowsSent",
+        "rowsExamined",
+        "database",
+        "users",
+        "querySample",
+        "type",
+        "clientIP"
+      ],
+      "properties": {
+        "count": {
+          "type": "string",
+          "description": "执行次数。"
+        },
+        "time": {
+          "type": "string",
+          "description": "平均执行时间。"
+        },
+        "lockTime": {
+          "type": "string",
+          "description": "平均等待锁时间。"
+        },
+        "rowsSent": {
+          "type": "integer",
+          "format": "int64",
+          "description": "平均结果行数量。"
+        },
+        "rowsExamined": {
+          "type": "integer",
+          "format": "int64",
+          "description": "平均扫描的行数量。"
+        },
+        "database": {
+          "type": "string",
+          "description": "所属数据库。"
+        },
+        "users": {
+          "type": "string",
+          "description": "帐号。"
+        },
+        "querySample": {
+          "type": "string",
+          "description": "执行语法。"
+        },
+        "type": {
+          "type": "string",
+          "description": "语句类型。"
+        },
+        "clientIP": {
+          "type": "string",
+          "description": "IP地址。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

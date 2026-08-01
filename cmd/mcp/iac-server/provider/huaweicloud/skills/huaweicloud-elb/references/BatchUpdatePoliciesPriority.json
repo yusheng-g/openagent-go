@@ -1,0 +1,145 @@
+{
+  "name": "BatchUpdatePoliciesPriority",
+  "summary": "批量更新转发策略优先级",
+  "tags": "转发策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/l7policies/batch-update-priority": {
+      "post": {
+        "x-request-examples-text-1": {
+          "l7policies": [
+            {
+              "id": "1fe93e12-6e07-47a9-8f81-3346c015601d",
+              "priority": 11
+            }
+          ]
+        },
+        "x-request-examples-1": {
+          "l7policies": [
+            {
+              "id": "1fe93e12-6e07-47a9-8f81-3346c015601d",
+              "priority": 11
+            }
+          ]
+        },
+        "tags": [
+          "转发策略"
+        ],
+        "summary": "批量更新转发策略优先级",
+        "description": "批量更新转发策略的优先级。",
+        "operationId": "BatchUpdatePoliciesPriority",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "BatchUpdatePoliciesPriorityRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BatchUpdatePoliciesPriorityRequestBody"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/BatchUpdatePoliciesPriorityResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "request_id": "e5c07525-1470-47b6-9b0c-567527a036aa"
+              }
+            }
+          }
+        },
+        "x-name": "批量更新转发策略优先级",
+        "x-constraint": "该接口只用于更新action为REDIRECT_TO_POOL的独享型实例下的转发策略。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-request-examples-description-1": "批量更新转发策略优先级",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/060576782980d5762f9ec014dd2f1148/elb/l7policies/batch-update-priority",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "",
+        "x-first-open-time": "2021-1-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,ocb,ctc,hcso,g42,tm,cmcc,hk_g42,hws_ocb,hk_vdf,fcs",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "BatchUpdatePoliciesPriorityRequestBody": {
+      "properties": {
+        "l7policies": {
+          "type": "array",
+          "description": "**参数解释**:批量更新转发策略优先级的请求参数。\n\n**约束限制**:不涉及",
+          "items": {
+            "$ref": "#/definitions/BatchUpdatePriorityRequestBody"
+          }
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "BatchUpdatePoliciesPriorityResponseBody": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "BatchUpdatePriorityRequestBody": {
+      "required": [
+        "id",
+        "priority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:待更新的l7policy的ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:转发策略的优先级。数字越小表示优先级越高。\n\n**约束限制**:\n- 同一个监听器下不同转发策略之间不允许重复的优先级数值。 \n- 当关联的监听器的高级转发策略功能(enhance_l7policy_enable)开启后才会生效,未开启传入该字段会报错。\n- 当关联的监听器的高级转发策略功能(enhance_l7policy_enable)未开启,按原有policy的排序逻辑,自动排序。不同域名优先级独立。相同域名下,按path的compare_type排序,精确>前缀>正则,匹配类型相同时,path的长度越长优先级越高。若policy下只有域名rule,没有路径rule,默认path为前缀匹配/。\n- 共享型负载均衡器下的转发策略不支持该字段。\n\n**取值范围**:\n- 当action为REDIRECT_TO_LISTENER时,支持指定为0-10000。\n- 其它action取值,支持指定为1-10000。\n\n**默认取值**:\n- 若关联的监听器的高级转发策略功能(enhance_l7policy_enable)未开启,且不传入该字段,则新创建的转发策略的优先级的值为1。\n- 当action为REDIRECT_TO_LISTENER时,则新创建的转发策略的优先级的值为0。\n- 其它action取值,新创建的转发策略的优先级的值为同一监听器下已有转发策略的优先级的最大值+1。\n  + 若监听器下没有转发策略,则新建的转发策略的优先级为1。\n  + 若当前已有转发策略的优先级的最大值是10000,则新创建的转发策略会因超出取值范围10000而失败。此时可通过传入指定priority,或调整原有policy的优先级来避免错误。",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      },
+      "description": "**参数解释**:批量更新转发策略优先级的请求参数。\n\n**约束限制**:不涉及"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

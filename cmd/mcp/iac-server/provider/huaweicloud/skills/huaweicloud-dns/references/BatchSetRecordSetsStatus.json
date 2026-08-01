@@ -1,0 +1,310 @@
+{
+  "name": "BatchSetRecordSetsStatus",
+  "summary": "批量设置记录集状态",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/recordsets/statuses": {
+      "put": {
+        "tags": [
+          "批量操作"
+        ],
+        "x-request-examples-description-1": "批量设置解析记录的状态为暂停解析。",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v2.1/recordsets/statuses",
+        "x-request-examples-1": {
+          "status": "DISABLE",
+          "recordset_ids": [
+            "2c9eb155587228570158722b6ac30007",
+            "2c9eb155587228570158722b6ac30008"
+          ]
+        },
+        "operationId": "BatchSetRecordSetsStatus",
+        "summary": "批量设置记录集状态",
+        "description": "批量设置记录集状态。\n响应结果中只包含本次实际更新的记录集。\n支持公网域名和内网域名的记录集。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BatchSetRecordSetsStatusRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "批量设置记录集状态请求。",
+            "schema": {
+              "$ref": "#/definitions/BatchSetRecordSetsStatusRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量设置记录集状态响应。",
+            "schema": {
+              "$ref": "#/definitions/BatchSetRecordSetsStatusResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "links": {
+                  "self": "https://Endpoint/v2.1/recordsets/statuses"
+                },
+                "recordsets": [
+                  {
+                    "id": "2c9eb155587228570158722b6ac30007",
+                    "name": "www.example.com.",
+                    "description": "This is an example record set.",
+                    "type": "A",
+                    "ttl": 300,
+                    "records": [
+                      "192.168.10.2",
+                      "192.168.10.1"
+                    ],
+                    "status": "DISABLE",
+                    "zone_id": "2c9eb155587194ec01587224c9f90149",
+                    "zone_name": "example.com.",
+                    "line": null,
+                    "alias_target": null,
+                    "created_at": "2016-11-17T12:03:17.827",
+                    "updated_at": "2016-11-17T12:56:03.827",
+                    "health_check_id": null,
+                    "default": false,
+                    "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
+                    "links": {
+                      "self": "https://Endpoint/v2.1/zones/2c9eb155587194ec01587224c9f90149/recordsets/2c9eb155587228570158722b6ac30007"
+                    },
+                    "weight": null
+                  },
+                  {
+                    "id": "2c9eb155587228570158722b6ac30008",
+                    "name": "www.example.com.",
+                    "description": "This is an example record set.",
+                    "type": "A",
+                    "ttl": 300,
+                    "records": [
+                      "192.168.10.2",
+                      "192.168.10.1"
+                    ],
+                    "status": "DISABLE",
+                    "zone_id": "2c9eb155587194ec01587224c9f90149",
+                    "zone_name": "example.com.",
+                    "line": null,
+                    "alias_target": null,
+                    "created_at": "2016-11-17T12:03:17.827",
+                    "updated_at": "2016-11-17T12:56:03.827",
+                    "health_check_id": null,
+                    "default": false,
+                    "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
+                    "links": {
+                      "self": "https://Endpoint/v2.1/zones/2c9eb155587194ec01587224c9f90149/recordsets/2c9eb155587228570158722b6ac30008"
+                    },
+                    "weight": null
+                  }
+                ],
+                "metadata": {
+                  "total_count": 2
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 4
+      }
+    }
+  },
+  "definitions": {
+    "BatchSetRecordSetsStatusRequestBody": {
+      "required": [
+        "status",
+        "recordset_ids"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "pattern": "DISABLE|ENABLE",
+          "description": "**参数解释:**\n待设置记录集状态。\n**约束限制:**\n不涉及。\n**取值范围:**\n- DISABLE:暂停解析\n- ENABLE:启用解析\n\n**默认取值:**\n不涉及。"
+        },
+        "recordset_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 50,
+          "description": "**参数解释:**\n待设置记录集ID列表。\n**约束限制:**\n最多支持50个。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        }
+      }
+    },
+    "metadata": {
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "description": "**参数解释:**\n满足查询条件的资源总数,不受分页(即limit、offset参数)影响。\n**取值范围:**\n不涉及。",
+          "format": "int32",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。"
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "RecordsetData": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的ID。\n**取值范围:**\n不涉及。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的名称。\n**取值范围:**\n不涉及。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的描述信息。\n**取值范围:**\n长度不超过255个字符。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n记录类型。\n**取值范围:**\n- A:将域名解析到指定的IPv4地址。\n- AAAA:将域名解析到指定的IPv6地址。\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。\n- SRV:用于记录某台服务器对外提供了哪些服务。\n- NS:指定域名的权威DNS服务器。\n- SOA:提供域名的基本信息和权威服务器的详细信息。\n- CAA:指定为域名颁发HTTPS证书的授权CA机构,仅支持公网域名解析。\n- PTR:指定IP地址反向解析记录,仅支持内网域名解析。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "**参数解释:**\n解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n**取值范围:**\n1~2147483647。",
+          "format": "int32"
+        },
+        "records": {
+          "type": "array",
+          "description": "**参数解释:**\n域名解析后的值。\n**取值范围:**\n不涉及。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- PENDING_DISABLE:暂停中\n- DISABLE:暂停\n- ERROR:失败"
+        },
+        "zone_id": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该记录的域名ID。\n**取值范围:**\n不涉及。"
+        },
+        "zone_name": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该记录的域名。\n**取值范围:**\n不涉及。"
+        },
+        "line": {
+          "type": "string",
+          "description": "**参数解释:**\n解析线路ID。\n**取值范围:**\n不涉及。"
+        },
+        "alias_target": {
+          "$ref": "#/definitions/alias_target",
+          "description": "**参数解释:**\n别名记录。\n**取值范围:**\n不涉及。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释:**\n创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释:**\n更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "health_check_id": {
+          "type": "string",
+          "description": "**参数解释:**\n健康检查ID。\n**取值范围:**\n不涉及。"
+        },
+        "default": {
+          "type": "boolean",
+          "description": "**参数解释:**\n标识是否由系统默认生成,系统默认生成的记录集不能删除。\n**取值范围:**\n不涉及。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释:**\n该记录集所属的项目ID。\n**取值范围:**\n不涉及。"
+        },
+        "links": {
+          "$ref": "#/definitions/Link"
+        },
+        "weight": {
+          "type": "integer",
+          "description": "**参数解释:**\n解析记录的权重。\n**取值范围:**\n0~1000。",
+          "format": "int32"
+        }
+      }
+    },
+    "alias_target": {
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "description": "**参数解释:**\n资源服务类型,支持别名记录的服务。\n**约束限制:**\n不涉及。\n**取值范围:**\n- cloudsite:企业门户\n- waf:Web应用防火墙\n\n**默认取值:**\n不涉及。"
+        },
+        "resource_domain_name": {
+          "type": "string",
+          "description": "**参数解释:**\n对应服务下的域名,由各服务提供。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        }
+      },
+      "description": "**参数解释:**\n别名记录。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "BatchSetRecordSetsStatusResponseBody": {
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/Link"
+        },
+        "recordsets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecordsetData"
+          },
+          "description": "**参数解释:**\n记录集列表信息。\n**取值范围:**\n不涉及。"
+        },
+        "metadata": {
+          "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。",
+          "$ref": "#/definitions/metadata"
+        }
+      }
+    },
+    "Link": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "当前资源的链接。"
+        }
+      },
+      "description": "指向当前资源的链接。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

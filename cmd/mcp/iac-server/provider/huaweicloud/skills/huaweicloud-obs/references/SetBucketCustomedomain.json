@@ -1,0 +1,194 @@
+{
+  "name": "SetBucketCustomedomain",
+  "summary": "设置桶的自定义域名",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketCustomedomain",
+        "summary": "设置桶的自定义域名",
+        "description": "OBS使用PUT操作为桶设置自定义域名,设置成功之后,用户访问桶的自定义域名就能访问到桶。\n\n必须保证此自定义域名通过DNS能够正确解析到OBS服务。\n\nOBS自定义域名配置暂不支持HTTPS访问,只支持HTTP访问自定义域名。如需导入证书使用HTTPS协议访问,请[提交工单](https://support.huaweicloud.com/usermanual-ticket/zh-cn_topic_0127038618.html)。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "/?customdomain=obs.ccc.com",
+        "x-request-examples-1": "PUT /?customdomain=obs.ccc.com HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Mon, 14 Jan 2019 08:31:36 +0000\nAuthorization: OBS UDSIAMSTUBTEST000094:u2kJF4kENs6KlIDcAZpAKSKPtnc=\nContent-Length: 0\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "description": "设置自定义域名证书时,必须要携带此头域,来校验请求消息体内容和发送时是否一致。\n按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串。\n示例:n58IG6hfM7vqI4K0vnWpog==\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "customdomain",
+            "in": "query",
+            "required": true,
+            "description": "桶的自定义域名。\n\n类型:字符串,必须满足域名规则。\n\n规格:最长256字节。\n\n默认值:无。\n\n约束:一个桶最多可以设置30个自定义域名,一个自定义域名只能被一个桶使用。\n",
+            "type": "string"
+          },
+          {
+            "name": "SetBucketCustomDomainBody",
+            "in": "body",
+            "description": "若需要配置证书,则必选字段必须携带,若只是配置自定义域名,则不需要\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SetBucketCustomDomainBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "SetBucketCustomDomainBody": {
+      "xml": {
+        "name": "CustomDomainConfiguration"
+      },
+      "description": "自定义域名证书配置容器。\n",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "证书名称。字符长度为3~63位。\n"
+        },
+        "CertificateId": {
+          "type": "string",
+          "description": "自定义域名证书ID。\n"
+        },
+        "Certificate": {
+          "description": "证书内容,可包含中间证书及根证书。若certificate_chain字段传入证书链,则该字段只取证书本身。回车换行需要使用转义字符\\n或者\\r\\n替换。\n",
+          "type": "string"
+        },
+        "CertificateChain": {
+          "description": "证书内容,可包含中间证书及根证书。若certificate_chain字段传入证书链,则该字段只取证书本身。回车换行需要使用转义字符\\n或者\\r\\n替换。\n",
+          "type": "string"
+        },
+        "PrivateKey": {
+          "description": "证书私钥。 不能上传带有口令保护的私钥,回车换行需要使用转义字符\\n或者\\r\\n替换。\n",
+          "type": "string"
+        },
+        "CertificateType": {
+          "description": "证书类型。\n",
+          "type": "string"
+        },
+        "ENCCertificate": {
+          "description": "国密证书的加密证书内容。\n",
+          "type": "string"
+        },
+        "ENCPrivateKey": {
+          "description": "国密证书的加密私钥,回车换行需要使用转义字符\\n或者\\r\\n替换。\n",
+          "type": "string"
+        },
+        "DeleteCertificate": {
+          "description": "证书操作类型,是否删除证书。\n",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

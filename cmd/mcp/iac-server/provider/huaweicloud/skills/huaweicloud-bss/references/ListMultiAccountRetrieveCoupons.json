@@ -1,0 +1,226 @@
+{
+  "name": "ListMultiAccountRetrieveCoupons",
+  "summary": "查询企业子账号可回收优惠券列表",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/retrieve-coupons": {
+      "get": {
+        "summary": "查询企业子账号可回收优惠券列表",
+        "description": "企业主账号在自建平台查询企业子账号的可回收优惠券。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>-   仅支持华为发放的测试类、商务类、活动类代金券。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "ListMultiAccountRetrieveCoupons",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/retrieve-coupons",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2023-04-25",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "sub_customer_id",
+            "in": "query",
+            "required": true,
+            "description": "企业子账户的账号ID。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "064cff4e7800d3b60f24c005d966b180",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,默认值为0。此参数不携带或携带值为空或携带值为null时,取默认值0;不支持携带值为空串。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 0,
+            "default": 0,
+            "x-allowNull": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询条数,默认值为10。此参数不携带或携带值为空或携带值为null时,取默认值0;不支持携带值为空串。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "default": 10,
+            "x-allowNull": true
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/retrieve-coupons?sub_customer_id=0970cf58ff80d4f60fbac0192a9e2bc0",
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询资源内使用量响应| |成功:成功| |参数约束及描述: 查询资源内使用量响应|",
+            "schema": {
+              "$ref": "#/definitions/QueryMultiAccountRetrieveCouponsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "avail_retrieve_coupons": [
+                  {
+                    "coupon_id": "CP19092406014086E3",
+                    "plan_name": "华为云产品代金券",
+                    "source_coupon_id": "CP19092406014086E4",
+                    "balance": "10",
+                    "effective_time": "2019-09-16T16:00:00Z",
+                    "expire_time": "2019-09-16T16:00:00Z",
+                    "use_limits": [
+                      {
+                        "use_limiti_info_id": "CP19092406014086E3",
+                        "limit_key": "simultaneousUseWithDiscountCoupon",
+                        "value1": "1",
+                        "value2": "",
+                        "value_unit": "",
+                        "limit_type": "=",
+                        "promotion_plan_id": "promotionPlanId5322584"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ICouponUseLimitInfoV2": {
+      "properties": {
+        "use_limiti_info_id": {
+          "type": "string",
+          "description": "使用限制ID,主键。",
+          "example": "CP19092406014086E3"
+        },
+        "limit_key": {
+          "type": "string",
+          "description": "折扣限制,key的取值请参考表4。",
+          "example": "simultaneousUseWithDiscountCoupon"
+        },
+        "value1": {
+          "type": "string",
+          "description": "value1。",
+          "example": "90301-175003-0--0,90301-393012-0--0,90301-179002-0--0,90301-187039-0--0"
+        },
+        "value2": {
+          "type": "string",
+          "description": "value2。",
+          "example": "TE10-720aaP30-C0,TE10-720P30-C0,TE20-5X-00,TE10-720P30-C0,TE10-720P30-C0"
+        },
+        "value_unit": {
+          "type": "string",
+          "description": "value单位。",
+          "example": ""
+        },
+        "limit_type": {
+          "type": "string",
+          "description": "限制类型。",
+          "example": "="
+        },
+        "promotion_plan_id": {
+          "type": "string",
+          "description": "促销计划ID。",
+          "example": "promotionPlanId5322584"
+        }
+      }
+    },
+    "AvailRetrieveCoupons": {
+      "properties": {
+        "coupon_id": {
+          "description": "主优惠券ID。",
+          "type": "string",
+          "example": "CP190912081601OJDA"
+        },
+        "plan_name": {
+          "description": "促销计划名称。",
+          "type": "string",
+          "example": "532元优惠券name"
+        },
+        "sub_coupon_id": {
+          "description": "子优惠券ID。主优惠券拨款后生成的子优惠券ID。",
+          "type": "string",
+          "example": "CP19092406014086E4"
+        },
+        "balance": {
+          "description": "优惠券余额。单位为元",
+          "type": "string",
+          "example": "100"
+        },
+        "effective_time": {
+          "description": "生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "type": "string",
+          "example": "2019-05-06T08:05:01Z"
+        },
+        "expire_time": {
+          "description": "失效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "type": "string",
+          "example": "2019-05-06T08:05:01Z"
+        },
+        "use_limits": {
+          "description": "优惠券限制。 具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ICouponUseLimitInfoV2"
+          }
+        }
+      }
+    },
+    "QueryMultiAccountRetrieveCouponsRsp": {
+      "properties": {
+        "total_count": {
+          "description": "记录条数。",
+          "type": "integer",
+          "x-allowNull": true,
+          "example": 32
+        },
+        "avail_retrieve_coupons": {
+          "description": "可回收余额信息,如果是余额账户,只会有一条记录。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AvailRetrieveCoupons"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

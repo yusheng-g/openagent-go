@@ -1,0 +1,194 @@
+{
+  "name": "StartInstanceSingleToHaAction",
+  "summary": "单机转主备实例",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/action": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "StartInstanceSingleToHaAction",
+        "summary": "单机转主备实例",
+        "description": "单机转主备实例。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 包周期实例不能转为主备实例。\n- 有些实例规格不支持升级为主备实例,具体请以实际环境为准。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "InstanceSingleToHaRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Single2Ha"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Single2HaResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "单机转主备",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/action",
+        "x-request-examples-1": {
+          "single_to_ha": {
+            "az_code_new_node": "az2xahz"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ADDomainInfo": {
+      "description": "域信息,加域实例单转主备时必填,非加域实例不需要填写",
+      "required": [
+        "domain_admin_account_name",
+        "domain_admin_pwd"
+      ],
+      "properties": {
+        "domain_admin_account_name": {
+          "type": "string",
+          "description": "域管理员账号名",
+          "example": "Administrator"
+        },
+        "domain_admin_pwd": {
+          "type": "string",
+          "description": "域管理员密码",
+          "example": "password@123"
+        }
+      }
+    },
+    "Single2HaObject": {
+      "description": "单机转主备时必填。",
+      "required": [
+        "az_code_new_node"
+      ],
+      "properties": {
+        "az_code_new_node": {
+          "type": "string",
+          "description": "实例节点可用区码(AZ)。",
+          "example": "az1"
+        },
+        "dsspool_id": {
+          "type": "string",
+          "description": "Dec用户专属存储ID,每个az配置的专属存储不同,实例节点所在专属存储ID,仅支持DEC用户创建时使用。",
+          "example": "f5f84ed7-6f19-4bd4-99d7-b450ad6cc4df"
+        },
+        "is_auto_pay": {
+          "type": "boolean",
+          "description": "仅包周期实例进行单机转主备时可指定,表示是否自动从客户的账户中支付。\n- true,为自动支付。\n- false,为手动支付,默认该方式。",
+          "example": "true"
+        },
+        "ad_domain_info": {
+          "type": "object",
+          "$ref": "#/definitions/ADDomainInfo"
+        }
+      }
+    },
+    "Single2HaResponse": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "单机转主备的任务id。\n仅按需实例单机转主备时会返回该参数。",
+          "example": "dff1d289-4d03-4942-8b9f-463ea07c000d"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单号,包年包月单机转主备时返回该参数。"
+        }
+      }
+    },
+    "Single2Ha": {
+      "required": [
+        "single_to_ha"
+      ],
+      "properties": {
+        "single_to_ha": {
+          "type": "object",
+          "$ref": "#/definitions/Single2HaObject"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,159 @@
+{
+  "name": "ShowMetadata",
+  "summary": "查询Metadata文件",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3-ext/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/metadata": {
+      "get": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "查询Metadata文件",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询身份提供商导入到IAM中的Metadata文件。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ShowMetadata",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "idp_id",
+            "in": "path",
+            "description": "身份提供商ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "ACME",
+            "x-order": 2
+          },
+          {
+            "name": "protocol_id",
+            "in": "path",
+            "description": "协议ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "saml",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "domain_id": "d78cbac186b744899480f25bd022f468",
+                "update_time": "2020-02-12T13:26:25.000000",
+                "data": "$dataContent",
+                "idp_id": "ACME",
+                "protocol_id": "saml",
+                "id": "11354739a6c940bc899fd9070ed1036d",
+                "entity_id": "https://idp.test.com/idp/shibboleth",
+                "xaccount_type": ""
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowMetadataResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询Metadata文件",
+        "x-constraint": "",
+        "x-version": "v3-ext",
+        "x-scope": "Commercial",
+        "x-order": 98,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3-ext/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/metadata",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3-ext/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/metadata",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ShowMetadataResponseBody": {
+      "required": [
+        "data",
+        "domain_id",
+        "entity_id",
+        "id",
+        "idp_id",
+        "protocol_id",
+        "update_time",
+        "xaccount_type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "40c174f35ff94e31b8257ad4991bce8b",
+          "description": "Metadata的ID。"
+        },
+        "idp_id": {
+          "type": "string",
+          "example": "ACME",
+          "description": "身份提供商ID。"
+        },
+        "entity_id": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/idp/shibboleth",
+          "description": "Metadata文件中的entityID字段。"
+        },
+        "protocol_id": {
+          "type": "string",
+          "example": "saml",
+          "description": "协议ID。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "ed7a77d365304f458f7d0a7909c6d889",
+          "description": "用户所属账号ID。"
+        },
+        "xaccount_type": {
+          "type": "string",
+          "description": "账号来源,默认为空。"
+        },
+        "update_time": {
+          "type": "string",
+          "example": "2016-10-26T09:26:23.000000",
+          "description": "导入或更新Metadata文件的时间。"
+        },
+        "data": {
+          "type": "string",
+          "example": "$data",
+          "description": "Metadata文件的内容。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

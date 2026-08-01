@@ -1,0 +1,144 @@
+{
+  "name": "UpdateIncreBackupPolicy1",
+  "summary": "修改增备策略",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/incre-backup/policy": {
+      "put": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "UpdateIncreBackupPolicy1",
+        "summary": "修改增备策略",
+        "description": "修改增备策略",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instance/b086e7af46d94c34a02a516f6b404de2in04/incre-backup/policy",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "project id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "instance id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "UpdateIncreBackupPolicyRequestBody",
+            "description": "UpdateIncreBackupPolicyRequestBody",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateIncreBackupPolicy1RequestBody"
+            }
+          }
+        ],
+        "x-request-examples-text-1": {
+          "incre_backup_policy": {
+            "interval": 10
+          }
+        },
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "responses": {
+          "200": {
+            "description": "修改增备策略的返回体",
+            "schema": {
+              "$ref": "#/definitions/UpdateIncreBackupPolicyResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "2217d6f8-a3ea-46af-8992-ce5df9d29384"
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdateIncreBackupPolicyResponseBody": {
+      "description": "UpdateIncreBackupPolicyResponseBody",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "job id",
+          "example": "2217d6f8-a3ea-46af-8992-ce5df9d29384"
+        }
+      }
+    },
+    "UpdateIncreBackupPolicy1RequestBody": {
+      "type": "object",
+      "description": "update incre backup policy",
+      "required": [
+        "incre_backup_policy"
+      ],
+      "properties": {
+        "incre_backup_policy": {
+          "description": "incre backup policy",
+          "properties": {
+            "interval": {
+              "type": "integer",
+              "description": "增备时间间隔(分)",
+              "enum": [
+                5,
+                10,
+                15,
+                20,
+                25,
+                30,
+                45,
+                60
+              ],
+              "example": 5
+            }
+          }
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,119 @@
+{
+  "name": "ReclaimIndirectPartnerAccount",
+  "summary": "回收云经销商账户拨款",
+  "tags": "管理云经销商账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/partner-accounts/indirect-partner-reclaim": {
+      "post": {
+        "summary": "回收云经销商账户拨款",
+        "description": "华为云总经销商(一级经销商)可以回收云经销商(二级经销商)的账户余额。\n\n一级经销商在伙伴中心回收二级经销商账户拨款请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/dp_120205.html)。",
+        "tags": [
+          "管理云经销商账户(伙伴)"
+        ],
+        "operationId": "ReclaimIndirectPartnerAccount",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用",
+        "x-externalURL": "/v2/accounts/partner-accounts/indirect-partner-reclaim",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-06-22",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "回收云经销商账户拨款请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReclaimIndirectPartnerAccountReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/accounts/partner-accounts/indirect-partner-reclaim",
+        "x-request-examples-1": {
+          "indirect_partner_id": "05bad7a90700d5bf0ff6c00ae40d0ca0",
+          "amount": 0.01
+        },
+        "responses": {
+          "200": {
+            "description": "回收云经销商账户拨款响应",
+            "schema": {
+              "$ref": "#/definitions/ReclaimIndirectPartnerAccountRsp"
+            },
+            "examples": {
+              "application/json": {
+                "trans_id": "RE2007150151010000fd"
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数非法。||CBC.99005001:非合作伙伴。||CBC.99005003:余额不足。||CBC.99000037:您没有操作该云经销商的权限。|"
+          }
+        },
+        "x-category": "管理云经销商账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ReclaimIndirectPartnerAccountRsp": {
+      "properties": {
+        "trans_id": {
+          "type": "string",
+          "description": "事务流水ID,只有成功响应才会返回。",
+          "example": "2020042401"
+        }
+      }
+    },
+    "ReclaimIndirectPartnerAccountReq": {
+      "required": [
+        "indirect_partner_id",
+        "amount"
+      ],
+      "properties": {
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "c9e731c4663646988ef4cdb3122837b6",
+          "x-site": "HC"
+        },
+        "amount": {
+          "description": "回收金额。 华为云总经销商回收的云经销商的账户金额。  说明: 回收金额不能大于云经销商的账户余额。 单位:元。取值大于0且精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "maximum": 999999999999,
+          "minimum": 0.01,
+          "example": "100"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

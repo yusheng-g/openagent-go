@@ -1,0 +1,296 @@
+{
+  "name": "ListLoadbalancersByTags",
+  "summary": "根据标签查询负载均衡器",
+  "tags": "标签管理",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/{project_id}/loadbalancers/resource_instances/action": {
+      "post": {
+        "tags": [
+          "标签管理"
+        ],
+        "summary": "根据标签查询负载均衡器",
+        "description": "根据标签过滤查询负载均衡实例。",
+        "operationId": "ListLoadbalancersByTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ListLoadbalancersByTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListLoadbalancersByTagsRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "resource_id": "01922d0b-23f1-42e0-b081-fdf75a607e87",
+                    "resource_detail": "my lb",
+                    "resource_name": "elb_localtest1",
+                    "tags": [
+                      {
+                        "key": "tag11",
+                        "value": "v11"
+                      },
+                      {
+                        "key": "tag1",
+                        "value": "v1"
+                      },
+                      {
+                        "key": "tag22",
+                        "value": "v22"
+                      }
+                    ]
+                  }
+                ],
+                "total_count": 1
+              },
+              "application/json-1": {
+                "total_count": 1
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListLoadbalancersByTagsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "根据标签查询负载均衡器",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 9,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v2.0/6a0de1c3-7d74-4f4a-b75e-e57135bd2b97/loadbalancers/resource_instances/action",
+        "x-request-examples-1": {
+          "action": "count",
+          "tags": [
+            {
+              "key": "tag11"
+            }
+          ],
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "elb_localtest"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n    \"action\": \"count\",\n    \"tags\": [\n        {\n            \"key\": \"tag11\"\n        }\n    ],\n    \"matches\": [\n        {\n            \"key\": \"resource_name\", \"value\": \"elb_localtest\"\n        }\n    ]\n}",
+        "x-request-examples-description-2": "",
+        "x-request-examples-url-2": "POST https://{ELB_Endpoint}/v2.0/6a0de1c3-7d74-4f4a-b75e-e57135bd2b97/loadbalancers/resource_instances/action",
+        "x-request-examples-2": {
+          "offset": "0",
+          "limit": "100",
+          "action": "count",
+          "tags": [
+            {
+              "key": "tag11"
+            }
+          ],
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "elb_localtest"
+            }
+          ]
+        },
+        "x-request-examples-text-2": "{\n    \"offset\": \"0\",\n    \"limit\": \"100\",\n    \"action\": \"count\",\n    \"tags\": [\n        {\n            \"key\": \"tag11\"\n        }\n    ],\n    \"matches\": [\n        {\n            \"key\": \"resource_name\", \"value\": \"elb_localtest\"\n        }\n    ]\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ActionTag": {
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "标签的键。最大长度127个unicode字符。"
+        },
+        "values": {
+          "type": "array",
+          "description": "标签的值列表。每个值最大长度255个unicode字符, value之间为或的关系。",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "要搜索的标签值。",
+      "type": "object"
+    },
+    "ActionMatch": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。目前只支持resource_name。表示匹配资源实例的名称。"
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符 。当key为resource_name时,表示待匹配的资源实例的名称。"
+        }
+      },
+      "description": "根据标签查询资源时,match字段结构。"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度36个unicode字符。 key不能为空。\n搜索时不对此参数做校验\n不能包含非打印字符\"=\",“*”,“<”,“>”,“\\”,“,”,\"|\",“/”。"
+        },
+        "value": {
+          "type": "string",
+          "description": "值列表。每个值最大长度255个unicode字符,如果values为空列表,则表示any_value。value之间为或的关系。不能包含非打印字符\"=\",“*”,“<”,“>”,“\\”,“,”,\"|\",“/”。"
+        }
+      },
+      "description": "资源标签"
+    },
+    "ListLoadbalancersByTagsResponseBody": {
+      "required": [
+        "total_count"
+      ],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "总记录数。当resources为空时,表示名称为matches字段中指定的value的负载均衡器个数;resources不为空时,表示和tags字段匹配的负载均衡器的个数。",
+          "x-open-region-cloud": ""
+        },
+        "resources": {
+          "type": "array",
+          "description": "根据tag查询出的负载均衡器对象。 当请求中的action为filters,返回体中有该字段。 当请求中的action为count时,返回体中无该字段。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourcesByTag"
+          },
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ListLoadbalancersByTagsRequestBody": {
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "description": "分页起始。"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "分页大小。"
+        },
+        "action": {
+          "type": "string",
+          "description": "操作标识(仅限于filter,count): filter(过滤),如果是filter就是分页查询 count(查询总条数),按照条件将总条数返回。"
+        },
+        "matches": {
+          "type": "array",
+          "description": "搜索字段,key为要匹配的字段,如resource_name等。value为匹配的值。key为固定字典值。根据不同的字段确认是否需要模糊匹配,如resource_name默认为模糊搜索,如果value为空字符串精确匹配。key如果是resource_id则精确匹配。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ActionMatch"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "要搜索的标签值",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ActionTag"
+          }
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResourcesByTag": {
+      "required": [
+        "resource_detail",
+        "resource_id",
+        "resource_name",
+        "tags"
+      ],
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID."
+        },
+        "resource_name": {
+          "type": "string",
+          "description": "资源名称。"
+        },
+        "resource_detail": {
+          "type": "string",
+          "description": "资源描述。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "资源标签。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          }
+        },
+        "super_resource_id": {
+          "type": "string",
+          "description": "父级资源ID。"
+        }
+      },
+      "description": "根据标签查询资源响应返回对象。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

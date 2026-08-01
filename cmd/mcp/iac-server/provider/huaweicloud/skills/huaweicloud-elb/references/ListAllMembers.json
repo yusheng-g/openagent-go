@@ -1,0 +1,536 @@
+{
+  "name": "ListAllMembers",
+  "summary": "后端服务器全局列表",
+  "tags": "后端服务器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/members": {
+      "get": {
+        "x-request-examples-description-1": "查询当前项目下的所有后端服务器列表",
+        "tags": [
+          "后端服务器"
+        ],
+        "summary": "后端服务器全局列表",
+        "description": "查询当前项目下的后端服务器列表。",
+        "operationId": "ListAllMembers",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:后端服务器名称。\n支持多值查询,查询条件格式:*name=xxx&name=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "weight",
+            "in": "query",
+            "description": "**参数解释**:后端服务器的权重,请求按权重在同一后端服务器组下的后端服务器间分发。权重为0的后端不再接受新的请求。当后端服务器所在的后端服务器组的lb_algorithm的取值为SOURCE_IP时,该字段无效。\n支持多值查询,查询条件格式:*weight=xxx&weight=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "**参数解释**:后端服务器的管理状态。\n\n**约束限制**:不涉及\n\n**取值范围**:true、false\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 9
+          },
+          {
+            "name": "subnet_cidr_id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器所在的子网ID。该子网和后端服务器关联的负载均衡器的子网必须在同一VPC下。只支持指定IPv4的子网ID。\n支持多值查询,查询条件格式:***subnet_cidr_id=xxx&subnet_cidr_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 10
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "description": "**参数解释**:后端服务器的对应的IP地址,这个IP必须在subnet_cidr_id字段的子网网段中。例如:192.168.3.11。\n支持多值查询,查询条件格式:*address=xxx&address=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 11
+          },
+          {
+            "name": "protocol_port",
+            "in": "query",
+            "description": "**参数解释**:后端服务器端口号。\n支持多值查询,查询条件格式:*protocol_port=xxx&protocol_port=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 12
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器ID。\n支持多值查询,查询条件格式:*id=xxx&id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 13
+          },
+          {
+            "name": "operating_status",
+            "in": "query",
+            "description": "**参数解释**:后端服务器的健康状态。\n支持多值查询,查询条件格式:*operating_status=xxx&operating_status=*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- NO_MONITOR:后端服务器所在的服务器组没有开启健康检查。\n- INITIAL:初始化中,表示负载均衡实例配置了健康检查,但查不到数据。\n- ONLINE:后端服务器正常。\n- OFFLINE:后端服务器关联的ECS服务器不存在或已关机。\n- UNKNOWN:未关联LB实例的pool下的member,或者创建后从未关联ECS的云服务器类型member,状态置为UNKNOWN。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 14
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:资源所属的企业项目ID。\n支持多值查询,查询条件格式:*enterprise_project_id=xxx&enterprise_project_id=xxx*。\n\n**约束限制**:\n- 如果enterprise_project_id不传值,默认查询所有企业项目下的资源,鉴权按照细粒度权限鉴权,必须在用户组下分配elb:members:list权限。\n- 如果enterprise_project_id传值,鉴权按照企业项目权限鉴权,分为传入具体eps_id和all_granted_eps两种场景,前者查询指定eps_id的eps下的资源,后者查询的是所有有list权限的eps下的资源。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 15
+          },
+          {
+            "name": "ip_version",
+            "in": "query",
+            "description": "**参数解释**:IP版本。\n支持多值查询,查询条件格式:*ip_version=xxx&ip_version=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:v4、v6\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 16
+          },
+          {
+            "name": "pool_id",
+            "in": "query",
+            "description": "**参数解释**:member所属的服务器组ID。\n支持多值查询,查询条件格式:*pool_id=xxx&pool_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 16
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器ID。\n支持多值查询,查询条件格式:*loadbalancer_id=xxx&loadbalancer_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 17
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "9bd54b2c-b6c6-4635-9495-dd89bdd917ad",
+                "members": [
+                  {
+                    "name": "member-1",
+                    "weight": 1,
+                    "admin_state_up": true,
+                    "project_id": "86f9bb15ce80442680229fcd4dc96582",
+                    "address": "192.168.0.157",
+                    "protocol_port": 80,
+                    "id": "f5e20309-c79c-470c-b59c-3c8378792897",
+                    "operating_status": "ONLINE",
+                    "status": [
+                      {
+                        "listener_id": "0663b12d-4a8f-4ee1-8ba2-dd09f2c92ef7",
+                        "operating_status": "ONLINE"
+                      },
+                      {
+                        "listener_id": "19ac6a54-336f-44ce-9679-50c4f56e9407",
+                        "operating_status": "ONLINE"
+                      }
+                    ],
+                    "instance_id": "39b7d471-fbb4-4e6d-ac81-635b4415a27f",
+                    "device_id": "39b7d471-fbb4-4e6d-ac81-635b4415a27f",
+                    "device_owner": "compute:az1",
+                    "member_type": "instance",
+                    "created_at": "2023-05-04T06:55:33Z",
+                    "updated_at": "2023-05-08T01:34:02Z",
+                    "loadbalancer_id": "9eafbe79-4d48-46f6-95e6-0bc3da57b96d",
+                    "loadbalancers": [
+                      {
+                        "id": "9eafbe79-4d48-46f6-95e6-0bc3da57b96d"
+                      }
+                    ],
+                    "pool_id": "46cd9381-3d99-4e32-b799-efaf5c274586",
+                    "ip_version": "v4",
+                    "subnet_cidr_id": "1aee2ab8-f238-4c26-8659-2a7a0c201d0a"
+                  },
+                  {
+                    "name": "member-2",
+                    "admin_state_up": true,
+                    "project_id": "86f9bb15ce80442680229fcd4dc96582",
+                    "address": "192.168.0.157",
+                    "protocol_port": 80,
+                    "id": "f834d6c6-b376-4031-931e-57cb36bca4a8",
+                    "operating_status": "OFFLINE",
+                    "status": [],
+                    "instance_id": "39b7d471-fbb4-4e6d-ac81-635b4415a27f",
+                    "device_id": "39b7d471-fbb4-4e6d-ac81-635b4415a27f",
+                    "device_owner": "compute:az1",
+                    "member_type": "instance",
+                    "created_at": "2023-05-04T12:46:55Z",
+                    "updated_at": "2023-05-05T03:56:40Z",
+                    "loadbalancers": [],
+                    "pool_id": "d17d07db-5bab-4a15-aa6f-8561af133ca7",
+                    "ip_version": "v4",
+                    "subnet_cidr_id": "1aee2ab8-f238-4c26-8659-2a7a0c201d0a"
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "fb1ce58f-2525-4bd9-9606-10851533bd22",
+                  "previous_marker": "fb19f821-5d5f-4d72-b11c-503e874d3915",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListAllMembersResponseBody"
+            }
+          }
+        },
+        "x-name": "后端服务器全局列表",
+        "x-constraint": "分页查询使用的参数为marker、limit、page_reverse。\n\nmarker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/7a9941d34fc1497d8d0797429ecfd354/elb/members",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ListAllMembersResponseBody": {
+      "required": [
+        "members",
+        "page_info",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "members": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器对象列表。",
+          "items": {
+            "$ref": "#/definitions/MemberInfo"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceID": {
+      "description": "**参数解释**:资源ID",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:资源ID"
+        }
+      }
+    },
+    "MemberHealthCheckFailedReason": {
+      "required": [
+        "reason_code",
+        "expected_response",
+        "healthcheck_response"
+      ],
+      "properties": {
+        "reason_code": {
+          "type": "string",
+          "description": "**参数解释**:健康检查异常原因码。\n\n**取值范围**:\n- CONNECT_TIMEOUT: 负载均衡健康检查时向后端服务器建立连接超时。\n- CONNECT_REFUSED: 负载均衡健康检查时向后端服务器拒绝连接。\n- CONNECT_FAILED: 负载均衡健康检查时向后端服务器建立连接失败。\n- CONNECT_INTERRUPT: 负载均衡健康检查与后端服务器连接中断。\n- SSL_HANDSHAKE_ERROR: 负载均衡健康检查时与后端服务器SSL握手失败。\n- RECV_RESPONSE_FAILED: 负载均衡健康检查时从后端服务器接收响应失败。\n- RECV_RESPONSE_TIMEOUT: 负载均衡健康检查时从后端服务器接收响应超时。\n- SEND_REQUEST_FAILED: 负载均衡健康检查时向后端服务器发送请求失败。\n- SEND_REQUEST_TIMEOUT: 负载均衡健康检查时向后端服务器发送请求超时。\n- RESPONSE_FORMAT_ERROR: 负载均衡健康检查时从后端服务器接收响应格式错误。\n- RESPONSE_MISMATCH: 负载均衡健康检查时从后端服务器接收的响应码与预期配置返回码不一致。"
+        },
+        "expected_response": {
+          "type": "string",
+          "description": "**参数解释**:健康检查预期响应状态码。支持HTTP,HTTPS,GRPC健康检查。只有reason_code为RESPONSE_MISMATCH时,支持非null取值。\n\n**取值范围**:\n- 单值:单个返回码。当type为GRPC时,取值范围为0-99;当type为其他协议时,取值范围为200-599。例如:\"0\"或\"200\"。\n- 列表:多个特定返回码,逗号分隔,最多支持5个返回码。例如:\"200,202\"或\"0,1\"。\n- 区间:一个返回码区间,区间内\"-\"分隔,区间之间逗号分隔,最多支持5个区间。例如\"200-204,300-399\"或\"0-5,10-12,20-30\"。"
+        },
+        "healthcheck_response": {
+          "type": "string",
+          "description": "**参数解释**:健康检查探测实际响应状态码。支持HTTP,HTTPS,GRPC健康检查。只有reason_code为RESPONSE_MISMATCH时,支持非null取值。\n\n**取值范围**:\n- 单个返回码。当type为GRPC时,取值范围为0-99;当type为其他协议时,取值范围为200-599。例如:\"0\"或\"200\"。"
+        }
+      }
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "MemberInfo": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器ID。\n\n**取值范围**:不涉及\n\n> 此处并非ECS服务器的ID,而是ELB为绑定的后端服务器自动生成的member ID。"
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器所在的可用区。\n\n**取值范围**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器名称。注意:该名称并非ECS名称。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "pool_id": {
+          "type": "string",
+          "description": "**参数解释**:所在后端服务器组ID。\n\n**取值范围**:不涉及\n\n不支持该字段,请勿使用。"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:后端服务器的管理状态。虽然创建、更新请求支持该字段,但实际取值决定于后端服务器对应的弹性云服务器是否存在。若存在,该值为true,否则,该值为false。\n\n**取值范围**:不涉及true、false。"
+        },
+        "subnet_cidr_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器所在的子网,可以是IPv4或IPv6子网。若是IPv4子网,使用对应子网的子网ID(neutron_subnet_id);若是IPv6子网,使用对应子网的网络ID(neutron_network_id)。\nipv4子网的子网ID可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的neutron_subnet_id得到\nipv6子网的网络ID可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的neutron_network_id得到\n\n**取值范围**:不涉及"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器业务端口。\n\n**取值范围**:不涉及",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器的权重,请求将根据pool配置的负载均衡算法和后端服务器的权重进行负载分发。\n权重值越大,分发的请求越多。权重为0的后端不再接受新的请求。\n\n**取值范围**:0-100",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "address": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器对应的IP地址。\n\n**取值范围**:\n- 若subnet_cidr_id为空,表示添加IP类型后端,此时address必须为**私网IPv4**地址。\n- 若subnet_cidr_id不为空,表示关联到非IP类型后端,可以是ECS后端服务器、辅助弹性网卡、bms。该IP地址必须在subnet_cidr_id对应的子网网段中,可以是**私网IPv4**或IPv6。"
+        },
+        "ip_version": {
+          "type": "string",
+          "description": "**参数解释**:当前后端服务器的IP地址版本,由后端系统自动根据传入的address字段确定。\n\n**取值范围**:v4、v6"
+        },
+        "device_owner": {
+          "type": "string",
+          "description": "**参数解释**:设备所有者。\n\n**取值范围**:不涉及\n- 空,表示后端服务器未关联到ECS。\n- compute:{az_name},表示关联到ECS,其中{az_name}表示ECS所在可用区名。\n- compute:subeni,表示辅助弹性网卡。\n\n不支持该字段,请勿使用。"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "**参数解释**:关联的ECS ID,为空表示后端服务器未关联到ECS。\n\n**取值范围**:不涉及\n\n不支持该字段,请勿使用。"
+        },
+        "operating_status": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的健康状态。当status非空时,以status字段中监听器粒度的健康检查状态优先。\n\n**取值范围**:\n- NO_MONITOR:后端服务器所在的服务器组没有开启健康检查。\n- INITIAL:初始化中,表示负载均衡实例配置了健康检查,但查不到数据。\n- ONLINE:后端服务器正常。\n- OFFLINE:后端服务器关联的ECS服务器不存在或已关机。\n- UNKNOWN:未关联LB实例的pool下的member,或者创建后从未关联ECS的云服务器类型member,状态置为UNKNOWN。"
+        },
+        "status": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器监听器粒度的的健康状态。\n若绑定的监听器在该字段中,则以该字段中监听器对应的operating_status为准。\n若绑定的监听器不在该字段中,则以外层的operating_status为准。",
+          "items": {
+            "$ref": "#/definitions/MemberStatus"
+          }
+        },
+        "loadbalancer_id": {
+          "type": "string",
+          "description": "**参数解释**:所属负载均衡器ID。\n\n不支持该字段,请勿使用。"
+        },
+        "loadbalancers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResourceID"
+          },
+          "description": "**参数解释**:后端服务器关联的负载均衡器ID列表。\n\n不支持该字段,请勿使用。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n**取值范围**:不涉及\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n**取值范围**:不涉及\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "member_type": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器的类型。\n\n**取值范围**:不涉及\n- ip:IP类型的member。\n- instance:关联到ECS的member。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:member关联的实例ID。空表示member关联的实例为非真实设备 (如:跨VPC场景)。\n\n**取值范围**:不涉及"
+        },
+        "reason": {
+          "description": "**参数解释**:健康检查异常的原因。",
+          "$ref": "#/definitions/MemberHealthCheckFailedReason"
+        }
+      },
+      "description": "后端服务器信息。",
+      "required": [
+        "id",
+        "availability_zone",
+        "name",
+        "project_id",
+        "admin_state_up",
+        "protocol_port",
+        "weight",
+        "address",
+        "ip_version",
+        "operating_status",
+        "status"
+      ],
+      "type": "object"
+    },
+    "MemberStatus": {
+      "required": [
+        "listener_id",
+        "operating_status"
+      ],
+      "properties": {
+        "listener_id": {
+          "type": "string",
+          "example": "d65d12f4-2851-4be6-a1e3-e8354b16095d",
+          "description": "**参数解释**:监听器ID\n\n**取值范围**:不涉及"
+        },
+        "operating_status": {
+          "type": "string",
+          "example": "OFFLINE",
+          "description": "**参数解释**:后端服务器的健康状态。\n\n**取值范围**:\n- ONLINE:后端服务器正常。\n- NO_MONITOR:后端服务器所在的服务器组没有健康检查器。\n- OFFLINE:后端服务器关联的ECS服务器不存在或已关机。\n- INITIAL:后端云服务器健康检查打开时的初始状态。\n- UNKNOWN: 后端云服务器组没有绑定监听器或者后端云服务器没有关联ECS等原因,后端云服务器健康检查结果未知。"
+        },
+        "reason": {
+          "description": "**参数解释**:后端服务器的健康状态。",
+          "$ref": "#/definitions/MemberHealthCheckFailedReason"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n**取值范围**:不涉及"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n**取值范围**:不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

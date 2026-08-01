@@ -1,0 +1,263 @@
+{
+  "name": "ListJobInfo",
+  "summary": "获取指定ID的任务信息",
+  "tags": "任务管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/jobs": {
+      "get": {
+        "tags": [
+          "任务管理"
+        ],
+        "operationId": "ListJobInfo",
+        "summary": "获取指定ID的任务信息",
+        "description": "获取指定ID的任务信息。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口只可查询任务中心一个月内的异步任务。\n- 目前支持查询的主要异步任务:创建实例(单实例/主备实例)、创建只读实例、单实例转主备实例、主备切换、磁盘扩容、绑定和解绑弹性IP,恢复到新实例,MySQL实例迁移可用区,MySQL实例小版本升级。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "任务ID。",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetJobInfoResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "job": {
+                  "id": "31b8ae23-c687-4d80-b7b4-42a66c9bb886",
+                  "name": "CreateMysqlSingleHAInstance",
+                  "status": "Completed",
+                  "created": "2018-08-06T10:41:14+0800",
+                  "ended": "2018-08-06T16:41:14+0000",
+                  "process": "",
+                  "instance": {
+                    "id": "a48e43ff268f4c0e879652d65e63d0fbin01",
+                    "name": "DO-NOT-TOUCH-mgr2-mysql-single"
+                  },
+                  "entities": {
+                    "instance": {
+                      "endpoint": "192.168.1.203:3306",
+                      "type": "Single",
+                      "datastore": {
+                        "type": "mysql",
+                        "version": "5.7"
+                      }
+                    },
+                    "resource_id": [
+                      "a48e43ff268f4c0e879652d65e63d0fbin01.vm",
+                      "a48e43ff268f4c0e879652d65e63d0fbin01.volume"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/jobs?id=a9767ede-fe0f-4888-9003-e843a4c90514"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "GetJobInfoResponseBody": {
+      "required": [
+        "job"
+      ],
+      "properties": {
+        "job": {
+          "description": "任务信息。",
+          "required": [
+            "id",
+            "name",
+            "status",
+            "created",
+            "instance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "任务ID。"
+            },
+            "name": {
+              "type": "string",
+              "description": "任务名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "任务执行状态。\n\n取值:\n- 值为“Running”,表示任务正在执行。\n- 值为“Completed”,表示任务执行成功。\n- 值为“Failed”,表示任务执行失败。",
+              "enum": [
+                "Running",
+                "Completed",
+                "Failed"
+              ]
+            },
+            "created": {
+              "type": "string",
+              "description": "创建时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+            },
+            "ended": {
+              "type": "string",
+              "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+            },
+            "process": {
+              "type": "string",
+              "description": "任务执行进度。执行中状态才返回执行进度,例如60%,否则返回“”。"
+            },
+            "instance": {
+              "description": "执行任务的实例信息。",
+              "required": [
+                "id",
+                "name"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "实例ID。"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "实例名称。"
+                }
+              }
+            },
+            "entities": {
+              "description": "根据不同的任务,显示不同的内容。",
+              "properties": {
+                "instance": {
+                  "description": "创建实例,单转主备,创建只读实例时返回。",
+                  "properties": {
+                    "endpoint": {
+                      "type": "string",
+                      "description": "实例的连接地址。"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "实例类型。"
+                    },
+                    "datastore": {
+                      "description": "数据库信息。",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "description": "数据库引擎。"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "数据库版本。"
+                        }
+                      }
+                    },
+                    "replica_of": {
+                      "type": "string",
+                      "description": "主实例ID,仅创建只读实例的时候返回。"
+                    }
+                  }
+                },
+                "resource_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "创建实例,单转主备,创建只读实例,调整实例容量任务时等任务时返回。"
+                },
+                "volume": {
+                  "description": "调整实例容量任务时返回。",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "磁盘类型。"
+                    },
+                    "original_size": {
+                      "type": "string",
+                      "description": "实例原本的磁盘大小(单位:GB)。"
+                    },
+                    "target_size": {
+                      "type": "string",
+                      "description": "任务的目标磁盘大小(单位:GB)。"
+                    }
+                  }
+                },
+                "public_ip": {
+                  "type": "string",
+                  "description": "绑定/解绑弹性IP,开启远程连接等任务时返回。"
+                },
+                "switch_strategy": {
+                  "type": "string",
+                  "description": "主备倒换任务时返回。"
+                }
+              }
+            },
+            "fail_reason": {
+              "type": "string",
+              "description": "任务执行失败时的错误信息。"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

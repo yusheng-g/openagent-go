@@ -6,9 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
-	"time"
 
 	openagent "github.com/yusheng-g/openagent-go"
 	"github.com/yusheng-g/openagent-go/guard/llm"
@@ -210,14 +208,7 @@ func resolveProfilesDir(profiles string) string {
 func resolveProfiles(profiles, cwd string) []string {
 	return []string{
 		resolveProfileFile(profiles, cwd, "SOUL.md", personaAndLimitsPrompt),
-		fmt.Sprintf(`
-%s
-
-OS: %s
-Arch: %s
-Date: %s
-
-`, resolveProfileFile(profiles, cwd, "SYSTEM.md", systemContextPrompt), runtime.GOOS, runtime.GOARCH, time.Now().Format("2006-01-02")),
+		resolveProfileFile(profiles, cwd, "SYSTEM.md", systemContextPrompt),
 		resolveProfileFile(profiles, cwd, "AGENTS.md", methodologyAndRulesPrompt),
 	}
 }

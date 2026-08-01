@@ -1,0 +1,74 @@
+{
+  "name": "DeleteLoadBalancerForce",
+  "summary": "级联删除负载均衡器",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/force-elb": {
+      "delete": {
+        "tags": [
+          "负载均衡器"
+        ],
+        "summary": "级联删除负载均衡器",
+        "description": "删除负载均衡器且级联删除其下子资源(删除负载均衡器及其绑定的监听器、后端服务器组、后端服务器等一系列资源)。\n- 若LB关联了EIP,则只解绑EIP,不会删除EIP。\n- 若LB已开启了误删保护开关,则级联删除失败。\n- 若LB下任意一个后端服务器组开启了误删保护开关,则级联删除失败。\n- 修改保护开关开启不影响级联删除,仍能正常删除。\n- 若已开启多挂特性,且关联了多个LB,则只做解绑;否则删除。\n- 若是共享型LB下的后端服务器组,无论是否多挂都只删除,不解绑。",
+        "operationId": "DeleteLoadBalancerForce",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "操作正常返回。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除负载均衡器",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "删除负载均衡器及其下子资源",
+        "x-request-examples-url-1": "DELETE https://{ELB_Endpoint}/v3/060576782980d5762f9ec014dd2f1148/elb/loadbalancers/32c1057f-74a1-42d6-9b20-d55b80ab89c4/force-elb",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2022-10-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

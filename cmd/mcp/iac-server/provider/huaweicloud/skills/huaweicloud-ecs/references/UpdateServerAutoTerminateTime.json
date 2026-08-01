@@ -1,0 +1,114 @@
+{
+  "name": "UpdateServerAutoTerminateTime",
+  "summary": "修改云服务器定时删除时间",
+  "tags": "状态管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/actions/update-auto-terminate-time": {
+      "post": {
+        "tags": [
+          "状态管理"
+        ],
+        "summary": "修改云服务器定时删除时间",
+        "description": "修改按需服务器,设置定时删除时间。如果设置的定时删除时间为空字符串,表示取消定时删除。\n\n该接口支持企业项目细粒度权限的校验,具体细粒度请参见 ecs:cloudServers:put。",
+        "operationId": "UpdateServerAutoTerminateTime",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "UpdateServerAutoTerminateTimeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateServerAutoTerminateTimeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改云服务器定时删除时间",
+        "x-constraint": "- 按照ISO8601标准表示,并使用UTC +0时间,格式为yyyy-MM-ddTHH:mm:ssZ。\n- 如果秒(ss)取值不是 00,则自动取为当前分钟(mm)开始时。\n- 最短释放时间为当前时间半小时之后。\n- 最长释放时间不能超过当前时间三年。\n- 如果参数auto_terminate_time值为空字符串,表示不设置定时删除或取消定时删除。\n- 示例:2020-09-25T12:05:00Z",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 96,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/actions/update-auto-terminate-time",
+        "x-request-examples-1": {
+          "auto_terminate_time": "2023-09-25T12:05:00Z"
+        },
+        "x-request-examples-text-1": "{\n    \"auto_terminate_time\": \"2023-09-25T12:05:00Z\"}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateServerAutoTerminateTimeRequestBody": {
+      "required": [
+        "auto_terminate_time"
+      ],
+      "properties": {
+        "auto_terminate_time": {
+          "type": "string",
+          "example": "",
+          "description": "定时删除时间"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

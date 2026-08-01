@@ -1,0 +1,286 @@
+{
+  "name": "BatchDeleteIpList",
+  "summary": "删除IP地址组的IP列表项",
+  "tags": "IP地址组",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/ipgroups/{ipgroup_id}/iplist/batch-delete": {
+      "post": {
+        "x-apiErrorCodes": "[]",
+        "tags": [
+          "IP地址组"
+        ],
+        "summary": "删除IP地址组的IP列表项",
+        "description": "批量删除IP地址组中IP列表的IP地址项。\n注意:删除IP列表的IP地址项会影响所有已关联的监听器,请谨慎操作。",
+        "operationId": "BatchDeleteIpList",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "ipgroup_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:IP地址组ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "BatchDeleteIpListRequestBody",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteIpListRequestBody"
+            },
+            "description": "This is a auto create Body Object"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteIpListResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "ipgroup": {
+                  "description": "",
+                  "id": "8722e0e0-9cc9-4490-9660-8c9a5732fbb0",
+                  "name": "test_ipg",
+                  "project_id": "45977fa2dbd7482098dd68d0d8970117",
+                  "ip_list": [
+                    {
+                      "ip": "192.168.1.122",
+                      "description": ""
+                    }
+                  ],
+                  "listeners": [
+                    {
+                      "id": "88f9c079-29cb-435a-b98f-0c5c0b90c2bd"
+                    },
+                    {
+                      "id": "2f4c9644-d5d2-4cf8-a3c0-944239a4f58c"
+                    }
+                  ],
+                  "created_at": "2018-01-16T03:19:16",
+                  "updated_at": "2018-01-16T03:19:16"
+                }
+              }
+            }
+          }
+        },
+        "x-name": "批量删除IP地址组的IP列表项",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "批量删除IP地址组的IP列表",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/45977fa2dbd7482098dd68d0d8970117/elb/ipgroups/8722e0e0-9cc9-4490-9660-8c9a5732fbb0/iplist/batch-delete",
+        "x-request-examples-1": {
+          "ipgroup": {
+            "ip_list": [
+              {
+                "ip": "192.168.1.123"
+              },
+              {
+                "ip": "192.168.3.0/24"
+              }
+            ]
+          }
+        },
+        "x-request-examples-text-1": {
+          "ipgroup": {
+            "ip_list": [
+              {
+                "ip": "192.168.1.123"
+              },
+              {
+                "ip": "192.168.3.0/24"
+              }
+            ]
+          }
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "IpGroupIp": {
+      "description": "**参数解释**:IP地址组中IP列表的IP地址信息。\n\n**约束限制**:不涉及",
+      "required": [
+        "ip"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "description": "**参数解释**:需要从IP地址组中删除的IP地址,可以是单个IP地址、IP地址段和连续IP地址范围。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      },
+      "type": "object"
+    },
+    "BatchDeleteIpListResponseBody": {
+      "properties": {
+        "ipgroup": {
+          "description": "**参数解释**:IP地址组信息。",
+          "$ref": "#/definitions/IpGroup"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "required": [
+        "ipgroup",
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "IpGroup": {
+      "required": [
+        "id",
+        "name",
+        "description",
+        "ip_list",
+        "listeners",
+        "project_id",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "8722e0e0-9cc9-4490-9660-8c9a5732fbb0",
+          "description": "**参数解释**:IP地址组的ID。\n\n**取值范围**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "example": "test_ipg",
+          "description": "**参数解释**:IP地址组的名称。\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:IP地址组的描述信息。\n\n**取值范围**:不涉及"
+        },
+        "ip_list": {
+          "type": "array",
+          "description": "**参数解释**:IP地址组中包含的IP地址列表。[]表示任意IP。",
+          "items": {
+            "$ref": "#/definitions/IpInfo"
+          },
+          "maxItems": 300,
+          "minItems": 0
+        },
+        "listeners": {
+          "type": "array",
+          "description": "**参数解释**:与IP地址组关联的监听器的ID列表。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "example": "45977fa2dbd7482098dd68d0d8970117",
+          "description": "**参数解释**:IP地址组的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "created_at": {
+          "type": "string",
+          "example": "2018-01-16T03:19:16",
+          "description": "**参数解释**:IP地址组的创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "updated_at": {
+          "type": "string",
+          "example": "2018-01-16T03:19:16",
+          "description": "**参数解释**:IP地址组的更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        }
+      },
+      "description": "**参数解释**:IP地址组信息。",
+      "type": "object"
+    },
+    "IpInfo": {
+      "required": [
+        "ip",
+        "description"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "description": "**参数解释**:IP地址组中的IP地址。\n\n**取值范围**:IP地址段格式为ip-ip,例如192.168.1.2-192.168.2.253或者2001:0DB8:02de::0e12-2001:0DB8:02de::0e13,终止IP需要大于起始IP。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:IP地址组中ip的备注信息。\n\n**取值范围**:长度为0-255个字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "**参数解释**:IP地址组中IP列表的IP地址信息。",
+      "type": "object"
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    },
+    "BatchDeleteIpListOption": {
+      "description": "**参数解释**:批量删除IP地址项的请求参数。\n\n**约束限制**:不涉及",
+      "properties": {
+        "ip_list": {
+          "description": "**参数解释**:IP地址组中IP列表的IP地址信息。\n\n**约束限制**:不涉及",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IpGroupIp"
+          }
+        }
+      },
+      "type": "object"
+    },
+    "BatchDeleteIpListRequestBody": {
+      "description": "This is a auto create Response Object",
+      "properties": {
+        "ipgroup": {
+          "$ref": "#/definitions/BatchDeleteIpListOption",
+          "description": "**参数解释**:批量删除IP地址项的请求参数。\n\n**约束限制**:不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

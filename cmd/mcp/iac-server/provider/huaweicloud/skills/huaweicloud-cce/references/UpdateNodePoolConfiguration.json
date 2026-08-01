@@ -1,0 +1,298 @@
+{
+  "name": "UpdateNodePoolConfiguration",
+  "summary": "修改指定节点池配置参数的值",
+  "tags": "配置管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodepools/{nodepool_id}/configuration": {
+      "put": {
+        "tags": [
+          "配置管理"
+        ],
+        "summary": "修改指定节点池配置参数的值",
+        "description": "该API用于修改CCE服务下指定节点池配置参数的值。",
+        "operationId": "UpdateNodePoolConfiguration",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_path_nodepool_id_or_master"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "UpdateNodePoolConfigurationRequestBody",
+            "description": "批量更新指定节点池配置参数的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateClusterConfigurationsBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示更新指定节点池配置参数内容成功。",
+            "schema": {
+              "$ref": "#/definitions/ClusterConfigRespBody"
+            },
+            "examples": {
+              "application/json": {
+                "kind": "Configuration",
+                "apiVersion": "v3",
+                "metadata": {
+                  "name": "configuration",
+                  "labels": {
+                    "nodepool_id": "61de338d-a1f9-11ed-8891-0255ac100036"
+                  }
+                },
+                "spec": {
+                  "packages": [
+                    {
+                      "name": "kube-apiserver",
+                      "configurations": [
+                        {
+                          "name": "event-rate-limit-qps",
+                          "value": 200
+                        },
+                        {
+                          "name": "support-overload",
+                          "value": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "kube-scheduler",
+                      "configurations": [
+                        {
+                          "name": "kube-api-qps",
+                          "value": 100
+                        },
+                        {
+                          "name": "default-scheduler",
+                          "value": "kube-scheduler"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "status": {}
+              }
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-name": "更新指定节点池的配置参数内容",
+        "x-order": 6,
+        "x-request-examples-description-1": "更新kubelet中的system-reserved-mem参数和kube-reserved-mem参数",
+        "x-request-examples-url-1": "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodepools/{nodepool_id}/configuration",
+        "x-request-examples-1": {
+          "kind": "Configuration",
+          "apiVersion": "v3",
+          "metadata": {
+            "name": "configuration"
+          },
+          "spec": {
+            "packages": [
+              {
+                "name": "kubelet",
+                "configurations": [
+                  {
+                    "name": "system-reserved-mem",
+                    "value": 600
+                  },
+                  {
+                    "name": "kube-reserved-mem",
+                    "value": 800
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "x-publishpath": "UpdateNodePoolConfiguration",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-cpp-exclude": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateClusterConfigurationsBody": {
+      "description": "更新指定集群配置参数内容请求体",
+      "required": [
+        "kind",
+        "apiVersion",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值**v3**"
+        },
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值**Configuration**"
+        },
+        "metadata": {
+          "description": "Configuration的元数据信息",
+          "$ref": "#/definitions/ConfigurationMetadata"
+        },
+        "spec": {
+          "description": "Configuration的规格信息",
+          "$ref": "#/definitions/ClusterConfigurationsSpec"
+        }
+      }
+    },
+    "ClusterConfigurationsSpec": {
+      "description": "Configuration的规格信息",
+      "required": [
+        "packages"
+      ],
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "组件名称"
+              },
+              "configurations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ConfigurationItem"
+                },
+                "description": "组件配置项详情"
+              }
+            }
+          },
+          "description": "组件配置项列表"
+        }
+      }
+    },
+    "ConfigurationItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n组件配置参数名称。\n\n当前集群支持的可配置组件及其参数详见[修改CCE集群配置](https://support.huaweicloud.com/usermanual-cce/cce_10_0213.html),当前节点池支持的可配置组件及其参数详见[修改节点池配置](https://support.huaweicloud.com/usermanual-cce/cce_10_0652.html)。\n\n**约束限制:**\n若指定了不支持的组件或组件不支持的参数,该配置项将被忽略。\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "value": {
+          "description": "**参数解释:**\n组件配置参数值。\n\n当前集群支持的可配置组件及其参数详见[修改CCE集群配置](https://support.huaweicloud.com/usermanual-cce/cce_10_0213.html),当前节点池支持的可配置组件及其参数详见[修改节点池配置](https://support.huaweicloud.com/usermanual-cce/cce_10_0652.html)。\n\n**约束限制:**\n若指定了不支持的组件或组件不支持的参数,该配置项将被忽略。\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        }
+      }
+    },
+    "ClusterConfigRespBody": {
+      "description": "获取指定集群配置参数内容返回体",
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本"
+        },
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值**Configuration**"
+        },
+        "metadata": {
+          "description": "Configuration的元数据信息",
+          "$ref": "#/definitions/ConfigurationMetadata"
+        },
+        "spec": {
+          "description": "Configuration的规格信息",
+          "$ref": "#/definitions/ClusterConfigurationsSpec"
+        },
+        "status": {
+          "readOnly": true,
+          "description": "Configuration的状态信息",
+          "type": "object"
+        }
+      }
+    },
+    "ConfigurationMetadata": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Configuration名称"
+        },
+        "labels": {
+          "type": "object",
+          "description": "Configuration标签,key/value对格式。\n\n- Key:必须以字母或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符;另外可以使用DNS子域作为前缀,例如example.com/my-key,DNS子域最长253个字符。\n- Value:可以为空或者非空字符串,非空字符串必须以字符或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符。\n\n示例:\"foo\": \"bar\"",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        }
+      },
+      "description": "metadata字段数据结构说明"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_nodepool_id_or_master": {
+      "name": "nodepool_id",
+      "in": "path",
+      "description": "**参数解释:**\n节点池ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制:**\n不涉及\n**取值范围:**\n- 节点池ID:修改指定节点池配置管理参数\n- master:修改集群配置中心的配置管理参数\n\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "pattern": "^([0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}|master)$",
+      "x-order": 4
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

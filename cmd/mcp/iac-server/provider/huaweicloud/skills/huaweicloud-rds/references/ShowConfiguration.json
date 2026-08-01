@@ -1,0 +1,227 @@
+{
+  "name": "ShowConfiguration",
+  "summary": "获取指定参数模板的参数",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations/{config_id}": {
+      "get": {
+        "tags": [
+          "参数配置"
+        ],
+        "operationId": "ShowConfiguration",
+        "summary": "获取指定参数模板的参数",
+        "description": "获取指定参数模板的参数。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- MySQL:仅支持5.6,5.7。\n- Microsoft SQL Server:仅支持2014 SE、2014 EE、2016 SE、2016 EE、2008 R2 EE、2008 R2 WEB、2014 WEB、2016 WEB。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "config_id",
+            "in": "path",
+            "description": "参数模板ID。",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ConfigurationDetail"
+            },
+            "examples": {
+              "application/json": {
+                "id": "07fc12a8e0e94df7a3fcf53d0b5e1605pr01",
+                "name": "default-mysql-5.6",
+                "datastore_version_name": "5.6",
+                "datastore_name": "mysql",
+                "description": "Default parameter template for mysql 5.6",
+                "created": "2017-05-05T04:40:51+0800",
+                "updated": "2017-05-05T04:40:51+0800",
+                "configuration_parameters": [
+                  {
+                    "name": "auto_increment_increment",
+                    "value": "1",
+                    "restart_required": false,
+                    "readonly": true,
+                    "value_range": "1-65535",
+                    "type": "integer",
+                    "description": "auto_increment_increment and auto_increment_offset are intended for use with master-to-master replication, and can be used to control the operation of AUTO_INCREMENT columns."
+                  },
+                  {
+                    "name": "autocommit",
+                    "value": "ON",
+                    "restart_required": false,
+                    "readonly": true,
+                    "value_range": "ON|OFF",
+                    "type": "boolean",
+                    "description": "The autocommit mode. If set to ON, all changes to a table take effect immediately. If set to OFF, you must use COMMIT to accept a transaction or ROLLBACK to cancel it."
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/configurations/463b4b58-d0e8-4e2b-9560-5dea4552fde9"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ConfigurationParameter": {
+      "required": [
+        "name",
+        "value",
+        "restart_required",
+        "readonly",
+        "value_range",
+        "type",
+        "description"
+      ],
+      "properties": {
+        "name": {
+          "description": "参数名称。",
+          "type": "string"
+        },
+        "value": {
+          "description": "参数值。",
+          "type": "string"
+        },
+        "restart_required": {
+          "description": "修改该参数是否需要重启实例。",
+          "type": "boolean"
+        },
+        "readonly": {
+          "description": "该参数是否只读。",
+          "type": "boolean"
+        },
+        "value_range": {
+          "description": "参数取值范围。",
+          "type": "string"
+        },
+        "type": {
+          "description": "参数类型,取值为“string”、“integer”、“boolean”、“list”或“float”之一。",
+          "type": "string",
+          "enum": [
+            "string",
+            "integer",
+            "boolean",
+            "list",
+            "float"
+          ]
+        },
+        "description": {
+          "description": "参数描述。",
+          "type": "string"
+        }
+      }
+    },
+    "ConfigurationDetail": {
+      "required": [
+        "id",
+        "name",
+        "datastore_version_name",
+        "datastore_name",
+        "created",
+        "updated"
+      ],
+      "properties": {
+        "id": {
+          "description": "参数组ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "参数组名称。",
+          "type": "string"
+        },
+        "description": {
+          "description": "参数组描述。",
+          "type": "string"
+        },
+        "datastore_version_name": {
+          "description": "引擎版本。",
+          "type": "string"
+        },
+        "datastore_name": {
+          "description": "引擎名。",
+          "type": "string",
+          "enum": [
+            "mysql",
+            "postgresql",
+            "sqlserver",
+            "mariadb"
+          ]
+        },
+        "created": {
+          "description": "创建时间,格式为\"yyyy-MM-ddTHH:mm:ssZ\"。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "updated": {
+          "description": "更新时间,格式为\"yyyy-MM-ddTHH:mm:ssZ\"。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "configuration_parameters": {
+          "description": "参数对象,用户基于默认参数模板自定义的参数配置。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ConfigurationParameter"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

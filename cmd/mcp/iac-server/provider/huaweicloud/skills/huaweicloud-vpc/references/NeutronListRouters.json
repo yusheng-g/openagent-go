@@ -1,0 +1,473 @@
+{
+  "name": "NeutronListRouters",
+  "summary": "查询路由器列表",
+  "tags": "OpenStack - 路由器",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/routers": {
+      "get": {
+        "tags": [
+          "OpenStack - 路由器"
+        ],
+        "summary": "查询路由器列表",
+        "description": "查询提交请求的租户有权限操作的所有路由器信息,单次查询最多返回2000条数据,超过2000后会返回分页标记。",
+        "operationId": "NeutronListRouters",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页返回的个数",
+            "required": false,
+            "type": "integer",
+            "default": 2000,
+            "format": "int32",
+            "x-order": 2,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询起始的资源ID,为空时查询第一页",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-order": 3,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "按照路由器的ID过滤查询",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-order": 4,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "按照路由器的状态过滤查询,取值范围:ACTIVE, DOWN,ERROR",
+            "required": false,
+            "type": "string",
+            "x-order": 5,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "按照路由器所属的项目ID过滤查询",
+            "required": false,
+            "type": "string",
+            "x-order": 6,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "按照路由器的管理状态过滤查询,取值范围:true or false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 7,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "routers": [
+                  {
+                    "id": "04917194-0a9e-4bb6-893b-bd152c0d4072",
+                    "name": "vpc-zzz",
+                    "status": "ACTIVE",
+                    "tenant_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                    "project_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                    "admin_state_up": true,
+                    "external_gateway_info": {
+                      "network_id": "0a2228f2-7f8a-45f1-8e09-9039e1d09975",
+                      "enable_snat": false
+                    },
+                    "routes": [],
+                    "created_at": "2018-01-01T00:00:00",
+                    "updated_at": "2018-01-01T00:00:00"
+                  },
+                  {
+                    "id": "15c28d86-d2ba-4809-9ecc-c415bb62739a",
+                    "name": "vpc-0226",
+                    "status": "ACTIVE",
+                    "tenant_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                    "project_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                    "admin_state_up": true,
+                    "external_gateway_info": {
+                      "network_id": "0a2228f2-7f8a-45f1-8e09-9039e1d09975",
+                      "enable_snat": false
+                    },
+                    "routes": [
+                      {
+                        "destination": "0.0.0.0/0",
+                        "nexthop": "192.168.0.218"
+                      }
+                    ],
+                    "created_at": "2019-02-26T05:05:56",
+                    "updated_at": "2019-02-26T05:05:57"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NeutronListRoutersResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询路由器列表",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 92,
+        "x-request-examples-description-1": "使用组合条件过滤查询结果",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v2.0/routers?id=384eb659-808b-48c8-8e8a-714de172bcad&status=ACTIVE&admin_state_up=true",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v2.0/routers?id=384eb659-808b-48c8-8e8a-714de172bcad&status=ACTIVE&admin_state_up=true",
+        "x-request-examples-description-2": "分页过滤查询结果,每页返回limit个数据,从第marker数据之后返回",
+        "x-request-examples-url-2": "",
+        "x-request-examples-2": "GET https://{Endpoint}/v2.0/routers?limit=10&marker=20b932da-f95c-4003-d77d-4064b7d101cd",
+        "x-request-examples-text-2": "GET https://{Endpoint}/v2.0/routers?limit=10&marker=20b932da-f95c-4003-d77d-4064b7d101cd",
+        "x-request-examples-description-3": "查询路由器列表",
+        "x-request-examples-url-3": "",
+        "x-request-examples-3": "GET https://{Endpoint}/v2.0/routers",
+        "x-request-examples-text-3": "GET https://{Endpoint}/v2.0/routers",
+        "x-request-examples-description-4": "分页过滤查询结果,每页返回的个数为limit",
+        "x-request-examples-url-4": "",
+        "x-request-examples-4": "GET https://{Endpoint}/v2.0/routers?limit=1",
+        "x-request-examples-text-4": "GET https://{Endpoint}/v2.0/routers?limit=1",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Route": {
+      "properties": {
+        "destination": {
+          "type": "string",
+          "description": "功能说明:路由目的地\n取值范围:IP地址段\n约束:仅支持配置默认路由,且其取值只能是0.0.0.0/0",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "nexthop": {
+          "type": "string",
+          "description": "功能说明:路由下一跳IP地址\n取值范围:ipv4地址格式\n约束:nexthop仅支持所关联的子网范围内IP地址",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronPageLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "example": "https://vpc.cn-north-1.myhuaweicloud.com/v2.0",
+          "description": "API链接",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "rel": {
+          "type": "string",
+          "example": "self",
+          "description": "API链接与该API版本的关系",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronListRoutersResponseBody": {
+      "required": [
+        "routers"
+      ],
+      "properties": {
+        "routers": {
+          "type": "array",
+          "description": "router对象列表",
+          "items": {
+            "$ref": "#/definitions/NeutronRouter"
+          },
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "routers_links": {
+          "type": "array",
+          "description": "分页信息",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/NeutronPageLink"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronRouter": {
+      "required": [
+        "admin_state_up",
+        "created_at",
+        "external_gateway_info",
+        "id",
+        "name",
+        "project_id",
+        "routes",
+        "status",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:资源的管理状态。只支持true。\n取值范围:true、false\n约束:只支持true",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "external_gateway_info": {
+          "description": "功能说明:路由器的外部网关信息,见ExternalGatewayInfo对象详情\n约束:当前只有DT开放该字段,vpc.shared.snat开关为true时才能设置",
+          "$ref": "#/definitions/ExternalGatewayInfo",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "id": {
+          "type": "string",
+          "description": "路由器ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:路由器的名称\n取值范围:0-64个字符,仅支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。\n约束:如果name非空,则name不能重复。",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "routes": {
+          "type": "array",
+          "description": "功能说明:路由信息,见Route对象",
+          "items": {
+            "$ref": "#/definitions/Route"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:路由器的状态\n取值范围:ACTIVE, DOWN,ERROR",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 32,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        }
+      },
+      "description": "router对象模型"
+    },
+    "ExternalGatewayInfo": {
+      "properties": {
+        "enable_snat": {
+          "type": "boolean",
+          "description": "功能说明:是否启用SNAT\n取值范围:true、false;默认为false。",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "外部网络的ID。",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,418 @@
+{
+  "name": "ShowMemberHealthCheckJob",
+  "summary": "查询后端服务器检测任务的结果",
+  "tags": "后端服务器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/members/check/jobs/{job_id}": {
+      "get": {
+        "x-request-examples-description-1": "查询后端服务器检测任务的结果",
+        "tags": [
+          "后端服务器"
+        ],
+        "summary": "查询后端服务器检测任务的结果",
+        "description": "查询后端服务器检测任务的结果。",
+        "operationId": "ShowMemberHealthCheckJob",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "job_id",
+            "in": "path",
+            "description": "**参数解释**:创建后端服务器检测任务的接口返回的job_id。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "member_check": {
+                  "status": "processed",
+                  "result": {
+                    "config": {
+                      "check_result": true,
+                      "check_items": [
+                        {
+                          "name": "check_hc_config_port",
+                          "reason": null,
+                          "severity": "Tips",
+                          "subject": "config",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck {$hm_id}'s protocolPort {$protocol_port} is different from member port {$member_port}",
+                          "reason_params": []
+                        }
+                      ],
+                      "check_status": "processed"
+                    },
+                    "acl": {
+                      "check_result": true,
+                      "check_items": [
+                        {
+                          "name": "acl_check_hc_protocol_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck {$hm_id}'s protocol is {$hc_protocol}, but the transport layer protocol corresponding to the protocol {$trans_protocol} is not allowed by ACL {$acl_id} egress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_dest_port_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck destination port may not allowed by ACL {$acl_id} egress policies, it is recommended to open all destination ports",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_dest_ip_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck destination IP {$dest_ip} is not allowed by ACL {$acl_id} egress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_source_port_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck source port {$source_port} is not allowed by ACL {$acl_id} egress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_source_ip_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck source IP {$source_ip} is not allowed by ACL {$acl_id} egress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_protocol_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck {$hm_id}'s protocol is {$hc_protocol}, but the transport layer protocol corresponding to the protocol {$trans_protocol} is not allowed by ACL {$acl_id} ingress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_dest_port_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck destination port {$dest_port} is not allowed by ACL {$acl_id} ingress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_dest_ip_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck destination IP {$dest_ip} is not allowed by ACL {$acl_id} ingress policies",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_source_port_ingress",
+                          "reason": null,
+                          "severity": "Tips",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck source port may not allowed by ACL {$acl_id} ingress policies, it is recommended to open all destination ports",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "acl_check_hc_source_ip_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "networkAcl",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck source IP {$source_ip} is not allowed by ACL {$acl_id} ingress policies",
+                          "reason_params": []
+                        }
+                      ],
+                      "check_status": "processed"
+                    },
+                    "security_group": {
+                      "check_result": true,
+                      "check_items": [
+                        {
+                          "name": "security_group_check_hc_protocol_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "securityGroup",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck {$hm_id}'s protocol is {$hc_protocol}, but the transport layer protocol corresponding to the protocol {$transport_protocol} is not allowed by securityGroup {$security_group_id} egress rules",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "security_group_check_hc_port_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "securityGroup",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck dest port {$dest_port} is not allowed by securityGroup {$security_group_id} egress rules",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "security_group_check_hc_source_ip_egress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "securityGroup",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck source IP {$source_ip} is not allowed by securityGroup {$security_group_id} egress rules",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "security_group_check_hc_protocol_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "securityGroup",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck {$hm_id}'s protocol is {$hc_protocol}, but the transport layer protocol corresponding to the protocol {$transport_protocol} is not allowed by securityGroup {$security_group_id} ingress rules",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "security_group_check_hc_port_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "securityGroup",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck dest port {$dest_port} is not allowed by securityGroup {$security_group_id} ingress rules",
+                          "reason_params": []
+                        },
+                        {
+                          "name": "security_group_check_hc_source_ip_ingress",
+                          "reason": null,
+                          "severity": "Major",
+                          "subject": "securityGroup",
+                          "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                          "reason_template": "healthCheck source IP {$source_ip} is not allowed by securityGroup {$security_group_id} ingress rules",
+                          "reason_params": []
+                        }
+                      ],
+                      "check_status": "processed"
+                    }
+                  },
+                  "created_at": "2024-12-08T07:55:04Z",
+                  "updated_at": "2024-12-08T07:55:05Z",
+                  "job_id": "919221ce-0011-4558-81ca-2866e6e68a27",
+                  "check_item_total_num": 17,
+                  "check_item_finished_num": 17,
+                  "listener_id": "b445cc43-02d7-4863-9481-283b7fb1c222",
+                  "member_id": "02272819-5655-4c6b-892b-105604f6aea0"
+                },
+                "request_id": "5980e624-dc64-46b9-8d74-e5834655dab5"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowMemberCheckJobResponseBody"
+            }
+          }
+        },
+        "x-name": "查询后端服务器检测任务的结果",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 10,
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/04dd36f964000fe22f9ac00bc85b1a1d/elb/members/check/jobs/04a9bc65-b75b-478d-b4d6-e693bb61dd35",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "MemberCheckJobResultItem": {
+      "type": "object",
+      "description": "**参数解释**:分组检查项汇总。",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:检查项名称。\n\n**取值范围**:不涉及",
+          "example": "check_hc_config_port"
+        },
+        "reason": {
+          "type": "string",
+          "description": "**参数解释**:异常原因。\n\n**取值范围**:不涉及",
+          "example": "healthCheck hm_id's protocolPort 80 is different from member port 70"
+        },
+        "severity": {
+          "type": "string",
+          "description": "**参数解释**:重要级别,分为Major(严重)和Tips(提示)。\n\n**取值范围**:不涉及",
+          "example": "Tips"
+        },
+        "subject": {
+          "type": "string",
+          "description": "**参数解释**:检查类别,config表示配置检查。\n\n**取值范围**:不涉及",
+          "example": "config"
+        },
+        "job_id": {
+          "type": "string",
+          "example": "919221ce-0011-4558-81ca-2866e6e68a27",
+          "description": "**参数解释**:任务ID。\n\n**取值范围**:不涉及"
+        },
+        "reason_template": {
+          "type": "string",
+          "description": "**参数解释**:异常原因模板。\n\n**取值范围**:不涉及",
+          "example": "healthCheck {$hm_id}'s protocolPort {$protocol_port} is different from member port {$member_port}"
+        },
+        "reason_params": {
+          "type": "array",
+          "description": "**参数解释**:异常结果变量参数表,用于结合异常原因模板动态生成异常原因。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          },
+          "example": "[]"
+        }
+      }
+    },
+    "ShowMemberCheckJobResponseBody": {
+      "type": "object",
+      "required": [
+        "member_check",
+        "request_id"
+      ],
+      "properties": {
+        "member_check": {
+          "$ref": "#/definitions/MemberCheckJobInfo"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      }
+    },
+    "MemberCheckJobResultGroup": {
+      "type": "object",
+      "description": "**参数解释**:配置检查。",
+      "properties": {
+        "check_result": {
+          "type": "boolean",
+          "description": "**参数解释**:检查结果。\n\n**取值范围**:true表示检查通过,false为检查不通过。",
+          "example": true
+        },
+        "check_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MemberCheckJobResultItem"
+          },
+          "description": "**参数解释**:分组检查项汇总。"
+        },
+        "check_status": {
+          "type": "string",
+          "description": "**参数解释**:分组检查任务状态。\n\n**取值范围**:\n- processed:检查任务执行完成。\n- processing:检查任务执行中。\n- failed:检查任务执行失败。",
+          "example": "processed"
+        }
+      }
+    },
+    "MemberCheckJobResult": {
+      "type": "object",
+      "description": "**参数解释**:后端服务器检测任务各检查项的检测结果。",
+      "properties": {
+        "config": {
+          "description": "**参数解释**:配置检查。\n\n**取值范围**:不涉及",
+          "$ref": "#/definitions/MemberCheckJobResultGroup"
+        },
+        "acl": {
+          "description": "**参数解释**:ACL规则检查。\n\n**取值范围**:不涉及",
+          "$ref": "#/definitions/MemberCheckJobResultGroup"
+        },
+        "security_group": {
+          "description": "**参数解释**:安全组规则检查。\n\n**取值范围**:不涉及",
+          "$ref": "#/definitions/MemberCheckJobResultGroup"
+        }
+      }
+    },
+    "MemberCheckJobInfo": {
+      "type": "object",
+      "description": "**参数解释**:后端服务器检查任务结果。",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "**参数解释**:检查任务状态。\n\n**取值范围**:\n- processed:检查任务执行完成。\n- processing:检查任务执行中。\n- failed:检查任务执行失败。",
+          "example": "processed"
+        },
+        "result": {
+          "$ref": "#/definitions/MemberCheckJobResult"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:任务创建时间。\n\n**取值范围**:不涉及",
+          "example": "2024-12-08T07:55:04Z"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:任务更新时间。\n\n**取值范围**:不涉及",
+          "example": "2024-12-08T07:55:05Z"
+        },
+        "job_id": {
+          "type": "string",
+          "description": "**参数解释**:任务ID。",
+          "example": "919221ce-0011-4558-81ca-2866e6e68a27"
+        },
+        "check_item_total_num": {
+          "type": "integer",
+          "description": "**参数解释**:检查项总个数。\n\n**取值范围**:不涉及",
+          "format": "int32",
+          "example": 17
+        },
+        "check_item_finished_num": {
+          "type": "integer",
+          "description": "**参数解释**:已检查完成的检查项个数。\n\n**取值范围**:不涉及",
+          "format": "int32",
+          "example": 17
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器所关联的监听器,查询在该监听器下后端服务器的状态。\n\n**取值范围**:不涉及",
+          "example": "b445cc43-02d7-4863-9481-283b7fb1c222"
+        },
+        "member_id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器ID。\n\n**取值范围**:不涉及",
+          "example": "02272819-5655-4c6b-892b-105604f6aea0"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

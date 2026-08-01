@@ -1,0 +1,604 @@
+{
+  "name": "ListCustomerOrders",
+  "summary": "查询订单列表",
+  "tags": "管理包年/包月订单(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/customer-orders": {
+      "get": {
+        "summary": "查询订单列表",
+        "description": "客户购买包年/包月资源后,可以查看待审核、处理中、已取消、已完成和待支付等状态的订单。\n\n伙伴登录伙伴中心查看客户订单请单击[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0076200001.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>如果想查询某条订单下的资源信息,在调用本接口获取订单ID后,请调用“[查询客户包年/包月资源列表](https://support.huaweicloud.com/api-oce/api_order_00021.html)”接口在请求参数输入订单号进行查询。",
+        "tags": [
+          "管理包年/包月订单(公共)"
+        ],
+        "operationId": "ListCustomerOrders",
+        "x-constraint": "该接口既可以使用合作伙伴AK/SK或者Token调用,也可以使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/orders/customer-orders",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-08",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L3",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": false,
+            "description": "订单ID。大小写不敏感。此参数不携带或携带值为空时,不作为筛选条件。 说明: 使用特殊字符进行查询的时候,请注意进行URL编码转换,如“%”的转码应为“%25”。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "CS1905251035OA1AF",
+            "x-allowNull": false
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "description": "客户账号ID。您可以调用查询客户列表接口获取customer_id。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "c9e731c4663646988ef4cdb3122837b6",
+            "x-allowNull": false
+          },
+          {
+            "name": "create_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "订单创建开始时间。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。订单创建开始时间与订单创建结束时间间隔不能超过1年。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2020-05-06T08:05:01Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "create_time_end",
+            "in": "query",
+            "required": false,
+            "description": "订单创建结束时间。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。订单创建开始时间与订单创建结束时间间隔不能超过1年。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2019-05-06T08:05:01Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "service_type_code",
+            "in": "query",
+            "required": false,
+            "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。大小写不敏感。您可以调用查询云服务类型列表接口获取。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "hws.service.type.obs",
+            "x-allowNull": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "订单状态:1:待审核3:处理中4:已取消5:已完成6:待支付9:待确认此参数不携带或携带值为空时,不作为筛选条件。",
+            "maximum": 9,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 5,
+            "x-allowNull": true
+          },
+          {
+            "name": "order_type",
+            "in": "query",
+            "required": false,
+            "description": "订单类型:1:开通2:续订3:变更4:退订10:包年/包月转按需11:按需转包年/包月13:试用14:转商用15:费用调整此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "1",
+            "x-allowNull": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的订单数量,默认值为10。此参数不携带或携带值为空或携带值为null,取默认值10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "x-example": 10,
+            "x-allowNull": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。此参数不携带或携带值为空或携带值为null,取默认值10。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "default": 0,
+            "x-example": 0,
+            "x-allowNull": true
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "description": "查询的订单列表排序。大小写不敏感。支持按照创建时间进行排序,带-表示倒序。创建时间:升序为createTime,倒序为-createTime。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 36,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "+createTime",
+            "x-allowNull": false
+          },
+          {
+            "name": "payment_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "订单支付开始时间。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。订单支付开始时间与订单支付结束时间间隔不能超过1年。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2020-05-06T08:05:01Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "payment_time_end",
+            "in": "query",
+            "required": false,
+            "description": "订单支付结束时间。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。订单支付开始时间与订单支付结束时间间隔不能超过1年。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2020-05-06T08:05:01Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。华为云总经销商(一级经销商)查询云经销商的客户订单列表时,需要携带该参数;否则只能查询自己客户的订单列表。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "646988ef4cdb3122834feswrygfd",
+            "x-allowNull": false
+          },
+          {
+            "name": "method",
+            "in": "query",
+            "required": false,
+            "description": "查询方式。oneself:客户自己订单sub_customer:客户给企业子代付订单此参数不携带或携带值为空串或携带值为null时,默认值为“oneself”。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "oneself",
+            "default": "oneself",
+            "enum": [
+              "oneself",
+              "sub_customer"
+            ],
+            "x-allowNull": false
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/orders/customer-orders?order_id=CS1905251035OA1AF&customer_id=c9e731c4663646988ef4cdb3122837b6&create_time_begin=2020-05-06T08:05:01Z&create_time_end=2020-05-07T08:05:01Z&service_type_code=hws.service.type.obs&status=5&order_type=1&limit=10&offset=0&order_by=-2BcreateTime&payment_time_begin=2020-05-06T08:05:01Z&payment_time_end=2020-05-07T08:05:01Z&indirect_partner_id=646988ef4cdb3122834feswrygfd",
+        "responses": {
+          "200": {
+            "description": "查询订单列表响应",
+            "schema": {
+              "$ref": "#/definitions/QueryCustomerOrdersRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "order_infos": [
+                  {
+                    "order_id": "CS1905251035OA1AF",
+                    "customer_id": "17a80a9f9d3949ddb60ee73a5b3c9618",
+                    "service_type_code": "hws.service.type.rds",
+                    "source_type": 1,
+                    "status": 5,
+                    "order_type": 1,
+                    "amount_after_discount": 0,
+                    "official_amount": 100,
+                    "measure_id": 1,
+                    "create_time": "2020-05-06T09:08:03Z",
+                    "payment_time": "2020-05-06T09:08:03Z",
+                    "currency": "CNY",
+                    "contract_id": null,
+                    "amount_info": {
+                      "discounts": [
+                        {
+                          "discount_type": "700",
+                          "discount_amount": 15
+                        },
+                        {
+                          "discount_type": "302",
+                          "discount_amount": 85
+                        }
+                      ],
+                      "flexipurchase_coupon_amount": 85,
+                      "coupon_amount": 0,
+                      "stored_card_amount": 0,
+                      "commission_amount": null,
+                      "consumed_amount": null
+                    },
+                    "enterprise_projects": [
+                      {
+                        "id": "0",
+                        "name": "default"
+                      }
+                    ],
+                    "sub_order_infos": [],
+                    "agent_pay_info": {
+                      "paying_agent_id": "17a80a*********c9618",
+                      "is_agent_pay": true
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理包年/包月订单(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AgentPayInfoV2": {
+      "properties": {
+        "paying_agent_id": {
+          "description": "|参数名称:订单代理支付人的客户账号ID。| |参数的约束及描述:订单代理支付人的客户账号ID|",
+          "type": "string",
+          "x-allowNull": true
+        },
+        "is_agent_pay": {
+          "description": "|参数名称:是否代理支付。| |参数的约束及描述:是否代理支付。true:代理支付,不为ture时为非代理支付订单|",
+          "type": "boolean",
+          "x-allowNull": true
+        }
+      }
+    },
+    "CustomerOrderV2": {
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "订单ID。",
+          "example": "CS19040119281JMYC"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": "c9e731c4663646988ef4cdb3122837b6"
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": "hws.service.type.obs"
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "source_type": {
+          "description": "客户订单来源类型。1:客户 2:代理 3:合同 4:分销商 5:页面删除资源 6:补录订单 7:补偿订单 8:系统自动创建",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "status": {
+          "description": "订单状态: 1:待审核2:待退款3:处理中4:已取消5:已完成6:待支付9:待确认10:待发货11:待收货12:待上门取货13:换新中",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 5
+        },
+        "order_type": {
+          "description": "订单类型: 1:开通2:续订3:变更4:退订11:按需转包年/包月13:试用14:转商用15:费用调整",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "amount_after_discount": {
+          "description": "订单优惠后金额(不含券不含卡的实付价格)。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 97.0
+        },
+        "official_amount": {
+          "description": "订单金额(官网价)。 退订订单中,该金额等于amount_after_discount。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 100.0
+        },
+        "measure_id": {
+          "description": "订单金额度量单位: 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间 。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。",
+          "example": "2020-05-06T08:05:01Z"
+        },
+        "payment_time": {
+          "type": "string",
+          "description": "支付时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。",
+          "example": "2020-05-06T08:05:01Z"
+        },
+        "currency": {
+          "type": "string",
+          "description": "货币编码。",
+          "example": "CNY"
+        },
+        "contract_id": {
+          "type": "string",
+          "description": "合同ID。",
+          "example": ""
+        },
+        "amount_info": {
+          "description": "订单扣费详情。 具体请参见表3。",
+          "$ref": "#/definitions/AmountInfomationV2"
+        },
+        "enterprise_projects": {
+          "description": "客户订单企业项目信息。具体请参见表 EnterpriseProject。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/definitions/EnterpriseProject"
+          }
+        },
+        "sub_order_infos": {
+          "description": "客户订单下属的订单详情信息。具体请参见表 SubCustomerOrderV2 说明:当查询订单为组合交易订单时,订单信息会返回下属的订单信息,当查询为普通订单时,此字段返回为空",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/definitions/SubCustomerOrderV2"
+          }
+        },
+        "agent_pay_info": {
+          "description": "|参数名称:客户订单代理支付信息。| |参数约束及描述:客户订单代理支付信息。具体请参见AgentPayInfoV2|",
+          "$ref": "#/definitions/AgentPayInfoV2"
+        }
+      }
+    },
+    "DiscountItemV2": {
+      "properties": {
+        "discount_type": {
+          "type": "string",
+          "description": "折扣类型: 200:促销产品折扣300:促销折扣券301:促销代金券302:促销现金券500:代理订购指定折扣501:代理订购指定减免502:代理订购指定一口价600:折扣返利合同601:渠道框架合同602:专款专用合同603:线下直签合同604:电销授权合同605:商务合同折扣606:渠道商务合同折扣607:合作伙伴授权折扣609:订单调价折扣610:免单金额700:促销折扣800:充值帐户折扣900:产品本身折扣901:基准价一口价的折扣",
+          "example": "601"
+        },
+        "discount_amount": {
+          "description": "折扣金额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 66.0
+        }
+      }
+    },
+    "QueryCustomerOrdersRsp": {
+      "properties": {
+        "total_count": {
+          "description": "大于等于0的整数。 符合条件的记录总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 3
+        },
+        "order_infos": {
+          "description": "- 客户订单详情信息。 具体请参见表2",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerOrderV2"
+          }
+        }
+      }
+    },
+    "AmountInfomationV2": {
+      "properties": {
+        "discounts": {
+          "description": "费用项。 具体请参见表7。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscountItemV2"
+          }
+        },
+        "flexipurchase_coupon_amount": {
+          "description": "现金券金额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 66.0
+        },
+        "coupon_amount": {
+          "description": "代金券金额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 33.0
+        },
+        "stored_card_amount": {
+          "description": "储值卡金额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 22.0
+        },
+        "commission_amount": {
+          "description": "手续费(仅退订订单存在)。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 11.0
+        },
+        "consumed_amount": {
+          "description": "消费金额(仅退订订单存在)。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 9.0
+        }
+      }
+    },
+    "EnterpriseProject": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "description": "|参数名称:企业项目id| |参数约束及描述:最大长度256|",
+          "example": ""
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "description": "|参数名称:企业项目名称| |参数约束及描述:最大长度256|"
+        }
+      }
+    },
+    "SubCustomerOrderV2": {
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "订单ID。",
+          "example": "CS19040119281JMYC"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": "c9e731c4663646988ef4cdb3122837b6"
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": "hws.service.type.ec2"
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "source_type": {
+          "description": "客户订单来源类型。1:客户 2:代理 3:合同 4:分销商 5:页面删除资源 6:补录订单 7:补偿订单 8:系统自动创建",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "status": {
+          "description": "订单状态: 1:待审核2:待退款3:处理中4:已取消5:已完成6:待支付9:待确认10:待发货11:待收货12:待上门取货13:换新中",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 5
+        },
+        "order_type": {
+          "description": "订单类型: 1:开通2:续订3:变更4:退订11:按需转包年/包月13:试用14:转商用15:费用调整",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "amount_after_discount": {
+          "description": "订单优惠后金额(不含券不含卡的实付价格)。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 97.0
+        },
+        "official_amount": {
+          "description": "订单金额(官网价)。 退订订单中,该金额等于amount_after_discount。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": 100.0
+        },
+        "measure_id": {
+          "description": "订单金额度量单位: 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间 。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。",
+          "example": "2020-05-06T08:05:01Z"
+        },
+        "payment_time": {
+          "type": "string",
+          "description": "支付时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。",
+          "example": "2020-05-06T08:05:01Z"
+        },
+        "currency": {
+          "type": "string",
+          "description": "货币编码。",
+          "example": "CNY"
+        },
+        "contract_id": {
+          "type": "string",
+          "description": "合同ID。",
+          "example": ""
+        },
+        "amount_info": {
+          "description": "订单扣费详情。 具体请参见表3。",
+          "$ref": "#/definitions/AmountInfomationV2"
+        },
+        "enterprise_projects": {
+          "description": "客户订单企业项目信息。具体请参见表 EnterpriseProject。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/definitions/EnterpriseProject"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,326 @@
+{
+  "name": "ShowFlowLog",
+  "summary": "查询流日志",
+  "tags": "流日志",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/fl/flow_logs/{flowlog_id}": {
+      "get": {
+        "tags": [
+          "流日志"
+        ],
+        "summary": "查询流日志",
+        "description": "查询流日志详情",
+        "operationId": "ShowFlowLog",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "05137572fa00d5eb2fdcc014b0f5c751",
+            "x-order": 2
+          },
+          {
+            "name": "flowlog_id",
+            "in": "path",
+            "description": "流日志资源唯一标识",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "575c5798-bb62-4500-a8dc-174ef7d8685f",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "flow_log": {
+                  "id": "35868d55-443e-4d5c-90a4-ac618dc45c1a",
+                  "name": "flow",
+                  "description": "just a test",
+                  "tenant_id": "b2782e6708b8475c993e6064bc456bf8",
+                  "resource_type": "port",
+                  "resource_id": "05c4052d-8d14-488f-aa00-19fea5a25fde",
+                  "traffic_type": "reject",
+                  "log_group_id": "05c4052d-8d14-488f-aa00-19fea5a25fff",
+                  "log_topic_id": "a9d7dee7-37d2-4cba-a208-a016252aaa63",
+                  "log_store_type": "lts",
+                  "created_at": "2019-01-14T11:03:02",
+                  "updated_at": "2019-01-14T11:03:02",
+                  "admin_state": true,
+                  "status": "ACTIVE"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/FlowLogRespBodyShow"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询流日志",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 73,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v1/{project_id}/fl/flow_logs/{flowlog_id}",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v1/{project_id}/fl/flow_logs/{flowlog_id}",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2019-01-30",
+        "x-open-region-cloud": "hc,hk,otc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "FlowLogRespBodyShow": {
+      "required": [
+        "flow_log"
+      ],
+      "properties": {
+        "flow_log": {
+          "description": "flow_log对象",
+          "$ref": "#/definitions/FlowLogResp",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "FlowLogResp": {
+      "required": [
+        "admin_state",
+        "created_at",
+        "description",
+        "id",
+        "log_group_id",
+        "log_store_type",
+        "log_topic_id",
+        "name",
+        "resource_id",
+        "resource_type",
+        "status",
+        "tenant_id",
+        "traffic_type",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "流日志资源唯一标识",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:流日志名称\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:流日志描述\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "resource_type": {
+          "type": "string",
+          "description": "功能说明:流日志所属资源类型\n取值范围:支持Port、Network、VPC 类型。\n约束:当resource_type为Port时,Port资源必须是C3、S3、M3三种虚拟机的网卡。",
+          "enum": [
+            "port",
+            "network",
+            "vpc"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "resource_type对应资源的唯一ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "traffic_type": {
+          "type": "string",
+          "description": "功能说明:流日志采集类型\n取值范围:\n    1)all:采集指定资源的全部流量。\n    2)accept:采集指定资源允许传入、传出的流量。\n    3)reject:采集指定资源拒绝传入、传出的流量。",
+          "enum": [
+            "all",
+            "accept",
+            "reject"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "log_group_id": {
+          "type": "string",
+          "description": "日志组ID\n请在云日志服务中获取,详情请参见《云日志服务用户指南》。",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "log_topic_id": {
+          "type": "string",
+          "description": "日志主题ID\n请在云日志服务中获取,详情请参见《云日志服务用户指南》。",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "log_store_type": {
+          "type": "string",
+          "description": "功能说明:流日志存储类型\n取值范围:\n    lts:存储类型为云日志服务(LTS)。",
+          "enum": [
+            "lts"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "资源创建时间",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "最近一次更新资源的时间",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "admin_state": {
+          "type": "boolean",
+          "description": "功能说明:流日志管理\n取值范围:若为true,表明开启流日志。若为false,则关闭流日志",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:流日志状态\n取值范围:ACTIVE、DOWN、ERROR",
+          "enum": [
+            "ACTIVE",
+            "DOWN",
+            "ERROR"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

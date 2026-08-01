@@ -1,0 +1,560 @@
+{
+  "name": "UpdateAddonInstance",
+  "summary": "更新AddonInstance",
+  "tags": "插件管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/addons/{id}": {
+      "put": {
+        "tags": [
+          "插件管理"
+        ],
+        "summary": "更新AddonInstance",
+        "description": "更新插件实例的功能。",
+        "operationId": "UpdateAddonInstance",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "插件实例id",
+            "required": true,
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "UpdateAddonInstanceRequestBody",
+            "description": "请求body体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InstanceRequest"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "kind": "Addon",
+                "apiVersion": "v3",
+                "metadata": {
+                  "uid": "684fa9b2-a987-11ec-ba79-0255ac100096",
+                  "name": "gpu-beta",
+                  "alias": "gpu",
+                  "creationTimestamp": "2022-03-22T02:25:57Z",
+                  "updateTimestamp": "2022-03-22T02:25:57Z"
+                },
+                "spec": {
+                  "clusterID": "1b2ec02d-a3b2-11ec-b0d0-0255ac100099",
+                  "version": "1.2.10",
+                  "addonTemplateName": "gpu-beta",
+                  "addonTemplateType": "helm",
+                  "addonTemplateLogo": "******",
+                  "addonTemplateLabels": [
+                    "Accelerator"
+                  ],
+                  "description": "A device plugin for nvidia.com/gpu resource on nvidia driver",
+                  "values": {
+                    "basic": {
+                      "device_version": "1.2.10",
+                      "driver_version": "1.2.10",
+                      "obs_url": "******",
+                      "rbac_enabled": true,
+                      "region": "******",
+                      "swr_addr": "******",
+                      "swr_user": "hwofficial"
+                    },
+                    "custom": {
+                      "is_driver_from_nvidia": true,
+                      "nvidia_driver_download_url": "https://us.download.nvidia.com/tesla/396.37/NVIDIA-Linux-x86_64-396.37.run"
+                    }
+                  }
+                },
+                "status": {
+                  "status": "upgrading",
+                  "Reason": "addon upgrading",
+                  "message": "",
+                  "targetVersions": null,
+                  "currentVersion": {
+                    "version": "1.2.10",
+                    "input": {
+                      "basic": {
+                        "device_version": "1.2.10",
+                        "driver_version": "1.2.10",
+                        "obs_url": "******",
+                        "region": "******",
+                        "swr_addr": "******",
+                        "swr_user": "hwofficial"
+                      },
+                      "parameters": {
+                        "custom": {
+                          "is_driver_from_nvidia": true,
+                          "nvidia_driver_download_url": ""
+                        }
+                      }
+                    },
+                    "stable": true,
+                    "translate": {
+                      "en_US": {
+                        "addon": {
+                          "changeLog": "Supported GPU driver of a new version for CentOS.",
+                          "description": "A device plugin for nvidia.com/gpu resource on nvidia driver"
+                        },
+                        "description": {
+                          "Parameters.custom.drivers_info.cuda": "CUDA Toolkit",
+                          "Parameters.custom.drivers_info.product": "Product",
+                          "Parameters.custom.drivers_info.product_series": "Product Series",
+                          "Parameters.custom.drivers_info.product_type": "Product Type",
+                          "Parameters.custom.nvidia_driver_download_url": "Download the nvidia driver accroding to the input link"
+                        },
+                        "key": {
+                          "Parameters.custom.nvidia_driver_download_url": "Nvidia Driver"
+                        }
+                      },
+                      "fr_FR": {
+                        "addon": {
+                          "changeLog": "Pilote GPU pris en charge d'une nouvelle version pour CentOS.",
+                          "description": "Un plug-in de dispositif pour les ressources GPU sur un pilote NVIDIA."
+                        },
+                        "description": {
+                          "Parameters.custom.drivers_info.cuda": "Boîte à outils CUDA",
+                          "Parameters.custom.drivers_info.product": "Produit",
+                          "Parameters.custom.drivers_info.product_series": "Serie de produits",
+                          "Parameters.custom.drivers_info.product_type": "type de produit",
+                          "Parameters.custom.nvidia_driver_download_url": "Téléchargez le pilote nvidia accroding sur le lien d'entrée"
+                        },
+                        "key": {
+                          "Parameters.custom.nvidia_driver_download_url": "Nvidia Driver"
+                        }
+                      },
+                      "zh_CN": {
+                        "addon": {
+                          "changeLog": "",
+                          "description": ""
+                        },
+                        "description": {
+                          "Parameters.custom.drivers_info.cuda": "CUDA Toolkit",
+                          "Parameters.custom.drivers_info.product": "",
+                          "Parameters.custom.drivers_info.product_series": "",
+                          "Parameters.custom.drivers_info.product_type": "",
+                          "Parameters.custom.nvidia_driver_download_url": ""
+                        },
+                        "key": {
+                          "Parameters.custom.nvidia_driver_download_url": ""
+                        }
+                      }
+                    },
+                    "supportVersions": null,
+                    "creationTimestamp": "2022-01-11T14:57:44Z",
+                    "updateTimestamp": "2022-01-11T15:04:37Z"
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/AddonInstance"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新AddonInstance",
+        "x-request-examples-description-1": "更新everest插件,更新后的插件版本为2.1.30。",
+        "x-request-examples-1": {
+          "kind": "Addon",
+          "apiVersion": "v3",
+          "metadata": {
+            "annotations": {
+              "addon.upgrade/type": "upgrade"
+            }
+          },
+          "spec": {
+            "clusterID": "1b2ec02d-a3b2-11ec-b0d0-0255ac100099",
+            "version": "1.2.10",
+            "addonTemplateName": "gpu-beta",
+            "values": {
+              "basic": {
+                "device_version": "1.2.10",
+                "driver_version": "1.2.10",
+                "obs_url": "******",
+                "region": "******",
+                "swr_addr": "******",
+                "swr_user": "hwofficial",
+                "rbac_enabled": true
+              },
+              "custom": {
+                "is_driver_from_nvidia": true,
+                "nvidia_driver_download_url": "https://us.download.nvidia.com/tesla/396.37/NVIDIA-Linux-x86_64-396.37.run"
+              }
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-publishpath": "cce_02_0323",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs,ocb,hws_ocb,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "AddonInstanceStatus": {
+      "required": [
+        "currentVersion",
+        "message",
+        "Reason",
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "插件实例状态, 取值如下\n- running:运行中,表示插件全部实例状态都在运行中,插件正常使用。\n- abnormal:不可用,表示插件状态异常,插件不可使用。可单击插件名称查看实例异常事件。\n- installing:安装中,表示插件正在安装中。\n- installFailed:安装失败,表示插件安装失败,需要卸载后重新安装。\n- upgrading:升级中,表示插件正在更新中。\n- upgradeFailed:升级失败,表示插件升级失败,可重试升级或卸载后重新安装。\n- deleting:删除中,表示插件正在删除中。\n- deleteFailed:删除失败,表示插件删除失败,可重试卸载。\n- deleteSuccess:删除成功,表示插件删除成功。\n- available:部分就绪,表示插件下只有部分实例状态为运行中,插件部分功能可用。\n- rollbacking:回滚中,表示插件正在回滚中。\n- rollbackFailed:回滚失败,表示插件回滚失败,可重试回滚或卸载后重新安装。\n- unknown:未知状态,表示插件模板实例不存在。",
+          "enum": [
+            "running",
+            "abnormal",
+            "installing",
+            "installFailed",
+            "upgrading",
+            "upgradeFailed",
+            "deleting",
+            "deleteSuccess",
+            "deleteFailed",
+            "available",
+            "rollbacking",
+            "rollbackFailed"
+          ]
+        },
+        "Reason": {
+          "type": "string",
+          "description": "插件安装失败原因"
+        },
+        "message": {
+          "type": "string",
+          "description": "安装错误详情"
+        },
+        "targetVersions": {
+          "type": "array",
+          "description": "此插件版本,支持升级的集群版本",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "currentVersion": {
+          "description": "当前插件实例使用的具体插件版本信息",
+          "$ref": "#/definitions/Versions"
+        },
+        "isRollbackable": {
+          "type": "boolean",
+          "description": "是否支持回滚到插件升级前的插件版本"
+        },
+        "previousVersion": {
+          "type": "string",
+          "description": "插件升级或回滚前的版本"
+        }
+      },
+      "description": "插件状态信息"
+    },
+    "Versions": {
+      "required": [
+        "input",
+        "stable",
+        "supportVersions",
+        "translate",
+        "updateTimestamp",
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "插件版本号"
+        },
+        "input": {
+          "type": "object",
+          "description": "插件安装参数"
+        },
+        "stable": {
+          "type": "boolean",
+          "description": "是否为稳定版本"
+        },
+        "translate": {
+          "type": "object",
+          "description": "供界面使用的翻译信息"
+        },
+        "supportVersions": {
+          "type": "array",
+          "description": "支持集群版本号",
+          "items": {
+            "$ref": "#/definitions/SupportVersions"
+          }
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "创建时间"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "更新时间"
+        }
+      },
+      "description": "具体插件版本信息"
+    },
+    "InstanceRequest": {
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值“Addon”,该值不可修改,该字段传入无效。",
+          "default": "Addon"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值“v3”,该值不可修改,该字段传入无效。",
+          "default": "v3"
+        },
+        "metadata": {
+          "$ref": "#/definitions/AddonMetadata",
+          "description": "基本信息,为集合类的元素类型,包含一组由不同名称定义的属性"
+        },
+        "spec": {
+          "description": "spec是集合类的元素类型,内容为插件实例安装/升级的具体请求信息",
+          "$ref": "#/definitions/InstanceRequestSpec"
+        }
+      },
+      "description": "插件安装/升级-request结构体"
+    },
+    "SupportVersions": {
+      "required": [
+        "clusterType",
+        "clusterVersion"
+      ],
+      "properties": {
+        "clusterType": {
+          "type": "string",
+          "description": "**参数解释**:\n支持的集群类型\n**取值范围**:\n- VirtualMachine: CCE集群,控制节点架构为X86\n- ARM64: 鲲鹏集群,控制节点架构为鲲鹏\n**约束限制**:\nCCE Autopilot集群仅支持VirtualMachine类型"
+        },
+        "clusterVersion": {
+          "type": "array",
+          "description": "支持的集群版本(正则表达式)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "category": {
+          "type": "array",
+          "description": "作用的集群类型\n**取值范围:**\n- CCE:CCE Standard集群\n- Turbo:CCE Turbo集群\n- Autopilot:CCE Autopilot集群\n\n**默认取值**\n为空时默认为CCE Standard,CCE Turbo集群",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "插件支持升级的集群版本"
+    },
+    "AddonMetadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "唯一id标识"
+        },
+        "name": {
+          "type": "string",
+          "description": "插件名称"
+        },
+        "alias": {
+          "type": "string",
+          "description": "插件别名"
+        },
+        "labels": {
+          "type": "object",
+          "description": "插件标签,key/value对格式,接口保留字段,填写不会生效",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "description": "插件注解,由key/value组成\n- 安装:固定值为{\"addon.install/type\":\"install\"}\n- 升级:固定值为{\"addon.upgrade/type\":\"upgrade\"}",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "更新时间"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "创建时间"
+        }
+      },
+      "description": "插件基本信息,集合类的元素类型,包含一组由不同名称定义的属性。"
+    },
+    "InstanceSpec": {
+      "required": [
+        "addonTemplateName",
+        "addonTemplateType",
+        "clusterID",
+        "description",
+        "values",
+        "version"
+      ],
+      "properties": {
+        "clusterID": {
+          "type": "string",
+          "description": "集群id"
+        },
+        "version": {
+          "type": "string",
+          "description": "插件模板版本号,如1.0.0"
+        },
+        "addonTemplateName": {
+          "type": "string",
+          "description": "插件模板名称,如coredns"
+        },
+        "addonTemplateType": {
+          "type": "string",
+          "description": "**参数解释:**\n插件模板类型\n**约束限制:**\n不涉及\n**取值范围:**\n- helm: 表示使用Helm包进行部署的模板类型\n- static: 表示静态模板类型\n\n**默认取值:**\n不涉及"
+        },
+        "addonTemplateLogo": {
+          "type": "string",
+          "description": "插件模板logo图片的地址",
+          "maxLength": 200
+        },
+        "addonTemplateLabels": {
+          "type": "array",
+          "description": "插件模板所属类型",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "插件模板描述"
+        },
+        "values": {
+          "type": "object",
+          "description": "插件模板安装参数(各插件不同),请根据具体插件模板信息填写安装参数。",
+          "additionalProperties": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "spec是集合类的元素类型,内容为插件实例具体信息"
+    },
+    "InstanceRequestSpec": {
+      "required": [
+        "addonTemplateName",
+        "clusterID",
+        "values"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "待安装、升级插件的版本号,例如1.0.0\n- 安装:该参数非必传,如果不传,匹配集群支持的最新版本\n- 升级:该参数必传,需指定版本号"
+        },
+        "clusterID": {
+          "type": "string",
+          "description": "集群id"
+        },
+        "values": {
+          "type": "object",
+          "description": "插件模板安装参数(各插件不同),升级插件时需要填写全量安装参数,未填写参数将使用插件模板中的默认值,当前插件安装参数可通过查询插件实例接口获取。安装参数请参考[插件实例字段说明](https://support.huaweicloud.com/api-cce/cce_02_0366.html)。",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "addonTemplateName": {
+          "type": "string",
+          "description": "待安装插件模板名称,如coredns"
+        }
+      },
+      "description": "spec是集合类的元素类型,内容为插件实例安装/升级的具体请求信息"
+    },
+    "AddonInstance": {
+      "required": [
+        "apiVersion",
+        "kind",
+        "spec",
+        "status"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "API类型,固定值“Addon”,该值不可修改。",
+          "default": "Addon"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值“v3”,该值不可修改。",
+          "default": "v3"
+        },
+        "metadata": {
+          "description": "基本信息,为集合类的元素类型,包含一组由不同名称定义的属性",
+          "$ref": "#/definitions/AddonMetadata"
+        },
+        "spec": {
+          "description": "spec是集合类的元素类型,内容为插件实例具体信息,实例的详细描述主体部分都在spec中给出",
+          "$ref": "#/definitions/InstanceSpec"
+        },
+        "status": {
+          "description": "插件实例状态",
+          "$ref": "#/definitions/AddonInstanceStatus"
+        }
+      },
+      "description": "插件实例详细信息-response结构体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,165 @@
+{
+  "name": "SetBucketVersioning",
+  "summary": "设置桶的多版本状态",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketVersioning",
+        "consumes": [
+          "application/xml"
+        ],
+        "summary": "设置桶的多版本状态",
+        "description": "多版本功能可在用户意外覆盖或删除对象的情况下提供一种恢复手段。用户可以使用多版本功能来保存、检索和还原对象的各个版本,这样用户能够从意外操作或应用程序故障中轻松恢复数据。多版本功能还可用于数据保留和存档。\n\n默认情况下,桶没有设置多版本功能。\n\n本接口设置桶的多版本状态,用来开启或暂停桶的多版本功能。\n\n设置桶的多版本状态为Enabled,开启桶的多版本功能:\n\n上传对象时,系统为每一个对象创建一个唯一版本号,上传同名的对象将不再覆盖旧的对象,而是创建新的不同版本号的同名对象\n可以指定版本号下载对象,不指定版本号默认下载最新对象;\n删除对象时可以指定版本号删除,不带版本号删除对象仅产生一个带唯一版本号的删除标记,并不删除对象;\n列出桶内对象列表时默认列出最新对象列表,可以指定列出桶内所有版本对象列表;\n除了删除标记外,每个版本的对象存储均需计费(不包括对象元数据)。\n设置桶的多版本状态为Suspended,暂停桶的多版本功能:\n\n旧的版本数据继续保留 ;\n上传对象时创建对象的版本号为null,上传同名的对象将覆盖原有同名的版本号为null的对象;\n可以指定版本号下载对象,不指定版本号默认下载最新对象;\n删除对象时可以指定版本号删除,不带版本号删除对象将产生一个版本号为null的删除标记,并删除版本号为null的对象;\n除了删除标记外,每个版本的对象存储均需计费(不包括对象元数据)。\n只有桶的所有者可以设置桶的多版本状态。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/xml"
+        ],
+        "x-request-examples-url-1": "/?versioning",
+        "x-request-examples-1": "PUT /?versioning HTTP/1.1\nHost: bucketname.obs.cn-north-4.myhuaweicloud.com\nDate: date\nAuthorization: authorization\nContent-Length: length\n\n<VersioningConfiguration>\n    <Status>Enabled</Status>\n</VersioningConfiguration>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "versioning",
+            "in": "query",
+            "required": true,
+            "description": "versioning表示请求桶的多版本状态API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "in": "body",
+            "name": "SetBucketVersioningRequestBody",
+            "description": "桶的多版本状态配置。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketVersioningRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功请求响应。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "SetBucketVersioningRequestBody": {
+      "xml": {
+        "name": "VersioningConfiguration"
+      },
+      "description": "多版本配置的根节点。\n",
+      "required": [
+        "Status"
+      ],
+      "properties": {
+        "Status": {
+          "description": "标识桶的多版本状态。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Suspended"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

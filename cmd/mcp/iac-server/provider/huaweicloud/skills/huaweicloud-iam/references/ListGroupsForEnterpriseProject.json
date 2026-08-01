@@ -1,0 +1,204 @@
+{
+  "name": "ListGroupsForEnterpriseProject",
+  "summary": "查询企业项目关联的用户组",
+  "tags": "企业项目管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-PERMISSION/enterprise-projects/{enterprise_project_id}/groups": {
+      "get": {
+        "tags": [
+          "企业项目管理"
+        ],
+        "summary": "查询企业项目关联的用户组",
+        "description": "该接口可用于查询企业项目关联的用户组。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ListGroupsForEnterpriseProject",
+        "parameters": [
+          {
+            "name": "enterprise_project_id",
+            "in": "path",
+            "description": "待查询的企业项目Id。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "已认证的拥有iam:permissions:listGroupsOnEnterpriseProject细粒度权限或Security Administrator权限的token。同时要求enterprise_project_id所属帐号的domain_id与Token中的domain_id一致。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "groups": [
+                  {
+                    "createTime": 1552093271000,
+                    "description": null,
+                    "domainId": "dc7f62ae236c47b8836014c16d64db91",
+                    "id": "e6bde2403bda43e2813a1a684896342b",
+                    "name": "auth"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListGroupsForEnterpriseProjectRes"
+            }
+          },
+          "400": {
+            "description": "请求参数出错。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0007",
+                "error_msg": "Request parameter %(key)s is invalid."
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0001",
+                "error_msg": "The request you have made requires authentication."
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0002",
+                "error_msg": "You are not authorized to perform the requested action."
+              },
+              "application/json-1": {
+                "error_code": "IAM.0003",
+                "error_msg": "Policy doesn't allow %(actions)s to be performed."
+              }
+            }
+          },
+          "404": {
+            "description": "找不到指定资源。",
+            "examples": {
+              "application/json": {
+                "error_code": "IAM.0004",
+                "error_msg": "Could not find domain: dda1a8-8602-45a8-8145-393af4c950dd."
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询企业项目直接关联的用户组",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-iftype": "open",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-PERMISSION/enterprise-projects/{enterprise_project_id}/groups",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "请求认证失败。",
+            "solution": "请补充或确认请求认证信息。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "请求未授权。",
+            "solution": "请确认是否授权成功。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0004",
+            "httpStatus": "404",
+            "errorMessage": "Could not find %(target)s: %(target_id)s.",
+            "errorDescription": "无法找到请求资源。",
+            "solution": "请确认请求或联系技术支持。",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ListGroupsForEnterpriseProjectResDetail": {
+      "required": [
+        "createTime",
+        "description",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "createTime": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1552093271000,
+          "description": "用户组创建时间。"
+        },
+        "description": {
+          "type": "string",
+          "description": "用户组描述。"
+        },
+        "domainId": {
+          "type": "string",
+          "example": "dc7f62ae236c47b8836014c16d64db91",
+          "description": "租户Id。"
+        },
+        "id": {
+          "type": "string",
+          "example": "e6bde2403bda43e2813a1a684896342b",
+          "description": "用户组Id。"
+        },
+        "name": {
+          "type": "string",
+          "example": "auth",
+          "description": "用户组名称。"
+        }
+      }
+    },
+    "ListGroupsForEnterpriseProjectRes": {
+      "required": [
+        "groups"
+      ],
+      "properties": {
+        "groups": {
+          "type": "array",
+          "description": "用户组信息。",
+          "items": {
+            "$ref": "#/definitions/ListGroupsForEnterpriseProjectResDetail"
+          }
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

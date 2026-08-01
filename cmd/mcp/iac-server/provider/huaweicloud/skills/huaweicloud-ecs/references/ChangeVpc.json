@@ -1,0 +1,187 @@
+{
+  "name": "ChangeVpc",
+  "summary": "云服务器切换虚拟私有云",
+  "tags": "网卡管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/changevpc": {
+      "post": {
+        "tags": [
+          "网卡管理"
+        ],
+        "summary": "云服务器切换虚拟私有云",
+        "description": "云服务器切换虚拟私有云。",
+        "operationId": "ChangeVpc",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "changeOsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangeVpcRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JobResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "云服务器切换虚拟私有云",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 100,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST  https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/changevpc",
+        "x-request-examples-1": {
+          "vpc_id": "d32019d3-bc6e-4319-9c1d-6722fc136a23",
+          "nic": {
+            "subnet_id": "d32019d3-bc6e-4319-9c1d-6722fc136a23",
+            "ip_address": "192.168.0.7",
+            "security_groups": [
+              {
+                "id": "f0ac4394-7e4a-4409-9701-ba8be283dbc3"
+              }
+            ]
+          }
+        },
+        "x-request-examples-text-1": "vpc_id: \"d32019d3-bc6e-4319-9c1d-6722fc136a23\"\nnic:\n  subnet_id: \"d32019d3-bc6e-4319-9c1d-6722fc136a23\"\n  ip_address: \"192.168.0.7\"\n  security_groups: [\n    { \n       id: \"f0ac4394-7e4a-4409-9701-ba8be283dbc3\"\n    }\n  ]",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-5-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ChangeVpcRequestBody": {
+      "required": [
+        "vpc_id",
+        "nic"
+      ],
+      "properties": {
+        "vpc_id": {
+          "type": "string",
+          "description": "虚拟机私有云ID"
+        },
+        "nic": {
+          "description": "需要添加的网卡参数列表.",
+          "$ref": "#/definitions/ChangeVpcNicBody"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ChangeVpcSecurityGroups": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "安全组id"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "JobResult": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "example": "70a599e0-31e7-49b7-b260-868f44166666",
+          "description": "提交任务成功后返回的任务ID,用户可以使用该ID对任务执行情况进行查询。"
+        }
+      },
+      "description": "任务类响应通用返回体。"
+    },
+    "ChangeVpcNicBody": {
+      "properties": {
+        "port_id": {
+          "type": "string",
+          "example": "",
+          "description": "网卡ID,UUID格式。 当该字段不为空时,表示挂载指定的网卡。port_id和subnet_id不能同时为空。\n网卡ID可以从虚拟私有云的“查询端口列表”章节查询到。\n约束:\n网卡必须带有安全组。\n网卡状态必须为DOWN。\n网卡的vpcid必须和传入的vpcid一致。\n当port_id和subnet_id同时存在的时候,优先使用port_id。当选择port_id不为空时,代表此时使用的是弹性网卡,此时security_groups和ip_address等参数不生效。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "example": "",
+          "description": "云服务器云主机添加网卡的信息。\n需要指定云服务器云主机所属虚拟私有云下已创建的网络(network)的ID,UUID格式。"
+        },
+        "security_groups": {
+          "type": "array",
+          "example": "",
+          "description": "添加网卡的安全组信息",
+          "items": {
+            "$ref": "#/definitions/ChangeVpcSecurityGroups"
+          }
+        },
+        "ip_address": {
+          "type": "string",
+          "example": "",
+          "description": "P地址,无该参数表示自动分配IP地址"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,1094 @@
+{
+  "name": "CreateServers",
+  "summary": "创建云服务器",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1.1/{project_id}/cloudservers": {
+      "post": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "创建云服务器",
+        "description": "创建一台或多台云服务器。\n\n指该接口兼容《弹性云服务器接口参考》创建云服务器v1的功能,同时合入新功能,支持创建[包年/包月](https://support.huaweicloud.com/productdesc-ecs/ecs_01_0065.html)的弹性云服务器。\n\n弹性云服务器的登录鉴权方式包括两种:密钥对、密码。为安全起见,推荐使用密钥对方式。\n\n- 密钥对\n\n指使用密钥对作为弹性云服务器的鉴权方式。\n\n接口调用方法:使用key_name字段,指定弹性云服务器登录时使用的密钥文件。\n\n- 密码\n\n指使用设置初始密码方式作为弹性云服务器的鉴权方式,此时,您可以通过用户名密码方式登录弹性云服务器,Linux操作系统时为root用户的初始密码,Windows操作系统时为Administrator用户的初始密码。\n\n接口调用方法:使用adminPass字段,指定管理员帐号的初始登录密码。对于镜像已安装Cloud-init的Linux云服务器,如果需要使用密文密码,可以使用user_data字段进行密码注入。\n\n> 对于安装Cloud-init镜像的Linux云服务器云主机,若指定user_data字段,则adminPass字段无效。\n\n购买操作示例:\n- [使用API购买ECS过程中常见问题及处理方法](https://support.huaweicloud.com/api-ecs/ecs_04_0007.html)\n- [获取Token并检验Token的有效期 ](https://support.huaweicloud.com/api-ecs/ecs_04_0008.html)",
+        "operationId": "CreateServers",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/X-Client-Token"
+          },
+          {
+            "in": "body",
+            "name": "CreateServersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateServersRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "order_id": "CS191206142235XTG",
+                "job_id": "ff8080816ed97546016ed9dfd7bc0001"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateServersResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建云服务器",
+        "x-constraint": "- 请保证账户余额充足,此接口无法使用优惠券支付,若余额不足会报Ecs.7000错误码。\n- 创建包周期云服务器资源后,请参考“[支付包周期产品订单](https://support.huaweicloud.com/api-bpconsole/zh-cn_topic_0075746561.html)”进行支付。若想使用优惠券,请将请求中的isAutoPay字段设置为false,参考“[查询订单可用优惠券](https://support.huaweicloud.com/api-bpconsole/zh-cn_topic_0092953630.html)”进行支付,或者在华为云官网页面使用优惠券进行支付。\n- 如果您需要查询订单的资源开通详情,请参考“[查询订单的资源开通详情](https://support.huaweicloud.com/api-oce/api_order_00001.html)”。\n- 如果您需要退订该包周期资源,请参考“[退订包周期资源](https://support.huaweicloud.com/api-oce/zh-cn_topic_0082522030.html)”。",
+        "x-version": "v1.1",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1.1/{project_id}/cloudservers",
+        "x-request-examples-1": {
+          "server": {
+            "availability_zone": "az1-dc1",
+            "name": "newserver",
+            "imageRef": "5ef3a512-1c65-418e-8764-a4413c2f9277",
+            "root_volume": {
+              "volumetype": "SATA"
+            },
+            "data_volumes": [
+              {
+                "volumetype": "SATA",
+                "size": 100
+              },
+              {
+                "volumetype": "SSD",
+                "size": 100,
+                "multiattach": true,
+                "hw:passthrough": "true"
+              }
+            ],
+            "flavorRef": "s2.small.1",
+            "vpcid": "2a6f4aa6-d93e-45f5-a8cb-b030dbf8cd68",
+            "security_groups": [
+              {
+                "id": "6242ef48-4d35-49c8-8711-a6e54902e44a"
+              }
+            ],
+            "nics": [
+              {
+                "subnet_id": "ef039b60-6a14-42d1-963b-687b627fea08"
+              }
+            ],
+            "publicip": {
+              "eip": {
+                "iptype": "5_sbgp",
+                "bandwidth": {
+                  "size": 1,
+                  "sharetype": "PER"
+                }
+              }
+            },
+            "key_name": "id_rsa",
+            "count": 1,
+            "metadata": {
+              "op_svc_userid": "f79791beca3c48159ac2553fff22e166"
+            },
+            "extendparam": {
+              "chargingMode": "prePaid",
+              "periodType": "month",
+              "periodNum": 1,
+              "isAutoRenew": "true",
+              "isAutoPay": "true",
+              "regionID": "cn-north-1",
+              "enterprise_project_id": "f8e0ecc8-3825-4ee8-9596-fb4258ffdcbb"
+            },
+            "os:scheduler_hints": {
+              "group": "cdbbfffe-ef18-47b4-a5c8-f61a984c0ecc"
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"server\": {\n\t\t\"availability_zone\": \"az1-dc1\",\n\t\t\"name\": \"newserver\",\n\t\t\"imageRef\": \"5ef3a512-1c65-418e-8764-a4413c2f9277\",\n\t\t\"root_volume\": {\n\t\t\t\"volumetype\": \"SATA\"\n\t\t},\n\t\t\"data_volumes\": [{\n\t\t\t\"volumetype\": \"SATA\",\n\t\t\t\"size\": 100\n\t\t},\n\t\t{\n\t\t\t\"volumetype\": \"SSD\",\n\t\t\t\"size\": 100,\n\t\t\t\"multiattach\": true,\n\t\t\t\"hw:passthrough\": \"true\"\n\t\t}],\n\t\t\"flavorRef\": \"s2.small.1\",\n\t\t\"vpcid\": \"2a6f4aa6-d93e-45f5-a8cb-b030dbf8cd68\",\n\t\t\"security_groups\": [{\n\t\t\t\"id\": \"6242ef48-4d35-49c8-8711-a6e54902e44a\"\n\t\t}],\n\t\t\"nics\": [{\n\t\t\t\"subnet_id\": \"ef039b60-6a14-42d1-963b-687b627fea08\"\n\t\t}],\n\t\t\"publicip\": {\n\t\t\t\"eip\": {\n\t\t\t\t\"iptype\": \"5_sbgp\",\n\t\t\t\t\"bandwidth\": {\n\t\t\t\t\t\"size\": 1,\n\t\t\t\t\t\"sharetype\": \"PER\"\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\t\"key_name\": \"id_rsa\",\n\t\t\"count\": 1,\n\t\t\"metadata\": {\n\t\t\t\"op_svc_userid\": \"f79791beca3c48159ac2553fff22e166\"\n\t\t},\n\t\t\"extendparam\": {\n\t\t\t\"chargingMode\": \"prePaid\",\n\t\t\t\"periodType\": \"month\",\n\t\t\t\"periodNum\": 1,\n\t\t\t\"isAutoRenew\": \"true\",\n\t\t\t\"isAutoPay\": \"true\",\n\t\t\t\"regionID\": \"cn-north-1\",\n\t\t\t\"enterprise_project_id\": \"f8e0ecc8-3825-4ee8-9596-fb4258ffdcbb\"\n\t\t},\n\t\t\"os:scheduler_hints\": {\n\t\t\t\"group\": \"cdbbfffe-ef18-47b4-a5c8-f61a984c0ecc\"\n\t\t}\n\t}\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SerialConsoleOptions": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PrePaidServerSecurityGroup": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "507ca48f-814c-4293-8706-300564d54620",
+          "description": "可以为空,待创建云服务器的安全组,会对创建云服务器中配置的网卡生效。需要指定已有安全组的ID,UUID格式;若不传值,底层会按照空处理,不会创建安全组。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": ""
+    },
+    "CreateServerNicAllowedAddressPairs": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "IP地址\n不支持0.0.0.0/0\n如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组。"
+        },
+        "mac_address": {
+          "type": "string",
+          "description": "MAC地址"
+        }
+      }
+    },
+    "PrePaidServerEipExtendParam": {
+      "properties": {
+        "chargingMode": {
+          "type": "string",
+          "example": "prePaid",
+          "description": "公网IP的计费模式。\n\n取值范围:\n\n- prePaid-预付费,即包年包月;\n- postPaid-后付费,即按需付费;\n\n> 说明:\n> \n> 如果bandwidth对象中share_type是WHOLE且id有值,弹性IP只能创建为按需付费的,故该参数传参“prePaid”无效。",
+          "enum": [
+            "prePaid",
+            "postPaid"
+          ]
+        }
+      },
+      "description": ""
+    },
+    "PrePaidServerNic": {
+      "properties": {
+        "subnet_id": {
+          "type": "string",
+          "example": "157ee789-03ea-45b1-a698-76c92660dd83",
+          "description": "待创建云服务器所在的子网信息,需要指定vpcid对应VPC下的子网ID,UUID格式。\n\n可以通过VPC服务 [查询子网](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=VPC&api=ListSubnets) 接口查询,该接口支持通过创建云服务器填写的vpcid进行过滤查询。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "port_id": {
+          "type": "string",
+          "example": "",
+          "description": "网卡ID,UUID格式。 当该字段不为空时,表示挂载指定的网卡。port_id和subnet_id不能同时为空。\n网卡ID可以从虚拟私有云的“查询端口列表”章节查询到。\n约束:\n网卡状态必须为DOWN。\n网卡的vpcid必须和传入的vpcid一致。\n当port_id和subnet_id同时存在的时候,优先使用port_id。当选择port_id不为空时,代表此时使用的是弹性网卡,此时security_groups和ip_address等参数不生效。"
+        },
+        "ip_address": {
+          "type": "string",
+          "example": " 192.168.0.128",
+          "description": "待创建云服务器网卡的IP地址,IPv4格式。\n\n约束:\n\n- 不填或空字符串,默认在子网(subnet)中自动分配一个未使用的IP作网卡的IP地址。\n- 若指定IP地址,该IP地址必须在子网(subnet)对应的网段内,且未被使用。"
+        },
+        "ipv6_enable": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否支持ipv6。\n\n取值为true时,标识此网卡支持ipv6。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "ipv6_bandwidth": {
+          "example": "f4cef064-c176-4abc-86b7-f51c79506666",
+          "description": "绑定的共享带宽。",
+          "$ref": "#/definitions/PrePaidServerIpv6Bandwidth",
+          "x-huawei-extraAnnotation": ""
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateServerNicAllowedAddressPairs"
+          },
+          "description": "IP/Mac对列表,\n约束:IP地址不允许为 “0.0.0.0/0”\n如果allowed_address_pairs配置地址池较大的CIDR(掩码小于24位),建议为该port配置一个单独的安全组\n如果allowed_address_pairs为“1.1.1.1/0”,表示关闭源目地址检查开关\n被绑定的云服务器网卡allowed_address_pairs填“1.1.1.1/0”"
+        }
+      },
+      "description": "待创建云服务器的网卡信息。"
+    },
+    "PrePaidServerDataVolumeMetadata": {
+      "properties": {
+        "__system__encrypted": {
+          "type": "string",
+          "example": "0",
+          "description": "metadata中的表示加密功能的字段,0代表不加密,1代表加密。\n\n该字段不存在时,云硬盘默认为不加密。",
+          "default": "0",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "__system__cmkid": {
+          "type": "string",
+          "example": "1189efbf-d48b-46ad-a823-94b942e2a000",
+          "description": "metadata中的加密cmkid字段,与__system__encrypted配合表示需要加密,cmkid长度固定为36个字节。\n\n> 说明:\n\n- 请参考[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html),通过HTTPS请求获取密钥ID。",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "> 说明:\n> \n> 如果是从镜像创建云硬盘,则不支持传入“__system__encrypted”和“__system__cmkid”字段,创建出来的云硬盘与镜像的加密属性一致。"
+    },
+    "PrePaidServerEip": {
+      "required": [
+        "bandwidth",
+        "iptype"
+      ],
+      "properties": {
+        "iptype": {
+          "type": "string",
+          "example": "5_bgp",
+          "description": "弹性IP地址类型。\n\n详情请参见“[申请弹性公网IP](https://support.huaweicloud.com/api-eip/eip_api_0001.html)”章节的“publicip”字段说明。"
+        },
+        "bandwidth": {
+          "description": "弹性IP地址带宽参数。",
+          "$ref": "#/definitions/PrePaidServerEipBandwidth"
+        },
+        "extendparam": {
+          "description": "创建弹性IP的附加信息。\n\n> 说明:\n> \n> 当创建云服务器的extendparam结构中chargingMode为prePaid时(即创建包年包月付费的云服务器),若需要创建按需计费的弹性IP,该字段必选,需要在该结构中增加chargingMode为postPaid(按需付费)。",
+          "$ref": "#/definitions/PrePaidServerEipExtendParam"
+        }
+      },
+      "description": ""
+    },
+    "PrePaidServerIpv6Bandwidth": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "绑定的共享带宽ID。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "IPV6共享带宽。"
+    },
+    "PrePaidServerPublicip": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "507ca48f-814c-4293-8706-300564d56666",
+          "description": "为待创建云服务器分配已有弹性IP时,分配的弹性IP的ID,UUID格式。\n\n约束:只能分配状态(status)为DOWN的弹性IP。"
+        },
+        "eip": {
+          "description": "配置云服务器自动分配弹性IP时,创建弹性IP的配置参数。",
+          "$ref": "#/definitions/PrePaidServerEip"
+        },
+        "delete_on_termination": {
+          "type": "boolean",
+          "example": false,
+          "description": "弹性公网IP随实例释放策略。\n\ntrue:弹性公网IP随实例释放。\nfalse:弹性公网IP不随实例释放。\n默认值:false。",
+          "default": false
+        }
+      },
+      "description": ""
+    },
+    "PrePaidServerDataVolumeExtendParam": {
+      "properties": {
+        "resourceSpecCode": {
+          "type": "string",
+          "example": "SAS",
+          "description": "磁盘产品资源规格编码,如SATA,SAS和SSD。\n\n> 说明:\n> \n> 废弃字段。",
+          "x-open-region-cloud": "hc,hk",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "resourceType": {
+          "type": "string",
+          "example": "aei",
+          "description": "磁盘产品资源类型。\n\n> 说明:\n> \n> 废弃字段。",
+          "x-obc": "N",
+          "x-open-region-cloud": "hc,hk",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "snapshotId": {
+          "type": "string",
+          "example": "ef020653-9742-4d24-8672-10af42c9702b",
+          "description": "整机镜像中自带的原始数据盘(简称“原数据盘”)所对应的快照ID或原始数据盘ID。\n\n使用场景:\n\n使用整机镜像创建云服务器,并且选择的整机镜像自带1个或者多个数据盘。\n\n用途:\n\n使用整机镜像创建云服务器时,系统会自动恢复整机镜像中自带数据盘(如果有)的数据,但是磁盘类型将被恢复为默认属性:普通I/O、VBD、非共享盘。此时,您可以通过snapshotID,修改指定原数据盘恢复后的磁盘类型。\n\n> 说明:\n> \n> 建议对每块原数据盘都指定snapshotID,否则,未指定的原数据盘将按默认属性进行创建。\n> 如需修改磁盘大小,修改后的磁盘大小需大于等于原数据盘大小。否则,会影响原数据盘的数据恢复。\n\n实现原理:\n\nsnapshotId是整机镜像自带原始数据盘的唯一标识,通过snapshotId可以获取原数据盘的磁盘信息,从而恢复数据盘数据。\n\n快照ID的获取方法:\n\n登录管理控制台,打开\"云硬盘 > 快照\"页面,根据原始数据盘的磁盘名称找到对应的快照ID。",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "创建磁盘的extendparam字段"
+    },
+    "UpdateServerMetadataOptionsRequestBody": {
+      "type": "object",
+      "description": "云服务器元数据配置请求体。",
+      "properties": {
+        "http_endpoint": {
+          "type": "string",
+          "description": "是否禁用IMDS服务。",
+          "enum": [
+            "enabled",
+            "disabled"
+          ],
+          "default": "enabled"
+        },
+        "http_tokens": {
+          "type": "string",
+          "description": "是否要求携带token。",
+          "enum": [
+            "optional",
+            "required"
+          ],
+          "default": "optional"
+        }
+      }
+    },
+    "PrePaidServerExtendParam": {
+      "properties": {
+        "chargingMode": {
+          "type": "string",
+          "example": "postPaid",
+          "description": "计费模式。\n\n功能说明:付费方式\n\n取值范围:\n\n- prePaid-预付费,即包年包月;\n- postPaid-后付费,即按需付费;\n- 默认值是postPaid\n\n> 说明:\n> \n> 当chargingMode为prePaid(即创建包年包月付费的云服务器),且使用SSH秘钥方式登录云服务器时,metadata 中的 op_svc_userid 字段为必选字段。",
+          "enum": [
+            "prePaid",
+            "postPaid"
+          ]
+        },
+        "regionID": {
+          "type": "string",
+          "example": "cn-north-1",
+          "description": "云服务器所在区域ID。\n\n请参考[地区和终端节点](https://developer.huaweicloud.com/endpoint)获取。"
+        },
+        "periodType": {
+          "type": "string",
+          "example": "month",
+          "description": "订购周期类型。\n\n取值范围:\n\n- month-月\n- year-年\n\n> 说明:\n> \n> chargingMode为prePaid时生效且为必选值。",
+          "enum": [
+            "month",
+            "year"
+          ]
+        },
+        "periodNum": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "订购周期数。\n\n取值范围:\n\n- periodType=month(周期类型为月)时,取值为[1,9];\n- periodType=year(周期类型为年)时,取值为[1,3];\n\n> 说明:\n> \n> chargingMode为prePaid时生效且为必选值。\n> \n> periodNum为正整数。",
+          "minimum": 1,
+          "maximum": 9
+        },
+        "isAutoRenew": {
+          "type": "string",
+          "example": "true",
+          "description": "是否自动续订。\n\n- “true”:自动续订\n- “false”:不自动续订\n\n> 说明:\n> \n> chargingMode为prePaid时生效,不传该字段时默认为不自动续订。",
+          "enum": [
+            "true",
+            "false"
+          ]
+        },
+        "isAutoPay": {
+          "type": "string",
+          "example": "true",
+          "description": "下单订购后,是否自动从客户的账户中支付,而不需要客户手动去进行支付。\n\n- “true”:是(自动支付)\n- “false”:否(需要客户手动支付)\n\n> 说明:\n> \n> chargingMode为prePaid时生效,不传该字段时默认为客户手动支付。",
+          "enum": [
+            "true",
+            "false"
+          ]
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "example": "f8e0ecc8-3825-4ee8-9596-fb4258ffdcbb",
+          "description": "企业项目ID。\n\n> 说明:\n> \n> 关于企业项目ID的获取及企业项目特性的详细信息,请参见《[企业管理服务用户指南](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0126101490.html)》。\n> \n> 该字段不传(或传为字符串“0”),则将资源绑定给默认企业项目。",
+          "default": "0"
+        },
+        "support_auto_recovery": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否配置弹性云服务器自动恢复的功能。\n\n- “true”:配置该功能\n- “false”:不配置该功能\n\n> 说明:\n> \n> 此参数为boolean类型,若传入非boolean类型字符,程序将按照【“false”:不配置该功能】方式处理。\n> \n> 当marketType为spot时,不支持该功能。",
+          "default": false
+        },
+        "marketType": {
+          "type": "string",
+          "example": "spot",
+          "description": "创建竞价实例时,需指定该参数的值为“spot”。\n\n> 说明:\n> \n> 当chargingMode=postPaid且marketType=spot时,此参数生效。"
+        },
+        "spotPrice": {
+          "type": "string",
+          "example": "0.91",
+          "description": "用户愿意为竞价实例每小时支付的最高价格。\n\n> 说明:\n> \n> 仅chargingMode=postPaid且marketType=spot时,该参数设置后生效。\n> \n> 当chargingMode=postPaid且marketType=spot时,如果不传递spotPrice或者传递一个空字符串,默认使用按需购买的价格作为竞价。"
+        },
+        "diskPrior": {
+          "type": "string",
+          "description": "是否支持先创建卷,再创建虚拟机。\n\n“true”:配置该功能\n“false”:不配置该功能",
+          "x-huawei-extraAnnotation": ""
+        },
+        "spot_duration_hours": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "购买的竞价实例时长。\n\n- 仅interruption_policy=immediate 时该字段有效 。\n- spot_duration_hours大于0。最大值由预测系统给出可以从flavor的extra_specs的cond:spot_block:operation:longest_duration_hours字段中查询。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "interruption_policy": {
+          "type": "string",
+          "description": "竞价实例中断策略,当前支持immediate。\n\n- 当interruption_policy=immediate时表示释放策略为立即释放。\n",
+          "enum": [
+            "immediate"
+          ],
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "CB_CSBS_BACKUP": {
+          "type": "string",
+          "example": "{\"policy_id\":\"fdcaa27d-5be4-4f61-afe3-09ff79162c04\",\"vault_id\":\"332a9408-463f-436a-9e92-78dad95d1ac4\"}",
+          "description": "云备份策略和云备份存储库详情,取值包含:备份策略ID和云备份存储库ID。"
+        },
+        "spot_duration_count": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "表示购买的“竞价实例时长”的个数。\n\n- 仅spot_duration_hours>0 时该字段有效。\n- spot_duration_hours小于6时,spot_duration_count值必须为1。\n- spot_duration_hours等于6时,spot_duration_count大于等于1。\n\nspot_duration_count的最大值由预测系统给出可以从flavor的extra_specs的cond:spot_block:operation:longest_duration_count字段中查询。\n\n",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "CreateServersResponseBody": {
+      "required": [
+        "serverIds"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "提交任务成功后返回的任务ID,用户可以使用该ID对任务执行情况进行查询。"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单号,创建包年包月的弹性云服务器时返回该参数。"
+        },
+        "serverIds": {
+          "type": "array",
+          "description": "云服务器ID列表。\n\n通过云服务器ID查询云服务器详情 ,若返回404 可能云服务器还在创建或者已经创建失败。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "CpuOptions": {
+      "properties": {
+        "hw:cpu_threads": {
+          "type": "integer",
+          "format": "int32",
+          "description": "CPU超线程数, 决定CPU是否开启超线程。取值范围:1,2。\n\n- 1: 关闭超线程。\n- 2: 打开超线程。\n\n取值不能大于flavor中的   hw:cpu_threads,并且目标flavor配置需满足 \"hw:cpu_policy\": \"dedicated\",\"hw:cpu_threads\": \"2\"需要同时满足如下条件,才能设置为“关闭超线程”\n\n- 只能在实例创建或者resize时指定。\n- 只有目标flavor的extra_specs参数:\n- 存在“hw:cpu_policy”并取值为“dedicated”。\n- 存在“hw:cpu_threads”并取值为“2”。",
+          "enum": [
+            1,
+            2
+          ]
+        }
+      },
+      "description": "自定义CPU选项。"
+    },
+    "CreateServersRequestBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "description": "是否只预检此次请求。\n\ntrue:发送检查请求,不会创建实例。检查项包括是否填写了必需参数、请求格式等。\n如果检查不通过,则返回对应错误。\n如果检查通过,则返回202状态码。\nfalse:发送正常请求,通过检查后并且执行创建云服务器请求。"
+        },
+        "server": {
+          "description": "创建云服务器消息体。",
+          "$ref": "#/definitions/PrePaidServer"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "SecurityOptions": {
+      "properties": {
+        "secure_boot_enabled": {
+          "type": "boolean",
+          "description": "是否支持安全启动 true:支持安全启动 false:不支持安全启动 默认值:false",
+          "x-huawei-extraAnnotation": ""
+        },
+        "tpm_enabled": {
+          "type": "boolean",
+          "description": "是否支持vtpm启动 true:支持vtpm启动 false:不支持vtpm启动 默认值:false",
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    },
+    "PrePaidServerEipBandwidth": {
+      "required": [
+        "sharetype"
+      ],
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "example": 10,
+          "description": "功能说明:带宽大小\n\n带宽(Mbit/s),取值范围为[1,2000]。\n\n调整带宽时的最小单位会根据带宽范围不同存在差异。\n\n- 小于等于300Mbit/s:默认最小单位为1Mbit/s。\n- 300Mbit/s~1000Mbit/s:默认最小单位为50Mbit/s。\n- 大于1000Mbit/s:默认最小单位为500Mbit/s。\n\n> 说明:\n> \n> 如果share_type是PER,该参数必选项;如果share_type是WHOLE并且id有值,该参数会忽略。",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "sharetype": {
+          "type": "string",
+          "example": "PER",
+          "description": "带宽的共享类型。\n\n共享类型枚举:PER,表示独享。WHOLE,表示共享。",
+          "enum": [
+            "PER",
+            "WHOLE"
+          ]
+        },
+        "chargemode": {
+          "type": "string",
+          "example": "traffic",
+          "description": "带宽的计费类型。\n\n- 未传该字段,表示按带宽计费。\n- 字段值为空,表示按带宽计费。\n- 字段值为“traffic”,表示按流量计费。\n- 字段为其它值,会导致创建云服务器失败。\n\n> 说明:\n> \n> 如果share_type是WHOLE并且id有值,该参数会忽略。"
+        },
+        "id": {
+          "type": "string",
+          "example": "157ee789-03ea-45b1-a698-76c926606666",
+          "description": "带宽ID,创建WHOLE类型带宽的弹性IP时可以指定之前的共享带宽创建。\n\n取值范围:WHOLE类型的带宽ID。\n\n> 说明:\n> \n> 当创建WHOLE类型的带宽时,该字段必选。"
+        }
+      },
+      "description": ""
+    },
+    "PrePaidServerDataVolume": {
+      "required": [
+        "size",
+        "volumetype"
+      ],
+      "properties": {
+        "volumetype": {
+          "type": "string",
+          "example": "SAS",
+          "description": "云服务器数据盘对应的磁盘类型,需要与系统所提供的磁盘类型相匹配。 \n\n- SATA:普通IO磁盘类型。 \n- SAS:高IO磁盘类型。 \n- SSD:超高IO磁盘类型。 \n- GPSSD:为通用型SSD磁盘类型。 \n- co-p1:高IO (性能优化I型)。 \n- uh-l1:超高IO (时延优化)。 \n- ESSD:为极速IO磁盘类型。 \n- GPSSD2:通用型SSD V2磁盘类型。 \n- ESSD2:极速型SSD V2磁盘类型。 \n\n> 说明:\n> \n> 对于HANA云服务器、HL1型云服务器、HL2型云服务器,需使用co-p1和uh-l1两种磁盘类型。对于其他类型的云服务器,不能使用co-p1和uh-l1两种磁盘类型。 \n了解不同磁盘类型的详细信息,请参见 [磁盘类型及性能介绍](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。 \n获取region可用的卷类型,请参见[查询云硬盘类型列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=EVS&api=CinderListVolumeTypes)",
+          "enum": [
+            "SATA",
+            "SAS",
+            "SSD",
+            "GPSSD",
+            "co-p1",
+            "uh-l1",
+            "ESSD",
+            "GPSSD2",
+            "ESSD2"
+          ],
+          "x-huawei-extraAnnotation": "",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "example": 40,
+          "description": "数据盘大小,容量单位为GB,输入大小范围为[10,32768]。",
+          "minimum": 10,
+          "maximum": 32768,
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "给云硬盘配置iops,购买GPSSD2、ESSD2类型的云硬盘时必填,其他类型不能设置。\n\n说明:\n1、了解GPSSD2、ESSD2类型的iops大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n2、只支持按需计费。"
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "给云硬盘配置吞吐量,单位是MiB/s,购买GPSSD2类型云盘时必填,其他类型不能设置。\n\n说明:\n1、了解GPSSD2类型的吞吐量大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n2、只支持按需计费。"
+        },
+        "shareable": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否为共享磁盘。true为共享盘,false为普通云硬盘。\n\n> 说明:\n> \n> 该字段已废弃,请使用multiattach。",
+          "default": false,
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "multiattach": {
+          "type": "boolean",
+          "example": false,
+          "description": "创建共享磁盘的信息。\n\n- true:创建的磁盘为共享盘。\n- false:创建的磁盘为普通云硬盘。\n\n> 说明:\n> \n> shareable当前为废弃字段,如果确实需要同时使用shareable字段和multiattach字段,此时,请确保两个字段的参数值相同。当不指定该字段时,系统默认创建普通云硬盘。",
+          "default": false,
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "hw:passthrough": {
+          "type": "boolean",
+          "example": false,
+          "description": "数据卷是否使用SCSI锁。\n\n- true表示云硬盘的设备类型为SCSI类型,即允许ECS操作系统直接访问底层存储介质。支持SCSI锁命令。\n- false表示云硬盘的设备类型为VBD (虚拟块存储设备 , Virtual Block Device)类型,即为默认类型,VBD只能支持简单的SCSI读写命令。\n- 该字段不存在时,云硬盘默认为VBD类型。\n\n> 说明:\n> \n> 此参数为boolean类型,若传入非boolean类型字符,程序将按照【false】方式处理。",
+          "default": false,
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "extendparam": {
+          "description": "磁盘的产品信息。",
+          "$ref": "#/definitions/PrePaidServerDataVolumeExtendParam",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cluster_type": {
+          "type": "string",
+          "example": "DSS",
+          "description": "云服务器数据盘对应的磁盘存储类型。\n磁盘存储类型枚举值:\nDSS:专属存储类型",
+          "enum": [
+            "DSS"
+          ],
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cluster_id": {
+          "type": "string",
+          "example": "157ee789-03ea-45b1-a698-76c92660dd83",
+          "description": "云服务器数据盘对应的存储池的ID。",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "metadata": {
+          "description": "创建云硬盘的metadata信息,metadata中的key和value长度不大于255个字节。\n\n仅在创建加密盘时使用metadata字段。",
+          "$ref": "#/definitions/PrePaidServerDataVolumeMetadata",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "data_image_id": {
+          "type": "string",
+          "example": "6242ef48-4d35-49c8-8711-a6e54902e44a",
+          "description": "数据镜像的ID,UUID格式。\n\n如果使用数据盘镜像创建数据盘,则data_image_id为必选参数,且不支持使用metadata。"
+        },
+        "delete_on_termination": {
+          "type": "boolean",
+          "example": false,
+          "description": "数据盘随实例释放策略。\n\ntrue:数据盘随实例释放。\nfalse:数据盘不随实例释放。\n默认值:false。",
+          "default": false
+        }
+      },
+      "description": "云服务器对应数据盘相关配置。"
+    },
+    "PrePaidServerRootVolumeExtendParam": {
+      "properties": {
+        "resourceSpecCode": {
+          "type": "string",
+          "example": "SATA",
+          "description": "磁盘产品资源规格编码,如SATA,SAS和SSD。\n\n> 说明:\n> \n> 废弃字段。",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "resourceType": {
+          "type": "string",
+          "example": "aei",
+          "description": "磁盘产品资源类型。\n\n> 说明:\n> \n> 废弃字段。",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "snapshotId": {
+          "type": "string",
+          "example": "157ee789-03ea-45b1-a698-76c926606666",
+          "description": "整机镜像中自带的原始数据盘(简称“原数据盘”)所对应的快照ID或原始数据盘ID。\n\n使用场景:\n\n使用整机镜像创建云服务器,并且选择的整机镜像自带1个或者多个数据盘。\n\n用途:\n\n使用整机镜像创建云服务器时,系统会自动恢复整机镜像中自带数据盘(如果有)的数据,但是磁盘类型将被恢复为默认属性:普通I/O、VBD、非共享盘。此时,您可以通过snapshotID,修改指定原数据盘恢复后的磁盘类型。\n\n> 说明:\n> \n> - 建议对每块原数据盘都指定snapshotID,否则,未指定的原数据盘将按默认属性进行创建。\n> - 如需修改磁盘大小,修改后的磁盘大小需大于等于原数据盘大小。否则,会影响原数据盘的数据恢复。\n\n实现原理:\n\nsnapshotId是整机镜像自带原始数据盘的唯一标识,通过snapshotId可以获取原数据盘的磁盘信息,从而恢复数据盘数据。\n\n快照ID的获取方法:\n\n登录管理控制台,打开\"云硬盘 > 快照\"页面,根据原始数据盘的磁盘名称找到对应的快照ID。"
+        }
+      },
+      "description": ""
+    },
+    "PrePaidServer": {
+      "required": [
+        "flavorRef",
+        "imageRef",
+        "name",
+        "nics",
+        "root_volume",
+        "vpcid"
+      ],
+      "properties": {
+        "auto_terminate_time": {
+          "type": "string",
+          "example": "2020-01-19T03:30:52Z",
+          "description": "弹性云服务器定时删除时间。\n\n时间格式例如:2020-01-19T03:30:52Z"
+        },
+        "imageRef": {
+          "type": "string",
+          "example": "1189efbf-d48b-46ad-a823-94b942e2a666",
+          "description": "待创建云服务器的系统镜像,需要指定已创建镜像的ID,ID格式为通用唯一识别码(Universally Unique Identifier,简称UUID)。\n\n镜像的ID可以从镜像服务的 [查询镜像列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IMS&api=ListImages) 接口获取,该接口可根据 __imagetype、__os_type 等参数过滤选择合适镜像。"
+        },
+        "flavorRef": {
+          "type": "string",
+          "example": "s3.xlarge.2",
+          "description": "待创建云服务器的系统规格的ID。\n\n可通过 [规格列表接口](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=ECS&api=ListFlavors) 查询,该接口支持通过 availability_zone 参数过滤出待创建云服务器可用区下可用的规格。\n\n已上线的规格请参见《[弹性云服务器产品介绍](https://support.huaweicloud.com/ecs/index.html)》的“实例类型与规格”章节。"
+        },
+        "name": {
+          "type": "string",
+          "example": "newserver",
+          "description": "云服务器名称。\n\n取值范围:\n\n- 只能由中文字符、英文字母、数字及“_”、“-”、“.”组成,且长度为[1-64]个字符。\n- 创建的云服务器器数量(count字段对应的值)大于1时,为区分不同云服务器,创建过程中系统会自动在名称后加“-0000”的类似标记。故此时名称的长度为[1-59]个字符。\n\n> 说明:\n> \n> 云服务器虚拟机内部(hostname)命名规则遵循 RFC 952和RFC 1123命名规范,建议使用a-zA-z或0-9以及中划线\"-\"组成的名称命名,\"_\"将在弹性云服务器内部默认转化为\"-\"。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "user_data": {
+          "type": "string",
+          "example": "IyEvYmluL2Jhc2gKL2Jpbi9zdQplY2hvICJJIGFtIGluIHlvdSEiCg==",
+          "description": "创建云服务器过程中待注入用户数据。支持注入文本、文本文件或gzip文件。\n\n更多关于待注入用户数据的信息,请参见《弹性云服务器用户指南 》的“[用户数据注入](https://support.huaweicloud.com/usermanual-ecs/zh-cn_topic_0032380449.html)”章节。\n\n约束:\n\n- 注入内容,需要进行base64格式编码。注入内容(编码之前的内容)最大长度32KB。\n- 创建密码方式鉴权的Linux弹性云服务器时,该字段可为root用户注入自定义初始化密码,具体注入密码的使用方法请参见背景信息(设置登录鉴权方式)。\n示例(base64编码前):\n\n- Linux弹性云服务器\n\n```\n#! /bin/bash\necho user_test >> /home/user.txt\n```\n\n- Windows弹性云服务器\n\n```\nrem cmd\necho 111 > c:\\\\aaa.tx\n```",
+          "minLength": 0,
+          "maxLength": 65535
+        },
+        "adminPass": {
+          "type": "string",
+          "example": "Pass@Ecs",
+          "description": "如果需要使用密码方式登录云服务器,可使用adminPass字段指定云服务器管理员帐户初始登录密码。其中,Linux管理员帐户为root,Windows管理员帐户为Administrator。具体使用方法请参见背景信息(设置登录鉴权方式)。\n\n密码复杂度要求: \n\n- 长度为8-26位。 \n- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?)中的三种。\n- 密码不能包含用户名或用户名的逆序。 \n- Windows系统密码不能包含用户名或用户名的逆序,不能包含用户名中超过两个连续字符的部分。",
+          "minLength": 8,
+          "maxLength": 26
+        },
+        "key_name": {
+          "type": "string",
+          "example": "sshkey-123",
+          "description": "如果需要使用SSH密钥方式登录云服务器,请指定已创建密钥的名称。\n\n密钥可以通过密钥创建接口进行创建(请参见[创建和导入SSH密钥](https://support.huaweicloud.com/api-dew/CreateKeypair.html)),或使用SSH密钥查询接口查询已有的密钥(请参见[查询SSH密钥列表](https://support.huaweicloud.com/api-dew/ListKeypairs.html) )。"
+        },
+        "vpcid": {
+          "type": "string",
+          "example": "0dae26c9-9a70-4392-93f3-87d531156666",
+          "description": "待创建云服务器所属虚拟私有云(简称VPC),需要指定已创建VPC的ID,UUID格式。\n\n可通过 [查询VPC列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=VPC&api=ListVpcs) 接口查询。"
+        },
+        "nics": {
+          "type": "array",
+          "description": "待创建云服务器的网卡信息。\n\n约束:\n\n- 网卡对应的子网(subnet)必须属于vpcid对应的VPC。\n- 当前单个云服务器支持最多挂载12张网卡。\n- 不同的规格对网卡上限有一定的区别,参考[规格清单](https://support.huaweicloud.com/productdesc-ecs/zh-cn_topic_0159822360.html)。",
+          "items": {
+            "$ref": "#/definitions/PrePaidServerNic"
+          },
+          "maxItems": 12,
+          "minItems": 1
+        },
+        "publicip": {
+          "description": "配置云服务器的弹性IP信息,弹性IP有三种配置方式。\n\n- 不使用(无该字段)\n- 自动分配,需要指定新创建弹性IP的信息\n- 使用已有,需要指定已创建弹性IP的信息",
+          "$ref": "#/definitions/PrePaidServerPublicip"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "创建云服务器数量。\n\n约束:\n\n- 不传该字段时默认取值为1。\n- 租户的配额足够时,最大值为100。",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 1
+        },
+        "isAutoRename": {
+          "type": "boolean",
+          "example": false,
+          "description": "当批量创建弹性云服务器时,云服务器名称是否允许重名,当count大于1的时候该参数生效。默认为True。\n\n- True,表示允许重名。\n- False,表示不允许重名。"
+        },
+        "root_volume": {
+          "description": "云服务器对应系统盘相关配置。\n\n创建包周期的弹性云服务器的时候,创建的系统盘/数据盘也是包周期,周期和弹性云服务器一致。",
+          "$ref": "#/definitions/PrePaidServerRootVolume"
+        },
+        "data_volumes": {
+          "type": "array",
+          "description": "云服务器对应数据盘相关配置。每一个数据结构代表一块待创建的数据盘。 \n\n约束:目前新创建的弹性云服务器最多可挂载23块数据盘。",
+          "items": {
+            "$ref": "#/definitions/PrePaidServerDataVolume"
+          },
+          "maxItems": 23,
+          "minItems": 0
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "云服务器对应安全组信息。\n\n约束:当该值指定为空时,默认给云服务器绑定default安全组。",
+          "items": {
+            "$ref": "#/definitions/PrePaidServerSecurityGroup"
+          }
+        },
+        "availability_zone": {
+          "type": "string",
+          "example": "cn-north-1a",
+          "description": "待创建云服务器所在的可用分区,需要指定可用分区(AZ)的名称。\n\n可通过接口 [查询可用区列表接口](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=ECS&api=NovaListAvailabilityZones) 获取,也可参考[地区和终端节点](https://developer.huaweicloud.com/endpoint)获取。"
+        },
+        "batch_create_in_multi_az": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否支持随机多AZ部署。\n\n- “true”:批量创建的ecs部署在多个AZ上\n- “false”:批量创建的ecs部署在单个AZ上\n\n> 说明:\n> \n> 当availability_zone为空时该字段生效。",
+          "default": false
+        },
+        "extendparam": {
+          "description": "创建云服务器附加信息。",
+          "$ref": "#/definitions/PrePaidServerExtendParam"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "用户自定义字段键值对。\n\n> 说明:\n> \n> - 最多可注入10对键值(Key/Value)。\n> - 主键(Key)只能由大写字母(A-Z)、小写字母(a-z)、数字(0-9)、中划线(-)、下划线(_)、冒号(:)和小数点(.)组成,长度为[1-255]个字符。\n> - 值(value)最大长度为255个字符。\n\n系统预留字段\n\n1. op_svc_userid : 用户ID     \n当extendparam结构中的chargingMode为prePaid(即创建包年包月付费的云服务器),且使用SSH秘钥方式登录云服务器时,该字段为必选字段。\n\n2. agency_name  :  委托的名称  \n委托是由租户管理员在统一身份认证服务(Identity and Access Management,IAM)上创建的,可以为弹性云服务器提供访问云服务的临时凭证。\n\n> 说明:\n> \n> 委托获取、更新请参考如下步骤:\n> \n> 1. 使用IAM服务提供的[查询委托列表](https://support.huaweicloud.com/api-iam/zh-cn_topic_0079467614.html)接口,获取有效可用的委托名称。\n> 2. 使用[更新云服务器元数](https://support.huaweicloud.com/api-ecs/zh-cn_topic_0025560298.html)据接口,更新metadata中agency_name字段为新的委托名称。\n",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255
+          }
+        },
+        "os:scheduler_hints": {
+          "description": "云服务器调度信息。",
+          "$ref": "#/definitions/PrePaidServerSchedulerHints"
+        },
+        "tags": {
+          "type": "array",
+          "description": "弹性云服务器的标签。\n\n标签的格式为“key.value”。其中,key的长度不超过36个字符,value的长度不超过43个字符。\n\n标签命名时,需满足如下要求:\n\n- 标签的key值只能包含大写字母(A~Z)、小写字母(a~z)、数字(0-9)、下划线(_)、中划线(-)以及中文字符。\n- 标签的value值只能包含大写字母(A~Z)、小写字母(a~z)、数字(0-9)、下划线(_)、中划线(-)、小数点(.)以及中文字符。\n\n> 说明:\n> \n> 创建弹性云服务器时,一台弹性云服务器最多可以添加10个标签。\n> 公有云新增server_tags字段,该字段与tags字段功能相同,支持的key、value取值范围更广,建议使用server_tags字段。",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "maxItems": 10,
+          "minItems": 0
+        },
+        "server_tags": {
+          "type": "array",
+          "description": "弹性云服务器的标签。\n\n> 说明:\n> \n> 创建弹性云服务器时,一台弹性云服务器最多可以添加10个标签。\n> 公有云新增server_tags字段,该字段与tags字段功能相同,支持的key、value取值范围更广,建议使用server_tags字段。",
+          "items": {
+            "$ref": "#/definitions/PrePaidServerTag"
+          },
+          "maxItems": 10,
+          "minItems": 0,
+          "x-open-region-cloud": "hc,hk",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "example": "ecs test server",
+          "description": "云服务器描述信息,默认为空字符串。\n\n- 长度最多允许85个字符。\n- 不能包含“<” 和 “>”。",
+          "minLength": 0,
+          "maxLength": 85
+        },
+        "cpu_options": {
+          "description": "自定义CPU选项。",
+          "$ref": "#/definitions/CpuOptions"
+        },
+        "security_options": {
+          "description": "安全启动信息。",
+          "$ref": "#/definitions/SecurityOptions"
+        },
+        "serial_console_options": {
+          "description": "是否支持串口登录。",
+          "$ref": "#/definitions/SerialConsoleOptions"
+        },
+        "metadata_options": {
+          "description": "云服务器元数据配置管理",
+          "$ref": "#/definitions/UpdateServerMetadataOptionsRequestBody"
+        },
+        "enclave_options": {
+          "description": "创建enclave实例参数",
+          "$ref": "#/definitions/EnclaveOptions"
+        }
+      },
+      "description": "创建弹性云服务器(包周期)接口Body体。"
+    },
+    "PrePaidServerSchedulerHints": {
+      "properties": {
+        "group": {
+          "type": "string",
+          "example": "607ca48f-814c-4293-8706-300564d54620",
+          "description": "云服务器组ID,UUID格式。\n\n云服务器组的ID可以从控制台或者参考[查询云服务器组列表](https://support.huaweicloud.com/api-ecs/ecs_03_1402.html)获取。"
+        },
+        "tenancy": {
+          "type": "string",
+          "description": "在指定的专属主机或者共享主机上创建弹性云服务器。参数值为shared或者dedicated。",
+          "enum": [
+            "shared",
+            "dedicated"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "dedicated_host_id": {
+          "type": "string",
+          "description": "专属主机的ID。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": ""
+    },
+    "EnclaveOptions": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PrePaidServerRootVolumeMetadata": {
+      "properties": {
+        "__system__encrypted": {
+          "type": "string",
+          "example": "0",
+          "description": "metadata中的表示加密功能的字段,0代表不加密,1代表加密。\n\n该字段不存在时,云硬盘默认为不加密。",
+          "default": "0",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "__system__cmkid": {
+          "type": "string",
+          "example": "1189efbf-d48b-46ad-a823-94b942e2a000",
+          "description": "metadata中的加密cmkid字段,与__system__encrypted配合表示需要加密,cmkid长度固定为36个字节。\n\n> 说明:\n\n- 请参考[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html),通过HTTPS请求获取密钥ID。",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "PrePaidServerTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "example": "test",
+          "description": "键。\n\n最大长度36个unicode字符。key不能为空。不能包含非打印字符ASCII(0-31),\"=\", \"*\",“<”,“>”,“\\”,“,”,“|”,“/”。\n\n同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "value": {
+          "type": "string",
+          "example": "test",
+          "description": "\t\n值。\n\n每个值最大长度43个unicode字符,可以为空字符串。 不能包含非打印字符ASCII(0-31),“=”,“*”,“<”,“>”,“\\”,“,”,“|”。",
+          "minLength": 0,
+          "maxLength": 43
+        }
+      },
+      "description": "弹性云服务器的标签。"
+    },
+    "PrePaidServerRootVolume": {
+      "required": [
+        "volumetype"
+      ],
+      "properties": {
+        "volumetype": {
+          "type": "string",
+          "example": "SATA",
+          "description": "云服务器系统盘对应的磁盘类型,需要与系统所提供的磁盘类型相匹配。 \n\n- SATA:普通IO磁盘类型。 \n- SAS:高IO磁盘类型。 \n- SSD:超高IO磁盘类型。 \n- GPSSD:为通用型SSD磁盘类型。 \n- co-p1:高IO (性能优化I型)。 \n- uh-l1:超高IO (时延优化)。 \n- ESSD:为极速IO磁盘类型。 \n- GPSSD2:通用型SSD V2磁盘类型。 \n- ESSD2:极速型SSD V2磁盘类型。 \n\n> 说明:\n> \n> 对于HANA云服务器、HL1型云服务器、HL2型云服务器,需使用co-p1和uh-l1两种磁盘类型。对于其他类型的云服务器,不能使用co-p1和uh-l1两种磁盘类型。 \n了解不同磁盘类型的详细信息,请参见 [磁盘类型及性能介绍](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。 \n获取region可用的卷类型,请参见[查询云硬盘类型列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=EVS&api=CinderListVolumeTypes)",
+          "enum": [
+            "SATA",
+            "SAS",
+            "SSD",
+            "GPSSD",
+            "co-p1",
+            "uh-l1",
+            "ESSD",
+            "GPSSD2",
+            "ESSD2"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "example": 40,
+          "description": "系统盘大小,容量单位为GB, 输入大小范围为[1,1024]。\n\n约束:\n\n- 系统盘大小取值应不小于镜像支持的系统盘的最小值(镜像的min_disk属性)。\n- 若该参数没有指定或者指定为0时,系统盘大小默认取值为镜像中系统盘的最小值(镜像的min_disk属性)。\n\n> 说明:\n\n> 镜像系统盘的最小值(镜像的min_disk属性)可在控制台中点击镜像详情查看。或通过调用“查询镜像详情(OpenStack原生)”API获取,详细操作请参考[《镜像服务API参考》](https://support.huaweicloud.com/api-ims/ims_03_0702.html)中“查询镜像详情(OpenStack原生)”章节。",
+          "minimum": 1,
+          "maximum": 1024
+        },
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "给云硬盘配置iops,购买GPSSD2、ESSD2类型的云硬盘时必填,其他类型不能设置。\n\n说明:\n1、了解GPSSD2、ESSD2类型的iops大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n2、只支持按需计费。"
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "给云硬盘配置吞吐量,单位是MiB/s,购买GPSSD2类型云盘时必填,其他类型不能设置。\n\n说明:\n1、了解GPSSD2类型的吞吐量大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n2、只支持按需计费。"
+        },
+        "extendparam": {
+          "description": "磁盘的产品信息。",
+          "$ref": "#/definitions/PrePaidServerRootVolumeExtendParam",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "metadata": {
+          "description": "创建云服务器元数据信息。",
+          "$ref": "#/definitions/PrePaidServerRootVolumeMetadata",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cluster_type": {
+          "type": "string",
+          "example": "DSS",
+          "description": "云服务器系统盘对应的磁盘存储类型。\n磁盘存储类型枚举值:\nDSS:专属存储类型",
+          "enum": [
+            "DSS"
+          ],
+          "x-huawei-extraAnnotation": "",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cluster_id": {
+          "type": "string",
+          "example": "157ee789-03ea-45b1-a698-76c926606666",
+          "description": "云服务器数据盘对应的存储池的ID。",
+          "x-huawei-extraAnnotation": "",
+          "x-obc": "N",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "hw:passthrough": {
+          "type": "boolean",
+          "example": false,
+          "description": "使用SDI规格创建虚拟机时请关注该参数,如果该参数值为true,说明创建的为scsi类型的卷\n\n> 说明:\n> \n> 此参数为boolean类型,若传入非boolean类型字符,程序将按照false方式处理。",
+          "default": false
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Client-Token": {
+      "name": "X-Client-Token",
+      "in": "header",
+      "description": "保证客户端请求幂等性的标识",
+      "required": false,
+      "type": "string",
+      "x-example": "46436810-d999-454c-bd85-e515fd258600"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

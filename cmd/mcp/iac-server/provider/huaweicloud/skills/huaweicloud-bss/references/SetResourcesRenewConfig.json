@@ -1,0 +1,119 @@
+{
+  "name": "SetResourcesRenewConfig",
+  "summary": "设置包年/包月资源自动续费扣款日和续费后资源统一到期日",
+  "tags": "管理包年/包月订单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/subscriptions/resources/renew/config": {
+      "post": {
+        "summary": "设置包年/包月资源自动续费扣款日和续费后资源统一到期日",
+        "description": "功能描述:客户的包年/包月资源可进行设置自动续费扣款日和续费后统一到期日",
+        "tags": [
+          "管理包年/包月订单(客户)"
+        ],
+        "operationId": "SetResourcesRenewConfig",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用,不允许使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/orders/subscriptions/resources/renew/config",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-lastAnalysisDate": "2025-04-10",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "|参数名称:用户鉴权标识| |参数的约束及描述:该参数必填,支持客户token|",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "|参数名称:设置包年/包月资源自动续费扣款日和续费后资源统一到期日请求| |参数的约束及描述:RenewResourceConfigReq|",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RenewResourceConfigReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|参数名称:设置包年/包月资源自动续费扣款日和续费后资源统一到期日响应| |成功:success| |参数约束及描述:RenewResourceConfigRsp|",
+            "schema": {
+              "$ref": "#/definitions/RenewResourceConfigRsp"
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:parameter error输入参数校验失败|"
+          }
+        },
+        "x-category": "管理包年/包月订单(客户)",
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/orders/subscriptions/resources/renew/config",
+        "x-request-examples-1": {
+          "config_name": "DEDUCTION_DATE",
+          "config_value": 7
+        },
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RenewResourceConfigReq": {
+      "required": [
+        "config_name",
+        "config_value"
+      ],
+      "properties": {
+        "config_name": {
+          "description": "|参数名称:续订资源设置属性类型| |参数的约束及描述:该参数必填,设置类型,支持枚举| |DEDUCTION_DATE:设置自动续费扣款日,EXPIRE_DATE:设置续费后资源统一到期日|",
+          "type": "string",
+          "enum": [
+            "DEDUCTION_DATE",
+            "EXPIRE_DATE"
+          ],
+          "example": "DEDUCTION_DATE"
+        },
+        "config_value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "|参数名称:续订资源设置属性值| |参数约束及描述:该参数必填,当config_name值为DEDUCTION_DATE时,支持设置资源到期前2天至前7天自动扣款,config_value范围:2,3,4,5,6,7。 当config_name值为EXPIRE_DATE时,支持设置统一到期日为每个月的同一天(1~28号及每个月最后一天),config_value范围:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,-1|",
+          "example": "2"
+        }
+      }
+    },
+    "RenewResourceConfigRsp": {
+      "properties": {
+        "error_code": {
+          "description": "|参数名称:返回码| |参数的约束及描述:该参数必填,且只允许字符串|",
+          "type": "string",
+          "default": "CBC.0000",
+          "example": "CBC.0000"
+        },
+        "error_msg": {
+          "description": "|参数名称:返回码描述| |参数的约束及描述:该参数必填,且只允许字符串|",
+          "type": "string",
+          "default": "success",
+          "example": "success"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

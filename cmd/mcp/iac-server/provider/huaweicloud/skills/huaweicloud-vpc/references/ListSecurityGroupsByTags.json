@@ -1,0 +1,450 @@
+{
+  "name": "ListSecurityGroupsByTags",
+  "summary": "查询安全组资源实例",
+  "tags": "安全组资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/{project_id}/security-groups/resource_instances/action": {
+      "post": {
+        "tags": [
+          "安全组资源标签管理"
+        ],
+        "summary": "查询安全组资源实例",
+        "description": "使用标签过滤实例",
+        "operationId": "ListSecurityGroupsByTags",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "b433fedb577940bfa59abff86482ed1a",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "in": "body",
+            "name": "ListSecurityGroupsByTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListSecurityGroupsByTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求体action为filter时返回资源tag列表,action为count时返回tag总数",
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "resource_id": "cdfs_cefs_wesas_12_dsad",
+                    "resource_name": "resouece1",
+                    "tags": [
+                      {
+                        "key": "key1",
+                        "value": "value1"
+                      },
+                      {
+                        "key": "key2",
+                        "value": "value1"
+                      }
+                    ]
+                  }
+                ],
+                "total_count": 1000
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ResourceRespBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "x-name": "查询安全组资源实例",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "查询安全组资源实例,action为filter时请求体。",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/{project_id}/security-groups/resource_instances/action",
+        "x-request-examples-1": {
+          "offset": "0",
+          "limit": "100",
+          "action": "filter",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "resource1"
+            }
+          ],
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ]
+        },
+        "x-request-examples-text-1": {
+          "offset": "0",
+          "limit": "100",
+          "action": "filter",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "resource1"
+            }
+          ],
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ]
+        },
+        "x-request-examples-description-2": "example-2:action为count时请求体",
+        "x-request-examples-url-2": "POST https://{Endpoint}/v2.0/{project_id}/security-groups/resource_instances/action",
+        "x-request-examples-2": {
+          "action": "count",
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            },
+            {
+              "key": "key2",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ],
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "resource1"
+            }
+          ]
+        },
+        "x-request-examples-text-2": {
+          "action": "count",
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            },
+            {
+              "key": "key2",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ],
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "resource1"
+            }
+          ]
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,g42,hk_g42",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ResourceRespBody": {
+      "required": [
+        "resources",
+        "total_count"
+      ],
+      "properties": {
+        "resources": {
+          "type": "array",
+          "description": "资源列表",
+          "items": {
+            "$ref": "#/definitions/ListResourceResp"
+          },
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "资源数量",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "ListResourceResp": {
+      "required": [
+        "resource_detail",
+        "resource_id",
+        "resource_name"
+      ],
+      "properties": {
+        "resource_detail": {
+          "type": "object",
+          "description": "资源详情。 资源对象,用于扩展。默认为空"
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID"
+        },
+        "resource_name": {
+          "type": "string",
+          "description": "资源名称,没有默认为空字符串"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表,没有标签默认为空数组",
+          "items": {
+            "$ref": "#/definitions/ResourceTag"
+          }
+        }
+      },
+      "description": ""
+    },
+    "ListSecurityGroupsByTagsRequestBody": {
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "功能说明:操作标识\n取值范围:filter(过滤),count(查询总条数)",
+          "enum": [
+            "filter",
+            "count"
+          ],
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:查询记录数\n取值范围:1-1000\n约束:action为count时此参数不生效;action为filter时默认为1000",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:索引位置, 从offset指定的下一条数据开始查询。 查询第一页数据时,不需要传入此参数,查询后续页码数据时,将查询前一页数据时响应体中的值带入此参数\n约束:action为count时无此参数;action为filter时默认为0;必须为数字,不能为负数",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "matches": {
+          "type": "array",
+          "description": "功能说明:搜索字段,key为要匹配的字段,value为匹配的值\n约束:当前仅支持resource_name",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Match"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "tags": {
+          "type": "array",
+          "description": "包含标签,最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ListTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 0,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "minLength": 0,
+          "maxLength": 43,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": ""
+    },
+    "ListTag": {
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:key不能为空",
+          "minLength": 1,
+          "maxLength": 127,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "values": {
+          "type": "array",
+          "description": "功能描述:标签值列表。\n如果values为空列表,则表示any_value。value之间为或的关系。",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "Match": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。当前仅限定为resource_name",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符,不能包含$ - . /等特殊字符。",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

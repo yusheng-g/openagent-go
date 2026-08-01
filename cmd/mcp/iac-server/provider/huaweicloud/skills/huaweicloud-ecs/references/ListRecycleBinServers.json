@@ -1,0 +1,826 @@
+{
+  "name": "ListRecycleBinServers",
+  "summary": "查询回收站中虚拟机列表",
+  "tags": "回收站",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/recycle-bin/cloudservers": {
+      "get": {
+        "tags": [
+          "回收站"
+        ],
+        "summary": "查询回收站中虚拟机列表",
+        "operationId": "ListRecycleBinServers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "all_tenants",
+            "in": "query",
+            "description": "所有租户 管理员字段\n1: 返回所有租户的VM 0: 返回当前租户的VM,如果为0,与不设置该查询字段的效果一致",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "availability_zone",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "expect-fields",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "Available values : power_state",
+              "host_status",
+              "hostname",
+              "hypervisor_hostname",
+              "user_data",
+              "key_name",
+              "root_device_name",
+              "volumes_attached",
+              "security_groups",
+              "addresses",
+              "image",
+              "metadata",
+              "tags",
+              "system_tags",
+              "dedicated_host_id",
+              "enterprise_project_id",
+              "cpu_options"
+            ],
+            "required": false
+          },
+          {
+            "name": "ip_address",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "maximum": 100,
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "required": false
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "name": "tags_key",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ListRecycleBinServersResp"
+            }
+          }
+        },
+        "x-name": "查询回收站中虚拟机列表",
+        "x-scope": "Commercial",
+        "x-publishpath": "",
+        "x-first-open-time": "2025-6-7",
+        "x-open-region-cloud": "hc,hk",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ServerDetail": {
+      "required": [
+        "OS-EXT-AZ:availability_zone",
+        "OS-EXT-SRV-ATTR:host",
+        "OS-EXT-SRV-ATTR:hostname",
+        "OS-EXT-SRV-ATTR:hypervisor_hostname",
+        "OS-EXT-SRV-ATTR:instance_name",
+        "OS-EXT-SRV-ATTR:kernel_id",
+        "OS-EXT-SRV-ATTR:launch_index",
+        "OS-EXT-SRV-ATTR:ramdisk_id",
+        "OS-EXT-SRV-ATTR:root_device_name",
+        "OS-EXT-STS:power_state",
+        "OS-EXT-STS:task_state",
+        "OS-EXT-STS:vm_state",
+        "OS-SRV-USG:launched_at",
+        "OS-SRV-USG:terminated_at",
+        "accessIPv4",
+        "accessIPv6",
+        "addresses",
+        "config_drive",
+        "created",
+        "flavor",
+        "hostId",
+        "host_status",
+        "id",
+        "image",
+        "key_name",
+        "locked",
+        "metadata",
+        "name",
+        "os-extended-volumes:volumes_attached",
+        "security_groups",
+        "status",
+        "tenant_id",
+        "updated",
+        "user_id",
+        "auto_terminate_time",
+        "enclave_options",
+        "spod_id",
+        "capacity_reservation_specification",
+        "capacity_reservation_id"
+      ],
+      "properties": {
+        "capacity_reservation_id": {
+          "type": "string",
+          "description": "容量预留ID"
+        },
+        "capacity_reservation_specification": {
+          "description": "容量预留规格",
+          "$ref": "#/definitions/CapacityReservationSpecification"
+        },
+        "spod_id": {
+          "type": "string",
+          "description": "共池裸机按整机柜发放的同一批次的批创ID"
+        },
+        "enclave_options": {
+          "description": "创建enclave实例参数",
+          "$ref": "#/definitions/EnclaveOptions"
+        },
+        "status": {
+          "type": "string",
+          "example": "ACTIVE",
+          "description": "弹性云服务器状态。\n\n取值范围:\n\nACTIVE、BUILD、DELETED、ERROR、HARD_REBOOT、MIGRATING、PAUSED、REBOOT、REBUILD、RESIZE、REVERT_RESIZE、SHUTOFF、SHELVED、SHELVED_OFFLOADED、SOFT_DELETED、SUSPENDED、VERIFY_RESIZE\n\n弹性云服务器状态说明请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)"
+        },
+        "updated": {
+          "type": "string",
+          "example": "2019-05-22T03:30:52Z",
+          "description": "弹性云服务器更新时间。\n\n时间格式例如:2019-05-22T03:30:52Z"
+        },
+        "auto_terminate_time": {
+          "type": "string",
+          "example": "2020-01-19T03:30:52Z",
+          "description": "弹性云服务器定时删除时间。\n\n时间格式例如:2020-01-19T03:30:52Z"
+        },
+        "hostId": {
+          "type": "string",
+          "example": "c7145889b2e3202cd295ceddb1742ff8941b827b586861fd0acedf64",
+          "description": "弹性云服务器所在主机的主机ID。"
+        },
+        "OS-EXT-SRV-ATTR:host": {
+          "type": "string",
+          "example": "pod01.cn-north-1c",
+          "description": "弹性云服务器所在主机的主机名称。"
+        },
+        "addresses": {
+          "type": "object",
+          "description": "弹性云服务器的网络属性。",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ServerAddress"
+            }
+          }
+        },
+        "key_name": {
+          "type": "string",
+          "example": "KeyPair-test",
+          "description": "弹性云服务器使用的密钥对名称。"
+        },
+        "image": {
+          "description": "弹性云服务器镜像信息。",
+          "$ref": "#/definitions/ServerImage"
+        },
+        "OS-EXT-STS:task_state": {
+          "type": "string",
+          "example": "rebooting",
+          "description": "扩展属性,弹性云服务器当前任务的状态。\n\n取值范围请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)表3。"
+        },
+        "OS-EXT-STS:vm_state": {
+          "type": "string",
+          "example": "active",
+          "description": "扩展属性,弹性云服务器当前状态。\n\n云服务器状态说明请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)。"
+        },
+        "OS-EXT-SRV-ATTR:instance_name": {
+          "type": "string",
+          "example": "instance-0048a91b",
+          "description": "扩展属性,弹性云服务器别名。"
+        },
+        "OS-EXT-SRV-ATTR:hypervisor_hostname": {
+          "type": "string",
+          "example": "nova022@36",
+          "description": "扩展属性,弹性云服务器所在虚拟化主机名。"
+        },
+        "flavor": {
+          "description": "弹性云服务器规格信息。",
+          "$ref": "#/definitions/ServerFlavor"
+        },
+        "id": {
+          "type": "string",
+          "example": "4f4b3dfa-eb70-47cf-a60a-998a53bd6666",
+          "description": "弹性云服务器ID,格式为UUID。"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "弹性云服务器所属安全组列表。",
+          "items": {
+            "$ref": "#/definitions/ServerSecurityGroup"
+          }
+        },
+        "OS-EXT-AZ:availability_zone": {
+          "type": "string",
+          "example": "cn-north-1c",
+          "description": "扩展属性,弹性云服务器所在可用区名称。"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "05498fe56b8010d41f7fc01e280b6666",
+          "description": "创建弹性云服务器的用户ID,格式为UUID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "ecs-test-server",
+          "description": "弹性云服务器名称。"
+        },
+        "created": {
+          "type": "string",
+          "example": "2017-07-15T11:30:52Z",
+          "description": "弹性云服务器创建时间。\n\n时间格式例如:2019-05-22T03:19:19Z"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "743b4c0428d94531b9f2add666646666",
+          "description": "弹性云服务器所属租户ID,即项目id,和project_id表示相同的概念,格式为UUID。"
+        },
+        "OS-DCF:diskConfig": {
+          "type": "string",
+          "example": "AUTO",
+          "description": "扩展属性, diskConfig的类型。\n\n- MANUAL,镜像空间不会扩展。\n- AUTO,系统盘镜像空间会自动扩展为与flavor大小一致。"
+        },
+        "accessIPv4": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "accessIPv6": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "fault": {
+          "type": "object",
+          "description": "弹性云服务器故障信息。\n\n可选参数,在弹性云服务器状态为ERROR且存在异常的情况下返回。"
+        },
+        "progress": {
+          "type": "integer",
+          "format": "int32",
+          "example": 0,
+          "description": "弹性云服务器进度。"
+        },
+        "OS-EXT-STS:power_state": {
+          "type": "integer",
+          "format": "int32",
+          "example": 4,
+          "description": "扩展属性,弹性云服务器电源状态。"
+        },
+        "config_drive": {
+          "type": "string",
+          "description": "config drive信息。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "弹性云服务器元数据。\n\n> 说明:\n> \n> 元数据包含系统默认添加字段和用户设置的字段。\n\n系统默认添加字段\n\n1. charging_mode\n云服务器的计费类型。\n\n- “0”:按需计费(即postPaid-后付费方式)。\n- “1”:按包年包月计费(即prePaid-预付费方式)。\"2\":竞价实例计费\n\n2. metering.order_id\n按“包年/包月”计费的云服务器对应的订单ID。\n\n3. metering.product_id\n按“包年/包月”计费的云服务器对应的产品ID。\n\n4. vpc_id\n云服务器所属的虚拟私有云ID。\n\n5. EcmResStatus\n云服务器的冻结状态。\n\n- normal:云服务器正常状态(未被冻结)。\n- freeze:云服务器被冻结。\n\n> 当云服务器被冻结或者解冻后,系统默认添加该字段,且该字段必选。\n\n6. metering.image_id\n云服务器操作系统对应的镜像ID\n\n7.  metering.imagetype\n镜像类型,目前支持:\n\n- 公共镜像(gold)\n- 私有镜像(private)\n- 共享镜像(shared)\n\n8. metering.resourcespeccode\n云服务器对应的资源规格。\n\n9. image_name\n云服务器操作系统对应的镜像名称。\n\n10. os_bit\n操作系统位数,一般取值为“32”或者“64”。\n\n11. lockCheckEndpoint\n回调URL,用于检查弹性云服务器的加锁是否有效。\n\n- 如果有效,则云服务器保持锁定状态。\n- 如果无效,解除锁定状态,删除失效的锁。\n\n12. lockSource\n弹性云服务器来自哪个服务。订单加锁(ORDER)\n\n13. lockSourceId\n弹性云服务器的加锁来自哪个ID。lockSource为“ORDER”时,lockSourceId为订单ID。\n\n14. lockScene\n弹性云服务器的加锁类型。\n\n- 按需转包周期(TO_PERIOD_LOCK)\n\n15. virtual_env_type\n\n- IOS镜像创建虚拟机,\"virtual_env_type\": \"IsoImage\" 属性;\n- 非IOS镜像创建虚拟机,在19.5.0版本以后创建的虚拟机将不会添加virtual_env_type 属性,而在此之前的版本创建的虚拟机可能会返回\"virtual_env_type\": \"FusionCompute\"属性 。\n\n> virtual_env_type属性不允许用户增加、删除和修改。\n\n16. metering.resourcetype\n云服务器对应的资源类型。\n\n17. os_type\n操作系统类型,取值为:Linux、Windows。\n\n18. cascaded.instance_extrainfo\n系统内部虚拟机扩展信息。\n\n19. __support_agent_list\n云服务器是否支持企业主机安全、主机监控。\n\n- “hss”:企业主机安全\n-  “ces”:主机监控\n\n20. agency_name\n委托的名称。\n\n委托是由租户管理员在统一身份认证服务(Identity and Access Management,IAM)上创建的,可以为弹性云服务器提供访问云服务的临时凭证。",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "OS-SRV-USG:launched_at": {
+          "type": "string",
+          "example": "2018-08-15T14:21:22.000000",
+          "description": "弹性云服务器启动时间。时间格式例如:2019-05-22T03:23:59.000000"
+        },
+        "OS-SRV-USG:terminated_at": {
+          "type": "string",
+          "example": "2019-05-22T03:23:59.000000",
+          "description": "弹性云服务器删除时间。\n\n时间格式例如:2019-05-22T03:23:59.000000"
+        },
+        "os-extended-volumes:volumes_attached": {
+          "type": "array",
+          "description": "挂载到弹性云服务器上的磁盘。",
+          "items": {
+            "$ref": "#/definitions/ServerExtendVolumeAttachment"
+          }
+        },
+        "description": {
+          "type": "string",
+          "example": "ecs description",
+          "description": "弹性云服务器的描述信息。"
+        },
+        "host_status": {
+          "type": "string",
+          "example": "UP",
+          "description": "nova-compute状态。\n\n- UP:服务正常\n- UNKNOWN:状态未知\n- DOWN:服务异常\n- MAINTENANCE:维护状态\n- 空字符串:弹性云服务器无主机信息"
+        },
+        "OS-EXT-SRV-ATTR:hostname": {
+          "type": "string",
+          "description": "弹性云服务器的主机名。"
+        },
+        "OS-EXT-SRV-ATTR:reservation_id": {
+          "type": "string",
+          "example": "r-f06p3js8",
+          "description": "批量创建场景,弹性云服务器的预留ID。"
+        },
+        "OS-EXT-SRV-ATTR:launch_index": {
+          "type": "integer",
+          "format": "int32",
+          "example": 0,
+          "description": "批量创建场景,弹性云服务器的启动顺序。"
+        },
+        "OS-EXT-SRV-ATTR:kernel_id": {
+          "type": "string",
+          "description": "若使用AMI格式的镜像,则表示kernel image的UUID;否则,留空。"
+        },
+        "OS-EXT-SRV-ATTR:ramdisk_id": {
+          "type": "string",
+          "description": "若使用AMI格式镜像,则表示ramdisk image的UUID;否则,留空。"
+        },
+        "OS-EXT-SRV-ATTR:root_device_name": {
+          "type": "string",
+          "example": "/dev/vda",
+          "description": "弹性云服务器系统盘的设备名称。"
+        },
+        "OS-EXT-SRV-ATTR:user_data": {
+          "type": "string",
+          "example": "IyEvYmluL2Jhc2gKZWNobyAncm9vdDokNiRjcGRkSjckWm5WZHNiR253Z0l0SGlxUjZxbWtLTlJaeU9lZUtKd3dPbG9XSFdUeGFzWjA1STYwdnJYRTdTUTZGbEpFbWlXZ21WNGNmZ1pac1laN1BkMTBLRndyeC8nIHwgY2hwYXNzd2Q6666",
+          "description": "创建弹性云服务器时指定的user_data。"
+        },
+        "locked": {
+          "type": "boolean",
+          "example": false,
+          "description": "弹性云服务器是否为锁定状态。\n\n- true:锁定\n- false:未锁定"
+        },
+        "tags": {
+          "type": "array",
+          "description": "弹性云服务器标签。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "os:scheduler_hints": {
+          "description": "弹性云服务器调度信息",
+          "$ref": "#/definitions/ServerSchedulerHints"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "example": "0",
+          "description": "弹性云服务器所属的企业项目ID。",
+          "x-open-region-cloud": "hc"
+        },
+        "sys_tags": {
+          "type": "array",
+          "description": "弹性云服务器系统标签。",
+          "items": {
+            "$ref": "#/definitions/ServerSystemTag"
+          }
+        },
+        "cpu_options": {
+          "description": "自定义CPU选项。",
+          "$ref": "#/definitions/CpuOptions"
+        },
+        "security_options": {
+          "description": "安全启动信息。",
+          "$ref": "#/definitions/SecurityOptions"
+        },
+        "hypervisor": {
+          "description": "hypervisor信息。",
+          "$ref": "#/definitions/Hypervisor"
+        },
+        "network_interfaces": {
+          "type": "array",
+          "description": "网卡信息",
+          "items": {
+            "$ref": "#/definitions/NetworkInterfaces"
+          }
+        }
+      },
+      "description": "云服务器详情。"
+    },
+    "NetworkInterfaces": {
+      "properties": {
+        "port_id": {
+          "type": "string",
+          "description": "网卡端口id"
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "是否是主网卡"
+        },
+        "ip_addresses": {
+          "type": "array",
+          "description": "ipv4地址",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ipv6_addresses": {
+          "type": "array",
+          "description": "ipv6地址",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "子网id"
+        },
+        "association": {
+          "description": "网卡绑定的eip信息",
+          "$ref": "#/definitions/Association"
+        }
+      }
+    },
+    "ListRecycleBinServersResp": {
+      "type": "object",
+      "properties": {
+        "servers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServerDetail"
+          }
+        }
+      }
+    },
+    "CapacityReservationSpecification": {
+      "properties": {
+        "id": {
+          "description": "目标容量预留ID",
+          "type": "string"
+        },
+        "preference": {
+          "type": "string",
+          "description": "实例启动的私有池容量选项",
+          "enum": [
+            "none",
+            "targeted"
+          ],
+          "default": "none"
+        }
+      }
+    },
+    "Association": {
+      "properties": {
+        "public_ip_address": {
+          "type": "string",
+          "description": "网卡绑定的eipId"
+        }
+      }
+    },
+    "GpuInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "GPU设备名称。"
+        },
+        "count": {
+          "type": "integer",
+          "description": "GPU设备数量。"
+        },
+        "memory_mb": {
+          "type": "integer",
+          "description": "GPU设备的内存,单位为MB。"
+        }
+      }
+    },
+    "ServerImage": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "04c6329c-ad97-4b0e-be4d-2d8e2dce6666",
+          "description": "镜像id"
+        }
+      },
+      "description": "弹性云服务器镜像信息。"
+    },
+    "ServerFlavor": {
+      "required": [
+        "disk",
+        "id",
+        "name",
+        "ram",
+        "vcpus",
+        "gpus",
+        "asic_accelerators"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "s3.xlarge.4",
+          "description": "弹性云服务器规格ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "s3.xlarge.4",
+          "description": "弹性云服务器规格名称。"
+        },
+        "disk": {
+          "type": "string",
+          "example": "0",
+          "description": "该云服务器规格对应要求系统盘大小,0为不限制。此字段在本系统中无效。"
+        },
+        "vcpus": {
+          "type": "string",
+          "example": "4",
+          "description": "该云服务器规格对应的CPU核数。"
+        },
+        "ram": {
+          "type": "string",
+          "example": "16384",
+          "description": "该云服务器规格对应的内存大小,单位为MB。"
+        },
+        "gpus": {
+          "type": "array",
+          "description": "该云服务器规格对应的GPU设备。",
+          "items": {
+            "$ref": "#/definitions/GpuInfo"
+          }
+        },
+        "asic_accelerators": {
+          "type": "array",
+          "description": "该云服务器规格对应的ASIC设备。",
+          "items": {
+            "$ref": "#/definitions/ASICAcceleratorInfo"
+          }
+        }
+      },
+      "description": "弹性云服务器规格信息。"
+    },
+    "ServerSystemTag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "系统标签的Key值。"
+        },
+        "value": {
+          "type": "string",
+          "description": "系统标签的value值。"
+        }
+      },
+      "description": "弹性云服务器系统标签。"
+    },
+    "ServerSecurityGroup": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "sg-666",
+          "description": "安全组名称或者UUID。"
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组ID。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "弹性云服务器所属安全组列表。"
+    },
+    "ServerExtendVolumeAttachment": {
+      "required": [
+        "delete_on_termination",
+        "device",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "9aaa13b6-e739-41cc-9b53-0577a8a76666",
+          "description": "磁盘ID,格式为UUID。"
+        },
+        "delete_on_termination": {
+          "type": "string",
+          "example": "false",
+          "description": "删弹性云服务器时是否一并删除该磁盘。\n\n- true:是\n- false:否\n微版本2.3及以上版本支持。"
+        },
+        "bootIndex": {
+          "type": "string",
+          "example": "0",
+          "description": "启动标识,“0”代表启动盘,“-1“代表非启动盘。"
+        },
+        "device": {
+          "type": "string",
+          "example": "/dev/vda",
+          "description": "云硬盘挂载盘符,即磁盘挂载点。"
+        }
+      },
+      "description": "挂载到弹性云服务器上的磁盘。"
+    },
+    "ServerSchedulerHints": {
+      "properties": {
+        "group": {
+          "type": "array",
+          "description": "反亲和性组信息。\n\nUUID格式。",
+          "items": {
+            "type": "string"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "tenancy": {
+          "type": "array",
+          "description": "在专属主机或共享池中创建弹性云服务器。默认为在共享池创建。值为: shared或dedicated。\n\n- shared:表示共享池。\n- dedicated:表示专属主机。\n\n创建与查询此值均有效。",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "dedicated_host_id": {
+          "type": "array",
+          "description": "专属主机ID。\n\n此属性仅在tenancy值为dedicated时有效。\n\n不指定此属性,系统将自动分配租户可自动放置弹性云服务器的专属主机。\n\n创建与查询此值均有效。",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "弹性云服务器调度信息。"
+    },
+    "EnclaveOptions": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ServerAddress": {
+      "required": [
+        "addr",
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "IP地址版本。\n\n- “4”:代表IPv4。\n- “6”:代表IPv6。"
+        },
+        "primary": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否主网卡。\n\n- true:是主网卡\n- false:辅助网卡"
+        },
+        "addr": {
+          "type": "string",
+          "description": "IP地址。"
+        },
+        "OS-EXT-IPS:type": {
+          "type": "string",
+          "description": "IP地址类型。\n\n- fixed:代表私有IP地址。\n- floating:代表浮动IP地址。",
+          "enum": [
+            "fixed",
+            "floating"
+          ]
+        },
+        "OS-EXT-IPS-MAC:mac_addr": {
+          "type": "string",
+          "example": "fa:16:3e:09:31:dc",
+          "description": "MAC地址。"
+        },
+        "OS-EXT-IPS:port_id": {
+          "type": "string",
+          "example": "4b5fe243-2f5f-4c68-9eb2-8af3a5366666",
+          "description": "IP地址对应的端口ID。"
+        }
+      },
+      "description": "弹性云服务器的网络属性。"
+    },
+    "Hypervisor": {
+      "properties": {
+        "hypervisor_type": {
+          "type": "string",
+          "description": "hypervisor类型"
+        },
+        "csd_hypervisor": {
+          "type": "string",
+          "description": "hypervisor csd信息"
+        }
+      },
+      "description": "hypervisor信息。"
+    },
+    "CpuOptions": {
+      "properties": {
+        "hw:cpu_threads": {
+          "type": "integer",
+          "format": "int32",
+          "description": "CPU超线程数, 决定CPU是否开启超线程。取值范围:1,2。\n\n- 1: 关闭超线程。\n- 2: 打开超线程。\n\n取值不能大于flavor中的   hw:cpu_threads,并且目标flavor配置需满足 \"hw:cpu_policy\": \"dedicated\",\"hw:cpu_threads\": \"2\"需要同时满足如下条件,才能设置为“关闭超线程”\n\n- 只能在实例创建或者resize时指定。\n- 只有目标flavor的extra_specs参数:\n- 存在“hw:cpu_policy”并取值为“dedicated”。\n- 存在“hw:cpu_threads”并取值为“2”。",
+          "enum": [
+            1,
+            2
+          ]
+        }
+      },
+      "description": "自定义CPU选项。"
+    },
+    "SecurityOptions": {
+      "properties": {
+        "secure_boot_enabled": {
+          "type": "boolean",
+          "description": "是否支持安全启动 true:支持安全启动 false:不支持安全启动 默认值:false",
+          "x-huawei-extraAnnotation": ""
+        },
+        "tpm_enabled": {
+          "type": "boolean",
+          "description": "是否支持vtpm启动 true:支持vtpm启动 false:不支持vtpm启动 默认值:false",
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    },
+    "ASICAcceleratorInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "ASIC设备名称。"
+        },
+        "count": {
+          "type": "integer",
+          "description": "ASIC设备数量。"
+        },
+        "memory_mb": {
+          "type": "integer",
+          "description": "ASIC设备的内存,单位为MB。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

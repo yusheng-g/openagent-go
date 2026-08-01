@@ -1,0 +1,194 @@
+{
+  "name": "SetBucketEncryption",
+  "summary": "设置桶的加密配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketEncryption",
+        "summary": "设置桶的加密配置",
+        "description": "OBS使用PUT操作为桶创建或更新默认服务端加密配置信息。\n\n设置桶加密配置后,在该桶中上传对象时,会采用桶的默认加密配置对数据进行加密。目前支持配置的服务端加密方式有:KMS托管密钥的服务端加密(SSE-KMS)。有关服务端加密SSE-KMS方式的更多信息请参考[服务端加密SSE-KMS方式](https://support.huaweicloud.com/api-obs/obs_04_0106.html)章节。\n\n要使用此操作,您必须具有执行PutEncryptionConfiguration操作的权限。桶拥有者默认具有此权限,并且可以将此权限授予其他人。\n\n有关权限控制的更多信息请参考《对象存储服务权限配置指南》的[OBS权限控制概述](https://support.huaweicloud.com/perms-cfg-obs/obs_40_0001.html)章节。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?encryption",
+        "x-request-examples-1": "PUT /?encryption HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate:  Thu, 21 Feb 2019 03:05:34 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:DpSAlmLX/BTdjxU5HOEwflhM0WI=\nContent-Length: 778\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ServerSideEncryptionConfiguration xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n    <Rule>\n        <ApplyServerSideEncryptionByDefault>\n            <SSEAlgorithm>kms</SSEAlgorithm>\n            <KMSMasterKeyID>4f1cd4de-ab64-4807-920a-47fc42e7f0d0</KMSMasterKeyID>\n        </ApplyServerSideEncryptionByDefault>\n    </Rule>\n</ServerSideEncryptionConfiguration>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "in": "body",
+            "name": "SetBucketEncryptionRequestBody",
+            "description": "在此请求中,需要在请求的消息体中配置桶的加密配置。桶加密的配置信息以XML格式上传。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketEncryptionRequestBody"
+            }
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "encryption",
+            "in": "query",
+            "required": true,
+            "description": "encryption表示请求桶的加密配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "ApplyServerSideEncryptionByDefault": {
+      "description": "桶的默认加密配置的子元素。\n",
+      "required": [
+        "SSEAlgorithm"
+      ],
+      "properties": {
+        "SSEAlgorithm": {
+          "description": "桶的默认加密配置要使用的服务端加密算法。\n",
+          "type": "string",
+          "enum": [
+            "kms"
+          ]
+        },
+        "KMSMasterKeyID": {
+          "description": "SSE-KMS加密方式下使用的KMS主密钥,如果用户没有提供该头域,那么默认的主密钥将会被使用。\n\n类型:字符串\n\n有效值支持两种格式:\n\nregionID:domainID(帐号ID):key/key_id\nkey_id\n其中:\n\nregionID是使用密钥所属region的ID,可在[地区和终端节点](https://developer.huaweicloud.com/endpoint?OBS)页面获取;\ndomainID是使用密钥所属帐号的帐号ID,获取方法参见[获取帐号ID和用户ID](https://support.huaweicloud.com/api-obs/obs_04_0117.html);\nkey_id是从数据加密服务创建的密钥ID,获取方法请参见[查看密钥](https://support.huaweicloud.com/usermanual-dew/dew_01_0179.html)。\n",
+          "type": "string"
+        },
+        "ProjectID": {
+          "description": "SSE-KMS加密方式下KMS主秘钥所属的项目ID。\n有效值:\n\n与KMSMasterKeyID相匹配的项目ID。\n在未设置KMSMasterKeyID的情况下,不可设置项目ID。\n父元素:ApplyServerSideEncryptionByDefault\n",
+          "type": "string"
+        }
+      }
+    },
+    "ServerSideEncryptionConfigurationRule": {
+      "description": "桶的默认加密配置的子元素。\n",
+      "required": [
+        "ApplyServerSideEncryptionByDefault"
+      ],
+      "properties": {
+        "ApplyServerSideEncryptionByDefault": {
+          "$ref": "#/definitions/ApplyServerSideEncryptionByDefault"
+        }
+      }
+    },
+    "SetBucketEncryptionRequestBody": {
+      "xml": {
+        "name": "ServerSideEncryptionConfiguration"
+      },
+      "description": "桶的默认加密配置的根元素。\n",
+      "required": [
+        "Rule"
+      ],
+      "properties": {
+        "Rule": {
+          "$ref": "#/definitions/ServerSideEncryptionConfigurationRule"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,346 @@
+{
+  "name": "UpdateCertificate",
+  "summary": "更新证书",
+  "tags": "证书",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/certificates/{certificate_id}": {
+      "put": {
+        "tags": [
+          "证书"
+        ],
+        "summary": "更新证书",
+        "description": "更新ELB证书。不能更新证书类型,但可以更新证书内容和私钥等。\n注意:更新证书会影响当前证书已关联的监听器,请谨慎操作。",
+        "operationId": "UpdateCertificate",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateCertificateRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateCertificateRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "certificate_id",
+            "in": "path",
+            "description": "**参数解释**:证书ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "certificate": {
+                  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDQVAbOLe5xNf4M\n253Wn9vhdUzojetjv4J+B7kYwsMhRcgdcJ8KCnX1nfzTvI2ksXlTQ2o9BkpStnPe\ntB4s32ZiJRMlk+61iUUMNsHwK2WBX57JT3JgmyVbH8GbmRY0+H3sH1i72luna7rM\nMD30gLh6QoP3cq7PGWcuZKV7hjd1tjCTQukwMvqV8Icq39buNpIgDOWzEP5AzqXt\nCOFYn6RTH5SRug4hKNN7sT1eYMslHu7wtEBDKVgrLjOCe/W2f8rLT1zEsoAW2Chl\nZAPYUBkl/0XuTWRg3CohPPcI+UtlRSfvLDeeQ460swjbwgS/RbJh3sIwlCRLU08k\nEo04Z9H/AgMBAAECggEAEIeaQqHCWZk/HyYN0Am/GJSGFa2tD60SXY2fUieh8/Hl\nfvCArftGgMaYWPSNCJRMXB7tPwpQu19esjz4Z/cR2Je4fTLPrffGUsHFgZjv5OQB\nZVe4a5Hj1OcgJYhwCqPs2d9i2wToYNBbcfgh8lSETq8YaXngBO6vES9LMhHkNKKr\nciu9YkInNEHu6uRJ5g/eGGX3KQynTvVIhnOVGAJvjTXcoU6fm7gYdHAD6jk9lc9M\nEGpfYI6AdHIwFZcT/RNAxhP82lg2gUJSgAu66FfDjMwQXKbafKdP3zq4Up8a7Ale\nkrguPtfV1vWklg+bUFhgGaiAEYTpAUN9t2DVIiijgQKBgQDnYMMsaF0r557CM1CT\nXUqgCZo8MKeV2jf2drlxRRwRl33SksQbzAQ/qrLdT7GP3sCGqvkxWY2FPdFYf8kx\nGcCeZPcIeZYCQAM41pjtsaM8tVbLWVR8UtGBuQoPSph7JNF3Tm/JH/fbwjpjP7dt\nJ7n8EzkRUNE6aIMHOFEeych/PQKBgQDmf1bMogx63rTcwQ0PEZ9Vt7mTgKYK4aLr\niWgTWHXPZxUQaYhpjXo6+lMI6DpExiDgBAkMzJGIvS7yQiYWU+wthAr9urbWYdGZ\nlS6VjoTkF6r7VZoILXX0fbuXh6lm8K8IQRfBpJff56p9phMwaBpDNDrfpHB5utBU\nxs40yIdp6wKBgQC69Cp/xUwTX7GdxQzEJctYiKnBHKcspAg38zJf3bGSXU/jR4eB\n1lVQhELGI9CbKSdzKM71GyEImix/T7FnJSHIWlho1qVo6AQyduNWnAQD15pr8KAd\nXGXAZZ1FQcb3KYa+2fflERmazdOTwjYZ0tGqZnXkEeMdSLkmqlCRigWhGQKBgDak\n/735uP20KKqhNehZpC2dJei7OiIgRhCS/dKASUXHSW4fptBnUxACYocdDxtY4Vha\nfI7FPMdvGl8ioYbvlHFh+X0Xs9r1S8yeWnHoXMb6eXWmYKMJrAoveLa+2cFm1Agf\n7nLhA4R4lqm9IpV6SKegDUkR4fxp9pPyodZPqBLLAoGBAJkD4wHW54Pwd4Ctfk9o\njHjWB7pQlUYpTZO9dm+4fpCMn9Okf43AE2yAOaAP94GdzdDJkxfciXKcsYr9IIuk\nfaoXgjKR7p1zERiWZuFF63SB4aiyX1H7IX0MwHDZQO38a5gZaOm/BUlGKMWXzuEd\n3fy+1rCUwzOp9LSjtJYf4ege\n-----END PRIVATE KEY-----",
+                  "description": "Update my Certificate.",
+                  "domain": null,
+                  "created_at": "2019-03-31T22:23:51Z",
+                  "expire_time": "2045-11-17T13:25:47Z",
+                  "id": "233a325e5e3e4ce8beeb320aa714cc12",
+                  "name": "My Certificate",
+                  "certificate": "-----BEGIN CERTIFICATE-----\nMIIC4TCCAcmgAwIBAgICEREwDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAxMMTXlD\nb21wYW55IENBMB4XDTE4MDcwMjEzMjU0N1oXDTQ1MTExNzEzMjU0N1owFDESMBAG\nA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA\n0FQGzi3ucTX+DNud1p/b4XVM6I3rY7+Cfge5GMLDIUXIHXCfCgp19Z3807yNpLF5\nU0NqPQZKUrZz3rQeLN9mYiUTJZPutYlFDDbB8CtlgV+eyU9yYJslWx/Bm5kWNPh9\n7B9Yu9pbp2u6zDA99IC4ekKD93KuzxlnLmSle4Y3dbYwk0LpMDL6lfCHKt/W7jaS\nIAzlsxD+QM6l7QjhWJ+kUx+UkboOISjTe7E9XmDLJR7u8LRAQylYKy4zgnv1tn/K\ny09cxLKAFtgoZWQD2FAZJf9F7k1kYNwqITz3CPlLZUUn7yw3nkOOtLMI28IEv0Wy\nYd7CMJQkS1NPJBKNOGfR/wIDAQABozowODAhBgNVHREEGjAYggpkb21haW4uY29t\nhwQKuUvJhwR/AAABMBMGA1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUA\nA4IBAQA8lMQJxaTey7EjXtRLSVlEAMftAQPG6jijNQuvIBQYUDauDT4W2XUZ5wAn\njiOyQ83va672K1G9s8n6xlH+xwwdSNnozaKzC87vwSeZKIOdl9I5I98TGKI6OoDa\nezmzCwQYtHBMVQ4c7Ml8554Ft1mWSt4dMAK2rzNYjvPRLYlzp1HMnI6hkjPk4PCZ\nwKnha0dlScati9CCt3UzXSNJOSLalKdHErH08Iqd+1BchScxCfk0xNITn1HZZGmI\n+vbmunok3A2lucI14rnsrcbkGYqxGikySN6B2cRLBDK4Y3wChiW6NVYtVqcx5/mZ\niYsGDVN+9QBd0eYUHce+77s96i3I\n-----END CERTIFICATE-----",
+                  "admin_state_up": true,
+                  "project_id": "99a3fff0d03c428eac3678da6a7d0f24",
+                  "updated_at": "2019-03-31T23:26:49Z",
+                  "type": "server",
+                  "common_name": "www.example.com",
+                  "fingerprint": "869df7fcb441c2ef3fb9329437815972eeb1ef0e",
+                  "subject_alternative_names": [
+                    "www.example.com"
+                  ],
+                  "scm_certificate_id": "",
+                  "source": "",
+                  "protection_status": "nonProtection",
+                  "protection_reason": "",
+                  "enc_certificate": "",
+                  "enc_private_key": ""
+                },
+                "request_id": "d9abea6b-98ee-4ad4-8c5d-185ded48742f"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateCertificateResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新证书",
+        "x-constraint": "如果待更新证书的域名不为空,且被监听器使用;则不允许更新该证书的域名为空,否则系统会返回409响应。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "更新证书的名称和描述信息",
+        "x-request-examples-url-1": "PUT https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/certificates/233a325e5e3e4ce8beeb320aa714cc12",
+        "x-request-examples-1": {
+          "certificate": {
+            "name": "My Certificate",
+            "description": "Update my Certificate."
+          }
+        },
+        "x-request-examples-text-1": {
+          "certificate": {
+            "name": "My Certificate",
+            "description": "Update my Certificate."
+          }
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateCertificateResponseBody": {
+      "required": [
+        "certificate",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "certificate": {
+          "description": "**参数解释**:ELB证书信息。注意:真正的证书在内层字段中。",
+          "$ref": "#/definitions/CertificateInfo"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "CertificateInfo": {
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:证书的管理状态。该字段当前无用,设置为true或者false都不影响证书使用。\n\n**取值范围**:\n- true:表示证书可用。\n- false:表示证书不可用。"
+        },
+        "certificate": {
+          "type": "string",
+          "description": "**参数解释**:证书内容。支持最大11层证书链(含证书和证书链)。\n\n**取值范围**:PEM编码格式,最大长度20000个字符。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:证书的描述。\n\n**取值范围**:0-255个字符。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "domain": {
+          "type": "string",
+          "description": "**参数解释**:服务器证书所签域名。\n\n**取值范围**:总长度为0-10000,由若干普通域名或泛域名组成,域名之间以\",\"分隔,不超过100个域名。\n- 普通域名:由若干字符串组成,字符串间以\".\"分隔,单个字符串长度不超过63个字符,只能包含英文字母、数字或\"-\",且必须以字母或数字开头和结尾。例:www.test.com。\n- 泛域名:在普通域名的基础上仅允许首字母为\"\\*\"。例:\\*.test.com。",
+          "minLength": 1,
+          "maxLength": 10000,
+          "x-huawei-extraAnnotation": ""
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:ELB证书管理对象ID。\n\n**取值范围**:由32位数字和小写字母组成。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:证书的名称。\n\n**取值范围**:0-255个字符。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "private_key": {
+          "type": "string",
+          "description": "**参数解释**:服务器证书的私钥。\n\n**取值范围**:PEM编码格式,最大长度8192个字符。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:证书的类型。\n\n**取值范围**:\n- server:服务器证书。\n- client:CA证书。\n- server_sm:服务器SM双证书。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "**参数解释**:证书有效期的截止时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。"
+        },
+        "enc_certificate": {
+          "type": "string",
+          "description": "**参数解释**:服务器SM双证书的证书内容。\n支持最大11层证书链(含证书和证书链)。\n\n**取值范围**:PEM编码格式。最大长度20000字符。",
+          "x-open-region-cloud": "hc,hk,hcso"
+        },
+        "enc_private_key": {
+          "type": "string",
+          "description": "**参数解释**:服务器SM双证书的私钥。\n\n**取值范围**:PEM编码格式,最大长度8192个字符。",
+          "x-open-region-cloud": "hc,hk,hcso"
+        },
+        "scm_certificate_id": {
+          "type": "string",
+          "description": "**参数解释**:云证书与管理服务(CCM)中的证书ID。\n\n**取值范围**:不涉及"
+        },
+        "common_name": {
+          "type": "string",
+          "description": "**参数解释**:证书绑定的主域名。\n\n**取值范围**:不涉及"
+        },
+        "fingerprint": {
+          "type": "string",
+          "description": "**参数解释**:证书指纹。\n\n**取值范围**:不涉及"
+        },
+        "subject_alternative_names": {
+          "type": "array",
+          "description": "**参数解释**:证书绑定的域名列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          },
+          "x-open-region-cloud": "hc,hk"
+        },
+        "source": {
+          "type": "string",
+          "description": "**参数解释**:标记当前证书来源。\n\n**取值范围**:\n- scm:表示关联云证书与管理服务(CCM)中的证书。\n- 空值:表示自有证书。"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "**参数解释**:修改保护状态。\n\n**取值范围**: \n- nonProtection: 不保护\n- consoleProtection: 控制台修改保护,即禁止通过控制台修改。",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ]
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "**参数解释**:修改保护的原因。\n\n**取值范围**:不涉及"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        }
+      },
+      "description": "**参数解释**:ELB证书信息。注意:真正的证书在内层字段中。",
+      "required": [
+        "admin_state_up",
+        "certificate",
+        "description",
+        "domain",
+        "id",
+        "name",
+        "private_key",
+        "type",
+        "created_at",
+        "updated_at",
+        "expire_time",
+        "project_id"
+      ],
+      "type": "object"
+    },
+    "UpdateCertificateRequestBody": {
+      "required": [
+        "certificate"
+      ],
+      "properties": {
+        "certificate": {
+          "description": "**参数解释**:更新证书参数对象。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/UpdateCertificateOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "UpdateCertificateOption": {
+      "properties": {
+        "certificate": {
+          "type": "string",
+          "description": "**参数解释**:证书内容。\n支持最大11层证书链(含证书和证书链)。\n\n**约束限制**:不涉及\n\n**取值范围**:PEM编码格式,最大长度20000个字符。\n\n**默认取值**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:证书的描述。\n\n**约束限制**:不涉及\n\n**取值范围**:0-255个字符。\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:证书的名称。\n\n**约束限制**:不涉及\n\n**取值范围**:0-255个字符。\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "private_key": {
+          "type": "string",
+          "description": "**参数解释**:服务器证书的私钥。\n\n**约束限制**:不涉及\n\n**取值范围**:PEM编码格式,最大长度8192个字符。\n\n**默认取值**:不涉及"
+        },
+        "domain": {
+          "type": "string",
+          "description": "**参数解释**:服务器证书所签域名。\n\n**约束限制**:该字段仅type为server时有效(其他类型证书,字段可传入,但不会生效)。\n\n**取值范围**:总长度为0-10000,由若干普通域名或泛域名组成,域名之间以\",\"分隔,不超过100个域名。\n- 普通域名:由若干字符串组成,字符串间以\".\"分隔,单个字符串长度不超过63个字符,只能包含英文字母、数字或\"-\",且必须以字母或数字开头和结尾。例:www.test.com。\n- 泛域名:在普通域名的基础上仅允许首字母为\"\\*\"。例:\\*.test.com。\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 10000
+        },
+        "enc_certificate": {
+          "type": "string",
+          "description": "**参数解释**:服务器SM双证书的证书内容。\n支持最大11层证书链(含证书和证书链)。\n\n**约束限制**:仅当type为server_sm时,才支持传入。\n\n**取值范围**:PEM编码格式。最大长度20000字符。\n\n**默认取值**:不涉及",
+          "x-open-region-cloud": "hc,hk,hcso"
+        },
+        "enc_private_key": {
+          "type": "string",
+          "description": "**参数解释**:服务器SM双证书的私钥。\n\n**约束限制**:仅当type为server_sm时,才支持传入。\n\n**取值范围**:PEM编码格式,最大长度8192个字符。\n\n**默认取值**:不涉及",
+          "x-open-region-cloud": "hc,hk,hcso"
+        },
+        "scm_certificate_id": {
+          "type": "string",
+          "description": "**参数解释**:云证书与管理服务(CCM)中的证书ID。\n\n**约束限制**:仅记录证书ID,不验证其是否真实存在云证书与管理服务中。并且需要将云证书与管理服务中对应证书的内容手动设置到当前接口相应字段中(可能涉及字段certificate、private_key、enc_certificate和enc_private_key)\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "x-open-region-cloud": "hc,hk,hcso"
+        },
+        "source": {
+          "type": "string",
+          "description": "**参数解释**:标记当前证书来源。\n\n**约束限制**:无\n\n**取值范围**:\n- scm:表示关联云证书与管理服务(CCM)中的证书。\n- 空值:表示自有证书。\n\n**默认取值**:不涉及"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "**参数解释**:修改保护状态\n\n**约束限制**:不涉及 \n\n**取值范围**: \n- nonProtection: 不保护 \n- consoleProtection: 控制台修改保护 \n\n**默认取值**:不涉及",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ]
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "**参数解释**:设置修改保护的原因 \n\n**约束限制**:仅当protection_status为consoleProtection时有效 \n\n**取值范围**:不涉及 \n\n**默认取值**:空"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

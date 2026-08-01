@@ -1,0 +1,189 @@
+{
+  "name": "NovaShowKeypair",
+  "summary": "查询SSH密钥详情",
+  "tags": "密钥密码管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/os-keypairs/{keypair_name}": {
+      "get": {
+        "tags": [
+          "密钥密码管理"
+        ],
+        "summary": "查询SSH密钥详情",
+        "description": "根据SSH密钥名称查询指定SSH密钥。",
+        "operationId": "NovaShowKeypair",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "keypair_name",
+            "in": "path",
+            "description": "密钥名称信息。",
+            "required": true,
+            "type": "string",
+            "x-example": "keypair-3582d8b7-e588-4aad-b7f7-f4e76f0e4314",
+            "x-order": 3
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 4
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "keypair": {
+                  "created_at": "2014-05-07T12:06:13.681238",
+                  "deleted": false,
+                  "deleted_at": null,
+                  "fingerprint": "9d:00:f4:d7:26:6e:52:06:4c:c1:d3:1d:fd:06:66:01",
+                  "id": 1,
+                  "name": "keypair-3582d8b7-e588-4aad-b7f7-f4e76f0e4314",
+                  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYJrTVpcMwFqQy/oMvtUSRofZdSRHEwrsX8AYkRvn2ZnCXM+b6+GZ2NQuuWj+ocznlnwiGFQDsL/yeE+/kurqcPJFKKp60mToXIMyzioFxW88fJtwEWawHKAclbHWpR1t4fQ4DS+/sIbX/Yd9btlVQ2tpQjodGDbM9Tr9/+/3i6rcR+EoLqmbgCgAiGiVV6VbM2Zx79yUwd+GnQejHX8BlYZoOjCnt3NREsITcmWE9FVFy6TnLmahs3FkEO/QGgWGkaohAJlsgaVvSWGgDn2AujKYwyDokK3dXyeX3m2Vmc3ejiqPa/C4nRrCOlko5nSgV/9IXRx1ERImsqZnE9usB Generated-by-Nova\n",
+                  "updated_at": null,
+                  "user_id": "fake"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaShowKeypairResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询SSH密钥详情",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 64,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1/{project_id}/os-keypairs/{keypair_name}",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1/{project_id}/os-keypairs/{keypair_name}",
+        "x-registered_to": "nova",
+        "x-api_level": "2",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaKeypairDetail": {
+      "required": [
+        "created_at",
+        "deleted",
+        "deleted_at",
+        "fingerprint",
+        "id",
+        "name",
+        "public_key",
+        "updated_at",
+        "user_id"
+      ],
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "description": "密钥对应publicKey信息。"
+        },
+        "name": {
+          "type": "string",
+          "description": "密钥名称。"
+        },
+        "fingerprint": {
+          "type": "string",
+          "description": "密钥对应指纹信息。"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "密钥创建时间。"
+        },
+        "deleted": {
+          "type": "boolean",
+          "description": "密钥删除标记。 \n\n- true,表示密钥已被删除。 \n\n- false,表示密钥未被删除。"
+        },
+        "deleted_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "密钥删除时间。"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "密钥ID。"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "密钥更新时间。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "密钥所属用户信息。"
+        },
+        "type": {
+          "type": "string",
+          "description": "密钥类型,默认“ssh”\n\n微版本2.2以上支持"
+        }
+      },
+      "description": " "
+    },
+    "NovaShowKeypairResponseBody": {
+      "required": [
+        "keypair"
+      ],
+      "properties": {
+        "keypair": {
+          "description": "SSH密钥信息。",
+          "$ref": "#/definitions/NovaKeypairDetail"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

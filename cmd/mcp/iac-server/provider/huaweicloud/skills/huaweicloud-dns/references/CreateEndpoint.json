@@ -1,0 +1,239 @@
+{
+  "name": "CreateEndpoint",
+  "summary": "创建终端节点",
+  "tags": "解析器管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/endpoints": {
+      "post": {
+        "tags": [
+          "解析器管理"
+        ],
+        "x-request-examples-description-1": "创建入站终端节点,设置IP地址1的子网ID为 \"0463c8a5-fa49-441d-b28b-bc6c35ba04f8\",自定义IP为 \"192.168.3.125\";设置IP地址2的子网ID为\"0463c8a5-fa49-441d-b28b-bc6c35ba04f8\",自定义IP为\"192.168.3.126\"。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/endpoints",
+        "x-request-examples-1": {
+          "name": "poi-1",
+          "direction": "inbound",
+          "region": "NetworkService",
+          "ipaddresses": [
+            {
+              "subnet_id": "0463c8a5-fa49-441d-b28b-bc6c35ba04f8",
+              "ip": "192.168.3.125"
+            },
+            {
+              "subnet_id": "0463c8a5-fa49-441d-b28b-bc6c35ba04f8",
+              "ip": "192.168.3.126"
+            }
+          ]
+        },
+        "operationId": "CreateEndpoint",
+        "summary": "创建终端节点",
+        "description": "创建终端节点。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "CreateEndpointRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateEndpointRequestBody"
+            },
+            "description": "创建终端节点请求。"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "创建终端节点响应。",
+            "schema": {
+              "$ref": "#/definitions/CreateEndpointResp"
+            },
+            "examples": {
+              "application/json": {
+                "endpoint": {
+                  "id": "ff80808169bf16c70169bf1d02270000",
+                  "name": "poi-1",
+                  "direction": "inbound",
+                  "status": "PENDING_CREATE",
+                  "vpc_id": null,
+                  "ipaddress_count": 0,
+                  "resolver_rule_count": 0,
+                  "create_time": "2019-03-27T12:25:43.181",
+                  "update_time": "2019-03-27T12:25:43.181"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 0
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "CreateEndpointResp": {
+      "properties": {
+        "endpoint": {
+          "description": "终端节点对象。",
+          "$ref": "#/definitions/EndpointResp"
+        }
+      }
+    },
+    "EndpointResp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "终端节点的ID,UUID形式的一个资源标识。",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "终端节点的名称。"
+        },
+        "direction": {
+          "type": "string",
+          "description": "终端节点方向。\n取值:\ninbound,表示入站终端节点。\noutbound,表示出站终端节点。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_DELETE:删除中\n- ERROR:失败",
+          "readOnly": true
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "终端节点所属的VPC ID。",
+          "readOnly": true
+        },
+        "ipaddress_count": {
+          "type": "integer",
+          "description": "该终端节点下的IP地址数量。",
+          "format": "int32",
+          "readOnly": true
+        },
+        "resolver_rule_count": {
+          "type": "integer",
+          "description": "该终端节点下的转发规则数量。\n仅创建出站终端节点时返回该参数。",
+          "format": "int32",
+          "readOnly": true
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。",
+          "readOnly": true
+        },
+        "update_time": {
+          "type": "string",
+          "description": "更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。",
+          "readOnly": true
+        }
+      }
+    },
+    "CreateEndpointRequestBody": {
+      "required": [
+        "name",
+        "direction",
+        "region",
+        "ipaddresses"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "待创建的终端节点名称。\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。",
+          "pattern": "[\\w\\一-\\龥\\._-]{1,64}"
+        },
+        "direction": {
+          "type": "string",
+          "description": "终端节点方向。\n取值:\ninbound,表示入站终端节点。\noutbound,表示出站终端节点。",
+          "pattern": "inbound|outbound"
+        },
+        "region": {
+          "type": "string",
+          "description": "当前子网所在的region。",
+          "pattern": "[A-Za-z0-9-]{1,36}"
+        },
+        "ipaddresses": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/definitions/IpaddressInfo"
+          },
+          "description": "终端节点的IP地址和子网信息。最少需要添加2个IP地址,最多可以添加6个IP地址。"
+        }
+      }
+    },
+    "IpaddressInfo": {
+      "required": [
+        "subnet_id"
+      ],
+      "properties": {
+        "subnet_id": {
+          "type": "string",
+          "description": "子网的ID。",
+          "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+        },
+        "ip": {
+          "type": "string",
+          "description": "自定义IP地址,需在子网的网段内部。",
+          "pattern": "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

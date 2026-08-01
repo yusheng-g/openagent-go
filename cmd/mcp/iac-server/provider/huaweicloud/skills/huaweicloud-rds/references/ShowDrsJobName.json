@@ -1,0 +1,69 @@
+{
+  "name": "ShowDrsJobName",
+  "summary": "查询实例的drs任务名称",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/drs-job/name": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "description": "查询实例的drs任务名称",
+        "summary": "查询实例的drs任务名称",
+        "operationId": "ShowDrsJobName",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instance/0483b6b16e954cb88930a360d2c4in03/drs-job/name",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id,源实例"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询实例drs名称返回体",
+            "schema": {
+              "$ref": "#/definitions/QueryDrsNameRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "QueryDrsNameRsp": {
+      "type": "object",
+      "description": "获取drs任务栏名称的返回体",
+      "required": [
+        "drs_name"
+      ],
+      "properties": {
+        "drs_name": {
+          "type": "string",
+          "description": "参数解释:\n任务名字。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,179 @@
+{
+  "name": "SetObjectLock",
+  "summary": "配置对象级WORM保护策略",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "put": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "SetObjectLock",
+        "consumes": [
+          "application/xml"
+        ],
+        "summary": "配置对象级WORM保护策略",
+        "description": "开启了WORM开关的桶,上传的对象支持配置或修改对象保护期限。 1. 如果上传对象时没有配置保护期限或自动应用桶级默认保护策略,您可以通过该操作配置对象保护期限。 2. 如果上传对象时配置了保护期限或自动应用了默认保护期限,允许用户通过该操作延长保护期限。 3. 对象保护期限仅允许修改,不允许删除。\n说明: 用户需要拥有“PutObjectRetention”权限才能配置或修改对象保护期限。\n多版本 开启了WORM开关的桶默认开启了多版本,因此桶内对象在上传时会具备版本号。您在配置对象级WORM保护策略时可以指定版本号来为特定版本的对象配置,如果您不指定版本号,则改动只会对同名对象的最新版本生效。WORM功能不会对带唯一版本号的删除标记生效。\n多段操作 多段上传的对象在合并前不会自动应用桶级默认WORM策略,也无法通过在上传或合并时指定头域来配置对象级WORM保护策略,指定已上传的段作为此接口的目标对象也无法进行配置。如果您需要对多段对象进行保护,您可以在合并多段对象后通过此接口为其配置对象级WORM保护策略。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/xml"
+        ],
+        "x-request-examples-url-1": "/ObjectName?retention&versionId=versionid HTTP/1.1",
+        "x-request-examples-1": "PUT /ObjectName?retention&versionId=versionid HTTP/1.1 \nHost: bucketname.obs.cn-north-4.myhuaweicloud.com\nDate: date\nAuthorization: authorization\n\n<Retention>\n    <Mode>String</Mode>\n    <RetainUntilDate>Timestamp</RetainUntilDate>\n</Retention>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "配置worm保护策略的对象名.",
+            "type": "string"
+          },
+          {
+            "name": "retention",
+            "in": "query",
+            "required": true,
+            "description": "参数解释:\n表示这是配置或修改对象保护期限操作。\n约束限制:\n不涉及\n取值范围:\n不涉及\n默认取值:\n不涉及\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "description": "参数解释:\n对象的版本号。表示更改指定版本对象的WORM策略。不携带versionId参数则为最新版本。\n约束限制:\n不涉及\n取值范围:\n长度为32的字符串。\n默认取值:\n不涉及,如果不设置则默认修改最新版本的对象。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 32,
+            "maxLength": 32
+          },
+          {
+            "name": "Retention",
+            "in": "body",
+            "description": "对象级WORM保护策略配置。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetObjectLockRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功请求响应。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SetObjectLockRequestBody": {
+      "xml": {
+        "name": "Retention"
+      },
+      "description": "参数解释:\n对象级WORM保护策略配置的容器,Retention是Mode、RetainUntilDate的父节点。\n约束限制:\n不涉及\n取值范围:\n请详见Retention参数说明。\n默认取值:\n不涉及\n",
+      "properties": {
+        "Mode": {
+          "description": "参数解释:\n对象的保护策略。\n约束限制:\n不涉及\n取值范围:\nCOMPLIANCE:合规模式\n默认取值:\n不涉及\n",
+          "type": "string"
+        },
+        "RetainUntilDate": {
+          "description": "参数解释:\n对象的保护期限,时间戳格式,精确到毫秒级,如2015年7月1日13点20分35秒对应的值为1435728035000。\n示例:1435728035000\n约束限制:\n该字段必须晚于当前时间,且仅可延长不能缩短。\n取值范围:\n不涉及\n默认取值:\n不涉及\n",
+          "type": "object"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

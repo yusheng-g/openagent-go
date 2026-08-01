@@ -1,0 +1,374 @@
+{
+  "name": "ListJobs",
+  "summary": "查询异步任务的job列表",
+  "tags": "异步任务",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/jobs": {
+      "get": {
+        "x-request-examples-url-1": "https://{ELB_Endpoint}/v3/7b7705dce1e847b08b3b16dda67fec24/elb/jobs",
+        "tags": [
+          "异步任务"
+        ],
+        "summary": "查询异步任务的job列表",
+        "description": "用于查询实例复制、实例升级等异步接口任务列表。",
+        "operationId": "ListJobs",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "deprecated": false,
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 5
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 6
+          },
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:任务ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "job_type",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:任务类型。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- cloneLoadbalancer:复制负载均衡器任务。\n- cloneListener:复制监听器任务。\n- batchCreateV2Loadbalancer:批量创建共享型负载均衡器任务。\n- batchCreateV3Loadbalancer:批量创建独享型负载均衡器任务。\n- batchDeleteLoadbalancer:批量删除负载均衡器任务。\n- batchDeleteListener:批量删除监听器任务。\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:任务状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- INIT:初始状态。\n- RUNNING:任务处理中。\n- FAIL:任务处理失败。\n- SUCCESS:任务处理成功。\n- ROLLBACKING:任务正在回退。\n- COMPLETE:任务完成。\n- ROLLBACK_FAIL:回退失败。\n- CANCEL:已取消。\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "error_code",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:任务的错误码。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:资源ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "begin_time",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:查询任务的开始时间大于等于传入时间的任务。格式:yyyy-MM-dd'T'HH:mm:ss\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "schema": {
+              "$ref": "#/definitions/ListJobsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "request_id": "029f8cca-4d92-4b3e-9370-b36d382f969b",
+                "jobs": [
+                  {
+                    "status": "COMPLETE",
+                    "begin_time": "2024-03-23T08:20:42Z",
+                    "end_time": "2024-03-23T08:49:11Z",
+                    "job_id": "ef6da45b-35d9-4c18-8c35-0b80d94ab9e6",
+                    "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                    "job_type": "UPGRADE",
+                    "error_code": "",
+                    "error_msg": "",
+                    "project_id": "7b7705dce1e847b08b3b16dda67fec24",
+                    "sub_jobs": [
+                      {
+                        "status": "SUCCESS",
+                        "entities": [
+                          {
+                            "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                            "resource_type": "loadbalancer"
+                          }
+                        ],
+                        "begin_time": "2024-03-23T08:47:11Z",
+                        "end_time": "2024-03-23T08:47:11Z",
+                        "job_id": "481a5ab3-b3ff-46fa-b074-d3b8e09ab9cb",
+                        "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                        "job_type": "UPGRADE_TRAFFIC_SWITCH",
+                        "error_code": "",
+                        "error_msg": "",
+                        "project_id": "7b7705dce1e847b08b3b16dda67fec24"
+                      },
+                      {
+                        "status": "SUCCESS",
+                        "entities": [
+                          {
+                            "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                            "resource_type": "loadbalancer"
+                          }
+                        ],
+                        "begin_time": "2024-03-23T08:20:42Z",
+                        "end_time": "2024-03-23T08:46:44Z",
+                        "job_id": "c4cf4e5b-fa53-427d-ad43-497e7a876c2e",
+                        "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                        "job_type": "UPGRADE_INIT",
+                        "error_code": "",
+                        "error_msg": "",
+                        "project_id": "7b7705dce1e847b08b3b16dda67fec24"
+                      },
+                      {
+                        "status": "SUCCESS",
+                        "entities": [
+                          {
+                            "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                            "resource_type": "loadbalancer"
+                          }
+                        ],
+                        "begin_time": "2024-03-23T08:49:11Z",
+                        "end_time": "2024-03-23T08:49:11Z",
+                        "job_id": "ee56e027-5d52-4bd9-abba-9821a742a466",
+                        "resource_id": "9f5b432c-987e-4777-a1bc-6642be4b2b50",
+                        "job_type": "UPGRADE_COMPLETE",
+                        "error_code": "",
+                        "error_msg": "",
+                        "project_id": "7b7705dce1e847b08b3b16dda67fec24"
+                      }
+                    ]
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "ef6da45b-35d9-4c18-8c35-0b80d94ab9e6",
+                  "current_count": 1
+                }
+              }
+            }
+          }
+        },
+        "x-name": "查询异步任务的job列表",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2024-03-30",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SubJob": {
+      "description": "**参数解释**:子任务",
+      "allOf": [
+        {
+          "$ref": "#/definitions/BaseJob"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entities": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/JobEntities"
+              },
+              "description": "**参数解释**:任务关联的资源列表。"
+            }
+          }
+        }
+      ]
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "ListJobsResponseBody": {
+      "type": "object",
+      "properties": {
+        "jobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MainJob"
+          },
+          "description": "**参数解释**:任务列表。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      }
+    },
+    "JobEntities": {
+      "type": "object",
+      "description": "**参数解释**:子任务关联的资源列表",
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "description": "**参数解释**:子任务关联的资源ID。\n\n**取值范围**:不涉及"
+        },
+        "resource_type": {
+          "type": "string",
+          "description": "**参数解释**:子任务关联的资源类型。\n\n**取值范围**:\n- loadbalancer:弹性负载均衡器。\n- listener:监听器。"
+        }
+      }
+    },
+    "BaseJob": {
+      "type": "object",
+      "description": "任务的基类",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "COMPLETE",
+          "description": "任务状态",
+          "enum": [
+            "INIT",
+            "RUNNING",
+            "FAIL",
+            "SUCCESS",
+            "ROLLBACKING",
+            "COMPLETE",
+            "ROLLBACK_FAIL",
+            "CANCEL"
+          ]
+        },
+        "begin_time": {
+          "type": "string",
+          "example": "2024-02-29T02:48:56Z",
+          "description": "任务开始时间"
+        },
+        "end_time": {
+          "type": "string",
+          "example": "2024-02-29T02:50:20Z",
+          "description": "任务结束时间"
+        },
+        "job_id": {
+          "type": "string",
+          "example": "3ec74619-be6b-4d2e-bec4-b4a6753d4c09",
+          "description": "任务ID"
+        },
+        "job_type": {
+          "type": "string",
+          "example": "UPGRADE",
+          "description": "任务类型"
+        },
+        "error_code": {
+          "type": "string",
+          "example": "",
+          "description": "任务的错误码"
+        },
+        "error_msg": {
+          "type": "string",
+          "example": "",
+          "description": "任务的错误信息"
+        },
+        "project_id": {
+          "type": "string",
+          "example": "",
+          "description": "项目ID"
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "**参数解释**:资源ID。"
+        }
+      }
+    },
+    "MainJob": {
+      "description": "**参数解释**:实例复制等异步任务信息。",
+      "allOf": [
+        {
+          "$ref": "#/definitions/BaseJob"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sub_jobs": {
+              "description": "**参数解释**:子任务列表。",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SubJob"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

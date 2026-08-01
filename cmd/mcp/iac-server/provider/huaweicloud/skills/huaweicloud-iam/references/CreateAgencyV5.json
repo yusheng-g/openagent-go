@@ -1,0 +1,117 @@
+{
+  "name": "CreateAgencyV5",
+  "summary": "创建信任委托",
+  "tags": "委托及信任委托管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/agencies": {
+      "post": {
+        "tags": [
+          "Agency"
+        ],
+        "operationId": "CreateAgencyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "创建信任委托",
+        "description": "该接口可以用于创建信任委托。\n\n> 信任委托只能授予身份策略且仅兼容支持身份策略的云服务,详情见[支持身份策略与信任委托的云服务列表](https://support.huaweicloud.com/productdesc-iam/iam_01_1224.html)。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgencyReqBody"
+              },
+              "example": {
+                "agency_name": "name",
+                "path": "",
+                "trust_policy": "{\"Version\":\"5.0\",\"Statement\":[{\"Action\":[\"sts:agencies:assume\",\"sts::tagSession\",\"sts::setSourceIdentity\"],\"Effect\":\"Allow\",\"Principal\":{\"IAM\":[\"xxx\"]}}]}",
+                "max_session_duration": 3600,
+                "description": "description"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "创建名为name的信任委托。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v5/agencies",
+        "x-request-examples-1": {
+          "agency_name": "name",
+          "path": "",
+          "trust_policy": "{\"Version\":\"5.0\",\"Statement\":[{\"Action\":[\"sts:agencies:assume\",\"sts::tagSession\",\"sts::setSourceIdentity\"],\"Effect\":\"Allow\",\"Principal\":{\"IAM\":[\"xxx\"]}}]}",
+          "max_session_duration": 3600,
+          "description": "description"
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "201": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAgencyResp"
+                },
+                "example": {
+                  "agency": {
+                    "urn": "iam::accountid:agency:name",
+                    "trust_policy": "{\"Version\":\"5.0\",\"Statement\":[{\"Action\":[\"sts:agencies:assume\",\"sts::tagSession\",\"sts::setSourceIdentity\"],\"Effect\":\"Allow\",\"Principal\":{\"IAM\":[\"xxx\"]}}]}",
+                    "created_at": "2023-09-21T01:17:19.590Z",
+                    "description": "description",
+                    "max_session_duration": 3600,
+                    "path": "",
+                    "agency_id": "string",
+                    "agency_name": "name",
+                    "trust_domain_id": null,
+                    "trust_domain_name": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResp"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,321 @@
+{
+  "name": "ListScheduleEvents",
+  "summary": "查询事件列表",
+  "tags": "事件中心",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/schedule-events": {
+      "get": {
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-publishpath": 20251104,
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "x-file": "WMH",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/schedule-events",
+        "x-request-examples-text-1": {
+          "id": "67323a8c-75aa-4d81-941e-02621ccd4d07",
+          "instance_id": "6970e9cf7adc41a78e0f1f50215c9d3bin03",
+          "status": "INQUIRING",
+          "type": "RESTAT_NODE",
+          "offset": 0,
+          "limit": 50,
+          "sort_field": "created_time",
+          "order": "DESC"
+        },
+        "x-request-examples-1": {
+          "id": "67323a8c-75aa-4d81-941e-02621ccd4d07",
+          "instance_id": "6970e9cf7adc41a78e0f1f50215c9d3bin03",
+          "status": "INQUIRING",
+          "type": "RESTAT_NODE",
+          "offset": 0,
+          "limit": 50,
+          "sort_field": "created_time",
+          "order": "DESC"
+        },
+        "tags": [
+          "事件中心"
+        ],
+        "summary": "查询事件列表",
+        "description": "查询事件列表",
+        "operationId": "ListScheduleEvents",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n事件ID。\n\n**约束限制**:\n\n不涉及。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n实例ID。\n\n**约束限制**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n事件状态\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n枚举值:WAITING 等待中;INQUIRING 待授权; SCHEDULED 待执行; EXECUTING 执行中; COMPLETED 已完成; FAILED 失败; CANCELED 已取消。",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n事件类型\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n枚举值:RESTAT_NODE 重启实例节点。",
+            "type": "string"
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n事件级别\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\nCRITICAL 紧急;MAJOR 重要;MINOR 一般;INFO 提示。",
+            "type": "string"
+          },
+          {
+            "name": "sort_field",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n排序字段,支持planned_execution_time、created_time、latest_execution_time。\n\n**约束限制**:\n\n不涉及。",
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n排序顺序\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\nDESC 降序;ASC升序\n\n **默认取值**:\n\nDESC 降序",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及\n\n**默认取值**:\n\n0",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n查询记录数。默认为10,不能为负数,最小值为1,最大值为100。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及\n\n**默认取值**:\n\n10",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "事件列表返回体",
+            "schema": {
+              "$ref": "#/definitions/EventResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "inquiring_count": 1,
+                "schedule_count": 0,
+                "executing_count": 0,
+                "failed_count": 0,
+                "events": [
+                  {
+                    "id": "created_time",
+                    "instance_name": "TestInstance",
+                    "db_type": "postgresql",
+                    "created_time": "2024-06-30T09:04:35+0800",
+                    "update_time": "2024-06-30T09:04:35+0800",
+                    "type": "RESTAT_NODE",
+                    "impact": "Instance Intermittent Disconnection",
+                    "status": "INQUIRING",
+                    "reason": "ECS_RESTART",
+                    "level": "MAJOR",
+                    "execute_time": "",
+                    "latest_execution_time": "",
+                    "execution_time_window": {
+                      "planned_execution_time": "2024-06-30T23:00:00+0800",
+                      "start_time": "2024-06-30T22:00:00+0800",
+                      "end_time": "2024-06-30T24:00:00+0800"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EventResponseBody": {
+      "type": "object",
+      "description": "查询事件响应体",
+      "required": [
+        "total_count",
+        "inquiring_count",
+        "schedule_count",
+        "executing_count",
+        "failed_count",
+        "events"
+      ],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n事件总数。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "inquiring_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n待授权的事件数。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "schedule_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n待执行的事件数。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "executing_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n正在执行的事件数。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "failed_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n执行失败的事件数。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScheduleEventInfo"
+          },
+          "description": "**参数解释**:\n\n事件详情列表。\n\n**约束限制**:\n\n不涉及。"
+        }
+      }
+    },
+    "ScheduleEventInfo": {
+      "description": "事件详情",
+      "required": [
+        "id",
+        "instance_id",
+        "instance_name",
+        "db_type",
+        "created_time",
+        "update_time",
+        "type",
+        "impact",
+        "status",
+        "reason",
+        "execution_time_window",
+        "level"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件ID。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n实例ID。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "instance_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n实例名称。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "db_type": {
+          "type": "string",
+          "description": "**参数解释**:\n\n数据库类型。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "created_time": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件创建的时间。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "update_time": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件更新的时间。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件类型。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "impact": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件对系统的影响。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件状态。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "reason": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件发生的原因。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "level": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件的严重级别。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "execute_time": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件执行的时间。\n\n**约束限制**:\n\n不涉及。"
+        },
+        "latest_execution_time": {
+          "type": "string",
+          "description": "**参数解释**:\n\n事件最近一次执行的时间。\n\n**约束限制**:\n\n不涉及。"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,302 @@
+{
+  "name": "ShowNetworkIpAvailabilities",
+  "summary": "查询网络IP使用情况",
+  "tags": "查询网络IP使用情况",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/network-ip-availabilities/{network_id}": {
+      "get": {
+        "tags": [
+          "查询网络IP使用情况"
+        ],
+        "summary": "查询网络IP使用情况",
+        "description": "显示一个指定网络中的IPv4地址使用情况。\n包括此网络中的IP总数以及已用IP总数,以及网络下每一个子网的IP地址总数和可用IP地址总数。\n\n> 须知\n\n- 系统预留地址指的是子网的第1个以及最后4个地址,一般用于网关、DHCP等服务。\n- 这里以及下文描述的IP地址总数、已用IP地址总数不包含系统预留地址。\n- 在分配IP时,用户可以指定系统预留的IP地址。但是不论IP是如何分配的,只要是处于系统预留IP地址段的IP均不会被统计到已用IP地址数目和IP地址总数中。",
+        "operationId": "ShowNetworkIpAvailabilities",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "network_id",
+            "in": "path",
+            "description": "网络ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-example": "3ec3b33f-ac1c-4630-ad1c-7dba1ed79d85",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "network_ip_availability": {
+                  "used_ips": 4,
+                  "subnet_ip_availability": [
+                    {
+                      "used_ips": 4,
+                      "subnet_id": "98e343d1-3cb8-4f69-9cd1-00569819480f",
+                      "subnet_name": "",
+                      "ip_version": 4,
+                      "cidr": "10.0.0.0/8",
+                      "total_ips": 300
+                    }
+                  ],
+                  "network_id": "6b50d967-779c-40c9-a157-de1df3c17043",
+                  "tenant_id": "7c4b23cb125d481c95cbe4f91b2c11cd",
+                  "total_ips": 300,
+                  "network_name": "pch_test_003"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NetworkIpAvailabilityResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询网络IP使用情况",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 42,
+        "x-request-examples-description-1": "查询网络下的可用IP数量",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v2.0/network-ip-availabilities/{network_id}",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-5-30",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NetworkIpAvailabilityResponseBody": {
+      "required": [
+        "network_ip_availability"
+      ],
+      "properties": {
+        "network_ip_availability": {
+          "description": "网络IP使用情况对象",
+          "$ref": "#/definitions/NetworkIpAvailability",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "NetworkIpAvailability": {
+      "required": [
+        "network_id",
+        "network_name",
+        "subnet_ip_availability",
+        "tenant_id",
+        "total_ips",
+        "used_ips"
+      ],
+      "properties": {
+        "network_id": {
+          "type": "string",
+          "description": "网络ID",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "network_name": {
+          "type": "string",
+          "description": "网络名称",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "total_ips": {
+          "type": "integer",
+          "format": "int32",
+          "description": "网络中IP总数(不包含系统预留地址)",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "used_ips": {
+          "type": "integer",
+          "format": "int32",
+          "description": "网络中已经使用的IP数目(不包含系统预留地址)",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "subnet_ip_availability": {
+          "type": "array",
+          "description": "子网IP使用情况的对象",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/SubnetIpAvailability"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "SubnetIpAvailability": {
+      "required": [
+        "cidr",
+        "ip_version",
+        "subnet_id",
+        "subnet_name",
+        "total_ips",
+        "used_ips"
+      ],
+      "properties": {
+        "used_ips": {
+          "type": "integer",
+          "format": "int32",
+          "description": "子网中已经使用的IP数目(不包含系统预留地址)",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "subnet_id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "子网ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "subnet_name": {
+          "type": "string",
+          "description": "子网名称",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "example": 4,
+          "description": "子网的IP版本,取值为4或者6",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "子网的CIDR",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "total_ips": {
+          "type": "integer",
+          "format": "int32",
+          "description": "子网中IP总数(不包含系统预留地址)",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

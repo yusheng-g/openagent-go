@@ -1,0 +1,182 @@
+{
+  "name": "ListCustomersBalancesDetail",
+  "summary": "查询客户账户余额",
+  "tags": "管理客户账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/customer-accounts/balances/batch-query": {
+      "post": {
+        "summary": "查询客户账户余额",
+        "description": "合作伙伴可以查询关联的代售类客户的账户余额。\n\n伙伴登录伙伴中心查询客户余额请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0072435115.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>顾问销售类客户是客户在华为云充值,合作伙伴无法调用此接口查询其账户余额。代售类客户的账户由合作伙伴拨款,所以可以查询到。",
+        "tags": [
+          "管理客户账户(伙伴)"
+        ],
+        "operationId": "ListCustomersBalancesDetail",
+        "x-externalURL": "/v2/accounts/customer-accounts/balances/batch-query",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-flowControl": 20,
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询客户账户余额请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QueryCustomersBalancesReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/accounts/customer-accounts/balances/batch-query",
+        "x-request-examples-1": {
+          "customer_infos": [
+            {
+              "customer_id": "0bb43f81c000d3a10f19c014228fb580"
+            }
+          ],
+          "indirect_partner_id": "0ba6fe16eb80d2390f54c01379e93740"
+        },
+        "responses": {
+          "200": {
+            "description": "查询客户账户余额响应",
+            "schema": {
+              "$ref": "#/definitions/QueryCustomersBalancesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "customer_balances": [
+                  {
+                    "customer_id": "05377f723980d4330f06c01929ec37a0",
+                    "debt_amount": 0,
+                    "amount": 1000.0,
+                    "currency": "CNY",
+                    "measure_id": 1
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理客户账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryCustomersBalancesRsp": {
+      "properties": {
+        "customer_balances": {
+          "description": "账户余额列表。只有成功的时候才返回。 此列表不包含非代售类子客户的数据。批量查询客户余额时,若入参携带了非代售类子客户,会被过滤。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerBalancesV2"
+          }
+        }
+      }
+    },
+    "CustomerBalancesV2": {
+      "required": [
+        "customer_id"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": ""
+        },
+        "debt_amount": {
+          "description": "客户欠款总额度。",
+          "type": "number",
+          "format": "bigdecimal"
+        },
+        "amount": {
+          "description": "客户可用总额度。",
+          "type": "number",
+          "format": "bigdecimal"
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币。",
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位: 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        }
+      }
+    },
+    "CustomerInfoV2": {
+      "required": [
+        "customer_id"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        }
+      }
+    },
+    "QueryCustomersBalancesReq": {
+      "required": [
+        "customer_infos"
+      ],
+      "properties": {
+        "customer_infos": {
+          "description": "客户信息列表。 具体请参见表1。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "x-maxLength": 100,
+          "x-minLength": 1,
+          "items": {
+            "$ref": "#/definitions/CustomerInfoV2"
+          }
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。  华为云总经销商(一级经销商)查询云经销商(二级经销商)子客户的账户余额时,需要携带该参数。除此之外,此参数不做处理。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "c9e731c4663646988ef4cdb3122837b6",
+          "x-site": "HC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

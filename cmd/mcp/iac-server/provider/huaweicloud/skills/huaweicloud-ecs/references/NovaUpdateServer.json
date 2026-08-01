@@ -1,0 +1,453 @@
+{
+  "name": "NovaUpdateServer",
+  "summary": "修改云服务器",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers/{server_id}": {
+      "put": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "修改云服务器",
+        "description": "修改云服务器信息,目前支持修改云服务器名称及描述。",
+        "operationId": "NovaUpdateServer",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/OpenStack-API-Version"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "NovaUpdateServerRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NovaUpdateServerRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "server": {
+                  "tenant_id": "7910a6e50b80402ba028c8d96c1b31fe",
+                  "image": "",
+                  "accessIPv4": "",
+                  "addresses": {
+                    "03be5c1e-e05d-4905-a105-c3bd9b730bdc": [
+                      {
+                        "addr": "192.168.0.72",
+                        "version": 4
+                      }
+                    ]
+                  },
+                  "metadata": {},
+                  "accessIPv6": "",
+                  "created": "2018-05-17T03:15:48Z",
+                  "hostId": "7dc82f6b1d406200fc63e395cf4829cbffcb49de0e9c75c5773f201f",
+                  "flavor": {
+                    "links": [
+                      {
+                        "rel": "bookmark",
+                        "href": "https://None/7910a6e50b80402ba028c8d96c1b31fe/flavors/c3.1U1G"
+                      }
+                    ],
+                    "id": "c3.1U1G"
+                  },
+                  "OS-DCF:diskConfig": "MANUAL",
+                  "user_id": "d698a78532ca430f8daec1858f2b500e",
+                  "name": "new-server-test",
+                  "progress": 0,
+                  "links": [
+                    {
+                      "rel": "self",
+                      "href": "https://None/v2/7910a6e50b80402ba028c8d96c1b31fe/servers/1a19ef4f-be0a-4526-bf2f-14b4464d536a"
+                    },
+                    {
+                      "rel": "bookmark",
+                      "href": "https://None/7910a6e50b80402ba028c8d96c1b31fe/servers/1a19ef4f-be0a-4526-bf2f-14b4464d536a"
+                    }
+                  ],
+                  "id": "1a19ef4f-be0a-4526-bf2f-14b4464d536a",
+                  "updated": "2018-05-21T00:36:27Z",
+                  "status": "ACTIVE"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaUpdateServerResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改云服务器",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v2.1/{project_id}/servers/{server_id}",
+        "x-request-examples-1": {
+          "server": {
+            "name": "new-server-test"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"server\": {\n        \"name\": \"new-server-test\"\n    }\n}",
+        "x-registered_to": "apicom",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "N",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaUpdateServerResponseBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "server": {
+          "description": "云服务器信息",
+          "$ref": "#/definitions/NovaUpdateServerResult"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaUpdateServerOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "test",
+          "description": "修改后的云服务器名称, 长度大于0小于256",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "example": "test server",
+          "description": "对虚拟机的任意描述,最大255字节。\n\n2.19版本新增",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": ""
+    },
+    "NovaServerFlavor": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云服务器类型ID。\n\n微版本2.47后不支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "links": {
+          "type": "array",
+          "description": "云服务器类型相关标记快捷链接信息。\n\n微版本2.47后不支持。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/NovaLink"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "vcpus": {
+          "type": "integer",
+          "format": "int32",
+          "description": "该云服务器规格对应的CPU核数。\n\n在微版本2.47后支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "ram": {
+          "type": "integer",
+          "format": "int32",
+          "description": "该云服务器规格对应的内存大小,单位为MB。\n\n在微版本2.47后支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "disk": {
+          "type": "integer",
+          "format": "int32",
+          "description": "该云服务器规格对应要求系统盘大小,0为不限制。\n\n在微版本2.47后支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "ephemeral": {
+          "type": "integer",
+          "format": "int32",
+          "description": "未使用。\n\n在微版本2.47后支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "swap": {
+          "type": "integer",
+          "format": "int32",
+          "description": "未使用。\n\n在微版本2.47后支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "original_name": {
+          "type": "string",
+          "description": "云服务器规格名称。\n\n在微版本2.47后支持。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "extra_specs": {
+          "type": "object",
+          "description": "flavor扩展字段。\n\n在微版本2.47后支持。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          },
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": " "
+    },
+    "NovaLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "有三种取值。self:自助链接包含版本链接的资源。立即链接后使用这些链接。bookmark:书签链接提供了一个永久资源的永久链接,该链接适合于长期存储。alternate:备用链接可以包含资源的替换表示形式。例如,OpenStack计算映像可能在OpenStack映像服务中有一个替代表示。",
+          "enum": [
+            "self",
+            "bookmark",
+            "alternate",
+            "describedby"
+          ]
+        }
+      },
+      "description": " "
+    },
+    "NovaNetworkResult": {
+      "required": [
+        "addr",
+        "version"
+      ],
+      "properties": {
+        "addr": {
+          "type": "string",
+          "description": "IP地址。"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "IP地址类型,值为4或6。\n\n4:IP地址类型是IPv4\n6:IP地址类型是IPv6"
+        }
+      },
+      "description": " "
+    },
+    "NovaUpdateServerRequestBody": {
+      "required": [
+        "server"
+      ],
+      "properties": {
+        "server": {
+          "description": "云服务器数据结构。",
+          "$ref": "#/definitions/NovaUpdateServerOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "NovaUpdateServerResult": {
+      "required": [
+        "accessIPv4",
+        "accessIPv6",
+        "addresses",
+        "created",
+        "flavor",
+        "hostId",
+        "id",
+        "image",
+        "links",
+        "metadata",
+        "name",
+        "progress",
+        "status",
+        "tags",
+        "tenant_id",
+        "updated",
+        "user_id"
+      ],
+      "properties": {
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID。"
+        },
+        "image": {
+          "type": "string",
+          "description": "镜像ID。"
+        },
+        "accessIPv4": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "accessIPv6": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云服务器元数据。",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "addresses": {
+          "type": "object",
+          "description": "云服务器对应的网络地址信息。",
+          "additionalProperties": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "description": "",
+              "$ref": "#/definitions/NovaNetworkResult"
+            }
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "created": {
+          "type": "string",
+          "description": "云服务器创建时间。"
+        },
+        "hostId": {
+          "type": "string",
+          "description": "云服务器对应的主机ID。"
+        },
+        "flavor": {
+          "description": "云服务器规格信息。",
+          "$ref": "#/definitions/NovaServerFlavor"
+        },
+        "OS-DCF:diskConfig": {
+          "type": "string",
+          "description": "扩展属性,磁盘配置方式。对镜像启动云服务器生效。"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "云服务器所属用户ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云服务器名称。"
+        },
+        "progress": {
+          "type": "integer",
+          "format": "int32",
+          "description": "预留属性"
+        },
+        "links": {
+          "type": "array",
+          "description": "云服务器相关标记快捷链接信息。",
+          "items": {
+            "$ref": "#/definitions/NovaLink"
+          }
+        },
+        "id": {
+          "type": "string",
+          "description": "云服务器唯一标识。"
+        },
+        "updated": {
+          "type": "string",
+          "example": "2019-05-22T03:19:19Z",
+          "description": "云服务器上一次更新时间。\n\n时间格式例如:2019-05-22T03:19:19Z"
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "\t\n当云服务器被锁时为True,否则为False。\n\n微版本2.9后支持"
+        },
+        "description": {
+          "type": "string",
+          "description": "\t\n弹性云服务器的描述信息。\n\n微版本2.19后支持"
+        },
+        "tags": {
+          "type": "array",
+          "description": "云服务器的标签列表。\n\n微版本2.26后支持,如果不使用微版本查询,响应中无tags字段。\n\n系统近期对标签功能进行了升级,升级后,返回的tag值遵循如下规则:\n\n- key与value使用“=”连接,如“key=value”。\n- 如果value为空字符串,则仅返回key。\n- key与value使用“=”连接,如“key=value”。\n- 如果value为空字符串,则仅返回key。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "云服务器当前状态信息。\n\n取值范围: ACTIVE, BUILD,DELETED,ERROR,HARD_REBOOT,MIGRATING,REBOOT,RESIZE,REVERT_RESIZE,SHELVED,SHELVED_OFFLOADED,SHUTOFF,UNKNOWN,VERIFY_RESIZE\n\n弹性云服务器状态说明请参考[云服务器状态](https://support.huaweicloud.com/api-ecs/ecs_08_0002.html)",
+          "enum": [
+            "ACTIVE",
+            "BUILD",
+            "DELETED",
+            "ERROR",
+            "HARD_REBOOT",
+            "MIGRATING",
+            "REBOOT",
+            "RESIZE",
+            "REVERT_RESIZE",
+            "SHELVED",
+            "SHELVED_OFFLOADED",
+            "SHUTOFF",
+            "UNKNOWN",
+            "VERIFY_RESIZE"
+          ]
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "OpenStack-API-Version": {
+      "name": "OpenStack-API-Version",
+      "in": "header",
+      "description": "微版本头",
+      "required": false,
+      "type": "string",
+      "x-example": "compute 2.60"
+    },
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

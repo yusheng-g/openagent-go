@@ -1,0 +1,171 @@
+{
+  "name": "StartResizeFlavorAction",
+  "summary": "变更数据库实例的规格",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/action": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "StartResizeFlavorAction",
+        "summary": "变更数据库实例的规格",
+        "description": "变更数据库实例的规格。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 需要变更的数据库实例规格不能与原数据库实例规格一样。\n- 实例状态仅为服务中时可以进行调整CPU/内存。\n- 只能变更相同类型数据库实例的规格。(例如,单实例只能变更为单实例对应的规格,不能变更为HA的规格)。\n- MySQL独享型本地盘不支持规格降配。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "ResizeFlavorRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResizeFlavorRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ResizeFlavorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "变更实例规格",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/action",
+        "x-request-examples-1": {
+          "resize_flavor": {
+            "spec_code": "rds.mysql.c2.medium"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResizeFlavorRequest": {
+      "description": "变更实例规格时必填。",
+      "required": [
+        "resize_flavor"
+      ],
+      "properties": {
+        "resize_flavor": {
+          "type": "object",
+          "$ref": "#/definitions/resizeFlavorObject"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "resizeFlavorObject": {
+      "required": [
+        "spec_code"
+      ],
+      "properties": {
+        "spec_code": {
+          "type": "string",
+          "description": "资源规格编码。例如:rds.mysql.m1.xlarge。其中,rds代表RDS产品,mysql代表数据库引擎,m1.xlarge代表性能规格,为高内存类型。带\"rr\"的表示只读实例规格,反之表示单实例和HA实例规格。",
+          "example": "rds.pg.c2.medium"
+        },
+        "is_auto_pay": {
+          "type": "boolean",
+          "description": "变更包周期实例的规格时可指定,表示是否自动从客户的账户中支付。\n- true,为自动支付。\n- false,为手动支付,默认该方式。",
+          "example": "true"
+        },
+        "is_delay": {
+          "type": "boolean",
+          "description": "是否定时变更。\n- true,为定时在运维时间窗做变更。\n- false,为立即变更,默认该方式。",
+          "example": "true"
+        }
+      }
+    },
+    "ResizeFlavorResponse": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "规格变更的任务id。\n仅规格变更按需实例时会返回该参数。",
+          "example": "dff1d289-4d03-4942-8b9f-463ea07c000d"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单号,规格变更包年包月时返回该参数。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

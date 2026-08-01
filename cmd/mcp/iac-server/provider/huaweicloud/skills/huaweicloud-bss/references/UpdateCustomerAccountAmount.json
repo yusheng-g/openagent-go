@@ -1,0 +1,129 @@
+{
+  "name": "UpdateCustomerAccountAmount",
+  "summary": "向客户账户拨款",
+  "tags": "管理客户账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/partner-accounts/adjust-amount": {
+      "post": {
+        "summary": "向客户账户拨款",
+        "description": "合作伙伴可以为代售类客户账户拨款。\n\n伙伴登录伙伴中心为代售类客户账户拨款请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0072435147.html)。",
+        "tags": [
+          "管理客户账户(伙伴)"
+        ],
+        "operationId": "UpdateCustomerAccountAmount",
+        "x-externalURL": "/v2/accounts/partner-accounts/adjust-amount",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-flowControl": 20,
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "向客户账户拨款请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdjustAccountReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/accounts/partner-accounts/adjust-amount",
+        "x-request-examples-1": {
+          "customer_id": "0666aa7a7900d5c80f6dc01a9a3598a0",
+          "amount": 10
+        },
+        "responses": {
+          "200": {
+            "description": "向客户账户拨款响应",
+            "schema": {
+              "$ref": "#/definitions/AdjustAccountRsp"
+            },
+            "examples": {
+              "application/json": {
+                "transfer_id": "AD2006170735030000ba"
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理客户账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AdjustAccountRsp": {
+      "required": [
+        "transfer_id"
+      ],
+      "properties": {
+        "transfer_id": {
+          "type": "string",
+          "description": "事务流水ID,只有成功响应才会返回。",
+          "example": ""
+        }
+      }
+    },
+    "AdjustAccountReq": {
+      "required": [
+        "customer_id",
+        "amount"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        },
+        "amount": {
+          "description": "拨款金额。 单位:元。取值大于0且精确到小数点后2位。 注意该值不能大于“查询伙伴账户余额”接口响应消息表2中参数amount - designated_amount的值。",
+          "type": "number",
+          "format": "bigdecimal",
+          "maximum": 2147483647,
+          "minimum": 0,
+          "x-allowNull": false,
+          "example": ""
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "example": "",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。 云经销商(二级经销商)给子客户拨款时,需携带该参数。除此之外,该参数不做处理。  说明: 该参数存在的情况下,如果结果返回余额不足,表示对应的二级经销商的余额不足。如果该参数不存在,则余额不足表示调用的伙伴自身账号的余额不足。",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-site": "HC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

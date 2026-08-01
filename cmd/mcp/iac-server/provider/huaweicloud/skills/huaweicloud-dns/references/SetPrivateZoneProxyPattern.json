@@ -1,0 +1,123 @@
+{
+  "name": "SetPrivateZoneProxyPattern",
+  "summary": "设置内网域名的子域名递归解析代理",
+  "tags": "内网域名管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/zones/{zone_id}/actions/set-proxy-pattern": {
+      "post": {
+        "tags": [
+          "内网域名管理"
+        ],
+        "x-request-examples-description-1": "设置内网域名的子域名递归解析代理,代理模式设置为RECURSIVE。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/zones/{zone_id}/actions/set-proxy-pattern",
+        "x-request-examples-1": {
+          "proxy_pattern": "RECURSIVE"
+        },
+        "operationId": "SetPrivateZoneProxyPattern",
+        "summary": "设置内网域名的子域名递归解析代理",
+        "description": "当您的内网域名创建成功后,您可以通过调用此接口设置开启或者关闭内网域名的子域名递归解析代理。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          },
+          {
+            "name": "SetPrivateZoneProxyPatternRequestBody",
+            "description": "设置内网域名的子域名递归解析代理请求。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetPrivateZoneProxyPatternRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "设置内网域名的子域名递归解析代理响应。"
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 9
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "SetPrivateZoneProxyPatternRequestBody": {
+      "required": [
+        "proxy_pattern"
+      ],
+      "properties": {
+        "proxy_pattern": {
+          "type": "string",
+          "description": "**参数解释:**\n内网域名的子域名递归解析代理模式。\n**约束限制:**\n不涉及。\n**取值范围:**\n- AUTHORITY:当前域名未开启递归解析代理\n- RECURSIVE:当前域名已开启递归解析代理\n\n**默认取值:**\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

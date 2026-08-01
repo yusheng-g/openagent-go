@@ -1,0 +1,447 @@
+{
+  "name": "NeutronCreateNetwork",
+  "summary": "创建网络",
+  "tags": "OpenStack - 网络",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/networks": {
+      "post": {
+        "tags": [
+          "OpenStack - 网络"
+        ],
+        "summary": "创建网络",
+        "description": "创建网络",
+        "operationId": "NeutronCreateNetwork",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "in": "body",
+            "name": "network",
+            "description": "创建network对象",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NeutronCreateNetworkRequestBody"
+            },
+            "x-order": 2,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "network": {
+                  "id": "6933326f-9389-4ef8-a1ee-d4bf8fc4e171",
+                  "name": "",
+                  "status": "ACTIVE",
+                  "shared": false,
+                  "subnets": [],
+                  "availability_zone_hints": [],
+                  "availability_zones": [
+                    "az1.dc1",
+                    "kvmxen.dc1",
+                    "dc2",
+                    "ceshishouqing"
+                  ],
+                  "admin_state_up": true,
+                  "tenant_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                  "project_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                  "provider:network_type": "vxlan",
+                  "router:external": false,
+                  "port_security_enabled": true,
+                  "dns_domain": "southchina.compute.internal.",
+                  "created_at": "2019-04-29T08:22:58",
+                  "updated_at": "2019-04-29T08:22:58"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NeutronNetworkResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建网络",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 84,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/networks",
+        "x-request-examples-1": {
+          "network": {
+            "name": "network-test",
+            "admin_state_up": true
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"network\": {\n\t\t\"name\": \"network-test\",\n\t\t\"admin_state_up\": true\n\t}\n}",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronNetworkResponseBody": {
+      "required": [
+        "network"
+      ],
+      "properties": {
+        "network": {
+          "description": "network对象",
+          "$ref": "#/definitions/NeutronNetwork",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronCreateNetworkOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:网络名称\n取值范围:0-255个字符\n约束:不能为admin_external_net",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:资源的管理状态\n取值范围:true、false\n约束:只支持true",
+          "default": true,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "shared": {
+          "type": "boolean",
+          "description": "功能说明:是否支持跨租户共享\n取值范围:true、false",
+          "default": false,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "provider:network_type": {
+          "type": "string",
+          "description": "功能说明:扩展属性:网络类型。管理员属性,普通租户不可见,允许 geneve类型租户执行操作。\n取值范围:vxlan, geneve",
+          "maxLength": 32,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "port_security_enabled": {
+          "type": "boolean",
+          "description": "功能说明:端口安全使能标记\n取值范围:true(启用)、false(禁用)\n约束:如果不使能,则network下所有虚机的安全组和dhcp防欺骗不生效",
+          "default": true,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": "创建network对象"
+    },
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronNetwork": {
+      "required": [
+        "admin_state_up",
+        "availability_zone_hints",
+        "availability_zones",
+        "created_at",
+        "dns_domain",
+        "id",
+        "name",
+        "port_security_enabled",
+        "project_id",
+        "provider:network_type",
+        "router:external",
+        "shared",
+        "status",
+        "subnets",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "网络ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:网络状态\n取值范围:ACTIVE,DOWN,BUILD或ERROR",
+          "enum": [
+            "ACTIVE",
+            "DOWN",
+            "BUILD",
+            "ERROR"
+          ],
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:网络名称\n取值范围:0-255个字符",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "subnets": {
+          "type": "array",
+          "description": "功能说明:网络关联的子网ID列表\n约束:一个network仅支持关联一个 subnet。",
+          "items": {
+            "type": "string"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "router:external": {
+          "type": "boolean",
+          "description": "功能说明:扩展属性,是否外部网络\n取值范围:true、false\n约束:不支持设置和更新",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:资源的管理状态\n取值范围:true、false\n约束:只支持true",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "shared": {
+          "type": "boolean",
+          "description": "功能说明:是否支持跨租户共享此资源\n取值范围:true(共享)、false(非共享)\n约束:不支持设置和更新",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 32,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "provider:network_type": {
+          "type": "string",
+          "description": "功能说明:扩展属性,网络类型(支持vxlan, geneve)\n取值范围:vxlan,geneve",
+          "minLength": 0,
+          "maxLength": 32,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "availability_zone_hints": {
+          "type": "array",
+          "description": "功能说明:本网络的候选可用域",
+          "items": {
+            "type": "string"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "availability_zones": {
+          "type": "array",
+          "description": "功能说明:本网络的可用域。\n取值范围:当前region下的可用域",
+          "items": {
+            "type": "string"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "port_security_enabled": {
+          "type": "boolean",
+          "description": "功能说明:端口安全使能标记\n取值范围:true(启用)、false(禁用)\n约束:如果不使能,则network下所有虚机的安全组和dhcp防欺骗不生效",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "dns_domain": {
+          "type": "string",
+          "description": "功能说明:默认内网DNS域地址\n约束:系统自动生成维护,不支持设置和更新",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 32,
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        }
+      },
+      "description": "network对象列表"
+    },
+    "NeutronCreateNetworkRequestBody": {
+      "required": [
+        "network"
+      ],
+      "properties": {
+        "network": {
+          "description": "network对象",
+          "$ref": "#/definitions/NeutronCreateNetworkOption",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

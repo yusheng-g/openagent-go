@@ -1,0 +1,183 @@
+{
+  "name": "ListSystemSecurityPolicies",
+  "summary": "查询系统安全策略列表",
+  "tags": "安全策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/system-security-policies": {
+      "get": {
+        "tags": [
+          "安全策略"
+        ],
+        "summary": "查询系统安全策略列表",
+        "description": "查询系统安全策略列表。\n\n系统安全策略为预置的所有租户通用的安全策略,租户不可新增或修改。",
+        "operationId": "ListSystemSecurityPolicies",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "fa83d976-e617-4a96-9a43-5bdb33011f30",
+                "system_security_policies": [
+                  {
+                    "name": "tls-1-0",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2 TLSv1.1 TLSv1",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA"
+                  },
+                  {
+                    "name": "tls-1-0-inherit",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2 TLSv1.1 TLSv1",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA:DHE-DSS-AES128-SHA:CAMELLIA128-SHA:EDH-RSA-DES-CBC3-SHA:DES-CBC3-SHA:ECDHE-RSA-RC4-SHA:RC4-SHA:DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:DHE-RSA-CAMELLIA256-SHA:DHE-DSS-CAMELLIA256-SHA:CAMELLIA256-SHA:EDH-DSS-DES-CBC3-SHA:DHE-RSA-CAMELLIA128-SHA:DHE-DSS-CAMELLIA128-SHA"
+                  },
+                  {
+                    "name": "tls-1-1",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2 TLSv1.1",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA"
+                  },
+                  {
+                    "name": "tls-1-2",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA"
+                  },
+                  {
+                    "name": "tls-1-2-strict",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384"
+                  },
+                  {
+                    "name": "tls-1-2-fs",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384"
+                  },
+                  {
+                    "name": "tls-1-0-with-1-3",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.3 TLSv1.2 TLSv1.1 TLSv1",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256:TLS_AES_128_CCM_8_SHA256"
+                  },
+                  {
+                    "name": "tls-1-2-fs-with-1-3",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.3 TLSv1.2",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_CCM_SHA256:TLS_AES_128_CCM_8_SHA256"
+                  },
+                  {
+                    "name": "hybrid-policy-1-0",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2 TLSv1.1",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:AES128-GCM-SHA256:AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:AES128-SHA256:AES256-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:AES128-SHA:AES256-SHA"
+                  },
+                  {
+                    "name": "tls-1-2-strict-no-cbc",
+                    "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                    "protocols": "TLSv1.2",
+                    "ciphers": "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListSystemSecurityPoliciesResponseBody"
+            }
+          }
+        },
+        "x-name": "查询系统安全策略列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-request-examples-description-1": "查询系统安全策略列表",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/7a9941d34fc1497d8d0797429ecfd354/elb/system-security-policies",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ListSystemSecurityPoliciesResponseBody": {
+      "properties": {
+        "system_security_policies": {
+          "description": "**参数解释**:系统安全策略列表。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SystemSecurityPolicy"
+          }
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "required": [
+        "system_security_policies",
+        "request_id"
+      ]
+    },
+    "SystemSecurityPolicy": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:系统安全策略的名称。\n\n**取值范围**:不涉及"
+        },
+        "protocols": {
+          "type": "string",
+          "description": "**参数解释**:系统安全策略的TLS协议列表。\n\n**取值范围**:不涉及"
+        },
+        "ciphers": {
+          "type": "string",
+          "description": "**参数解释**:系统安全策略的加密套件列表。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。"
+        }
+      },
+      "required": [
+        "name",
+        "protocols",
+        "ciphers",
+        "project_id"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

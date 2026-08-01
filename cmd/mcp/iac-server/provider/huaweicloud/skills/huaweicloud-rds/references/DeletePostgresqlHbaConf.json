@@ -1,0 +1,156 @@
+{
+  "name": "DeletePostgresqlHbaConf",
+  "summary": "删除pg_hba.conf文件的单个或多个配置",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/hba-info": {
+      "delete": {
+        "x-file": "Y",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/e28979107ed04d3b8b2f1b819b8d2be3in03/hba-info",
+        "x-request-examples-text-1": [
+          {
+            "type": "host",
+            "database": "all",
+            "user": "all",
+            "address": "0.0.0.0/0",
+            "mask": "",
+            "method": "md5",
+            "priority": 0
+          }
+        ],
+        "x-request-examples-1": [
+          {
+            "type": "host",
+            "database": "all",
+            "user": "all",
+            "address": "0.0.0.0/0",
+            "mask": "",
+            "method": "md5",
+            "priority": 0
+          }
+        ],
+        "tags": [
+          "实例管理"
+        ],
+        "description": "删除pg_hba.conf文件的单个或多个配置,以priority做唯一标识",
+        "summary": "删除pg_hba.conf文件的单个或多个配置",
+        "operationId": "DeletePostgresqlHbaConf",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "DeletePostgresqlHbaConfRequestBody",
+            "in": "body",
+            "required": false,
+            "description": "修改参数",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PostgresqlHbaConf"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "examples": {
+              "application/json": {
+                "code": 0,
+                "message": ""
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/PostgresqlCommonResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PostgresqlCommonResponse": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "结果码"
+        },
+        "message": {
+          "type": "string",
+          "description": "结果描述"
+        }
+      }
+    },
+    "PostgresqlHbaConf": {
+      "type": "object",
+      "required": [
+        "type",
+        "database",
+        "user",
+        "address",
+        "method",
+        "priority"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "连接类型,枚举,host、hostssl、hostnossl"
+        },
+        "database": {
+          "type": "string",
+          "description": "数据库名,除template0,template1的数据库名,多个以逗号隔开"
+        },
+        "user": {
+          "type": "string",
+          "description": "用户名,all,除内置用户(rdsAdmin, rdsMetric, rdsBackup, rdsRepl, rdsProxy)以外,多个以逗号隔开"
+        },
+        "address": {
+          "type": "string",
+          "description": "客户端IP地址。0.0.0.0/0表示允许用户从任意IP地址访问数据库"
+        },
+        "mask": {
+          "type": "string",
+          "description": "掩码,默认为空字符串"
+        },
+        "method": {
+          "type": "string",
+          "description": "认证方式。枚举:reject、md5、scram-sha-256"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "优先级,表示配置的先后"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

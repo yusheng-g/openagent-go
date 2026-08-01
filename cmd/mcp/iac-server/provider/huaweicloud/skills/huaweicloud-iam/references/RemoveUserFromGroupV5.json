@@ -1,0 +1,84 @@
+{
+  "name": "RemoveUserFromGroupV5",
+  "summary": "移除用户组中的IAM用户",
+  "tags": "用户组管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/groups/{group_id}/remove-user": {
+      "post": {
+        "tags": [
+          "Group"
+        ],
+        "operationId": "RemoveUserFromGroupV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "移除用户组中的IAM用户",
+        "description": "该接口可以用于移除用户组中的IAM用户。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GroupId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The ID of the user to be removed from the group.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveUserFromGroupReqBody"
+              },
+              "example": {
+                "user_id": "xxx"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "移除指定用户组中的IAM用户xxx。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v5/groups/{group_id}/remove-user",
+        "x-request-examples-1": {
+          "user_id": "xxx"
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。"
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "post",
+  "uri": null
+}

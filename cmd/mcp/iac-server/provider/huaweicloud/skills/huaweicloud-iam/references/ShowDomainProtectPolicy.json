@@ -1,0 +1,239 @@
+{
+  "name": "ShowDomainProtectPolicy",
+  "summary": "查询账号操作保护策略",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/protect-policy": {
+      "get": {
+        "tags": [
+          "安全设置"
+        ],
+        "summary": "查询账号操作保护策略",
+        "description": "该接口可以用于查询账号操作保护策略。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ShowDomainProtectPolicy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "待查询的账号ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "protect_policy": {
+                  "allow_user": {
+                    "manage_mobile": false,
+                    "manage_accesskey": false,
+                    "manage_email": false,
+                    "manage_password": false
+                  },
+                  "operation_protection": false,
+                  "mobile": "",
+                  "admin_check": "off",
+                  "email": "",
+                  "scene": ""
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowDomainProtectPolicyResponseBody"
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error_msg": "You are not authorized to perform the requested action.",
+                "error_code": "IAM.0002"
+              },
+              "application/json-1": {
+                "error_msg": "Policy doesn't allow %(actions)s to be performed.",
+                "error_code": "IAM.0003"
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "examples": {
+              "application/json": {
+                "error_msg": "Could not find %(target)s: %(target_id)s.",
+                "error_code": "IAM.0004"
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务错误。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询账号操作保护策略",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 11,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/protect-policy",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/protect-policy",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0004",
+            "httpStatus": "404",
+            "errorMessage": "Could not find %(target)s: %(target_id)s.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AllowUserBody": {
+      "properties": {
+        "manage_accesskey": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否允许子用户自行管理AK,取值范围true或false。"
+        },
+        "manage_email": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否允许子用户自己修改邮箱,取值范围true或false。"
+        },
+        "manage_mobile": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否允许子用户自己修改电话,取值范围true或false。"
+        },
+        "manage_password": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否允许子用户自己修改密码,取值范围true或false。"
+        }
+      },
+      "description": "用户可以自主修改的属性。"
+    },
+    "ShowDomainProtectPolicyResponseBody": {
+      "required": [
+        "protect_policy"
+      ],
+      "properties": {
+        "protect_policy": {
+          "required": [
+            "allow_user",
+            "operation_protection",
+            "mobile",
+            "admin_check",
+            "email",
+            "scene"
+          ],
+          "properties": {
+            "allow_user": {
+              "$ref": "#/definitions/AllowUserBody"
+            },
+            "operation_protection": {
+              "type": "boolean",
+              "example": false,
+              "description": "是否开启操作保护,取值范围true或false。"
+            },
+            "mobile": {
+              "type": "string",
+              "description": "操作保护验证指定手机号码。示例:0086-123456789。"
+            },
+            "admin_check": {
+              "type": "string",
+              "example": "off",
+              "description": "是否指定人员验证。on为指定人员验证,必须填写scene参数。off为操作员验证。"
+            },
+            "email": {
+              "type": "string",
+              "description": "操作保护验证指定邮件地址。示例:example@email.com。"
+            },
+            "scene": {
+              "type": "string",
+              "description": "操作保护指定人员验证方式,admin_check为on时,必须填写。包括mobile、email。"
+            }
+          },
+          "description": "操作保护策略。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

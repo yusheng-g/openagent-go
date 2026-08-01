@@ -1,0 +1,198 @@
+{
+  "name": "ListInspectionHistories",
+  "summary": "查询实例大版本升级检查历史",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/major-version/inspection-histories": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口仅支持PostgreSQL引擎。 - 实例在创建、变更规格、修改端口、冻结、异常等状态下不能执行该操作。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/3aa441c4c98a4b36b100a7e3e87d17cein03/major-version/inspection-histories?offset=0&limit=10",
+        "tags": [
+          "实例管理"
+        ],
+        "description": "查询实例大版本升级检查历史。",
+        "operationId": "ListInspectionHistories",
+        "summary": "查询实例大版本升级检查历史",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询记录数。默认为10,不能为负数,最小值为1,最大值为100。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "排序方式。\nDESC,降序。\nASC,升序。\n默认降序。",
+            "type": "string"
+          },
+          {
+            "name": "sort_field",
+            "in": "query",
+            "required": false,
+            "description": "排序字段。\ncheck_time 检查时间。\nexpiration_time 过期时间。\n默认检查时间。",
+            "type": "string"
+          },
+          {
+            "name": "target_version",
+            "in": "query",
+            "required": false,
+            "description": "目标版本。",
+            "type": "string"
+          },
+          {
+            "name": "is_available",
+            "in": "query",
+            "required": false,
+            "description": "是否有效。\ntrue 表示有效。\nfalse 表示无效。",
+            "type": "boolean"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/PostgresqlQueryInspectionHistoryResponse"
+            },
+            "examples": {
+              "application/json": "{\n\t\"total_count\": 1,\n\t\"inspection_reports\": [\n\t\t{\n\t\t\t\"id\": \"289903e1-3006-19e9-e054-5fb7fe376552\",\n\t\t\t\"check_time\": \"2023-03-06T02:33:49+0800\",\n\t\t\t\"expiration_time\": \"2023-03-07T02:33:49+0800\",\n\t\t\t\"target_version\": \"14.4\",\t\n\t\t\t\"result \": \"success\",\n\t\t\t\"detail\": \"2023-03-06 18:33:26 --- pg_upgrade check task \t\t\t\t begin\\n2023-03-06 18:34:40 --- pg_upgrade check on master: \t\t\t [user_check_report]User check success\"\n\t\t}\n\t]\n}"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "inspectionReports": {
+      "type": "object",
+      "required": [
+        "id",
+        "check_time",
+        "expiration_time",
+        "target_version",
+        "result",
+        "detail"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "检查报告ID。"
+        },
+        "check_time": {
+          "type": "string",
+          "description": "检查时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如偏移1个小时显示为+0100。"
+        },
+        "expiration_time": {
+          "type": "string",
+          "description": "到期时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如偏移1个小时显示为+0100。"
+        },
+        "target_version": {
+          "type": "string",
+          "description": "目标版本。"
+        },
+        "result": {
+          "type": "string",
+          "description": "检查结果。\nsuccess,表示成功。\nfailed,表示失败。\nrunning, 表示检查中。"
+        },
+        "detail": {
+          "type": "string",
+          "description": "检查报告详情。"
+        }
+      }
+    },
+    "PostgresqlQueryInspectionHistoryResponse": {
+      "type": "object",
+      "required": [
+        "total_count",
+        "inspection_reports"
+      ],
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "总记录数。"
+        },
+        "inspection_reports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/inspectionReports"
+          },
+          "description": "检查报告信息。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

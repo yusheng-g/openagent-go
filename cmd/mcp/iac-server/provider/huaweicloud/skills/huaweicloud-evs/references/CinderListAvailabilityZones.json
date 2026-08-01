@@ -1,0 +1,171 @@
+{
+  "name": "CinderListAvailabilityZones",
+  "summary": "查询所有的可用分区信息",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/os-availability-zone": {
+      "get": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "查询所有的可用分区信息",
+        "description": "查询所有的可用分区信息。",
+        "operationId": "CinderListAvailabilityZones",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "可用分区的信息。",
+            "examples": {
+              "application/json": {
+                "availabilityZoneInfo": [
+                  {
+                    "zoneState": {
+                      "available": true
+                    },
+                    "zoneName": "az-dc-1"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CinderListAvailabilityZonesResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询所有的可用分区信息",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/{project_id}/os-availability-zone",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2017/5/30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ZoneState": {
+      "properties": {
+        "available": {
+          "type": "boolean",
+          "description": "可用分区是否可用。"
+        }
+      },
+      "description": "可用分区的状态。"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "CinderListAvailabilityZonesResponseBody": {
+      "required": [
+        "availabilityZoneInfo"
+      ],
+      "properties": {
+        "availabilityZoneInfo": {
+          "type": "array",
+          "description": "查询请求返回的可用分区列表,请参见• [availabilityZoneInfo参数说明](https://support.huaweicloud.com/api-evs/evs_04_2081.html#evs_04_2081__li19751007201910)。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AzInfo"
+          }
+        }
+      },
+      "description": ""
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "AzInfo": {
+      "required": [
+        "zoneName",
+        "zoneState"
+      ],
+      "properties": {
+        "zoneName": {
+          "type": "string",
+          "description": "可用分区的名字。"
+        },
+        "zoneState": {
+          "description": "可用分区的状态,请参见•[zoneState参数说明](https://support.huaweicloud.com/api-evs/evs_04_2081.html#evs_04_2081__li11149334112511)。",
+          "$ref": "#/definitions/ZoneState"
+        }
+      },
+      "description": "一个az对象"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,175 @@
+{
+  "name": "NovaListVersions",
+  "summary": "查询API版本信息列表",
+  "tags": "查询API版本信息",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "查询API版本信息"
+        ],
+        "summary": "查询API版本信息列表",
+        "description": "返回Nova当前所有可用的版本。\n\n为了支持功能不断扩展,Nova API支持版本号区分。Nova中有两种形式的版本号:\n\n- \"主版本号\": 具有独立的url。\n- \"微版本号\": 通过Http请求头X-OpenStack-Nova-API-Version来使用,从2.27版本后更改为OpenStack-API-Version。",
+        "operationId": "NovaListVersions",
+        "consumes": [],
+        "produces": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "versions": [
+                  {
+                    "min_version": "",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "href": "https://ecs.cn-north-1.myhuaweicloud.com/v2/"
+                      }
+                    ],
+                    "id": "v2.0",
+                    "updated": "2011-01-21T11:33:21Z",
+                    "version": "",
+                    "status": "SUPPORTED"
+                  },
+                  {
+                    "min_version": "2.1",
+                    "links": [
+                      {
+                        "rel": "self",
+                        "href": "https://ecs.cn-north-1.myhuaweicloud.com/v2.1/"
+                      }
+                    ],
+                    "id": "v2.1",
+                    "updated": "2013-07-23T11:33:21Z",
+                    "version": "2.60",
+                    "status": "CURRENT"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaListVersionsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询API版本信息列表",
+        "x-constraint": "无",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/",
+        "x-request-examples-text-1": "GET https://{endpoint}/",
+        "x-registered_to": "apicom",
+        "x-api_level": "2",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "相应资源的链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "有三种取值。self:自助链接包含版本链接的资源。立即链接后使用这些链接。bookmark:书签链接提供了一个永久资源的永久链接,该链接适合于长期存储。alternate:备用链接可以包含资源的替换表示形式。例如,OpenStack计算映像可能在OpenStack映像服务中有一个替代表示。",
+          "enum": [
+            "self",
+            "bookmark",
+            "alternate",
+            "describedby"
+          ]
+        }
+      },
+      "description": " "
+    },
+    "NovaListVersionsResponseBody": {
+      "required": [
+        "versions"
+      ],
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "API版本信息列表",
+          "items": {
+            "$ref": "#/definitions/NovaVersion"
+          },
+          "x-admin": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaVersion": {
+      "required": [
+        "id",
+        "links",
+        "min_version",
+        "status",
+        "updated",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "所讨论的版本的通用名称。仅仅是信息性的,它没有真正的语义。"
+        },
+        "links": {
+          "type": "array",
+          "description": "版本相关标记快捷链接信息。",
+          "items": {
+            "$ref": "#/definitions/NovaLink"
+          }
+        },
+        "min_version": {
+          "type": "string",
+          "description": "如果API的这个版本支持微版本,则支持最小的微版本。如果不支持微版本,这将是空字符串。"
+        },
+        "status": {
+          "type": "string",
+          "description": "这个是API版本的状态。可以是:\n\n- CURRENT,这是使用的API的首选版本\n- SUPPORTED,这是一个较老的,但仍然支持的API版本\n- DEPRECATED,一个被废弃的API版本,该版本将被删除",
+          "enum": [
+            "CURRENT",
+            "SUPPORTED",
+            "DEPRECATED"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "如果API的这个版本支持微版本,则支持最大的微版本。如果不支持微版本,这将是空字符串。"
+        },
+        "updated": {
+          "type": "string",
+          "description": "一个有特定值的字符串。API版本为2.0时,值为'2011-01-21T11:33:21Z',API版本是2.1时,值为' 2013-07-23T11:33:21Z'。"
+        }
+      },
+      "description": " "
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

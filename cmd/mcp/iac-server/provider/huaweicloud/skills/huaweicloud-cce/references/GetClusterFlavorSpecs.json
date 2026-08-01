@@ -1,0 +1,179 @@
+{
+  "name": "GetClusterFlavorSpecs",
+  "summary": "查询集群可售卖规格",
+  "tags": "集群管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v2/flavor/specifications": {
+      "get": {
+        "tags": [
+          "集群管理"
+        ],
+        "summary": "查询集群可售卖规格",
+        "description": "该API用于查询集群可售卖规格\n> 集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。",
+        "operationId": "GetClusterFlavorSpecs",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "clusterType",
+            "in": "query",
+            "required": true,
+            "description": "**参数解释**:\n该参数用于按集群架构查询可售卖规格\n**取值范围**:\n- VirtualMachine: CCE集群\n- ARM64: 鲲鹏集群",
+            "type": "string",
+            "enum": [
+              "VirtualMachine",
+              "ARM64"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取集群可售卖规格成功。",
+            "schema": {
+              "$ref": "#/definitions/GetClusterFlavorSpecsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "clusterFlavorSpecs": [
+                  {
+                    "name": "cce.s2.large",
+                    "nodeCapacity": 1000,
+                    "availableMasterFlavors": [
+                      {
+                        "name": "ac6.4xlarge.2",
+                        "azs": [
+                          "az1",
+                          "az2"
+                        ],
+                        "azFaultDomains": {
+                          "az1": [
+                            "FD1",
+                            "FD2"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-name": "查询集群规格",
+        "x-publishpath": "GetClusterFlavorSpecs",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "MasterFlavorSpec": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n控制节点规格\n**取值范围**:\n不涉及"
+        },
+        "azs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**:\n控制节点支持的可用区"
+        },
+        "azFaultDomains": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "**参数解释**:\n控制节点所在可用区支持的故障域"
+        }
+      }
+    },
+    "GetClusterFlavorSpecsResponseBody": {
+      "type": "object",
+      "description": "**参数解释**:\n查询集群可售卖规格返回内容详情",
+      "properties": {
+        "clusterFlavorSpecs": {
+          "$ref": "#/definitions/ClusterFlavorSpecification"
+        }
+      }
+    },
+    "ClusterFlavorSpecification": {
+      "type": "object",
+      "description": "**参数解释**:\n集群可售卖规格详情",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n规格名称\n**取值范围**:\n- cce.s1.small: 小规模单控制节点CCE集群(最大50节点)\n- cce.s1.medium: 中等规模单控制节点CCE集群(最大200节点)\n- cce.s2.small: 小规模三控制节点CCE集群(最大50节点)\n- cce.s2.medium: 中等规模三控制节点CCE集群(最大200节点)\n- cce.s2.large: 大规模三控制节点CCE集群(最大1000节点)\n- cce.s2.xlarge: 超大规模三控制节点CCE集群(最大2000节点)\n\n\n\n\n\n专属云特殊规格如下:\n- cce.dec.s1.small: 小规模单控制节点的专属云CCE集群(最大50节点)\n- cce.dec.s1.medium: 中等规模单控制节点的专属云CCE集群(最大200节点)\n- cce.dec.s1.large: 大规模单控制节点的专属云CCE集群(最大1000节点)\n- cce.dec.s1.xlarge: 超大规模单控制节点的专属云CCE集群(最大2000节点)\n- cce.dec.s2.small: 小规模三控制节点的专属云CCE集群(最大50节点)\n- cce.dec.s2.medium: 中等规模三控制节点的专属云CCE集群(最大200节点)\n- cce.dec.s2.large: 大规模三控制节点的专属云CCE集群(最大1000节点)\n- cce.dec.s2.xlarge: 超大规模三控制节点的专属云CCE集群(最大2000节点)"
+        },
+        "nodeCapacity": {
+          "type": "integer",
+          "description": "**参数解释**:\n集群节点规模\n**取值范围**:\n- 50: 最大支持50节点\n- 200: 最大支持200节点\n- 100: 最大支持1000节点\n- 2000: 最大支持2000节点",
+          "enum": [
+            50,
+            200,
+            1000,
+            2000
+          ]
+        },
+        "availableMasterFlavors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MasterFlavorSpec"
+          },
+          "description": "**参数解释**:\n控制节点详情"
+        },
+        "isSoldOut": {
+          "type": "boolean",
+          "description": "**参数解释**:\n集群规格是否售罄\n**取值范围**:\n不涉及"
+        },
+        "isSupportMultiAZ": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否支持控制节点多可用区分布\n**取值范围**:\n不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

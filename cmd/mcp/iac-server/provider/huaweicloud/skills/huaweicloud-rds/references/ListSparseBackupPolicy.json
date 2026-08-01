@@ -1,0 +1,139 @@
+{
+  "name": "ListSparseBackupPolicy",
+  "summary": "查询稀疏备份策略",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/backups/sparse-policy": {
+      "get": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListSparseBackupPolicy",
+        "summary": "查询稀疏备份策略",
+        "description": "查询稀疏备份策略",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "x-api-type": "open-api",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n实例ID,此参数是实例的唯一标识。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n只能由英文字母、数字组成,长度为36个字符。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询稀疏备份策略的返回体",
+            "schema": {
+              "$ref": "#/definitions/ListSparseBackupPolicyResp"
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname."
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SparseBackupPolicy": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "参数解释:\n\n备份策略ID。\n\n取值范围:\n\n不涉及。",
+          "example": "58224169-73f0-466f-99e9-5760ed7ace7e"
+        },
+        "period": {
+          "type": "string",
+          "description": "参数解释:\n\n备份周期配置。\n\n取值范围:\n\n格式为“日期 月份 星期”形式的Cron表达式,时区为UTC时区。\n日期支持范围为1~31、特殊字符*(表示任意值)、特殊字符L(表示最后一天)。填写1~31或L时支持填写多个,以逗号隔开。\n月份支持范围为1~12、特殊字符*(表示任意值)。\n星期支持范围为1~7(1表示星期一,2表示星期二,依次类推)、特殊字符*(表示任意值)。填写1~7数字时支持填写多个,以逗号隔开。",
+          "example": "* * 1,2,3,4,5,6,7"
+        },
+        "keep_days": {
+          "type": "integer",
+          "description": "参数解释:\n\n备份文件可以保存的天数。\n\n取值范围:\n\n1~3660。",
+          "example": 7
+        },
+        "start_time": {
+          "type": "string",
+          "description": "参数解释:\n\n全量备份时间段。自动备份将在该时间段内触发。\n\n取值范围:\n\n格式为hh:mm-HH:MM,为UTC时间。\nHH的值比hh大1。\nmm和MM的值相同,且取值必须为00。",
+          "example": "08:15-09:15"
+        }
+      }
+    },
+    "ListSparseBackupPolicyResp": {
+      "type": "object",
+      "properties": {
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SparseBackupPolicy"
+          },
+          "description": "备份策略集"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

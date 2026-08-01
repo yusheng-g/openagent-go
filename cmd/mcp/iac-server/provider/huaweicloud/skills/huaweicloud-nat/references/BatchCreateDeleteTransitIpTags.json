@@ -1,0 +1,221 @@
+{
+  "name": "BatchCreateDeleteTransitIpTags",
+  "summary": "批量添加删除中转IP标签",
+  "tags": "中转IP标签管理",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/transit-ips/{resource_id}/tags/action": {
+      "post": {
+        "tags": [
+          "中转IP标签管理"
+        ],
+        "summary": "批量添加删除中转IP标签",
+        "description": "- 为指定中转IP实例批量添加或删除标签\n- 标签管理服务需要使用该接口批量管理中转IP实例的标签。\n- 一个中转IP上最多有10个标签。",
+        "operationId": "BatchCreateDeleteTransitIpTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 32
+          },
+          {
+            "name": "resource_id",
+            "in": "path",
+            "description": "中转IP的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 4,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "in": "body",
+            "name": "BatchCreateDeleteTransitIpTagsRequestBody",
+            "description": "批量添加删除中转IP的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchOperateResourceTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "批量添加或删除操作成功。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量添加删除中转IP标签",
+        "x-constraint": "此接口为幂等接口:\n- 创建时如果请求体中存在重复key则报错。\n- 创建时,不允许设置重复key数据,如果数据库已存在该key,就覆盖value的值。\n- 删除时,如果删除的标签不存在,默认处理成功,删除时不对标签字符集范围做校验。\n- 删除时tags结构体不能缺失,key不能为空,或者空字符串。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "批量添加中转IP标签。",
+        "x-request-examples-url-1": "POST  https://{Endpoint}/v3/cfa563efb77d4b6d9960781d82530fd8/transit-ips/56121618-fb0a-4a51-aff0-e2eb9cba4c73/tags/action",
+        "x-request-examples-1": {
+          "action": "create",
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value2"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n\t\"action\": \"create\",\n\t\"tags\": [{\n\t\t\t\"key\": \"key1\",\n\t\t\t\"value\": \"value1\"\n\t\t},\n\t\t {\n\t\t\t\"key\": \"key2\",\n\t\t\t\"value\": \"value2\"\n\t\t}\n\t]\n}\n",
+        "x-request-examples-description-2": "批量删除中转IP标签。",
+        "x-request-examples-url-2": "POST  https://{Endpoint}/v3/cfa563efb77d4b6d9960781d82530fd8/transit-ips/56121618-fb0a-4a51-aff0-e2eb9cba4c73/tags/action",
+        "x-request-examples-2": {
+          "action": "delete",
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            },
+            {
+              "key": "key2",
+              "value": "value2"
+            }
+          ]
+        },
+        "x-request-examples-text-2": "{\n\t\"action\": \"delete\",\n\t\"tags\": [{\n\t\t\t\"key\": \"key1\"\n\t\t,\n\t\t\t\"value\": \"value1\"\n\t\t},\n\t\t{\n\t\t\t\"key\": \"key2\",\n\t\t\t\"value\": \"value2\"\n\t\t}\n\t]\n}",
+        "x-obc": "Y",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "400",
+            "httpStatus": "400",
+            "errorMessage": "",
+            "errorDescription": "Bad Request",
+            "solution": "",
+            "errorDescriptionEn": "Bad Request",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "401",
+            "httpStatus": "401",
+            "errorMessage": "",
+            "errorDescription": "Unauthorized",
+            "solution": "",
+            "errorDescriptionEn": "Unauthorized",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "403",
+            "httpStatus": "403",
+            "errorMessage": "",
+            "errorDescription": "Forbidden",
+            "solution": "",
+            "errorDescriptionEn": "Forbidden",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "404",
+            "httpStatus": "404",
+            "errorMessage": "",
+            "errorDescription": "Not Found",
+            "solution": "",
+            "errorDescriptionEn": "Not Found",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "500",
+            "httpStatus": "500",
+            "errorMessage": "",
+            "errorDescription": "Internal Server Error",
+            "solution": "",
+            "errorDescriptionEn": "Internal Server Error",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "BatchOperateResourceTagsRequestBody": {
+      "required": [
+        "action",
+        "tags"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "功能说明:操作标识。\n取值范围:\n- create:创建\n- delete:删除",
+          "enum": [
+            "create",
+            "delete"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Tag"
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "批量添加删除的请求体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

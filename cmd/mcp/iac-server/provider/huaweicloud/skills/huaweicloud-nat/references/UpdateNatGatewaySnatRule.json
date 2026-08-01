@@ -1,0 +1,293 @@
+{
+  "name": "UpdateNatGatewaySnatRule",
+  "summary": "更新SNAT规则",
+  "tags": "公网SNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/snat_rules/{snat_rule_id}": {
+      "put": {
+        "tags": [
+          "公网SNAT规则"
+        ],
+        "summary": "更新SNAT规则",
+        "description": "更新指定的SNAT规则。",
+        "operationId": "UpdateNatGatewaySnatRule",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36,
+            "description": "项目的ID。",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10240,
+            "x-order": 2
+          },
+          {
+            "name": "snat_rule_id",
+            "in": "path",
+            "description": "SNAT规则的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "UpdateNatGatewaySnatRuleRequestBody",
+            "in": "body",
+            "description": "更新SNAT规则的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateNatGatewaySnatRuleRequestOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PUT操作正常返回。",
+            "examples": {
+              "application/json": {
+                "snat_rule": {
+                  "floating_ip_id": " bdc10a4c-d81a-41ec-adf7-de857f7c812a,7a094014-9657-463f-972b-e84d56b931a0",
+                  "status": "PENDING_CREATE",
+                  "nat_gateway_id": "bbe7c2e7-3bad-445b-a067-b30acce66053",
+                  "admin_state_up": true,
+                  "network_id": "eaad9cd6-2372-4be1-9535-9bd37210ae7b",
+                  "source_type": 0,
+                  "tenant_id": "27e25061336f4af590faeabeb7fcd9a3",
+                  "created_at": "2017-11-18 07:54:21.665430",
+                  "id": "5b95c675-69c2-4656-ba06-58ff72e1d338",
+                  "public_ip_address": "10.15.10.11,10.15.10.12",
+                  "floating_ip_address": "10.15.10.11,10.15.10.12",
+                  "description": "my_snat_rule_update"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateNatGatewaySnatResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新SNAT规则",
+        "x-constraint": "更新弹性公网IP的id时,要求SNAT规则状态status = ACTIVE,要求网关管理员状态admin_state_up = True。\n更新描述时,要求SNAT规则状态status = ACTIVE,要求网关管理员状态admin_state_up = True。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "SNAT规则更新的请求体。",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v2/27e25061336f4af590faeabeb7fcd9a3/snat_rules/5b95c675-69c2-4656-ba06-58ff72e1d338 ",
+        "x-request-examples-1": {
+          "snat_rule": {
+            "description": "my_snat_rule_update",
+            "nat_gateway_id": "bbe7c2e7-3bad-445b-a067-b30acce66053"
+          }
+        },
+        "x-request-examples-text-1": "{ \n    \"snat_rule\": { \n        \"nat_gateway_id\": \"bbe7c2e7-3bad-445b-a067-b30acce66053\", \n        \"description\": \"my_snat_rule_update\", \n        \"public_ip_address\": \"10.15.10.11,10.15.10.12\" \n    } \n}\n",
+        "x-obc": "N",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NatGatewayUpdateSnatRuleResponseBody": {
+      "required": [
+        "admin_state_up",
+        "created_at",
+        "description",
+        "floating_ip_address",
+        "floating_ip_id",
+        "public_ip_address",
+        "id",
+        "nat_gateway_id",
+        "cidr",
+        "network_id",
+        "source_type",
+        "status",
+        "tenant_id",
+        "global_eip_id",
+        "global_eip_address"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "nat_gateway_id": {
+          "type": "string",
+          "description": "公网NAT网关实例的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "source_type": {
+          "type": "integer",
+          "format": "int32",
+          "description": "资源类型。\n取值范围:\n- 0:VPC侧,可以指定network_id 或者cidr\n- 1:专线侧,只能指定cidr\n不输入默认为0(VPC)",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cidr": {
+          "type": "string",
+          "description": "cidr,可以是网段或者主机格式,与network_id参数二选一。\nSource_type=0时,cidr必须是vpc 子网网段的子集(不能相等);\nSource_type=1时,cidr必须指定专线侧网段。",
+          "minLength": 9,
+          "maxLength": 18,
+          "x-huawei-extraAnnotation": ""
+        },
+        "floating_ip_id": {
+          "type": "string",
+          "description": "功能说明:弹性公网IP的id,多个弹性公网IP使用逗号分隔。\n取值范围:最大长度4096字节。"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255,
+          "description": "SNAT规则的描述,长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "SNAT规则的状态。\n取值为: \n- ACTIVE: 可用\n- PENDING_CREATE: 创建中\n- PENDING_UPDATE: 更新中\n- PENDING_DELETE: 删除中\n- EIP_FREEZED: EIP冻结\n- INACTIVE: 不可用",
+          "enum": [
+            "ACTIVE",
+            "PENDING_CREATE",
+            "PENDING_UPDATE",
+            "PENDING_DELETE",
+            "EIP_FREEZED",
+            "INACTIVE"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的创建时间,格式是yyyy-mm-dd hh:mm:ss.SSSSSS。"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "规则使用的网络id。与cidr参数二选一。",
+          "example": "3faa719d-6d18-4ccb-a5c7-33e65a09663e",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "解冻/冻结状态。\n取值范围: \n- true: 解冻\n- false: 冻结"
+        },
+        "floating_ip_address": {
+          "type": "string",
+          "description": "功能说明:弹性公网IP,多个弹性公网IP使用逗号分隔。"
+        },
+        "public_ip_address": {
+          "type": "string",
+          "description": "功能说明:弹性公网IP,多个弹性公网IP使用逗号分隔。"
+        },
+        "global_eip_address": {
+          "type": "string",
+          "description": "全域弹性公网IP的地址。"
+        },
+        "global_eip_id": {
+          "type": "string",
+          "description": "全域弹性公网IP的id。"
+        }
+      },
+      "description": "更新SNAT规则的响应体。"
+    },
+    "UpdateNatGatewaySnatRuleRequestOption": {
+      "required": [
+        "snat_rule"
+      ],
+      "properties": {
+        "snat_rule": {
+          "$ref": "#/definitions/UpdateNatGatewaySnatRuleOption"
+        }
+      },
+      "description": "更新SNAT规则的请求体。",
+      "example": {
+        "snat_rule": {
+          "description": "my_snat_rule_update",
+          "nat_gateway_id": "bbe7c2e7-3bad-445b-a067-b30acce66053"
+        }
+      }
+    },
+    "UpdateNatGatewaySnatResponseBody": {
+      "required": [
+        "snat_rule"
+      ],
+      "properties": {
+        "snat_rule": {
+          "$ref": "#/definitions/NatGatewayUpdateSnatRuleResponseBody"
+        }
+      },
+      "description": "更新SNAT规则的响应体。"
+    },
+    "UpdateNatGatewaySnatRuleOption": {
+      "description": "更新SNAT规则的请求体。",
+      "required": [
+        "nat_gateway_id"
+      ],
+      "properties": {
+        "nat_gateway_id": {
+          "type": "string",
+          "description": "公网NAT网关的id。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "public_ip_address": {
+          "type": "string",
+          "description": "功能说明:弹性公网IP,多个弹性公网IP使用逗号分隔。\n约束:弹性公网IP的id个数不能超过20个"
+        },
+        "global_eip_id": {
+          "type": "string",
+          "description": "全域弹性公网IP的id。"
+        },
+        "description": {
+          "type": "string",
+          "example": "snat rule description",
+          "description": "SNAT规则的描述,长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

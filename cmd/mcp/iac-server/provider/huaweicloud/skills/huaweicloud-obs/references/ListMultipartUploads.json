@@ -1,0 +1,289 @@
+{
+  "name": "ListMultipartUploads",
+  "summary": "列举桶中已初始化多段任务",
+  "tags": "多段操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "x-request-examples-description-1": "不带任何参数列举已初始化的段任务",
+        "x-request-examples-url-2": "GET /?uploads&delimiter=object001&prefix=multipart",
+        "x-request-examples-description-2": "带prefix和delimeter列举已初始化的段任务\n例如,用户桶examplebucket中2个段任务,对象名分别为multipart-object001和part2-key02,列举段任务时,设置prefix为“multipart\",delimeter设置为object001,列举已初始化的段任务",
+        "x-request-examples-2": "GET /?uploads&delimiter=object001&prefix=multipart HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:51:21 GMT\nAuthorization: OBS UDSIAMSTUBTEST000008:XdmZgYQ+ZVy1rjxJ9/KpKq+wrU0=\n",
+        "x-request-examples-url-1": "GET /?uploads",
+        "x-request-examples-1": "GET /?uploads HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:51:21 GMT\nAuthorization: OBS UDSIAMSTUBTEST000008:XdmZgYQ+ZVy1rjxJ9/KpKq+wrU0=",
+        "tags": [
+          "多段操作"
+        ],
+        "operationId": "ListMultipartUploads",
+        "summary": "列举桶中已初始化多段任务",
+        "description": "列举桶中已初始化多段任务\n用户可以通过本接口查询一个桶中所有的初始化后还未合并以及未取消的多段上传任务。\n",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "produces": [
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "uploads",
+            "in": "query",
+            "required": true,
+            "description": "uploads表示请求多段任务API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "required": false,
+            "description": "对于名字中包含delimiter的对象的任务,其对象名(如果请求中指定了prefix,则此处的对象名需要去掉prefix)中从首字符至第一个delimiter之间的字符串将作为CommonPrefix在响应中返回。对象名包含CommonPrefix的任务被视为一个分组,作为一条记录在响应中返回,该记录不包含任务的信息,仅用于提示用户该分组下存在多段上传任务。",
+            "type": "string"
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "required": false,
+            "description": "如果请求中指定了prefix,则响应中仅包含对象名以prefix开始的任务信息。\n",
+            "type": "string"
+          },
+          {
+            "name": "max-uploads",
+            "in": "query",
+            "required": false,
+            "description": "列举的多段任务的最大条目,取值范围为[1,1000],当超出范围时,按照默认的1000进行处理。\n",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          {
+            "name": "key-marker",
+            "in": "query",
+            "required": false,
+            "description": "列举时返回指定的key-marker之后的多段任务。\n",
+            "type": "string"
+          },
+          {
+            "name": "upload-id-marker",
+            "in": "query",
+            "required": false,
+            "description": "只有和key-marker一起使用才有意义, 列举时返回指定的key-marker的upload-id-marker之后的多段任务。\n",
+            "type": "string"
+          },
+          {
+            "name": "encoding-type",
+            "in": "query",
+            "required": false,
+            "description": "对响应中的部分元素进行指定类型的编码。如果Delimiter、KeyMarker、Prefix、NextKeyMarker和Key包含xml 1.0标准不支持的控制字符,可通过设置encoding-type对响应中的Delimiter、KeyMarker、Prefix(包括CommonPrefixes中的Prefix)、NextKeyMarker和Key进行编码。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListMultipartUploadsResult"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListMultipartUploadsResult": {
+      "description": "保存List Multipart Upload请求结果的容器。\n",
+      "properties": {
+        "Bucket": {
+          "description": "初始化任务所在的桶名。\n",
+          "type": "string"
+        },
+        "EncodingType": {
+          "description": "对响应中的部分元素进行指定类型的编码。如果请求中设置了encoding-type,那响应中的Delimiter、KeyMarker、Prefix(包括CommonPrefixes中的Prefix)、NextKeyMarker和Key会被编码。\n",
+          "type": "string"
+        },
+        "KeyMarker": {
+          "description": "列举时的起始对象位置。\n",
+          "type": "string"
+        },
+        "UploadIdMarker": {
+          "description": "列举时的起始UploadId位置。\n",
+          "type": "string"
+        },
+        "NextKeyMarker": {
+          "description": "如果本次没有返回全部结果,响应请求中将包含NextKeyMarker字段,用于标明接下来请求的KeyMarker值。\n",
+          "type": "string"
+        },
+        "NextUploadIdMarker": {
+          "description": "如果本次没有返回全部结果,响应请求中将包含NextUploadMarker字段,用于标明接下来请求的UploadMarker值。\n",
+          "type": "string"
+        },
+        "MaxUploads": {
+          "description": "返回的最大多段上传任务数目。\n",
+          "type": "integer",
+          "format": "int32"
+        },
+        "IsTruncated": {
+          "description": "表明是否本次返回的Multipart Upload结果列表被截断。“true”表示本次没有返回全部结果;“false”表示本次已经返回了全部结果。\n",
+          "type": "boolean",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "Upload": {
+          "$ref": "#/definitions/Upload"
+        },
+        "ListMultipartUploadsResult.Prefix": {
+          "description": "请求中带的Prefix。\n",
+          "type": "string"
+        },
+        "Delimiter": {
+          "description": "请求中带的Delimiter。\n",
+          "type": "string"
+        },
+        "CommonPrefixes": {
+          "description": "请求中带Delimiter参数时,返回消息带CommonPrefixes分组信息。\n",
+          "properties": {
+            "CommonPrefixes. Prefix": {
+              "description": "CommonPrefixes分组信息中,表明不同的Prefix。\n",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "Upload": {
+      "description": "保存Multipart Upload任务信息的容器。\n",
+      "properties": {
+        "Key": {
+          "description": "初始化Multipart Upload任务的Object名字。\n",
+          "type": "string"
+        },
+        "UploadId": {
+          "description": "Multipart Upload任务的ID。\n",
+          "type": "string"
+        },
+        "Initiator": {
+          "description": "Multipart Upload任务的创建者。\n",
+          "type": "string",
+          "properties": {
+            "ID": {
+              "description": "创建者的DomainId。\n",
+              "type": "string"
+            }
+          }
+        },
+        "Owner": {
+          "description": "段的所有者。\n",
+          "type": "string",
+          "properties": {
+            "ID": {
+              "description": "创建者的DomainId。\n",
+              "type": "string"
+            }
+          }
+        },
+        "StorageClass": {
+          "description": "表明待多段上传的对象存储类型。\n",
+          "type": "string"
+        },
+        "Initiated": {
+          "description": "Multipart Upload任务的初始化时间。\n",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

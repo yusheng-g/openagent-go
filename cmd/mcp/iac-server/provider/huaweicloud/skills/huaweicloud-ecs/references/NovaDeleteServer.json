@@ -1,0 +1,87 @@
+{
+  "name": "NovaDeleteServer",
+  "summary": "删除云服务器",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers/{server_id}": {
+      "delete": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "删除云服务器",
+        "description": "删除一台云服务器。",
+        "operationId": "NovaDeleteServer",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx",
+            "x-order": 2
+          },
+          {
+            "name": "server_id",
+            "in": "path",
+            "description": "云服务器ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67",
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除云服务器",
+        "x-constraint": "在Juno版本中当弹性云服务器被删除时,弹性云服务器挂载的所有的port都会被删除;而在Mitaka版本中当弹性云服务器被删除时,如果port是在创建弹性云服务器时指定的(即用户创建的port),则不会被删除。\n\n> 说明:\n> \n> 此功能采用了配置开关方式,支持M版本原生处理方式,也支持J版本的兼容模式,版本缺省使用M版本原生处理方式,老版本升级采用支持J版本的兼容模式。",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "DELETE https://{endpoint}/v2.1/{project_id}/servers/{server_id}",
+        "x-request-examples-text-1": "DELETE https://{endpoint}/v2.1/{project_id}/servers/{server_id}",
+        "x-registered_to": "apicom",
+        "x-api_level": "1",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

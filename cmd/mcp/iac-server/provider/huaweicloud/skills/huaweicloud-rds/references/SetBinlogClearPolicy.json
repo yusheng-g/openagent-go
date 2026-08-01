@@ -1,0 +1,138 @@
+{
+  "name": "SetBinlogClearPolicy",
+  "summary": "设置binlog本地保留时长",
+  "tags": "获取日志信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/binlog/clear-policy": {
+      "put": {
+        "tags": [
+          "获取日志信息"
+        ],
+        "operationId": "SetBinlogClearPolicy",
+        "summary": "设置binlog本地保留时长",
+        "x-constraint": "- 实例在创建过程中无法设置\n- 仅支持mysql实例",
+        "description": "修改指定实例的binlog本地保留时长。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "BinlogClearPolicyRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BinlogClearPolicyRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DBMSuccessRsp"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "设置实例binlog本地保留时长",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/619d3e78f61b4be68bc5aa0b59edcf7b/instances/e73893ef73754465a8bd2e0857bbf13ein01/binlog/clear-policy",
+        "x-request-examples-1": {
+          "binlog_retention_hours": 48
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DBMSuccessRsp": {
+      "required": [
+        "resp"
+      ],
+      "properties": {
+        "resp": {
+          "description": "操作结果。",
+          "type": "string",
+          "example": "successful"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "BinlogClearPolicyRequestBody": {
+      "required": [
+        "binlog_retention_hours"
+      ],
+      "properties": {
+        "binlog_retention_hours": {
+          "type": "integer",
+          "format": "int64",
+          "description": "取值范围0-7*24",
+          "example": 4
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

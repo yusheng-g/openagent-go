@@ -1,0 +1,213 @@
+{
+  "name": "CreatePartition",
+  "summary": "创建分区",
+  "tags": "集群管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/partitions": {
+      "post": {
+        "tags": [
+          "集群管理"
+        ],
+        "summary": "创建分区",
+        "description": "创建分区",
+        "operationId": "CreatePartition",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-publishpath": "CreatePartition",
+        "x-scope": "Commercial",
+        "parameters": [
+          {
+            "name": "CreatePartitionRequestBody",
+            "in": "body",
+            "description": "请求body参数说明;非单个参数名称",
+            "required": true,
+            "x-order": 3,
+            "schema": {
+              "$ref": "#/definitions/PartitionReqBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Partition"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/param_path_projectid"
+        },
+        {
+          "$ref": "#/parameters/param_path_clusterid"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "PartitionReqBody": {
+      "type": "object",
+      "description": "集群分区信息",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "example": "Partition",
+          "description": "**参数解释**:\nAPI类型\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nPartition"
+        },
+        "apiVersion": {
+          "type": "string",
+          "example": "v3",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3"
+        },
+        "metadata": {
+          "description": "**参数解释**:\n分区的元数据信息\n**约束限制**:\n不涉及",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "partitionName",
+              "description": "**参数解释**:\n分区名称\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            }
+          }
+        },
+        "spec": {
+          "description": "**参数解释**:\n分区的配置信息\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "properties": {
+            "hostNetwork": {
+              "description": "**参数解释**:\n分区子网\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+              "properties": {
+                "subnetID": {
+                  "type": "string",
+                  "example": "subnetID",
+                  "description": "**参数解释**:\n子网ID\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找IPv4子网ID。\n- 方法2:通过虚拟私有云服务的查询子网列表接口查询。\n  链接请参见[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)。\n  \n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+                }
+              }
+            },
+            "containerNetwork": {
+              "items": {
+                "properties": {
+                  "subnetID": {
+                    "type": "string",
+                    "example": "subnetID",
+                    "description": "**参数解释**:\n子网ID\n获取方法如下:\n- 方法1:登录虚拟私有云服务的控制台界面,单击VPC下的子网,进入子网详情页面,查找IPv4子网ID。\n- 方法2:通过虚拟私有云服务的查询子网列表接口查询。\n  链接请参见[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)。\n  \n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+                  }
+                }
+              },
+              "description": "**参数解释**:\n分区容器子网\n**约束限制**:\n列表长度不能大于20\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+              "type": "array"
+            },
+            "publicBorderGroup": {
+              "type": "string",
+              "example": "publicBorderGroup",
+              "description": "**参数解释**:\n群组,IES边缘场景为可用区ID,中心区统一为“center”。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            },
+            "category": {
+              "type": "string",
+              "example": "category",
+              "description": "**参数解释**:\n可用区分类\n**约束限制**:\n不涉及\n**取值范围**:\n- Default: 中心云可用区\n- IES: 专属云可用区\n- HomeZone: 智能边缘云可用区\n**默认取值**:\n不涉及"
+            }
+          }
+        }
+      }
+    },
+    "Partition": {
+      "type": "object",
+      "description": "**参数解释**:\n集群分区信息\n**约束限制**:\n不涉及",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "example": "Partition",
+          "description": "**参数解释**: \nAPI类型 \n**约束限制**: \n不允许修改\n**取值范围**: \n不涉及 \n**默认取值**: \nPartition"
+        },
+        "apiVersion": {
+          "type": "string",
+          "example": "v3",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3"
+        },
+        "metadata": {
+          "description": "**参数解释**:\n分区的元数据信息\n**约束限制**:\n不涉及",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "partitionName",
+              "description": "**参数解释**:\n分区名称\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            },
+            "creationTimestamp": {
+              "type": "string",
+              "example": "2000-1-1 00:00:35.451967 +0000 UTC",
+              "description": "**参数解释**:\n创建时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            }
+          }
+        },
+        "spec": {
+          "description": "**参数解释**:\n分区的配置信息\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "properties": {
+            "hostNetwork": {
+              "description": "**参数解释**:\n分区子网\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+              "properties": {
+                "subnetID": {
+                  "type": "string",
+                  "example": "subnetID",
+                  "description": "**参数解释**:\n子网ID\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+                }
+              }
+            },
+            "containerNetwork": {
+              "items": {
+                "properties": {
+                  "subnetID": {
+                    "type": "string",
+                    "example": "subnetID",
+                    "description": "**参数解释**:\n子网ID\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+                  }
+                }
+              },
+              "description": "**参数解释**:\n分区容器子网\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+              "type": "array"
+            },
+            "publicBorderGroup": {
+              "type": "string",
+              "example": "publicBorderGroup",
+              "description": "**参数解释**:\n群组,IES边缘场景为可用区ID,中心区统一为“center”。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            },
+            "category": {
+              "type": "string",
+              "example": "category",
+              "description": "**参数解释**:\n可用区分类\n**约束限制**:\n不涉及\n**取值范围**:\n- Default: 中心云可用区\n- IES: 专属云可用区\n- HomeZone: 智能边缘云可用区\n\n**默认取值**:\n不涉及"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

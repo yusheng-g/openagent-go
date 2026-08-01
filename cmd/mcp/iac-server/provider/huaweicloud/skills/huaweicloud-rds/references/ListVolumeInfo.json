@@ -1,0 +1,68 @@
+{
+  "name": "ListVolumeInfo",
+  "summary": "查询实例的磁盘信息",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/volumes": {
+      "get": {
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-file": "Y",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "查询实例的磁盘信息",
+        "description": "查询实例的磁盘信息",
+        "operationId": "ListVolumeInfo",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\n    \"instance_id\": \"91655fea046742f0a300b68cccb8f7f9in03\",\n    \"volumes\": [\n        {\n            \"volume_iaas_id\": \"9f1262d1-9d3f-4dc2-ad8d-31339534e9fe\",\n            \"purpose\": \"BACKUP\"\n        },\n        {\n            \"volume_iaas_id\": \"900d9ff0-43c3-4db7-baad-7e6a30ca49e1\",\n            \"purpose\": \"DATA\"\n        },\n        {\n            \"volume_iaas_id\": \"134289ee-7040-4a3f-8861-5cdda8a1f392\",\n            \"purpose\": \"SWAP\"\n        },\n        {\n            \"volume_iaas_id\": \"b7f6dca1-656e-4ef2-9823-bc5debc773e4\",\n            \"purpose\": \"ROOT\"\n        },\n        {\n            \"volume_iaas_id\": \"627b06ce-34cd-4e3e-9c5f-9e62e512adc1\",\n            \"purpose\": \"SWAP\"\n        },\n        {\n            \"volume_iaas_id\": \"9cc8fbf0-2554-44f9-a632-3a5b7c305554\",\n            \"purpose\": \"DATA\"\n        },\n        {\n            \"volume_iaas_id\": \"11b80c41-4f90-4e9d-aeaf-c51d51bba34f\",\n            \"purpose\": \"ROOT\"\n        },\n        {\n            \"volume_iaas_id\": \"af1e03c8-dfe9-475a-be47-2cce8119220f\",\n            \"purpose\": \"BACKUP\"\n        }\n    ]\n}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,446 @@
+{
+  "name": "CreateScalingGroup",
+  "summary": "创建弹性伸缩组",
+  "tags": "弹性伸缩组管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_group": {
+      "post": {
+        "tags": [
+          "弹性伸缩组管理"
+        ],
+        "summary": "创建弹性伸缩组",
+        "description": "伸缩组是具有相同应用场景的实例的集合,是启停伸缩策略和进行伸缩活动的基本单位。伸缩组内定义了最大实例数、期望实例数、最小实例数、虚拟私有云、子网、负载均衡等信息。默认最多可以创建10个伸缩组。如果伸缩组配置了负载均衡,在添加或移除实例时,会自动为实例绑定或解绑负载均衡监听器。如果伸缩组使用负载均衡健康检查方式,伸缩组中的实例需要启用负载均衡器的监听端口才能通过健康检查。端口启用可在安全组中进行配置,可参考添加安全组规则进行操作。",
+        "operationId": "CreateScalingGroup",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateScalingGroupOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "schema": {
+              "$ref": "#/definitions/ScalingGroupId"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "示例为创建一个满足下述要求的伸缩组:伸缩组名称为GroupNameTest。伸缩配置ID为47683a91-93ee-462a-a7d7-484c006f4440。虚拟私有云ID为a8327883-6b07-4497-9c61-68d03ee193a,网络ID为3cd35bca-5a10-416f-8994-f79169559870。最大实例数为10,期望实例数为0,最小实例数为0。健康检查方式为云服务器健康检查。设置具体企业项目。伸缩组扩缩容时目标AZ选择的优先级策略为PICK_FIRST(选择优先)。",
+        "x-support-sdk": "Y",
+        "x-name": "创建弹性伸缩组",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 1,
+        "x-request-examples-url-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group",
+        "x-request-examples-1": {
+          "scaling_group_name": "GroupNameTest",
+          "scaling_configuration_id": "47683a91-93ee-462a-a7d7-484c006f4440",
+          "desire_instance_number": 0,
+          "min_instance_number": 0,
+          "max_instance_number": 10,
+          "health_periodic_audit_method": "NOVA_AUDIT",
+          "vpc_id": "a8327883-6b07-4497-9c61-68d03ee193a",
+          "available_zones": [
+            "XXXa",
+            "XXXb"
+          ],
+          "networks": [
+            {
+              "id": "3cd35bca-5a10-416f-8994-f79169559870"
+            }
+          ],
+          "enterprise_project_id": "c92b1a5d-6f20-43f2-b1b7-7ce35e58e413",
+          "multi_az_priority_policy": "PICK_FIRST"
+        },
+        "x-request-examples-text-1": {
+          "scaling_group_name": "GroupNameTest",
+          "scaling_configuration_id": "47683a91-93ee-462a-a7d7-484c006f4440",
+          "desire_instance_number": 0,
+          "min_instance_number": 0,
+          "max_instance_number": 10,
+          "health_periodic_audit_method": "NOVA_AUDIT",
+          "vpc_id": "a8327883-6b07-4497-9c61-68d03ee193a",
+          "available_zones": [
+            "XXXa",
+            "XXXb"
+          ],
+          "networks": [
+            {
+              "id": "3cd35bca-5a10-416f-8994-f79169559870"
+            }
+          ],
+          "enterprise_project_id": "c92b1a5d-6f20-43f2-b1b7-7ce35e58e413",
+          "multi_az_priority_policy": "PICK_FIRST"
+        },
+        "x-flow_control_group": "as",
+        "x-tenant_flow_time": 1,
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": 26,
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": 1,
+        "x-ctc": "Y",
+        "x-hc": "Y",
+        "x-multi_tenant_flow_value": 260,
+        "x-otc": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Networks": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "3cd35bca-5a10-416f-8994-f79169559870",
+          "description": "子网的网络id。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "ipv6_enable": {
+          "type": "boolean",
+          "description": "是否启用IPv6。取值为true时,标识此网卡已启用IPv6。"
+        },
+        "ipv6_bandwidth": {
+          "$ref": "#/definitions/Ipv6Bandwidth"
+        },
+        "allowed_address_pairs": {
+          "type": "array",
+          "description": "是否开启源/目的检查开关。",
+          "items": {
+            "$ref": "#/definitions/AllowedAddressPair"
+          }
+        }
+      },
+      "description": "网络信息"
+    },
+    "ScalingGroupId": {
+      "properties": {
+        "scaling_group_id": {
+          "type": "string",
+          "example": "a8327883-6b07-4497-9c61-68d03ee193a1",
+          "description": "伸缩组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "请求正常"
+    },
+    "AllowedAddressPair": {
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "description": "是否开启源/目的检查开关。\n\n默认是开启,不允许置空。\n\n关闭:1.1.1.1/0\n开启:除“1.1.1.1/0”以外的其余值均按开启处理"
+        }
+      },
+      "description": "是否开启源/目的检查开关。"
+    },
+    "Ipv6Bandwidth": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "IPv6共享带宽的ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "IPv6信息"
+    },
+    "LbaasListeners": {
+      "type": "object",
+      "required": [
+        "pool_id",
+        "protocol_port",
+        "weight"
+      ],
+      "properties": {
+        "pool_id": {
+          "type": "string",
+          "description": "后端云服务器组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "后端协议号,指后端云服务器监听的端口,取值范围[1,65535]",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "权重,指后端云服务器经分发得到的请求数量的比例,取值范围[0, 100]。"
+        },
+        "protocol_version": {
+          "type": "string",
+          "description": "指定ip协议版本",
+          "enum": [
+            "IPV4",
+            "IPV6"
+          ]
+        }
+      },
+      "description": "增强型负载均衡器"
+    },
+    "TagsSingleValue": {
+      "type": "object",
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "资源标签键。最大长度36个unicode字符。key不能为空。(搜索时不对此参数做校验)。最多为10个,不能为空或者空字符串。且不能重复。"
+        },
+        "value": {
+          "type": "string",
+          "description": "资源标签值列表,每个值最大长度43个unicode字符,每个key下最多为10个,同一个key中values不能重复。\n\n“*”为系统保留字符,如果value是以“*”开头表示按照“*”后面的值全模糊匹配。不能只传入“*”。\n如果values为空列表但不可缺省,则表示any_value(查询任意value)。value之间为或的关系。"
+        }
+      },
+      "description": "资源标签键"
+    },
+    "SecurityGroup": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "23b7b999-0a30-4b48-ae8f-ee201a88a6ab",
+          "description": "安全组ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "安全组信息"
+    },
+    "CreateScalingGroupOption": {
+      "type": "object",
+      "required": [
+        "networks",
+        "scaling_configuration_id",
+        "scaling_group_name",
+        "vpc_id"
+      ],
+      "properties": {
+        "scaling_group_name": {
+          "type": "string",
+          "description": "伸缩组名称(1-64个字符),只能包含中文、字母、数字、下划线、中划线。"
+        },
+        "scaling_configuration_id": {
+          "type": "string",
+          "description": "伸缩配置ID,通过查询弹性伸缩配置列表接口获取。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "desire_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "期望实例数量,默认值为最小实例数。最小实例数<=期望实例数<=最大实例数"
+        },
+        "min_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最小实例数量,默认值为0。"
+        },
+        "max_instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大实例数量,默认值为0。"
+        },
+        "cool_down_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "冷却时间,取值范围0-86400,默认为300,单位是秒。 只针对告警策略生效,定时、周期策略和手动触发策略不受该参数限制。",
+          "maximum": 86400
+        },
+        "lb_listener_id": {
+          "type": "string",
+          "description": "弹性负载均衡(经典型)监听器ID,最多支持绑定6个负载均衡监听器,多个负载均衡监听器ID以逗号分隔。首先使用vpc_id通过查询ELB服务负载均衡器列表接口获取负载均衡器的ID,详见《弹性负载均衡API参考》的“查询负载均衡器列表”,再使用该ID查询监听器列表获取,详见《弹性负载均衡API参考》的“查询监听器列表”。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "lbaas_listeners": {
+          "type": "array",
+          "description": "弹性负载均衡器(增强型)信息,最多支持绑定6个负载均衡。该字段与lb_listener_id互斥。",
+          "items": {
+            "$ref": "#/definitions/LbaasListeners"
+          }
+        },
+        "available_zones": {
+          "type": "array",
+          "description": "可用分区信息。弹性伸缩活动中自动添加的云服务器会被创建在指定的可用区中。如果没有指定可用分区,会由系统自动指定可用分区。详情请参考地区和终端节点。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "networks": {
+          "type": "array",
+          "description": "网络信息,最多支持选择5个子网,传入的第一个子网默认作为云服务器的主网卡。获取子网信息请参考[查询子网列表](https://support.huaweicloud.com/api-vpc/vpc_subnet01_0003.html)。",
+          "items": {
+            "$ref": "#/definitions/Networks"
+          }
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "安全组信息,最多支持选择1个安全组。使用vpc_id通过查询VPC服务安全组列表接口获取,详见《虚拟私有云API参考》的“查询安全组列表”。当伸缩配置和伸缩组同时指定安全组时,将以伸缩配置中的安全组为准;当伸缩配置和伸缩组都没有指定安全组时,将使用默认安全组。为了使用灵活性更高,推荐在伸缩配置中指定安全组。",
+          "items": {
+            "$ref": "#/definitions/SecurityGroup"
+          }
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "VPC信息,通过查询VPC服务VPC列表接口获取,详见《虚拟私有云API参考》的“查询VPC列表”。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "health_periodic_audit_method": {
+          "type": "string",
+          "description": "伸缩组实例健康检查方式:ELB_AUDIT和NOVA_AUDIT。当伸缩组参数中设置负载均衡时,默认为ELB_AUDIT;否则默认为NOVA_AUDIT。ELB_AUDIT表示负载均衡健康检查方式,在有监听器的伸缩组中有效。NOVA_AUDIT表示弹性伸缩自带的健康检查方式。",
+          "enum": [
+            "ELB_AUDIT",
+            "NOVA_AUDIT"
+          ]
+        },
+        "health_periodic_audit_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组实例的健康检查周期,可设置为1、5、15、60、180(分钟),若不设置该参数,默认为5。若设置为0,可以实现10秒级健康检查。"
+        },
+        "health_periodic_audit_grace_period": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组实例健康状况检查宽限期,取值范围0-86400,单位是秒。当实例加入伸缩组并且进入已启用状态后,健康状况检查宽限期才会启动,伸缩组会等健康状况检查宽限期结束后才检查实例的运行状况。当伸缩组实例健康检查方式为ELB_AUDIT时,该参数生效,若不设置该参数,默认为600秒。",
+          "maximum": 86400
+        },
+        "instance_terminate_policy": {
+          "type": "string",
+          "description": "伸缩组实例移除策略:OLD_CONFIG_OLD_INSTANCE(默认):从根据“较早创建的配置”创建的实例中筛选出较早创建的实例被优先移除。OLD_CONFIG_NEW_INSTANCE:从根据“较早创建的配置”创建的实例中筛选出较新创建的实例被优先移除。OLD_INSTANCE:较早创建的实例被优先移除。NEW_INSTANCE:较新创建的实例将被优先移除。",
+          "enum": [
+            "OLD_CONFIG_OLD_INSTANCE",
+            "OLD_CONFIG_NEW_INSTANCE",
+            "OLD_INSTANCE",
+            "NEW_INSTANCE"
+          ]
+        },
+        "delete_publicip": {
+          "type": "boolean",
+          "description": "配置删除云服务器时是否删除云服务器绑定的弹性IP。取值为true或false,默认为false。true:删除云服务器时,会同时删除绑定在云服务器上的弹性IP。当弹性IP的计费方式为包年包月时,不会被删除。false:删除云服务器时,仅解绑定在云服务器上的弹性IP,不删除弹性IP。"
+        },
+        "delete_volume": {
+          "type": "boolean",
+          "description": "配置删除云服务器时是否删除云服务器绑定的数据盘。取值为true或false,默认为false。 true:删除云服务器时,会同时删除绑定在云服务器上的数据盘。当数据盘的计费方式为包年包月时,不会被删除。 false:删除云服务器时,仅解绑定在云服务器上的数据盘,不删除数据盘。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID,用于指定伸缩组归属的企业项目。取值为0或无该值,表示属于default企业项目。取值为UUID,表示属于该UUID对应的企业项目,如何获取企业项目ID,请参考[查询企业项目列表](https://support.huaweicloud.com/api-em/zh-cn_topic_0121230880.html)。当伸缩组配置企业项目时,由该伸缩组创建的弹性云服务器将归属于该企业项目。否则将使用默认企业项目。说明:关于企业项目特性的详细信息,请参见[企业项目管理](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0131965280.html)。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "multi_az_priority_policy": {
+          "type": "string",
+          "description": "伸缩组扩缩容时目标AZ选择的优先级策略:EQUILIBRIUM_DISTRIBUTE(默认):均衡分布,云服务器扩缩容时优先保证available_zones列表中各AZ下虚拟机数量均衡,当无法在目标AZ下完成虚拟机扩容时,按照PICK_FIRST原则选择其他可用AZ。PICK_FIRST:选择优先,虚拟机扩缩容时目标AZ的选择按照available_zones列表的顺序进行优先级排序。",
+          "enum": [
+            "EQUILIBRIUM_DISTRIBUTE",
+            "PICK_FIRST"
+          ]
+        },
+        "iam_agency_name": {
+          "type": "string",
+          "description": "委托的名称委托是由租户管理员在统一身份认证服务(Identity and Access Management,IAM)上创建的,可以为弹性云服务器提供访问云服务的临时凭证。"
+        },
+        "description": {
+          "type": "string",
+          "description": "伸缩组描述信息(0-256个字符)"
+        },
+        "tags": {
+          "type": "array",
+          "description": "创建特定标签并将其添加到伸缩组。每个伸缩组最多添加10个标签。",
+          "items": {
+            "$ref": "#/definitions/TagsSingleValue"
+          }
+        }
+      },
+      "description": "创建伸缩组请求"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

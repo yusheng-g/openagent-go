@@ -1,0 +1,233 @@
+{
+  "name": "CinderAcceptVolumeTransfer",
+  "summary": "接受云硬盘过户",
+  "tags": "云硬盘过户",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/os-volume-transfer/{transfer_id}/accept": {
+      "post": {
+        "tags": [
+          "云硬盘过户"
+        ],
+        "summary": "接受云硬盘过户",
+        "description": "通过云硬盘过户记录ID以及身份认证密钥来接受云硬盘过户。",
+        "operationId": "CinderAcceptVolumeTransfer",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CinderAcceptVolumeTransferRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CinderAcceptVolumeTransferRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "transfer_id",
+            "in": "path",
+            "description": "云硬盘ID",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "transfer": {
+                  "id": "cac5c677-73a9-4288-bb9c-b2ebfb547377",
+                  "name": "first volume transfer",
+                  "volume_id": "894623a6-e901-4312-aa06-4275e6321cce",
+                  "links": [
+                    {
+                      "href": "https://localhost/v2/firstproject/os-volume-transfer/1",
+                      "rel": "self"
+                    },
+                    {
+                      "href": "https://localhost/firstproject/os-volume-transfer/1",
+                      "rel": "bookmark"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CinderAcceptVolumeTransferResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "接受云硬盘过户",
+        "x-constraint": "包周期的云硬盘不支持过户。\n冻结的云硬盘不支持过户。\n加密的云硬盘不支持过户。\n云硬盘有对应的备份和快照时不支持过户。\n云硬盘有备份策略时不支持过户。\nDSS专属存储的云硬盘不支持过户。\nDESS专属存储的云硬盘不支持过户。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 31,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/{project_id}/os-volume-transfer/{transfer_id}/accept",
+        "x-request-examples-1": {
+          "accept": {
+            "auth_key": "9266c59563c84664"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"accept\": {\n        \"auth_key\": \"9266c59563c84664\"\n    }\n}\n",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018/1/30",
+        "x-open-region-cloud": "hc,hws,hk,otc,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "VolumeTransferSummary": {
+      "required": [
+        "id",
+        "links",
+        "name",
+        "volume_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云硬盘过户记录的ID。"
+        },
+        "links": {
+          "type": "array",
+          "description": "云硬盘过户记录的链接",
+          "items": {
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘过户记录的名称"
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘ID。"
+        }
+      }
+    },
+    "CinderAcceptVolumeTransferOption": {
+      "required": [
+        "auth_key"
+      ],
+      "properties": {
+        "auth_key": {
+          "type": "string",
+          "description": "云硬盘过户的身份认证密钥。\n\n创建云硬盘过户时会返回该身份认证密钥。"
+        }
+      },
+      "description": "标记接受云硬盘过户操作。"
+    },
+    "CinderAcceptVolumeTransferResponseBody": {
+      "properties": {
+        "transfer": {
+          "description": "云硬盘过户信息,请参见•[transfer参数说明](https://support.huaweicloud.com/api-evs/evs_04_2107.html#evs_04_2107__li12496189111714)。",
+          "$ref": "#/definitions/VolumeTransferSummary"
+        }
+      },
+      "description": ""
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "Link": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应的快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        }
+      },
+      "description": "云硬盘uri自描述信息。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "CinderAcceptVolumeTransferRequestBody": {
+      "required": [
+        "accept"
+      ],
+      "properties": {
+        "accept": {
+          "example": "{ \"accept\": { \"auth_key\": \"9266c59563c84664\" } }",
+          "description": "标记接受云硬盘过户操作",
+          "$ref": "#/definitions/CinderAcceptVolumeTransferOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

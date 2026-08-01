@@ -1,0 +1,234 @@
+{
+  "name": "CompareConfiguration",
+  "summary": "比较参数模板",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations/difference": {
+      "put": {
+        "x-request-examples-url-1": "/rds/v3/54623db08b174c858ba779d2aa7923a3/configurations/difference",
+        "x-request-examples-description-1": "下发比较参数模板",
+        "x-request-examples-text-1": {
+          "source_id": "3bc1e9cc0d34404b9225ed7a58fb284epr01",
+          "target_id": "6f906cd03be84aff81cd41c4c61434e0pr01"
+        },
+        "x-request-examples-1": {
+          "source_id": "3bc1e9cc0d34404b9225ed7a58fb284epr01",
+          "target_id": "6f906cd03be84aff81cd41c4c61434e0pr01"
+        },
+        "tags": [
+          "参数配置"
+        ],
+        "operationId": "CompareConfiguration",
+        "consumes": [
+          "application/json"
+        ],
+        "summary": "比较参数模板",
+        "description": "比较参数模板",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n内容类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\napplication/json。\n\n**默认取值**:\n\napplication/json。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "CompareConfigurationRequestBody",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CompareConfigurationRequestBody"
+            },
+            "description": "比较参数模板请求体。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/CompareConfigurationResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "source_id": "3bc1e9cc0d34404b9225ed7a58fb284epr01",
+                "source_name": "parameter-group-1",
+                "target_id": "6f906cd03be84aff81cd41c4c61434e0pr01",
+                "target_name": "parameter-group-2",
+                "parameters": [
+                  {
+                    "name": "parameter1",
+                    "source_value": "OFF",
+                    "target_value": "ON"
+                  },
+                  {
+                    "name": "parameter2",
+                    "source_value": "300",
+                    "target_value": "127"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CompareConfigurationRequestBody": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n源参数模板id。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 72
+        },
+        "target_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n目标参数模板id。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 72
+        }
+      },
+      "required": [
+        "source_id",
+        "target_id"
+      ]
+    },
+    "ParamGroupParameterDiff": {
+      "type": "object",
+      "description": "参数差异信息",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n参数名称\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        "source_value": {
+          "type": "string",
+          "description": "**参数解释**:\n\n源模板参数值。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        "target_value": {
+          "type": "string",
+          "description": "**参数解释**:\n\n目标模板参数值。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 1024
+        }
+      }
+    },
+    "CompareConfigurationResponseBody": {
+      "type": "object",
+      "description": "比较参数模板返回体。",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n源参数模板id。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "target_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n目标参数模板id。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "source_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n源参数模板名称。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 512
+        },
+        "target_name": {
+          "type": "string",
+          "description": "**参数解释**:\n\n目标参数模板名称。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 512
+        },
+        "parameters": {
+          "type": "array",
+          "description": "**参数解释**:\n\n模板参数差异信息。\n\n**约束限制**:\n\n不涉及。",
+          "minItems": 0,
+          "maxItems": 512,
+          "items": {
+            "$ref": "#/definitions/ParamGroupParameterDiff"
+          }
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,130 @@
+{
+  "name": "UpdateServerInterface",
+  "summary": "更新云服务器网卡挂载信息",
+  "tags": "网卡管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/os-interface/{port_id}": {
+      "put": {
+        "tags": [
+          "网卡管理"
+        ],
+        "summary": "更新云服务器网卡挂载信息",
+        "description": "更新云服务器网卡挂载信息。",
+        "operationId": "UpdateServerInterface",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/port_id"
+          },
+          {
+            "in": "body",
+            "name": "updateNicInfoRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateNicInfoRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新云服务器网卡挂载信息",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 102,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST  https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/os-interface/{port_id}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-5-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "interfaceAttachment": {
+      "required": [
+        "delete_on_termination"
+      ],
+      "properties": {
+        "delete_on_termination": {
+          "type": "boolean",
+          "description": "是否删除网卡"
+        }
+      }
+    },
+    "UpdateNicInfoRequestBody": {
+      "required": [
+        "interface_attachment"
+      ],
+      "properties": {
+        "interface_attachment": {
+          "description": "更新云服务器网卡信息结构体。",
+          "$ref": "#/definitions/interfaceAttachment",
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "port_id": {
+      "name": "port_id",
+      "in": "path",
+      "description": "The network card ID of the cloud server.",
+      "required": true,
+      "type": "string",
+      "x-example": "bfe1e360-xxxx-xxxx-xxxx-5cc47bcd4ad0"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

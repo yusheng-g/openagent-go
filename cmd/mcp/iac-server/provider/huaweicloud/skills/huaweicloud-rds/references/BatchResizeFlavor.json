@@ -1,0 +1,182 @@
+{
+  "name": "BatchResizeFlavor",
+  "summary": "批量变更实例规格",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/batch/resize": {
+      "post": {
+        "x-request-examples-url-1": "rds/v3/54623db08b174c858ba779d2aa7923a3/instances/batch/resize",
+        "x-request-examples-text-1": {
+          "instance_ids": [
+            "347288b745f9455faa700e88c17ca276in01",
+            "161ddefa425441289661354f0c370c9din01"
+          ],
+          "spec_code": "rds.mysql.n1.large.2",
+          "auto_pay": true,
+          "delay": false,
+          "occupy_ip": true
+        },
+        "x-request-examples-1": {
+          "instance_ids": [
+            "347288b745f9455faa700e88c17ca276in01",
+            "161ddefa425441289661354f0c370c9din01"
+          ],
+          "spec_code": "rds.mysql.n1.large.2",
+          "auto_pay": true,
+          "delay": false,
+          "occupy_ip": true
+        },
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "批量变更实例规格",
+        "description": "批量变更实例规格",
+        "operationId": "BatchResizeFlavor",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-constraint": "- 该接口仅支持RDS for MySQL数据库引擎。\n- 该接口一分钟限制调用次数为10次。\n- 原实例计费模式相同,同为按需计费或包周期计费;规格类型相同;磁盘类型相同;所在可用区相同;不为本地盘实例;企业项目相同;未开启规格自动变配功能。",
+        "x-apigateway-ratelimit": "rds_user_policy_batch_10",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "BatchResizeFlavorRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "**参数解释**:\n\n批量规格变更请求体。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "schema": {
+              "$ref": "#/definitions/BatchResizeFlavorRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/BatchResizeFlavorResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "19d29efc-926b-450d-aeff-83a1268f56ff"
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "BatchResizeFlavorResponseBody": {
+      "description": "批量规格变更显示返回体",
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n批量任务ID,仅按需实例场景返回。该任务ID不会在任务中心显示,请前往任务中心查看每个实例的变更任务。\n\n**约束限制**: \n\n不涉及。 \n\n**取值范围**:\n\n不涉及。 \n\n**默认取值**: \n\n不涉及。"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n订单ID。仅包周期实例场景返回。\n\n**约束限制**: \n\n不涉及。 \n\n**取值范围**:\n\n不涉及。 \n\n**默认取值**: \n\n不涉及。"
+        }
+      }
+    },
+    "BatchResizeFlavorRequestBody": {
+      "description": "批量规格变更请求体请求体",
+      "required": [
+        "instance_ids",
+        "spec_code"
+      ],
+      "properties": {
+        "instance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**: \n\n实例ID列表。 \n\n**约束限制**:\n\n一次最多下发10个实例。 \n\n**取值范围**:\n\n不涉及。\n\n**默认取值**: \n\n不涉及。"
+        },
+        "spec_code": {
+          "type": "string",
+          "description": "**参数解释**:\n\n资源规格编码。\n\n**约束限制**: \n\n不涉及。 \n\n**取值范围**:\n\n不涉及。 \n\n**默认取值**: \n\n不涉及。"
+        },
+        "delay": {
+          "type": "boolean",
+          "description": "**参数解释**:\n\n是否进行定时规格变更。\n\n**约束限制**: \n\n不涉及。 \n\n**取值范围**:\n\n不涉及。 \n\n**默认取值**: \n\nfalse"
+        },
+        "auto_pay": {
+          "type": "boolean",
+          "description": "**参数解释**:\n\n变更包周期实例的规格时可指定,表示是否自动从客户的账户中支付。\n\n**约束限制**: \n\n不涉及。 \n\n**取值范围**:\n\n不涉及。 \n\n**默认取值**: \n\nfalse"
+        },
+        "occupy_ip": {
+          "type": "boolean",
+          "description": "**参数解释**:\n\n表示是否占用ip进行规格变更。\n\n**约束限制**: \n\n不涉及。 \n\n**取值范围**:\n\n不涉及。 \n\n**默认取值**: \n\ntrue"
+        }
+      },
+      "type": "object"
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

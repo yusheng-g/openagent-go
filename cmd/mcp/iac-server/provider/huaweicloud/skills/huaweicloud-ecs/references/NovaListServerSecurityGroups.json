@@ -1,0 +1,285 @@
+{
+  "name": "NovaListServerSecurityGroups",
+  "summary": "查询指定云服务器安全组列表",
+  "tags": "安全组管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers/{server_id}/os-security-groups": {
+      "get": {
+        "tags": [
+          "安全组管理"
+        ],
+        "summary": "查询指定云服务器安全组列表",
+        "description": "查询指定弹性云服务器的安全组。",
+        "operationId": "NovaListServerSecurityGroups",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "security_groups": [
+                  {
+                    "rules": [
+                      {
+                        "from_port": null,
+                        "group": {
+                          "tenant_id": "bb1118612ba64af3a6ea63a1bdcaa5ae",
+                          "name": "default"
+                        },
+                        "ip_protocol": null,
+                        "to_port": null,
+                        "parent_group_id": "bc4ac1d1-dc77-4b7d-a97d-af86eb0dc450",
+                        "ip_range": {},
+                        "id": "bb3cc988-e06a-49f6-b668-600e8bf193ee"
+                      },
+                      {
+                        "from_port": null,
+                        "group": {
+                          "tenant_id": "bb1118612ba64af3a6ea63a1bdcaa5ae",
+                          "name": "default"
+                        },
+                        "ip_protocol": null,
+                        "to_port": null,
+                        "parent_group_id": "bc4ac1d1-dc77-4b7d-a97d-af86eb0dc450",
+                        "ip_range": {},
+                        "id": "f9371051-d7e1-4be4-8748-77b1e0913730"
+                      }
+                    ],
+                    "tenant_id": "bb1118612ba64af3a6ea63a1bdcaa5ae",
+                    "description": "default",
+                    "id": "bc4ac1d1-dc77-4b7d-a97d-af86eb0dc450",
+                    "name": "default"
+                  },
+                  {
+                    "rules": [
+                      {
+                        "from_port": 200,
+                        "group": {},
+                        "ip_protocol": "tcp",
+                        "to_port": 400,
+                        "parent_group_id": "b3e4b615-a40f-4e1c-92af-2e0d382141d5",
+                        "ip_range": {
+                          "cidr": "0.0.0.0/0"
+                        },
+                        "id": "3330120d-bbd1-4a73-bda9-0196a84d5670"
+                      },
+                      {
+                        "from_port": 201,
+                        "group": {},
+                        "ip_protocol": "tcp",
+                        "to_port": 400,
+                        "parent_group_id": "b3e4b615-a40f-4e1c-92af-2e0d382141d5",
+                        "ip_range": {
+                          "cidr": "0.0.0.0/0"
+                        },
+                        "id": "b550c9a6-970a-462d-984e-265e88020818"
+                      }
+                    ],
+                    "tenant_id": "bb1118612ba64af3a6ea63a1bdcaa5ae",
+                    "description": "desc-sg",
+                    "id": "b3e4b615-a40f-4e1c-92af-2e0d382141d5",
+                    "name": "test-sg"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NovaListServerSecurityGroupsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询指定云服务器安全组列表",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 29,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v2.1/e73621affb8f44e1bc01898747ca09d4/servers/65fae4c2-3a09-46c6-af12-3b04f1fdba1e/os-security-groups",
+        "x-request-examples-text-1": "GET https://{endpoint}/v2.1/e73621affb8f44e1bc01898747ca09d4/servers/65fae4c2-3a09-46c6-af12-3b04f1fdba1e/os-security-groups",
+        "x-registered_to": "apicom",
+        "x-support_json": "是",
+        "x-api_level": "2",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaSecurityGroup": {
+      "required": [
+        "description",
+        "id",
+        "name",
+        "rules",
+        "tenant_id"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "安全组描述信息,长度0-255",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组ID,UUID格式"
+        },
+        "name": {
+          "type": "string",
+          "description": "安全组名字,长度0-255",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "租户ID或项目ID"
+        },
+        "rules": {
+          "type": "array",
+          "description": "安全组规则列表",
+          "items": {
+            "$ref": "#/definitions/NovaSecurityGroupCommonRule"
+          }
+        }
+      },
+      "description": ""
+    },
+    "NovaSecurityGroupCommonRule": {
+      "required": [
+        "from_port",
+        "group",
+        "id",
+        "ip_protocol",
+        "ip_range",
+        "parent_group_id",
+        "to_port"
+      ],
+      "properties": {
+        "from_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "起始端口,范围1-65535,且不大于to_port。\nip_protocol设置为icmp时,from_port表示type,范围是0-255。"
+        },
+        "group": {
+          "description": "对端安全组的名称和对端安全组所属租户的租户ID。\nip_range或者group参数的值,必须有一个为空。",
+          "$ref": "#/definitions/NovaSecurityGroupCommonGroup"
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组规则ID,UUID格式。"
+        },
+        "ip_protocol": {
+          "type": "string",
+          "description": "协议类型或直接指定IP协议号,取值可为icmp,tcp,udp或IP协议号。"
+        },
+        "ip_range": {
+          "description": "对端ip网段,cidr格式,ip_range或者group参数的值,必须有一个为空。",
+          "$ref": "#/definitions/NovaSecurityGroupCommonIpRange"
+        },
+        "parent_group_id": {
+          "type": "string",
+          "description": "相关联的安全组ID,UUID格式。"
+        },
+        "to_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "终止端口,范围1-65535,且不小于from_port。\nip_protocol设置为icmp时,to_port表示code,范围是0-255,且如果from_port为-1,to_port为-1表示任意ICMP报文。"
+        }
+      },
+      "description": ""
+    },
+    "NovaListServerSecurityGroupsResponseBody": {
+      "required": [
+        "security_groups"
+      ],
+      "properties": {
+        "security_groups": {
+          "type": "array",
+          "description": "security_group列表",
+          "items": {
+            "$ref": "#/definitions/NovaSecurityGroup"
+          },
+          "x-admin": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "NovaSecurityGroupCommonGroup": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "对端安全组的名称"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "对端安全组所属租户的租户ID"
+        }
+      },
+      "description": ""
+    },
+    "NovaSecurityGroupCommonIpRange": {
+      "properties": {
+        "cidr": {
+          "type": "string",
+          "description": "对端IP网段,cidr格式。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

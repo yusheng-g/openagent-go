@@ -1,0 +1,173 @@
+{
+  "name": "AttachServerVolume",
+  "summary": "弹性云服务器挂载磁盘",
+  "tags": "磁盘管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/attachvolume": {
+      "post": {
+        "tags": [
+          "磁盘管理"
+        ],
+        "summary": "弹性云服务器挂载磁盘",
+        "description": "把磁盘挂载到弹性云服务器上。",
+        "operationId": "AttachServerVolume",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "AttachServerVolumeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AttachServerVolumeRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JobResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "弹性云服务器挂载磁盘",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 35,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/attachvolume",
+        "x-request-examples-1": {
+          "volumeAttachment": {
+            "volumeId": "a26887c6-c47b-4654-abb5-dfadf7d3f803",
+            "device": "/dev/sda"
+          }
+        },
+        "x-request-examples-text-1": "{ \n    \"volumeAttachment\": { \n         \"volumeId\": \"a26887c6-c47b-4654-abb5-dfadf7d3f803\", \n         \"device\": \"/dev/sda\" \n    } \n}\n",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "JobResult": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "example": "70a599e0-31e7-49b7-b260-868f44166666",
+          "description": "提交任务成功后返回的任务ID,用户可以使用该ID对任务执行情况进行查询。"
+        }
+      },
+      "description": "任务类响应通用返回体。"
+    },
+    "AttachServerVolumeRequestBody": {
+      "required": [
+        "volumeAttachment"
+      ],
+      "properties": {
+        "volumeAttachment": {
+          "description": "云服务器挂载信息。",
+          "$ref": "#/definitions/AttachServerVolumeOption"
+        },
+        "dry_run": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否只预检此次请求。\n\n- true:发送检查请求,不会挂载磁盘。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应结果。\n- false:发送正常请求,通过检查后并且进行挂载磁盘请求。\n默认值:false"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "AttachServerVolumeOption": {
+      "required": [
+        "volumeId"
+      ],
+      "properties": {
+        "device": {
+          "type": "string",
+          "example": "/dev/sda",
+          "description": "磁盘挂载点。\n\n> 说明:\n\n- 新增加的磁盘挂载点不能和已有的磁盘挂载点相同。\n\n- 对于采用XEN虚拟化类型的弹性云服务器,device为必选参数;系统盘挂载点请指定/dev/sda;数据盘挂载点请按英文字母顺序依次指定,如/dev/sdb,/dev/sdc,如果指定了以“/dev/vd”开头的挂载点,系统默认改为“/dev/sd”。\n\n- 对于采用KVM虚拟化类型的弹性云服务器,系统盘挂载点请指定/dev/vda;数据盘挂载点可不用指定,也可按英文字母顺序依次指定,如/dev/vdb,/dev/vdc,如果指定了以“/dev/sd”开头的挂载点,系统默认改为“/dev/vd”。"
+        },
+        "volumeId": {
+          "type": "string",
+          "example": "a26887c6-c47b-4654-abb5-dfadf7d3f803",
+          "description": "待挂载磁盘的磁盘ID,UUID格式。"
+        },
+        "volume_type": {
+          "type": "string",
+          "description": "云硬盘类型。\n\n该字段于dry_run为true并且volumeId不存在时有效且为必选字段。"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘的个数。\n\n该字段于dry_run为true并且volumeId不存在时有效,如果该字段不存在,默认为1。"
+        },
+        "hw:passthrough": {
+          "type": "string",
+          "description": "- true: 表示云硬盘的设备类型为SCSI类型,即允许ECS操作系统直接访问底层存储介质。支持SCSI锁命令\n- false: 表示云硬盘的设备类型为VBD (虚拟块存储设备 , Virtual Block Device)类型,VBD只能支持简单的SCSI读写命令。\n该字段于dry_run为true并且volumeId不存在时有效且为必选字段。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

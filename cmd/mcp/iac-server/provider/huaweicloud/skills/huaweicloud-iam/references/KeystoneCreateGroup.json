@@ -1,0 +1,208 @@
+{
+  "name": "KeystoneCreateGroup",
+  "summary": "创建用户组",
+  "tags": "用户组管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/groups": {
+      "post": {
+        "tags": [
+          "用户组管理"
+        ],
+        "summary": "创建用户组",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)创建用户组。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneCreateGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "KeystoneCreateGroupRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateGroupRequestBody"
+            },
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。",
+            "examples": {
+              "application/json": {
+                "group": {
+                  "description": "IAMDescription",
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/groups/077a4c7bcd8010d53fb7c003e9d966c2"
+                  },
+                  "id": "077a4c7bcd8010d53fb7c003e9d966c2",
+                  "create_time": 1578969208707,
+                  "domain_id": "d78cbac186b744899480f25bd022f468",
+                  "name": "IAMGroup"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateGroupResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "409": {
+            "description": "资源冲突。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建用户组",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 25,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3/groups",
+        "x-request-examples-1": {
+          "group": {
+            "description": "IAMDescription",
+            "domain_id": "d78cbac186b744899480f25bd022f468",
+            "name": "IAMGroup"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"group\":{\n        \"description\":\"IAMDescription\",\n        \"domain_id\":\"d78cbac186b744899480f25bd022f468\",\n        \"name\":\"IAMGroup\"\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneCreateGroupOption": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "用户组描述信息,长度小于等于255字节。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "用户组所属账号ID,获取方式请参见:[获取账号ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMGroup",
+          "description": "用户组名,长度小于等于128字符。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateGroupResponseBody": {
+      "required": [
+        "group"
+      ],
+      "properties": {
+        "group": {
+          "description": "用户组信息。",
+          "$ref": "#/definitions/KeystoneGroupResultWithLinksSelf"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneGroupResultWithLinksSelf": {
+      "required": [
+        "create_time",
+        "description",
+        "domain_id",
+        "id",
+        "links",
+        "name"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "用户组描述信息。"
+        },
+        "id": {
+          "type": "string",
+          "example": "07609e7eb200250a3f7dc003cb7a4e2d",
+          "description": "用户组ID。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "用户组所属账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMGroup",
+          "description": "用户组名称。"
+        },
+        "links": {
+          "description": "用户组的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1578107542861,
+          "description": "用户组创建时间。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateGroupRequestBody": {
+      "required": [
+        "group"
+      ],
+      "properties": {
+        "group": {
+          "description": "用户组信息。",
+          "$ref": "#/definitions/KeystoneCreateGroupOption"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

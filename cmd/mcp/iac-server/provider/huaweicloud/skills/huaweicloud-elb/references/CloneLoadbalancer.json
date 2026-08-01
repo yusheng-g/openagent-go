@@ -1,0 +1,219 @@
+{
+  "name": "CloneLoadbalancer",
+  "summary": "复制已有负载均衡器",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/clone": {
+      "post": {
+        "summary": "复制已有负载均衡器",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": false,
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/clone",
+        "x-request-examples-description-1": "复制已有负载均衡器实例。",
+        "x-request-examples-text-1": {
+          "target_loadbalancer_param": {
+            "availability_zone_list": [
+              "az1",
+              "az2"
+            ],
+            "vip_address": "1.1.1.1",
+            "guaranteed": true
+          }
+        },
+        "x-request-examples-1": {
+          "target_loadbalancer_param": {
+            "availability_zone_list": [
+              "az1",
+              "az2"
+            ],
+            "vip_address": "1.1.1.1",
+            "guaranteed": true
+          }
+        },
+        "tags": [
+          "负载均衡器"
+        ],
+        "description": "复制已有的负载均衡器实例。",
+        "operationId": "CloneLoadbalancer",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "string"
+          },
+          {
+            "name": "CloneLoadbalancerRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "**参数解释**:复制负载均衡器接口请求体。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "schema": {
+              "$ref": "#/definitions/CloneLoadbalancerRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "schema": {
+              "$ref": "#/definitions/CloneLoadbalancerResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "loadbalancer_list": [
+                  {
+                    "id": "00ac869a-16f2-4335-b40a-15f277604f18"
+                  }
+                ],
+                "request_id": "53013c36-751b-4687-9819-cc0bb609468c",
+                "job_id": "3ccae6c1-615c-48b4-82b5-abfcdcb82849"
+              }
+            }
+          }
+        },
+        "x-name": "复制已有负载均衡器",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "TargetLoadbalancerParam": {
+      "type": "object",
+      "description": "**参数解释**:负载均衡器复制新实例参数对象。\n\n**约束限制**:不涉及",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:新实例名称。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不传时使用源ELB名称加\"-copy-{x}\"的后缀作为新实例名称。{x}代表数字序号。"
+        },
+        "availability_zone_list": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**:新实例所属可用区。\n\n**约束限制**:仅支持源ELB独享型复制场景设置该字段。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时使用源ELB的availability_zone_list。"
+        },
+        "vip_subnet_cidr_id": {
+          "type": "string",
+          "description": "**参数解释**:新实例所属子网的ipv4子网ID。\n\n**约束限制**:所选子网必须与源ELB在同一个vpc内。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时使用源ELB的vip_subnet_cidr_id。"
+        },
+        "vip_address": {
+          "type": "string",
+          "description": "**参数解释**:新实例的ipv4私网地址。\n\n**约束限制**:仅支持源ELB独享型复制场景、源ELB共享型复制为独享型场景支持设置该字段。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时随机分配vip_subnet_cidr_id对应子网的可用IP地址。"
+        },
+        "ipv6_vip_virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:新实例ipv6网络所属的子网网络ID。\n\n**约束限制**:\n- 仅支持源ELB独享型复制场景设置该字段。\n- 所选子网必须与源负载均衡器在同一个vpc内。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时使用源ELB的ipv6_vip_virsubnet_id。"
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:新实例的ipv6地址。\n\n**约束限制**:仅支持源ELB为独享型复制场景设置该字段。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时随机分配ipv6_vip_virsubnet_id对应子网的可用IP地址。"
+        },
+        "elb_virsubnet_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**:新实例后端子网的网络ID。\n\n**约束限制**:\n- 仅支持源ELB独享型复制场景、源ELB共享型复制为独享型场景支持设置该字段。\n- 所选子网必须与源负载均衡器在同一个vpc内。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时使用源负载均衡器的后端子网。"
+        },
+        "l4_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:新实例4层规格。\n\n**约束限制**:仅支持源ELB独享型复制场景、源ELB共享型复制为独享型场景支持设置该字段。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时保持与源负载均衡器的4层规格一致。"
+        },
+        "l7_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:新实例7层规格。\n\n**约束限制**:仅支持源ELB独享型复制场景、源ELB共享型复制为独享型场景支持设置该字段。\n\n**取值范围**:不涉及\n\n**默认取值**:不传时保持与源负载均衡器的7层规格一致。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不传时保持与源负载均衡器的企业项目一致。"
+        },
+        "reuse_pool": {
+          "type": "boolean",
+          "description": "**参数解释**:新实例是否复用源ELB的后端服务器组。\n\n**约束限制**:\n- 设置为true时,需要开启后端服务器组的多实例挂载功能。\n- 请求参数enterprise_project_id使用与源ELB不同的其他企业项目时,该参数失效。\n- 仅源ELB独享型复制场景、源ELB共享型复制为独享型场景支持设置为true。\n\n**取值范围**:\n- false:新创建后端服务器组。\n- true:复用源ELB的后端服务器组。\n\n**默认取值**:false",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "guaranteed": {
+          "type": "boolean",
+          "description": "**参数解释**:新实例类型。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- false:复制为共享型实例,此时源ELB必须是共享型。\n- true:复制为独享型实例,源ELB可以是共享型或独享型。\n\n**默认取值**:\n- 源ELB是独享型复制场景默认为true。\n- 源ELB是共享型复制场景默认为false。"
+        }
+      }
+    },
+    "CloneLoadbalancerResponseBody": {
+      "type": "object",
+      "description": "**参数解释**:复制已有负载均衡实例请求接口返回体。",
+      "properties": {
+        "loadbalancer_list": {
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "00ac869a-16f2-4335-b40a-15f277604f18",
+                "description": "**参数解释**:新实例的ID。\n\n**取值范围**:不涉及"
+              }
+            }
+          },
+          "type": "array",
+          "description": "**参数解释**:新实例信息。"
+        },
+        "request_id": {
+          "type": "string",
+          "example": "53013c36-751b-4687-9819-cc0bb609468c",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "job_id": {
+          "type": "string",
+          "example": "3ccae6c1-615c-48b4-82b5-abfcdcb82849",
+          "description": "**参数解释**:实例复制任务ID。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "CloneLoadbalancerRequestBody": {
+      "type": "object",
+      "required": [
+        "target_loadbalancer_param"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:单次最大复制数量。\n\n**约束限制**:不涉及\n\n**取值范围**:1-10\n\n**默认取值**:1"
+        },
+        "target_loadbalancer_param": {
+          "$ref": "#/definitions/TargetLoadbalancerParam"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

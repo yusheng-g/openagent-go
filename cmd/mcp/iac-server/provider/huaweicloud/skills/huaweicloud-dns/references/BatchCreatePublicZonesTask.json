@@ -1,0 +1,115 @@
+{
+  "name": "BatchCreatePublicZonesTask",
+  "summary": "批量创建公网域名",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/operation-task/batch-create-zone": {
+      "post": {
+        "tags": [
+          "批量操作"
+        ],
+        "operationId": "BatchCreatePublicZonesTask",
+        "summary": "批量创建公网域名",
+        "description": "提交批量创建公网域名任务,返回任务ID。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "x-constraint": "仅支持公网域名。\n每个任务最多支持10000个域名。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-enable-auth-anno": {
+          "type": "iam-token"
+        },
+        "x-iam-auth-meta-anno": {
+          "authLevel": "token",
+          "abacAction": "dns:zone:createBatchPublicZonesByName",
+          "authContextInitializerName": "baseAuthContextInitializer"
+        },
+        "x-cts-meta-anno": {
+          "resourceType": "publicZone",
+          "traceName": "batchCreatePublicZonesTask",
+          "operationId": "BatchCreatePublicZonesTask"
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BatchCreatePublicZonesTaskRequestBody",
+            "in": "body",
+            "description": "批量创建公网域名请求。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchCreatePublicZonesTaskRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量创建公网域名响应。",
+            "examples": {
+              "application/json": {
+                "task_id": "97a820bba45f04abba75f9f82525fb11"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchOperationTaskResponseBody"
+            }
+          }
+        },
+        "x-request-examples-description-1": "批量创建公网域名。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/operation-task/batch-create-zone",
+        "x-request-examples-1": {
+          "zone_names": [
+            "example.com."
+          ],
+          "enterprise_project_id": "0"
+        },
+        "x-order": 5
+      }
+    }
+  },
+  "definitions": {
+    "BatchCreatePublicZonesTaskRequestBody": {
+      "required": [
+        "zone_names"
+      ],
+      "type": "object",
+      "properties": {
+        "zone_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          },
+          "description": "**参数解释:**\n域名。\n**约束限制:**\n不涉及。\n**取值范围:**\n由多个以点分隔的字符串组成,可包含字母、数字、汉字、中划线,中划线不能在开头或末尾,单个字符串不超过63个字符,域名总长度不超过254个字符。\n**默认取值:**\n不涉及。",
+          "minItems": 1,
+          "maxItems": 10000
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释:**\n域名所属的企业项目ID。可以使用该字段过滤企业项目下的域名。\n**约束限制:**\n不涉及。\n**取值范围:**\n最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。\n**默认取值:**\n不涉及。",
+          "pattern": "^(0|[0-9a-zA-Z-]{36})$",
+          "default": "0"
+        }
+      }
+    },
+    "BatchOperationTaskResponseBody": {
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "**参数解释:**\n批量操作任务的ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

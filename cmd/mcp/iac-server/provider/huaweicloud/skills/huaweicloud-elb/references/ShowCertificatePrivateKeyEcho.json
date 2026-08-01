@@ -1,0 +1,93 @@
+{
+  "name": "ShowCertificatePrivateKeyEcho",
+  "summary": "查询证书私钥字段回显开关",
+  "tags": "证书",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/certificates/settings/private-key-echo": {
+      "get": {
+        "tags": [
+          "证书"
+        ],
+        "summary": "查询证书私钥字段回显开关",
+        "description": "查询证书私钥回显开关的状态。该开关用于设置各个ELB证书接口的响应字段private_key和enc_private_key是否展示。若开启则这些接口返回私钥内容;不开启则返回脱敏后内容(******)。该开关影响整个租户项目(project),默认开启。",
+        "operationId": "ShowCertificatePrivateKeyEcho",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET操作正常返回。",
+            "examples": {
+              "application/json": {
+                "private_key_echo": true,
+                "request_id": "98414965-856c-4be3-8a33-3e08432a222e"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowCertificatePrivateKeyEchoResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询证书私钥字段回显开关",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "查询证书私钥字段回显开关",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/{project_id}/elb/certificates/settings/private-key-echo",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,fcs",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ShowCertificatePrivateKeyEchoResponseBody": {
+      "required": [
+        "private_key_echo",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "private_key_echo": {
+          "description": "**参数解释**:ELB证书的私钥回显开关。\n\n**取值范围**:\n- true:开启回显,证书的列表、详情、创建和更新接口响应字段将会显示私钥内容。\n- false:关闭回显,证书的所有接口响应不显私钥内容,使用脱敏内容(*****)代替。",
+          "type": "boolean"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

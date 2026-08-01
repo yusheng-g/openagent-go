@@ -1,0 +1,208 @@
+{
+  "name": "KeystoneCreateProtocol",
+  "summary": "注册协议",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}": {
+      "put": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "注册协议",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)注册协议(将协议关联到某一身份提供商)。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneCreateProtocol",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "idp_id",
+            "in": "path",
+            "description": "身份提供商ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "ACME",
+            "x-order": 2
+          },
+          {
+            "name": "protocol_id",
+            "in": "path",
+            "description": "待注册的协议ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "saml",
+            "x-order": 3
+          },
+          {
+            "in": "body",
+            "name": "KeystoneCreateProtocolRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateProtocolRequestBody"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "protocol": {
+                  "mapping_id": "ACME",
+                  "id": "saml",
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/ACME/protocols/saml",
+                    "identity_provider": "https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/ACME"
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateProtocolResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "注册协议",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 95,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}",
+        "x-request-examples-1": {
+          "protocol": {
+            "mapping_id": "ACME"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"protocol\": {\n        \"mapping_id\": \"ACME\"\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneCreateProtocolResponseBody": {
+      "required": [
+        "protocol"
+      ],
+      "properties": {
+        "protocol": {
+          "description": "协议信息。",
+          "$ref": "#/definitions/ProtocolResult"
+        }
+      },
+      "description": ""
+    },
+    "ProtocolOption": {
+      "properties": {
+        "mapping_id": {
+          "type": "string",
+          "example": "ACME",
+          "description": "映射ID。身份提供商类型为iam_user_sso时,不需要绑定映射ID,无需传入此字段;否则此字段必填。"
+        }
+      },
+      "description": ""
+    },
+    "ProtocolLinks": {
+      "required": [
+        "identity_provider",
+        "self"
+      ],
+      "properties": {
+        "identity_provider": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/ACME",
+          "description": "身份提供商的资源链接地址。"
+        },
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/ACME/protocols/saml",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    },
+    "ProtocolResult": {
+      "required": [
+        "id",
+        "links",
+        "mapping_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "saml",
+          "description": "协议ID。"
+        },
+        "mapping_id": {
+          "type": "string",
+          "example": "ACME",
+          "description": "映射ID。"
+        },
+        "links": {
+          "description": "协议的资源链接信息。",
+          "$ref": "#/definitions/ProtocolLinks"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateProtocolRequestBody": {
+      "required": [
+        "protocol"
+      ],
+      "properties": {
+        "protocol": {
+          "description": "协议信息。",
+          "$ref": "#/definitions/ProtocolOption"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

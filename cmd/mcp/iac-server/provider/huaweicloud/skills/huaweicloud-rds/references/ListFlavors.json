@@ -1,0 +1,271 @@
+{
+  "name": "ListFlavors",
+  "summary": "查询数据库规格",
+  "tags": "引擎版本和规格",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/flavors/{database_name}": {
+      "get": {
+        "tags": [
+          "引擎版本和规格"
+        ],
+        "operationId": "ListFlavors",
+        "summary": "查询数据库规格",
+        "description": "查询数据库规格。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "database_name",
+            "in": "path",
+            "description": "数据库引擎。支持的引擎如下,不区分大小写:\nMySQL\nPostgreSQL\nSQLServer",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "MySQL",
+              "PostgreSQL",
+              "SQLServer",
+              "MariaDB"
+            ],
+            "x-example": "MySQL"
+          },
+          {
+            "name": "version_name",
+            "in": "query",
+            "description": "数据库版本号,获取方法请参见5.1查询数据库引擎的版本。(可输入小版本号)",
+            "required": false,
+            "type": "string",
+            "x-example": "5.7"
+          },
+          {
+            "name": "spec_code",
+            "in": "query",
+            "description": "规格编码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_serverless",
+            "in": "query",
+            "description": "是否查询serverless规格。取值范围如下,区分大小写:\ntrue:查询serverless规格\nfalse:查询非serverless规格\n默认值 false。",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/FlavorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "flavors": [
+                  {
+                    "vcpus": "1",
+                    "ram": 2,
+                    "id": "2988b9cc-2aac-3a94-898c-14666702f129",
+                    "spec_code": "rds.mysql.c2.medium.ha",
+                    "version_name": [
+                      "5.6",
+                      "5.7",
+                      "8.0"
+                    ],
+                    "instance_mode": "ha",
+                    "az_status": {
+                      "az1": "normal",
+                      "az2": "normal"
+                    },
+                    "az_desc": {
+                      "az1": "可用区1",
+                      "az2": "可用区2"
+                    },
+                    "group_type": "normal"
+                  },
+                  {
+                    "vcpus": "1",
+                    "ram": 2,
+                    "id": "2988b9cc-2aac-3a94-898c-14666702f130",
+                    "spec_code": "rds.mysql.c2.medium.rr",
+                    "version_name": [
+                      "5.6",
+                      "5.7",
+                      "8.0"
+                    ],
+                    "instance_mode": "replica",
+                    "az_status": {
+                      "az1": "normal",
+                      "az2": "normal"
+                    },
+                    "az_desc": {
+                      "az1": "可用区1",
+                      "az2": "可用区2"
+                    },
+                    "group_type": "normal"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/flavors/mysql"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "Flavor": {
+      "description": "规格信息。",
+      "required": [
+        "id",
+        "vcpus",
+        "ram",
+        "spec_code",
+        "version_name",
+        "instance_mode",
+        "az_status",
+        "az_desc",
+        "group_type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "规格id",
+          "example": "2988b9cc-2aac-3a94-898c-14666702f127"
+        },
+        "vcpus": {
+          "type": "string",
+          "description": "CPU个数。",
+          "example": "2"
+        },
+        "ram": {
+          "type": "integer",
+          "description": "内存大小,单位为GB。",
+          "example": 4
+        },
+        "spec_code": {
+          "type": "string",
+          "description": "资源规格编码。例如:rds.mysql.m1.xlarge.rr。\n\n其中形如“xxx.xxx.mcs.i3.xxx.xxx.xxx”是超高性能型(尊享版),需要申请一定权限才可使用,更多规格说明请参考数据库实例规格。\n- “rds”代表RDS产品。\n- “mysql”代表数据库引擎。\n- “m1.xlarge”代表性能规格,为高内存类型。",
+          "example": "rds.mysql.m1.xlarge.ha"
+        },
+        "instance_mode": {
+          "type": "string",
+          "description": "实例模型,包括如下类型:\n- ha,主备实例。\n- replica,只读实例。\n- single,单实例。",
+          "example": "ha"
+        },
+        "az_status": {
+          "$ref": "#/definitions/AzStatus"
+        },
+        "az_desc": {
+          "$ref": "#/definitions/AzDesc"
+        },
+        "version_name": {
+          "$ref": "#/definitions/version_name"
+        },
+        "group_type": {
+          "type": "string",
+          "description": "性能规格,包含以下状态:\n- normal:通用增强型。\n- normal2:通用增强II型。\n- armFlavors:鲲鹏通用增强型。\n- dedicicatenormal :x86独享型。\n- armlocalssd:鲲鹏通用型。\n- normallocalssd:x86通用型。\n- general:通用型。\n- dedicated:独享型,仅云盘SSD支持。\n- rapid:独享型,仅极速型SSD支持。\n- bigmen:超大内存型。"
+        }
+      }
+    },
+    "AzStatus": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "其中key是可用区编号,value是规格所在az的状态,包含以下状态:\n- normal,在售。\n- unsupported,暂不支持该规格。\n- sellout,售罄。",
+      "example": {
+        "az1": "normal"
+      }
+    },
+    "FlavorResponse": {
+      "required": [
+        "flavors"
+      ],
+      "properties": {
+        "flavors": {
+          "description": "实例规格信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Flavor"
+          }
+        }
+      }
+    },
+    "version_name": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "数组形式版本号",
+      "example": [
+        "5.6",
+        "5.7",
+        "8.0"
+      ]
+    },
+    "AzDesc": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "规格所在az的描述。",
+      "example": {
+        "az1": "可用区1"
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

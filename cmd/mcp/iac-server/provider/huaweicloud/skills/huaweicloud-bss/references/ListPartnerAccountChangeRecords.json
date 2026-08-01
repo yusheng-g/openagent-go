@@ -1,0 +1,241 @@
+{
+  "name": "ListPartnerAccountChangeRecords",
+  "summary": "查询收支明细",
+  "tags": "管理客户账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/partner-accounts/account-change-records": {
+      "get": {
+        "summary": "查询收支明细",
+        "description": "伙伴在伙伴销售平台上查询自身的收支明细情况。",
+        "tags": [
+          "管理客户账户(伙伴)"
+        ],
+        "operationId": "ListPartnerAccountChangeRecords",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/accounts/partner-accounts/account-change-records",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-10-12",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "balance_type",
+            "in": "query",
+            "required": true,
+            "description": "账户类型。BALANCE_TYPE_DEBIT:现金账户,BALANCE_TYPE_CREDIT:信用账户",
+            "x-maxLength": 30,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "trade_type",
+            "in": "query",
+            "required": false,
+            "description": "交易类型。RECHARGE:充值,DEDEUCT:消费,REFUND:退款,RFROZEN:冻结,TRANS:转账,余额和保证金互换(老商务模式,当前已无保证金账户),ADJUST:调账(华为核销等),BEADJUST:经销商拨款,BERETRIEVE:经销商回收,BEUNBIND:解绑/关联模式切换导致的回收,BONUSCONVERT:奖励金转换(老商务模式,当前已无奖励金账户),TRADE_MODE_TRANSFER:交易模式变更, 此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 30,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "trade_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "查询收支明细的开始日期。 说明: 东八区时间,格式为YYYY-MM-DD,如“2017-10-21”。默认值为一年前的当天日期。",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "trade_time_end",
+            "in": "query",
+            "required": false,
+            "description": "查询收支明细的结束日期。 说明: 东八区时间,格式为YYYY-MM-DD,如“2017-12-21”。默认值为当前日期。",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量,默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": "10"
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。  说明: 华为云总经销商(一级经销商)查询云经销商(二级经销商)的收支明细时,需携带此参数;除此之外,此参数不作处理。否则只能查询自身的收支明细。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true,
+            "x-site": "HC"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询收支明细响应",
+            "schema": {
+              "$ref": "#/definitions/ListPartnerAccountChangeRecordsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "currency": "CNY",
+                "records": [
+                  {
+                    "account_change_id": "AC-8500000373-0",
+                    "trade_detail_type": "SOURCE_OPERAIION_RECHARGE",
+                    "trade_time": "2021-04-02T06:05:38Z",
+                    "trade_id": "CB123456",
+                    "change_amount": "1053.35",
+                    "balance_after_change": "0.00",
+                    "type": "1"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理客户账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/accounts/partner-accounts/account-change-records?balance_type=BALANCE_TYPE_DEBIT&trade_type=RECHARGE&trade_time_begin=2020-10-20&trade_time_end=2021-10-20&offset=0&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "ListPartnerAccountChangeRecordsRsp": {
+      "properties": {
+        "total_count": {
+          "description": "返回总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币。",
+          "example": ""
+        },
+        "records": {
+          "description": "调账记录列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountChangeRecord"
+          }
+        }
+      }
+    },
+    "AccountChangeRecord": {
+      "properties": {
+        "account_change_id": {
+          "type": "string",
+          "description": "收支明细流水号。",
+          "example": ""
+        },
+        "trade_detail_type": {
+          "type": "string",
+          "description": "交易详细类型。 SOURCE_OPERAIION_ADJUST_CREDIT:调账(信用额度调整)SOURCE_OPERAIION_RECHARGE:充值SOURCE_OPERAIION_DEDEUCT:消费(包年/包月)SOURCE_OPERAIION_MANUALFROZE:冻结(人工冻结)SOURCE_OPERAIION_MANUALUNFROZE:冻结(人工解冻)SOURCE_OPERAIION_MANUALCLEARFROZEN:冻结(人工清零)SOURCE_OPERAIION_TRANS_TO_BALANCE:转账(保证金转余额)SOURCE_OPERATION_BEADJUST:伙伴拨款SOURCE_OPERATION_BEUNBIND:交易模式变更(切换/解除关联回收)SOURCE_OPERAIION_EXPIRECLEAR:过期清零SOURCE_OPERAIION_ONETIME:消费(一次性扣费)SOURCE_OPERAIION_REFUND:退款SOURCE_OPERAIION_UNFROZEN:退款(退款解冻)SOURCE_OPERAIION_CLEARFROZEN:退款(退款清零)SOURCE_OPERAIION_ADJUST:调账(余额调整)SOURCE_OPERAIION_USAGE:消费(按需)SOURCE_OPERAIION_WRITEOFF:消费(欠费还款)SOURCE_OPERAIION_UNSUBSCRIBE:退款SOURCE_OPERAIION_RFROZEN:退款(退款冻结)SOURCE_OPERAIION_TRANS_TO_FOREGIFT:转账(余额转保证金)SOURCE_OPERAIION_PRIZE:调账(赠送)SOURCE_OPERATION_BERETRIEVE:伙伴回收SOURCE_OPERAIION_PRECISIONCOMP:消费(精度补扣)SOURCE_OPERAIION_FREERESDEDUCT:消费(免费资源扣减)SOURCE_OPERAIION_MERGE:奖励金转换(合并)SOURCE_OPERAIION_CONVERT_BONUS:奖励金转换SOURCE_OPERAIION_RECHARGE_REBATE:充值(激励返点)SOURCE_OPERATION_COUPONCANCEL:优惠券回收SOURCE_OPERAIION_BILLREFUND:调账(华为核销)SOURCE_OPERATION_TRADEMODE_TRANSFER:交易模式变更(和伙伴关联)SOURCE_OPERATION_SYSTEM_FROZEN:系统冻结(购买标销合同的伙伴涉及该模式)SOURCE_OPERATION_SYSTEM_UNFROZEN:系统解冻(购买标销合同的伙伴涉及该模式)SOURCE_OPERATION_COUPON_QUOTA_TRANSFER:调账(兑换现金券额度)SOURCE_OPERATIION_RIDEDUCT:消费(预留实例)SOURCE_OPERATION_COUPON_QUOTA_RECLAIM:代金券回收",
+          "example": ""
+        },
+        "trade_time": {
+          "type": "string",
+          "description": "交易时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2016-03-28T14:45:38Z”。",
+          "example": ""
+        },
+        "trade_id": {
+          "type": "string",
+          "description": "交易ID/订单ID。",
+          "example": ""
+        },
+        "change_amount": {
+          "type": "string",
+          "description": "变更金额,单位为元。",
+          "example": ""
+        },
+        "balance_after_change": {
+          "type": "string",
+          "description": "变更后余额,单位为元。",
+          "example": ""
+        },
+        "type": {
+          "type": "string",
+          "description": "收支类型。 1:收入2:支出",
+          "example": ""
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "|参数名称:客户账号ID| |参数约束及描述:客户账号ID。说明:交易详细类型取值为如下值时,该字段不为空 SOURCE_OPERATION_BEADJUST:伙伴拨款 SOURCE_OPERATION_BEUNBIND:交易模式变更(切换/解除关联回收) SOURCE_OPERATION_BERETRIEVE:伙伴回收|",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": ""
+        },
+        "account_name": {
+          "type": "string",
+          "description": "|参数名称:客户登录名称| |参数约束及描述:客户登录名称。说明:客户账号ID不为空时,该字段不为空|",
+          "minLength": 0,
+          "maxLength": 128,
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

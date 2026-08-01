@@ -1,0 +1,169 @@
+{
+  "name": "ListDatabases",
+  "summary": "查询数据库列表",
+  "tags": "管理数据库和用户(MySQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/database/detail": {
+      "get": {
+        "tags": [
+          "管理数据库和用户(MySQL)"
+        ],
+        "operationId": "ListDatabases",
+        "summary": "查询数据库列表",
+        "description": "查询数据库列表。",
+        "x-constraint": "实例在异常或冻结状态下不能执行该操作。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "分页页码,从1开始。",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页数据条数。取值范围[1, 100]。",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListDatabaseResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "databases": [
+                  {
+                    "name": "rds-test",
+                    "character_set": "utf8"
+                  },
+                  {
+                    "name": "testdb1",
+                    "character_set": "utf8"
+                  },
+                  {
+                    "name": "tt",
+                    "character_set": "utf8"
+                  }
+                ],
+                "total_count": 3
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/database/detail?page=1&limit=10"
+      }
+    }
+  },
+  "definitions": {
+    "DatabaseForCreation": {
+      "description": "数据库信息。",
+      "required": [
+        "name",
+        "character_set"
+      ],
+      "properties": {
+        "name": {
+          "description": "数据库名称。\n数据库名称长度可在1~64个字符之间,由字母、数字、中划线、下划线或$组成,$累计总长度小于等于10个字符,(MySQL 8.0不可包含$)。",
+          "type": "string"
+        },
+        "character_set": {
+          "description": "数据库使用的字符集,例如utf8、gbk、ascii等MySQL支持的字符集。",
+          "type": "string"
+        },
+        "comment": {
+          "description": "数据库备注,最大长度512",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ListDatabaseResponseBody": {
+      "required": [
+        "databases",
+        "total_count"
+      ],
+      "properties": {
+        "databases": {
+          "description": "数据库信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DatabaseForCreation"
+          }
+        },
+        "total_count": {
+          "description": "总数。",
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

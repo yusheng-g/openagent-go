@@ -1,0 +1,120 @@
+{
+  "name": "ListApiVersions",
+  "summary": "查询API版本列表信息",
+  "tags": "API版本信息",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/versions": {
+      "get": {
+        "tags": [
+          "API版本信息"
+        ],
+        "summary": "查询API版本列表信息",
+        "description": "查询当前ELB服务所有可用的API版本。通常情况下高版本API(当前v3为最高版本)比低版本API支持更多更全的特性。\n不同版本接口使用时需要注意如下事项:\n- 创建负载均衡器(POST /v3/{project_id}/elb/loadbalancers)接口无法创建共享型ELB实例。需要通过v2/v2.0接口创建,或者通过批量创建负载均衡器(/v3/{project_id}/elb/loadbalancers/batch-create)、复制已有负载均衡器(/v3/{project_id}/elb/loadbalancers/{loadbalancer_id}/clone)这两个接口创建。\n- 其他v3接口都可以同时处理独享型和共享型实例及其子资源。例如:可以使用创建监听器接口(POST /v3/{project_id}/elb/listeners)创建共享型ELB下的监听器。但在这种情况下部分独享型实例特有的特性将不会支持,具体见各API说明。",
+        "operationId": "ListApiVersions",
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "x-response-examples-tags-1": "hws,hws_hk,ocb,ctc,hcs,g42,tm,cmcc,hk_g42,hws_ocb,hk_vdf,fcs,ct",
+            "x-response-examples-1": {
+              "application/json": {
+                "versions": [
+                  {
+                    "id": "v3",
+                    "status": "CURRENT"
+                  },
+                  {
+                    "id": "v2",
+                    "status": "STABLE"
+                  },
+                  {
+                    "id": "v2.0",
+                    "status": "STABLE"
+                  }
+                ]
+              }
+            },
+            "x-response-examples-tags-2": "dt,hcso_dt",
+            "x-response-examples-2": {
+              "application/json": {
+                "versions": [
+                  {
+                    "id": "v3",
+                    "status": "CURRENT"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListApiVersionsResponseBody"
+            }
+          }
+        },
+        "x-name": "查询API版本列表信息",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "查询负载均衡服务的API版本列表信息",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/versions",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ListApiVersionsResponseBody": {
+      "required": [
+        "versions"
+      ],
+      "properties": {
+        "versions": {
+          "type": "array",
+          "description": "**参数解释**:可用API版本列表。",
+          "items": {
+            "$ref": "#/definitions/ApiVersionInfo"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ApiVersionInfo": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:API版本号。\n\n**取值范围**:由高到低版本分别为v3,v2,v2.0。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释**:API版本的状态。\n\n**取值范围**:\n- CURRENT:当前版本,当前所支持的API版本中最高的版本。\n- STABLE:稳定版本,其他可用版本。\n- DEPRECATED:废弃版本。",
+          "enum": [
+            "CURRENT",
+            "STABLE",
+            "DEPRECATED"
+          ]
+        }
+      },
+      "description": "**参数解释**:可用API版本信息。",
+      "required": [
+        "id",
+        "status"
+      ],
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

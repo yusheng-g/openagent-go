@@ -1,0 +1,333 @@
+{
+  "name": "UpdatePrivateDnat",
+  "summary": "更新DNAT规则",
+  "tags": "私网DNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/dnat-rules/{dnat_rule_id}": {
+      "put": {
+        "tags": [
+          "私网DNAT规则"
+        ],
+        "summary": "更新DNAT规则",
+        "description": "更新指定的DNAT规则。",
+        "operationId": "UpdatePrivateDnat",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "dnat_rule_id",
+            "in": "path",
+            "description": "DNAT规则的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "UpdatePrivateDnatRequestBody",
+            "in": "body",
+            "description": "更新DNAT规则的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateDnatRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新DNAT规则成功。",
+            "examples": {
+              "application/json": {
+                "dnat_rule": {
+                  "id": "24dd6bf5-48f2-4915-ad0b-5bb111d39c83",
+                  "project_id": "da261828016849188f4dcc2ef94d9da9",
+                  "description": "dnat rule description",
+                  "gateway_id": "0adefb29-a6c2-48a5-8637-2be67fa03fec",
+                  "transit_ip_id": "3faa719d-6d18-4ccb-a5c7-33e65a09663e",
+                  "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                  "network_interface_id": "dae9393a-b536-491c-a5a2-72edc1104707",
+                  "type": "COMPUTE",
+                  "protocol": "any",
+                  "internal_service_port": "0",
+                  "transit_service_port": "0",
+                  "private_ip_address": "192.168.1.72",
+                  "created_at": "2019-04-29T07:10:01",
+                  "updated_at": "2019-04-29T07:10:01",
+                  "status": "ACTIVE"
+                },
+                "request_id": "747a911c17067a39692f75ac146fb47e"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateDnatResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新DNAT规则",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/da261828016849188f4dcc2ef94d9da9/private-nat/dnat-rules/24dd6bf5-48f2-4915-ad0b-5bb111d39c83",
+        "x-request-examples-1": {
+          "dnat_rule": {
+            "description": "my dnat-rules 03"
+          }
+        },
+        "x-request-examples-text-1": "{ \n    \"dnat_rule\": { \n              \"description\": \"my dnat-rules 03\" \n    } \n}\n",
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "PrivateDnat": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "DNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "description": {
+          "type": "string",
+          "description": "DNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "transit_ip_id": {
+          "type": "string",
+          "description": "中转IP的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "gateway_id": {
+          "type": "string",
+          "description": "私网NAT网关实例的ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "network_interface_id": {
+          "type": "string",
+          "description": "网络接口ID,支持计算、ELBV2、ELBV3、VIP等实例的端口。",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "type": {
+          "type": "string",
+          "description": "DNAT规则后端的类型。\n取值:\n- COMPUTE:后端为计算实例。\n- VIP:后端为VIP的实例。\n- ELB:后端为ELBv2的实例。\n- ELBv3:后端为ELBv3的实例。\n- CUSTOMIZE:后端为自定义IP。",
+          "minLength": 1,
+          "maxLength": 10,
+          "example": "COMPUTE"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "协议类型。\n目前支持TCP/tcp、UDP/udp、ANY/any。\n对应协议号6、17、0。",
+          "enum": [
+            "tcp",
+            "udp",
+            "any"
+          ],
+          "minLength": 1,
+          "maxLength": 3,
+          "example": "tcp"
+        },
+        "private_ip_address": {
+          "type": "string",
+          "description": "后端资源(计算实例、ELBV2、ELBV3、VIP等)的私网IP地址。",
+          "minLength": 7,
+          "maxLength": 15,
+          "example": "192.168.1.72"
+        },
+        "internal_service_port": {
+          "type": "string",
+          "description": "后端实例的端口号(计算实例、ELBV2、ELBV3、VIP等)。",
+          "minLength": 1,
+          "maxLength": 5,
+          "default": 0,
+          "minimum": 0,
+          "maximum": 65535,
+          "example": 22
+        },
+        "transit_service_port": {
+          "type": "string",
+          "description": "中转IP的端口号。",
+          "minLength": 1,
+          "maxLength": 5,
+          "default": 0,
+          "minimum": 0,
+          "maximum": 65535,
+          "example": 22
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。创建DNAT规则时,关联的企业项目ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "0c478f9e-73a4-4c45-b9bc-b2c3bfc0d4c0"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "DNAT规则的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "DNAT规则的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。"
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT的DNAT规则状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "DNAT规则的响应体。"
+    },
+    "UpdatePrivateDnatResponseBody": {
+      "required": [
+        "dnat_rule"
+      ],
+      "properties": {
+        "dnat_rule": {
+          "$ref": "#/definitions/PrivateDnat"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "更新DNAT规则的响应体。"
+    },
+    "UpdatePrivateDnatRequestBody": {
+      "properties": {
+        "dnat_rule": {
+          "$ref": "#/definitions/UpdatePrivateDnatOption"
+        }
+      },
+      "description": "更新DNAT规则的请求体。",
+      "type": "object"
+    },
+    "UpdatePrivateDnatOption": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "dnat rule description",
+          "description": "DNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "transit_ip_id": {
+          "type": "string",
+          "example": "3faa719d-6d18-4ccb-a5c7-33e65a09663e",
+          "description": "中转IP的ID。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "network_interface_id": {
+          "type": "string",
+          "example": "95df1b88-d9bc-4edd-a808-a771dd4ded32",
+          "description": "网络接口ID,支持计算、ELB、VIP等实例的网络接口。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "private_ip_address": {
+          "type": "string",
+          "description": "后端实例的私网IP地址。",
+          "example": "192.168.1.1",
+          "minLength": 7,
+          "maxLength": 15
+        },
+        "protocol": {
+          "type": "string",
+          "example": "tcp",
+          "description": "协议类型。\n目前支持TCP/tcp、UDP/udp、ANY/any。\n对应协议号6、17、0。",
+          "enum": [
+            "tcp",
+            "udp",
+            "any"
+          ],
+          "minLength": 1,
+          "maxLength": 3
+        },
+        "internal_service_port": {
+          "type": "string",
+          "example": "80",
+          "description": "后端实例的端口号。",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        "transit_service_port": {
+          "type": "string",
+          "example": "80",
+          "description": "中转IP的端口号。",
+          "minLength": 1,
+          "maxLength": 10
+        }
+      },
+      "description": "更新DNAT规则的请求体。",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

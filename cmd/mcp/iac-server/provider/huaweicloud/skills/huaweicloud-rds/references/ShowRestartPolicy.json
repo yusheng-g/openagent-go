@@ -1,0 +1,146 @@
+{
+  "name": "ShowRestartPolicy",
+  "summary": "查询实例重启策略",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/restart-policy": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ShowRestartPolicy",
+        "summary": "查询实例重启策略",
+        "description": "查询实例重启策略。",
+        "x-constraint": "仅支持RDS for SQL Server。",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": true
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言。",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "required": true,
+            "in": "path",
+            "description": "实例ID。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/InstanceRestartPolicyResponse"
+            },
+            "examples": {
+              "application/json": {
+                "restart_server": false,
+                "restart_policy": {
+                  "period": [
+                    "begin"
+                  ],
+                  "utc_offset": "+08:00"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "查询实例重启策略。",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/0cadffbf9fe54f068a296522949a8c59in04/restart-policy"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "InstanceRestartPolicyResponse": {
+      "type": "object",
+      "properties": {
+        "restart_server": {
+          "type": "boolean",
+          "description": "是否重启虚拟机。"
+        },
+        "restart_policy": {
+          "type": "object",
+          "description": "重启策略。",
+          "items": {
+            "$ref": "#/definitions/RestartPolicy"
+          }
+        }
+      }
+    },
+    "RestartPolicy": {
+      "properties": {
+        "period": {
+          "type": "array",
+          "description": "重启周期配置,在重启周期内的可维护时间窗进行重启,时区为UTC,取值范围:\nbegin: 每月的第一天\nmiddle:每月的15号\nend:每月的最后一天\n空列表,表示该功能关闭。",
+          "enum": [
+            "begin",
+            "middle",
+            "end"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "utc_offset": {
+          "type": "string",
+          "description": "所在时区相较于UTC时间的偏移量,取值范围:格式必须为+hh:mm,或者-hh:mm,例如+08:00。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

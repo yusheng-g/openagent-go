@@ -1,0 +1,489 @@
+{
+  "name": "ListRdSforMySqlProxy",
+  "summary": "查询数据库代理信息列表",
+  "tags": "数据库代理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/proxy-list": {
+      "get": {
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/23a50154cf494ec9ad6883979a12db0a/instances/920ec36cef814a8b830a5bed50d9a088in01/proxy-list",
+        "x-request-examples-description-1": "查询数据库代理信息列表。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "tags": [
+          "数据库代理"
+        ],
+        "summary": "查询数据库代理信息列表",
+        "description": "查询数据库代理信息列表。",
+        "operationId": "ListRdSforMySqlProxy",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "type": "string",
+            "default": "application/json"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一Region下的project ID。\n\n获取方法请参见[获取项目ID](https://support.huaweicloud.com/api-rds/rds_03_0002.html)。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID,严格匹配UUID规则。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回体。",
+            "schema": {
+              "$ref": "#/definitions/QueryRDSforMySqlProxyResponse"
+            },
+            "examples": {
+              "application/json": {
+                "proxy_query_info_list": [
+                  {
+                    "proxy": {
+                      "pool_id": "e06ecf4dfea8409690c87a9ee6582b0dpo01",
+                      "status": "NORMAL",
+                      "address": "10.0.2.205",
+                      "port": 3306,
+                      "delay_threshold_in_seconds": 30,
+                      "cpu": "2",
+                      "mem": "4",
+                      "node_num": 2,
+                      "nodes": [
+                        {
+                          "id": "3079919890f24fb8ab284571fc409058pn01",
+                          "status": "NORMAL",
+                          "role": "master",
+                          "az_code": "cn-southwest-244c",
+                          "frozen_flag": 0
+                        },
+                        {
+                          "id": "804430ac9068419fa5e49d5ca0684172pn01",
+                          "status": "NORMAL",
+                          "role": "master",
+                          "az_code": "cn-southwest-244c",
+                          "frozen_flag": 0
+                        }
+                      ],
+                      "mode": "Cluster",
+                      "flavor_info": {
+                        "group_type": "X86",
+                        "code": "rds.proxy.large.2"
+                      },
+                      "transaction_split": "false",
+                      "connection_pool_type": "CLOSED",
+                      "pay_mode": "0",
+                      "name": "test-hll",
+                      "proxy_mode": "readwrite",
+                      "route_mode": 1,
+                      "dns_name": "",
+                      "subnet_id": "2f75f35c-62ca-43b7-9954-8fd1e6be4641",
+                      "ssl_option": false,
+                      "force_read_only": false,
+                      "seconds_level_monitor_fun_status": "off",
+                      "alt_flag": false,
+                      "support_transaction_split": true,
+                      "support_switch_connection_pool_type": true,
+                      "support_balance_route_mode": true,
+                      "support_proxy_ssl": true
+                    },
+                    "master_instance": {
+                      "id": "920ec36cef814a8b830a5bed50d9a088in01",
+                      "status": "normal",
+                      "name": "rds-2c54",
+                      "weight": 0,
+                      "available_zones": [
+                        {
+                          "code": "cn-southwest-244c",
+                          "description": "az3"
+                        }
+                      ]
+                    },
+                    "readonly_instances": [
+                      {
+                        "id": "f9462b58982d484fb64fd9880504d863in01",
+                        "status": "abnormal",
+                        "name": "replica-f966",
+                        "weight": 0,
+                        "available_zones": [
+                          {
+                            "code": "cn-southwest-244c",
+                            "description": "az3"
+                          }
+                        ]
+                      }
+                    ],
+                    "proxy_security_group_check_result": false
+                  }
+                ],
+                "max_proxy_num": 4,
+                "max_proxy_node_num": 4,
+                "support_balance_route_mode_for_favored_version": true
+              }
+            }
+          },
+          "400": {
+            "description": "Client error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "InstanceInfo": {
+      "type": "object",
+      "description": "数据库实例信息。",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "ba0fd7c13cca4655820e0f858d5d467bin01",
+          "description": "数据库主实例或只读实例ID。"
+        },
+        "status": {
+          "type": "string",
+          "example": "normal",
+          "description": "节点状态。"
+        },
+        "name": {
+          "type": "string",
+          "example": "rds-7404-hll",
+          "description": "数据库实例名称。"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "数据库实例读权重。"
+        },
+        "available_zones": {
+          "items": {
+            "$ref": "#/definitions/MysqlAvailableZoneInfo"
+          },
+          "description": "可用区信息。",
+          "type": "array"
+        }
+      }
+    },
+    "ProxyInfo": {
+      "type": "object",
+      "description": "数据库代理信息。",
+      "properties": {
+        "pool_id": {
+          "type": "string",
+          "example": "b2e0ab1292b24045bb45b5b14a750630po01",
+          "description": "数据库代理实例ID。"
+        },
+        "status": {
+          "type": "string",
+          "example": "NORMAL",
+          "description": "数据库代理状态。\n\n取值:\nNORMAL:表示数据库代理正常。\nENABLING:表示数据库代理正在开启。\nDISABLING:表示数据库代理正在关闭。\nCHANGING_NODE_NUM:表示数据库代理正在调整节点数量。\nSCALING: 表示数据库代理正在规格变更。\nUPGRADING: 表示数据库代理正在升级内核版本。\nIPMODIFYING: 表示数据库代理正在修改读写分离地址。\nRESTARTING: 表示数据库代理正在重启进程。\nTRANSACTION_SPLITTING: 表示数据库代理正在变更事务拆分功能状态。\nCONNECTION_POOL_SWITCH_OPERATING: 表示数据库代理正在变更会话连接池类型。\nPORT_MODIFYING: 表示数据库代理正在修改端口。\nPROXY_SSL_SWITCHING: 表示数据库代理正在变更SSL状态。\nALT_SWITCH_OPERATING: 表示数据库代理正在变更ALT状态。\nCHANGING_RESOURCES: 表示数据库代理正在进行资源变更。\nNORMAL: 表示数据库代理正常。\nABNORMAL: 表示数据库代理异常。\nFAILED: 表示数据库代理创建失败。\nFROZEN: 表示数据库代理已冻结。"
+        },
+        "address": {
+          "type": "string",
+          "example": "10.0.2.93",
+          "description": "读写分离地址。"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3306,
+          "description": "端口号。"
+        },
+        "delay_threshold_in_seconds": {
+          "type": "integer",
+          "format": "int32",
+          "example": 30,
+          "description": "延时阈值,单位:秒。"
+        },
+        "cpu": {
+          "type": "string",
+          "example": 4,
+          "description": "数据库代理规格的CPU大小。"
+        },
+        "mem": {
+          "type": "string",
+          "example": 8,
+          "description": "数据库代理规格的内存大小。"
+        },
+        "node_num": {
+          "type": "integer",
+          "format": "int32",
+          "example": 2,
+          "description": "数据库代理节点个数。"
+        },
+        "nodes": {
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "bd62df826b1a439c988005926973b9aapn01",
+                "description": "数据库代理节点ID。"
+              },
+              "status": {
+                "type": "string",
+                "example": "NORMAL",
+                "description": "数据库代理节点状态。\n\n取值范围:\nNORMAL: 表示节点正常。\nABNORMAL: 表示节点节点状态异常。\nCREATING: 表示节点正在创建中。\nCREATEFAIL: 表示节点创建失败。"
+              },
+              "role": {
+                "type": "string",
+                "example": "master",
+                "description": "数据库代理节点角色:\n\nmaster:主节点。\n\nslave:备节点。"
+              },
+              "az_code": {
+                "type": "string",
+                "example": "cn-southwest-244b",
+                "description": "数据库代理节点所在可用区。"
+              },
+              "frozen_flag": {
+                "type": "integer",
+                "format": "int32",
+                "example": 0,
+                "description": "数据库代理节点是否被冻结。\n\n取值范围:\n\n0:未冻结。\n\n1:冻结。"
+              }
+            }
+          },
+          "description": "数据库代理节点信息列表。",
+          "type": "array"
+        },
+        "mode": {
+          "type": "string",
+          "example": "Cluster",
+          "description": "数据库代理集群模式。\n取值:\n    Cluster:集群模式\n    Ha:主备模式"
+        },
+        "flavor_info": {
+          "description": "数据库代理规格信息。",
+          "properties": {
+            "group_type": {
+              "type": "string",
+              "example": "X86",
+              "description": "规格类型。",
+              "enum": [
+                "X86",
+                "RAM"
+              ]
+            },
+            "code": {
+              "type": "string",
+              "example": "rds.proxy.xlarge.2",
+              "description": "规格码。"
+            }
+          }
+        },
+        "transaction_split": {
+          "type": "string",
+          "example": false,
+          "description": "数据库代理事务拆分开关状态。\n\ntrue:开启。\n\nfalse:关闭。"
+        },
+        "connection_pool_type": {
+          "type": "string",
+          "example": "CLOSED",
+          "description": "连接池类型。\n\n取值范围:\n\nCLOSED: 关闭连接池。\n\nSESSION: 开启会话级连接池。"
+        },
+        "pay_mode": {
+          "type": "string",
+          "example": 0,
+          "description": "数据库代理计费模式。\n\n取值范围:\n0:按需计费\n1:包周期计费"
+        },
+        "name": {
+          "type": "string",
+          "example": "proxy-b2e0a",
+          "description": "数据库代理名称。"
+        },
+        "proxy_mode": {
+          "type": "string",
+          "example": "readwrite",
+          "description": "数据库代理读写模式。\n取值范围:\n    readwrite 读写模式\n    readonly 只读模式"
+        },
+        "dns_name": {
+          "type": "string",
+          "example": "",
+          "description": "数据库代理读写分离地址内网域名。\n该字段为空表示未申请读写内网域名。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "example": "2f75f35c-62ca-43b7-9954-8fd1e6be4641",
+          "description": "数据库代理实例所属子网ID。"
+        },
+        "seconds_level_monitor_fun_status": {
+          "type": "string",
+          "example": "off",
+          "description": "数据库代理秒级监控状态。",
+          "enum": [
+            "off",
+            "on"
+          ]
+        },
+        "alt_flag": {
+          "type": "boolean",
+          "example": false,
+          "description": "ALT开关状态。"
+        },
+        "force_read_only": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否强制读路由到只读。"
+        },
+        "route_mode": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "数据库代理路由模式。\n取值范围:\n    0:表示权重负载模式。\n    1:表示负载均衡模式(数据库主实例不接受读请求)。\n    2:表示负载均衡模式(数据库主实例接受读请求)。"
+        },
+        "ssl_option": {
+          "type": "boolean",
+          "example": false,
+          "description": "ssl开关状态。"
+        },
+        "support_balance_route_mode": {
+          "type": "boolean",
+          "example": false,
+          "description": "数据库代理是否支持开启负载均衡路由模式。"
+        },
+        "support_proxy_ssl": {
+          "type": "boolean",
+          "example": false,
+          "description": "数据库代理是否支持开启ssl功能。"
+        },
+        "support_switch_connection_pool_type": {
+          "type": "boolean",
+          "example": false,
+          "description": "数据库代理是否支持切换会话连接池类型。"
+        },
+        "support_transaction_split": {
+          "type": "boolean",
+          "example": false,
+          "description": "数据库代理是否支持开启事务拆分。"
+        }
+      }
+    },
+    "MysqlErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "MysqlAvailableZoneInfo": {
+      "type": "object",
+      "description": "可用区信息。",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "cn-southwest-244b",
+          "description": "可用区编码。"
+        },
+        "description": {
+          "type": "string",
+          "example": "az2",
+          "description": "可用区描述。"
+        }
+      }
+    },
+    "QueryProxyResponseV3": {
+      "type": "object",
+      "properties": {
+        "proxy": {
+          "description": "数据库代理信息。",
+          "$ref": "#/definitions/ProxyInfo"
+        },
+        "master_instance": {
+          "description": "数据库主实例信息。",
+          "$ref": "#/definitions/InstanceInfo"
+        },
+        "readonly_instances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InstanceInfo"
+          },
+          "description": "数据库只读实例信息。"
+        },
+        "proxy_security_group_check_result": {
+          "type": "boolean",
+          "description": "安全组是否放通该数据库代理到数据库的网络地址。",
+          "example": true
+        }
+      },
+      "description": "查询数据库代理详情信息返回体。"
+    },
+    "QueryRDSforMySqlProxyResponse": {
+      "type": "object",
+      "description": "查询数据库代理信息返回体。",
+      "properties": {
+        "proxy_query_info_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QueryProxyResponseV3"
+          },
+          "description": "数据库实例下的数据库代理信息列表。"
+        },
+        "max_proxy_num": {
+          "type": "integer",
+          "format": "int32",
+          "example": 4,
+          "description": "支持同时开启的数据库代理的最大数量。"
+        },
+        "max_proxy_node_num": {
+          "type": "integer",
+          "format": "int32",
+          "example": 8,
+          "description": "单个数据库代理支持选择的代理节点的最大数量。"
+        },
+        "support_balance_route_mode_for_favored_version": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否支持创建数据库代理时设置负载均衡路由模式。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,205 @@
+{
+  "name": "BatchChangeNodeToPeriod",
+  "summary": "按需节点转包年/包月",
+  "tags": "节点管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/toperiod": {
+      "post": {
+        "tags": [
+          "节点管理"
+        ],
+        "summary": "按需节点转包年/包月",
+        "description": "该API用于将节点从按需计费模式转成包周期计费模式。\n>集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。\n>按需节点池中的节点转成包年/包月时,需要将集群升级到v1.19.16-r40、v1.21.11-r0、v1.23.9-r0、v1.25.4-r0以及其他更高版本的集群。\n>当按需节点池中的节点转成包年/包月后,该节点不支持弹性缩容。\n>按需计费节点绑定的资源(弹性公网IP)可能不支持同步变更计费模式,详情请参见[弹性云服务器ECS按需转包年/包月说明](https://support.huaweicloud.com/price-ecs/ecs_billing_5002.html)。",
+        "operationId": "BatchChangeNodeToPeriod",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "BatchChangeNodeToPeriodRequestBody",
+            "description": "按需节点转包年/包月的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchChangeNodeToPeriodReqBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示按需节点转包年/包月订单下发成功。",
+            "examples": {
+              "application/json": {
+                "orderId": "CS260XXXXX1B3NPG"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchChangeNodeToPeriodResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "按需节点转包年/包月",
+        "x-scope": "Commercial",
+        "x-request-examples-description-1": "将一个节点从按需计费转为包周期计费,周期为1个月。",
+        "x-request-examples-url-1": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/toperiod",
+        "x-request-examples-1": {
+          "kind": "Node",
+          "apiVersion": "v3",
+          "nodeList": [
+            "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          ],
+          "periodOrderParam": {
+            "isAutoPay": true,
+            "isAutoRenew": false,
+            "periodNum": 1,
+            "periodType": "month"
+          }
+        },
+        "x-order": 20,
+        "x-request-examples-description": "按需节点转包年/包月。",
+        "x-request-examples-url": "",
+        "x-request-examples": "",
+        "x-publishpath": "BatchChangeNodeToPeriod",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-category": "cce",
+        "x-open-region-cloud": "ax,cmcc,ctc,hcso,hws,hws_eu,hws_hk,srg"
+      }
+    }
+  },
+  "definitions": {
+    "BatchChangeNodeToPeriodReqBody": {
+      "required": [
+        "nodeList",
+        "periodOrderParam"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI类型\n**约束限制**:\n该值不可修改\n**取值范围**:\n不涉及\n**默认取值**:\nNode",
+          "default": "Node"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n该值不可修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3",
+          "default": "v3"
+        },
+        "nodeList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**:\n要进行按需转包的CCE节点ID列表,示例如下:\n```\n\"nodeList\": [\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\", \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"]\n```\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "periodOrderParam": {
+          "description": "**参数解释**:\n转包周期订单参数",
+          "$ref": "#/definitions/periodOrderParam"
+        },
+        "includeResources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释**:\n需要一起转包周期的资源类型列表,示例如下:\n```\n\"includeResources\": [\"eip\"]\n```\n**约束限制**:\n当前仅支持eip(弹性公网IP)资源\n**取值范围**:\n- \"eip\":弹性公网IP\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "BatchChangeNodeToPeriodResp": {
+      "required": [
+        "orderId"
+      ],
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "example": "CS2603141601B3NPG",
+          "description": "**参数解释**:\n提交订单成功后返回的订单ID\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "periodOrderParam": {
+      "required": [
+        "periodNum",
+        "periodType"
+      ],
+      "properties": {
+        "isAutoPay": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否自动支付订单费用\n**约束限制**:\n不涉及\n**取值范围**:\n- true:自动支付\n- false:手动支付\n**默认取值**:\nfalse"
+        },
+        "isAutoRenew": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否自动续费\n**约束限制**:\n不涉及\n**取值范围**:\n- true:自动续费\n- false:不自动续费\n**默认取值**:\nfalse"
+        },
+        "periodNum": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n包周期时间长度,不同局点、不同产品规格支持的范围可能不同,大部分局点支持:1-9月,1-3年,具体以接口返回为准。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "periodType": {
+          "type": "string",
+          "description": "**参数解释**:\n包周期单位\n**约束限制**:\n不涉及\n**取值范围**:\n- \"month\":月\n- \"year\":年\n**默认取值**:\n不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

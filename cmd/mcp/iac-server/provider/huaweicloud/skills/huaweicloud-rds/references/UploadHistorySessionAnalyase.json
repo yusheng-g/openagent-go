@@ -1,0 +1,130 @@
+{
+  "name": "UploadHistorySessionAnalyase",
+  "summary": "上传历史会话分析",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/history-session-analyse-upload": {
+      "post": {
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/e28979107ed04d3b8b2f1b819b8d2be3in03/history-session-analyse-upload",
+        "x-request-examples-text-1": {
+          "type": "top_sql",
+          "start_time": 1764869600000,
+          "end_time": 1765249216000
+        },
+        "x-request-examples-1": {
+          "type": "top_sql",
+          "start_time": 1764869600000,
+          "end_time": 1765249216000
+        },
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "上传历史会话分析",
+        "description": "上传历史会话分析",
+        "operationId": "UploadHistorySessionAnalyase",
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          },
+          {
+            "name": "UploadHistorySessionAnalyaseRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "请求体",
+            "schema": {
+              "$ref": "#/definitions/UploadHistorySessionAnalyaseBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "响应体",
+            "schema": {
+              "$ref": "#/definitions/UploadHistorySessionAnalyaseRsp"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "3f1affd1-f05f-48c5-84e5-642d2b2c7285"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UploadHistorySessionAnalyaseBody": {
+      "type": "object",
+      "description": "请求体",
+      "required": [
+        "type",
+        "start_time",
+        "end_time"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "类型。\nsession    表示下载历史会话\nwait_event    表示下载历史等待事件\ntop_sql    表示下载历史top sql"
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "参数解释:\n开始时间。\n格式为UTC时间戳。\n取值范围:\n不涉及。\n默认取值:\n不涉及。"
+        },
+        "end_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "参数解释:\n结束时间。\n格式为UTC时间戳。\n取值范围:\n不涉及。\n默认取值:\n不涉及。"
+        }
+      }
+    },
+    "UploadHistorySessionAnalyaseRsp": {
+      "type": "object",
+      "description": "响应体",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

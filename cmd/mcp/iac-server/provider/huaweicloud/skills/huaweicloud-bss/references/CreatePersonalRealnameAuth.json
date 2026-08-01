@@ -1,0 +1,241 @@
+{
+  "name": "CreatePersonalRealnameAuth",
+  "summary": "申请个人实名认证",
+  "tags": "实名认证(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/customers/realname-auths/individual": {
+      "post": {
+        "summary": "申请个人实名认证",
+        "description": "个人客户可以进行个人实名认证申请。\n\n客户登录帐号中心进行个人实名认证的方式及流程请参见[这里](https://support.huaweicloud.com/usermanual-account/zh-cn_topic_0077914254.html)。",
+        "tags": [
+          "实名认证(伙伴)"
+        ],
+        "operationId": "CreatePersonalRealnameAuth",
+        "x-constraint": "接口只允许使用合作伙伴账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/customers/realname-auths/individual",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-04-11",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "个人实名认证申请请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ApplyIndividualRealnameAuthsReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/customers/realname-auths/individual",
+        "x-request-examples-1": {
+          "verified_number": "949826********2922",
+          "verified_file_url": [
+            "shimingrenzheng/zhengmian001.jpg",
+            "shimingrenzheng/fanmian002.jpg",
+            "shimingrenzheng/chizheng003.jpg"
+          ],
+          "name": "wangx_****_001",
+          "change_type": -1,
+          "customer_id": "068a6d********288536b6ba57d1ffae",
+          "verified_type": 0,
+          "identify_type": 0,
+          "xaccount_type": "***_IDP"
+        },
+        "responses": {
+          "200": {
+            "description": "个人实名认证申请响应",
+            "schema": {
+              "$ref": "#/definitions/ApplyIndividualRealnameAuthsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "is_review": 1
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败parameter error| |CBC.99000035:合作伙伴子用户不存在the customer does not exist| |CBC.99000000:无对该客户的操作权限| |CBC.99000027:验证码失效| |CBC.99000026:验证码错误| |CBC.99007188:该客户已经实名认证或者实名认证在审核中| |CBC.99007191:客户实名认证次数超过最大配置值| |CBC.99007202:实名认证校验失败| |CBC.99007219:实名认证信息与人脸不匹配| |CBC.99007255:持卡人身份信息或手机号输入不正确| |CBC.99007258:银行卡状态不正确(可能是冻结或过期的银行卡)| |CBC.99007259:银行卡未开通认证支付| |CBC.99007261:不支持该银行卡,请尝试其他银行卡| |CBC.99007265:您是合作伙伴,不允许实名认证为个人| |CBC.99007004:发起的业务操作存在不满足的业务检查项| |CBC.99007189:使用该证件号进行实名认证的客户数已经超过系统规定| |CBC.99007193:该证件号属于违规证件号,不允许进行实名认证| |CBC.99007260:银联与发卡行之间调用失败,请稍后重试或使用其它银行卡。| |CBC.99007262:银行系统异常,网络异常|",
+            "schema": {
+              "$ref": "#/definitions/FailCheckItems"
+            }
+          }
+        },
+        "x-category": "实名认证(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "FailCheckItems": {
+      "properties": {
+        "fail_check_items": {
+          "description": "不满足的业务规则检查项。 当错误码为CBC.99007004时返回。具体检查项参见”表1”。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "BankCardInfoV2": {
+      "required": [
+        "bank_account",
+        "areacode",
+        "mobile",
+        "verification_code"
+      ],
+      "properties": {
+        "bank_account": {
+          "type": "string",
+          "description": "银行卡账号。 当identifyType为4时,不能为空。 银行账号输入规则:^[0-9a-zA-Z],可以包含特殊横杠(-)字符。",
+          "minLength": 1,
+          "maxLength": 100,
+          "example": "XXXXXXXXXXXXXXXXX"
+        },
+        "areacode": {
+          "type": "string",
+          "description": "国家/区号码。 例如:0086:中国大陆区号码。",
+          "minLength": 1,
+          "maxLength": 10,
+          "example": "0086"
+        },
+        "mobile": {
+          "type": "string",
+          "description": "手机号码。",
+          "minLength": 1,
+          "maxLength": 20,
+          "example": "130XXXXXXXX"
+        },
+        "verification_code": {
+          "type": "string",
+          "description": "验证码。 请调用“发送验证码”接口获取。",
+          "minLength": 1,
+          "maxLength": 6,
+          "example": "9XXXX9"
+        }
+      }
+    },
+    "ApplyIndividualRealnameAuthsReq": {
+      "required": [
+        "customer_id",
+        "identify_type",
+        "verified_file_url",
+        "name",
+        "verified_number",
+        "xaccount_type"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用查询客户列表接口获取customer_id。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "06a7969058802f0c0f01c00b91846780"
+        },
+        "identify_type": {
+          "description": "认证方案: 0:个人证件认证 4:个人银行卡认证",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0",
+          "maximum": 32,
+          "minimum": 0
+        },
+        "verified_type": {
+          "description": "证件类型:3:护照,上传的附件为3张,第1张是护照个人资料页,第2张是,护照入境盖章页,第3张是手持护照个人资料页; 5:港澳通行证,上传的附件为3张,第1张是港澳居民来往内地通行证正面(人像面),第2张是港澳居民来往内地通行证反面,第3张是手持港澳居民来往内地通行证人像面; 6:台湾通行证,上传的附件为3张,第1张是台湾居民来往大陆通行证正面(人像面),第2张是台湾居民来往大陆通行证反面,第3张是手持台湾居民来往大陆通行证人像面; 9:港澳居民居住证,上传的附件为3张,第1张是港澳居民居住证人像面,第2张是,港澳居民居住证国徽面,第3张是手持港澳居民居住证人像面照片; 10:台湾居民居住证,上传的附件为3张,第1张是台湾居民居住证人像面,第2张是台湾居民居住证国徽面,第3张是手持台湾居民居住证人像面照片。当identify_type=0的时候,该字段需要填写,否则忽略该字段的取值。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0",
+          "maximum": 32,
+          "minimum": 3
+        },
+        "verified_file_url": {
+          "description": "个人证件认证时证件附件的文件URL,该URL地址必须按照顺序填写。以护照举例,譬如护照个人资料页文件名称是abc023,护照入境盖章页是def004,手持护照个人资料页是gh007,那么这个地方需要按照abc023 def004 gh007的顺序填写URL(文件名称区分大小写)。 个人银行卡认证时直接上传一张个人扫脸的图片附件即可。证件附件目前仅仅支持jpg、jpeg、bmp、png、gif、pdf格式,单个文件最大不超过10M。这个URL是相对URL,不需要包含桶名和download目录,只要包含download目录下的子目录和对应文件名称即可。举例如下:如果上传的证件附件在桶中的位置是:https://bucketname.obs.Endpoint.myhuaweicloud.com/download/abc023.jpg,该字段填写abc023.jpg; 如果上传的证件附件在桶中的位置是:https://bucketname.obs.Endpoint.myhuaweicloud.com/download/test/abc023.jpg,该字段填写test/abc023.jpg。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "x-maxLength": 4,
+          "x-minLength": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "姓名。",
+          "minLength": 1,
+          "maxLength": 255,
+          "example": "王XX"
+        },
+        "verified_number": {
+          "type": "string",
+          "description": "证件号码。",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": "XXXXXXXXXXXXXX"
+        },
+        "change_type": {
+          "description": "变更类型: -1:首次实名认证",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "-1",
+          "maximum": -1,
+          "minimum": -1
+        },
+        "xaccount_type": {
+          "type": "string",
+          "description": "华为分给合作伙伴的平台标识。 该标识的具体值由华为分配。获取方法请参见如何获取xaccountType的取值。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "XXXXXX_IDP"
+        },
+        "bank_card_info": {
+          "description": "个人银行卡信息。 当identify_type=4的时候,该字段需要填写,否则忽略该字段的取值。 具体请参见表1。",
+          "$ref": "#/definitions/BankCardInfoV2",
+          "x-site": "HC"
+        }
+      }
+    },
+    "ApplyIndividualRealnameAuthsRsp": {
+      "properties": {
+        "is_review": {
+          "description": "是否需要转人工审核,只有状态码为200才返回该参数: 0:不需要1:需要",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1",
+          "default": 1
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

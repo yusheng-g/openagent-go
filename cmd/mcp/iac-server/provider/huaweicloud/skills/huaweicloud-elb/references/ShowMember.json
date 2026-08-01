@@ -1,0 +1,206 @@
+{
+  "name": "ShowMember",
+  "summary": "查询后端云服务器详情",
+  "tags": "后端云服务器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/pools/{pool_id}/members/{member_id}": {
+      "get": {
+        "tags": [
+          "后端云服务器"
+        ],
+        "summary": "查询后端云服务器详情",
+        "description": "根据指定ID查询后端云服务器详情。",
+        "operationId": "ShowMember",
+        "parameters": [
+          {
+            "name": "pool_id",
+            "in": "path",
+            "description": "后端云服务器组id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "member_id",
+            "in": "path",
+            "description": "后端云服务器id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "member": {
+                  "name": "",
+                  "weight": 1,
+                  "admin_state_up": true,
+                  "subnet_id": "823d5866-6e30-45c2-9b1a-a1ebc3757fdb",
+                  "tenant_id": "145483a5107745e9b3d80f956713e6a3",
+                  "project_id": "145483a5107745e9b3d80f956713e6a3",
+                  "address": "192.172.3.100",
+                  "protocol_port": 8080,
+                  "operating_status": "ONLINE",
+                  "id": "e58f5bfa-0e46-4bc5-951c-8473d3e5f24a"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowMemberResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          },
+          "504": {
+            "description": "Gateway Timeout"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询后端云服务器详情",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 26,
+        "x-request-examples-1": "GET https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/pools/5a9a3e9e-d1aa-448e-af37-a70171f2a332/members/cf024846-7516-4e3a-b0fb-6590322c836f",
+        "x-request-examples-text-1": "GET https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/pools/5a9a3e9e-d1aa-448e-af37-a70171f2a332/members/cf024846-7516-4e3a-b0fb-6590322c836f",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ocb,ctc,ct",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ShowMemberResponseBody": {
+      "required": [
+        "member"
+      ],
+      "properties": {
+        "member": {
+          "description": "后端云服务器对象",
+          "$ref": "#/definitions/MemberResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "MemberResp": {
+      "required": [
+        "address",
+        "admin_state_up",
+        "id",
+        "name",
+        "operating_status",
+        "project_id",
+        "protocol_port",
+        "subnet_id",
+        "tenant_id",
+        "weight"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "后端云服务器ID"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "后端云服务器所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "后端云服务器所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "后端云服务器名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "后端云服务器的管理状态;该字段虽然支持创建、更新,但实际取值决定于后端云服务器对应的弹性云服务器是否存在。若存在,该值为true,否则,该值为false。"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "后端端口和协议号",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "后端云服务器所在的子网ID。该子网和后端云服务器关联的负载均衡器的子网必须在同一VPC下。只支持指定IPv4的子网ID。暂不支持IPv6。"
+        },
+        "address": {
+          "type": "string",
+          "description": "后端云服务器的对应的IP地址,这个IP必须在subnet_id字段的子网网段中。例如:192.168.3.11。只能指定为主网卡的IP。"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "后端云服务器的权重,请求按权重在同一后端云服务器组下的后端云服务器间分发。权重为0的后端不再接受新的请求。当后端云服务器所在的后端云服务器组的lb_algorithm的取值为SOURCE_IP时,该字段无效。",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "operating_status": {
+          "type": "string",
+          "description": "后端云服务器的健康状态,取值:\n\nONLINE:健康检查在线,后端服务正常。\nOFFLINE:健康检查离线,后端服务异常,负载均衡器不再向异常的后端发送流量。\nNO_MONITOR:无检查检查。未创建检查检查或健康检查的admin_state_up字段为false。"
+        }
+      },
+      "description": "后端云服务器响应体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

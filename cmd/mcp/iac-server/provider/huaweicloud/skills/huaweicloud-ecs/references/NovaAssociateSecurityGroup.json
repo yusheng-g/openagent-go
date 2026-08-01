@@ -1,0 +1,129 @@
+{
+  "name": "NovaAssociateSecurityGroup",
+  "summary": "添加安全组",
+  "tags": "安全组管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/servers/{server_id}/action": {
+      "post": {
+        "tags": [
+          "安全组管理"
+        ],
+        "summary": "添加安全组",
+        "description": "为弹性云服务器添加一个安全组。\n\n添加多个安全组时,建议最多为弹性云服务器添加5个安全组。",
+        "operationId": "NovaAssociateSecurityGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "server_id",
+            "in": "path",
+            "description": "弹性云服务器ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67",
+            "x-order": 3
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "NovaAssociateSecurityGroupRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NovaAssociateSecurityGroupRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        },
+        "deprecated": false,
+        "x-name": "添加安全组",
+        "x-constraint": "无",
+        "x-version": "v2.1",
+        "x-scope": "Commercial",
+        "x-order": 27,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/{project_id}/servers/{server_id}/action",
+        "x-request-examples-1": {
+          "addSecurityGroup": {
+            "name": "sg-test"
+          }
+        },
+        "x-request-examples-text-1": "{ \n    \"addSecurityGroup\": { \n        \"name\": \"sg-test\"\n    }\n}",
+        "x-support_json": "是",
+        "x-registered_to": "apicom",
+        "x-api_level": "3",
+        "x-obc": "Y",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NovaAddSecurityGroupOption": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "sg-test",
+          "description": "弹性云服务器添加的安全组名称,会对云服务器中配置的网卡生效。"
+        }
+      },
+      "description": " "
+    },
+    "NovaAssociateSecurityGroupRequestBody": {
+      "required": [
+        "addSecurityGroup"
+      ],
+      "properties": {
+        "addSecurityGroup": {
+          "description": "弹性云服务器添加安全组。",
+          "$ref": "#/definitions/NovaAddSecurityGroupOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,375 @@
+{
+  "name": "CreateUnscopedTokenWithIdToken",
+  "summary": "获取联邦认证unscoped token(OpenId Connect Id token方式)",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/auth": {
+      "post": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "获取联邦认证unscoped token(OpenId Connect Id token方式)",
+        "description": "获取联邦认证token(OpenId Connect Id token方式)。",
+        "operationId": "CreateUnscopedTokenWithIdToken",
+        "parameters": [
+          {
+            "name": "idp_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "description": "身份提供商id。"
+          },
+          {
+            "name": "protocol_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "description": "协议id。"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "OpenID Connect身份提供商的ID Token,格式为Bearer {ID Token}。",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer {ID Token}",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。",
+            "examples": {
+              "application/json": {
+                "token": {
+                  "expires_at": "2018-03-13T03:00:01.168000Z",
+                  "methods": [
+                    "mapped"
+                  ],
+                  "issued_at": "2018-03-12T03:00:01.168000Z",
+                  "user": {
+                    "OS-FEDERATION": {
+                      "identity_provider": {
+                        "id": "idptest"
+                      },
+                      "protocol": {
+                        "id": "oidc"
+                      },
+                      "groups": [
+                        {
+                          "name": "admin",
+                          "id": "45a8c8f..."
+                        }
+                      ]
+                    },
+                    "domain": {
+                      "id": "063bb260a480...",
+                      "name": "IAMDomain"
+                    },
+                    "name": "FederationUser",
+                    "id": "suvmgvUZc4PaCOEc..."
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UnscopedToken"
+            },
+            "headers": {
+              "X-Subject-Token": {
+                "type": "string",
+                "description": "签名后的Token。"
+              }
+            }
+          },
+          "400": {
+            "description": "参数无效。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "Request parameter 'idp id' is invalid.",
+                  "title": "Bad Request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "The request you have made requires authentication.",
+                  "title": "Unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 403,
+                  "message": "You are not authorized to perform the requested action.",
+                  "title": "Forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应资源。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Could not find %(target)s: %(target_id)s.",
+                  "title": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "系统内部异常。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 500,
+                  "message": "An unexpected error prevented the server from fulfilling your request.",
+                  "title": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取联邦认证unscoped token(OpenId Connect Id token方式)",
+        "x-constraint": null,
+        "x-version": "v3.0",
+        "x-scope": "TechnicalPreview",
+        "x-order": 10,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "POST https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/auth",
+        "x-request-examples-text-1": "POST https://iam.myhuaweicloud.com/v3/OS-FEDERATION/identity_providers/{idp_id}/protocols/{protocol_id}/auth",
+        "x-publishpath": null,
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UnscopedTokenInfo": {
+      "properties": {
+        "expires_at": {
+          "type": "string",
+          "description": "过期时间。"
+        },
+        "methods": {
+          "type": "array",
+          "description": "token获取方式,联邦认证默认为mapped。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "issued_at": {
+          "type": "string",
+          "description": "生成时间。"
+        },
+        "user": {
+          "$ref": "#/definitions/FederationUserBody"
+        },
+        "roles": {
+          "type": "array",
+          "description": "roles信息。",
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "role id。"
+              },
+              "name": {
+                "type": "string",
+                "description": "name id。"
+              }
+            }
+          }
+        },
+        "catalog": {
+          "type": "array",
+          "description": "catalog信息。",
+          "items": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "终端节点ID。"
+              },
+              "name": {
+                "type": "string",
+                "description": "服务名称。"
+              },
+              "type": {
+                "type": "string",
+                "description": "该接口所属服务。"
+              },
+              "endpoints": {
+                "type": "array",
+                "items": {
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "终端节点ID。"
+                    },
+                    "interface": {
+                      "type": "string",
+                      "description": "接口类型,描述接口在该终端节点的可见性。值为“public”,表示该接口为公开接口。"
+                    },
+                    "region": {
+                      "type": "string",
+                      "description": "终端节点所属区域。"
+                    },
+                    "region_id": {
+                      "type": "string",
+                      "description": "终端节点所属区域ID。"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "终端节点的URL。"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "token详细信息。",
+      "required": [
+        "expires_at",
+        "methods",
+        "issued_at",
+        "user"
+      ]
+    },
+    "OsFederationInfo": {
+      "properties": {
+        "identity_provider": {
+          "$ref": "#/definitions/IdpIdInfo"
+        },
+        "protocol": {
+          "$ref": "#/definitions/ProtocolIdInfo"
+        },
+        "groups": {
+          "$ref": "#/definitions/GroupInfo"
+        }
+      },
+      "description": "user详细信息。",
+      "required": [
+        "identity_provider",
+        "protocol",
+        "groups"
+      ]
+    },
+    "GroupInfo": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "用户组id。"
+          },
+          "name": {
+            "type": "string",
+            "description": "用户组名。"
+          }
+        }
+      },
+      "description": "用户组信息。"
+    },
+    "IdpIdInfo": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "身份提供商id。"
+        }
+      },
+      "description": "身份提供商信息。"
+    },
+    "ProtocolIdInfo": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "协议id。"
+        }
+      },
+      "description": "协议信息。"
+    },
+    "FederationUserBody": {
+      "required": [
+        "OS-FEDERATION",
+        "domain"
+      ],
+      "properties": {
+        "OS-FEDERATION": {
+          "$ref": "#/definitions/OsFederationInfo"
+        },
+        "domain": {
+          "$ref": "#/definitions/DomainInfo"
+        },
+        "id": {
+          "type": "string",
+          "description": "user id。"
+        },
+        "name": {
+          "type": "string",
+          "description": "user name。"
+        }
+      },
+      "description": "联邦用户信息。"
+    },
+    "UnscopedToken": {
+      "properties": {
+        "token": {
+          "$ref": "#/definitions/UnscopedTokenInfo"
+        }
+      },
+      "description": "返回体"
+    },
+    "DomainInfo": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "租户id。"
+        },
+        "name": {
+          "type": "string",
+          "description": "租户name。"
+        }
+      },
+      "description": "domain信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

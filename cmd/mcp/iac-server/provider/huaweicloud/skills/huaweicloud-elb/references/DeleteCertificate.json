@@ -1,0 +1,132 @@
+{
+  "name": "DeleteCertificate",
+  "summary": "删除SSL证书",
+  "tags": "SSL证书管理",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/certificates/{certificate_id}": {
+      "delete": {
+        "tags": [
+          "SSL证书管理"
+        ],
+        "summary": "删除SSL证书",
+        "description": "删除指定的SSL证书",
+        "operationId": "DeleteCertificate",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "certificate_id",
+            "in": "path",
+            "description": "SSL证书ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "所在项目Id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除操作正常返回码"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除SSL证书",
+        "x-constraint": "如果待删除证书被监听器使用,则该证书不允许被删除,同时系统会返回409响应。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "DELETE https://{ELB_Endpoint}/v2/{project_id}/elb/certificates/23ef9aad4ecb463580476d324a6c71af",
+        "x-request-examples-text-1": "DELETE https://{ELB_Endpoint}/v2/{project_id}/elb/certificates/23ef9aad4ecb463580476d324a6c71af",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-11-30",
+        "x-open-region-cloud": "hc,hk,tlf,ctc,ct,ocb",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

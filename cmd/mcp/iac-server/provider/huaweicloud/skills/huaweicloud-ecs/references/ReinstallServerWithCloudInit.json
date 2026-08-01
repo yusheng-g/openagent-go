@@ -1,0 +1,198 @@
+{
+  "name": "ReinstallServerWithCloudInit",
+  "summary": "重装弹性云服务器操作系统(安装Cloud-init)",
+  "tags": "状态管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/cloudservers/{server_id}/reinstallos": {
+      "post": {
+        "tags": [
+          "状态管理"
+        ],
+        "summary": "重装弹性云服务器操作系统(安装Cloud-init)",
+        "description": "重装弹性云服务器的操作系统。支持弹性云服务器数据盘不变的情况下,使用原镜像重装系统盘。\n\n调用该接口后,系统将卸载系统盘,然后使用原镜像重新创建系统盘,并挂载至弹性云服务器,实现重装操作系统功能。",
+        "operationId": "ReinstallServerWithCloudInit",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "ReinstallServerWithCloudInitRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReinstallServerWithCloudInitRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JobResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "重装弹性云服务器操作系统(安装Cloud-init)",
+        "x-constraint": "- 该接口仅支持安装Cloud-init或Cloudbase-init的镜像。\n- 关机状态或者重装操作系统失败的弹性云服务器,才能执行重装操作。\n- 不包含系统盘的弹性云服务器不能执行重装操作。\n- 执行重装操作系统任务时,请勿并行执行其他任务,否则可能会引起重装操作系统失败。\n- 该接口仅支持安装Cloud-init或Cloudbase-init的镜像,如使用未安装Cloud-init或Cloudbase-init的镜像,该接口不能注入密钥或密码。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/{project_id}/cloudservers/{server_id}/reinstallos",
+        "x-request-examples-1": {
+          "os-reinstall": {
+            "adminpass": "!QAZxsw2",
+            "userid": "7e25b1da389f4697a79df3a0e5bd494e",
+            "metadata": {
+              "BYOL": "false"
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"os-reinstall\": {\n        \"adminpass\": \"!QAZxsw2\", \n        \"userid\": \"7e25b1da389f4697a79df3a0e5bd494e\",\n        \"metadata\": {\n              \"BYOL\": \"false\"\n        }\n    }\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ReinstallServerWithCloudInitOption": {
+      "properties": {
+        "adminpass": {
+          "type": "string",
+          "example": "!QAZxsw2",
+          "description": "云服务器管理员帐户的初始登录密码。\n其中,Windows管理员帐户的用户名为Administrator。\n建议密码复杂度如下:\n\n- 长度为8-26位。\n- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?)中的三种。 \n\n> 说明:\n\n- 对于Windows弹性云服务器,密码不能包含用户名或用户名的逆序,不能包含用户名中超过两个连续字符的部分。\n- 对于Linux弹性云服务器也可使用user_data字段实现密码注入,此时adminpass字段无效。\n- adminpass和keyname不能同时有值。\n- adminpass和keyname如果同时为空,此时,metadata中的user_data属性必须有值。"
+        },
+        "keyname": {
+          "type": "string",
+          "example": "KeyPair-1234",
+          "description": "密钥名称。\n\n密钥可以通过密钥创建接口进行创建(请参见[创建和导入SSH密钥](https://support.huaweicloud.com/api-dew/CreateKeypair.html)),或使用SSH密钥查询接口查询已有的密钥(请参见[查询SSH密钥列表](https://support.huaweicloud.com/api-dew/ListKeypairs.html) )。"
+        },
+        "userid": {
+          "type": "string",
+          "example": "7e25b1da389f4697a79df3a0e5bd6666",
+          "description": "用户ID。当传入keyname参数时,此参数为必选。"
+        },
+        "metadata": {
+          "description": "重装云服务器的元数据。",
+          "$ref": "#/definitions/ReinstallSeverMetadata"
+        },
+        "mode": {
+          "type": "string",
+          "example": "withStopServer",
+          "description": "取值为withStopServer ,支持开机状态下重装弹性云服务器。\nmode取值为withStopServer时,对开机状态的弹性云服务器执行重装操作,系统自动对云服务器先执行关机,再重装操作系统。"
+        }
+      },
+      "description": "重装操作系统body。"
+    },
+    "JobResult": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "example": "70a599e0-31e7-49b7-b260-868f44166666",
+          "description": "提交任务成功后返回的任务ID,用户可以使用该ID对任务执行情况进行查询。"
+        }
+      },
+      "description": "任务类响应通用返回体。"
+    },
+    "ReinstallSeverMetadata": {
+      "properties": {
+        "__system__encrypted": {
+          "type": "string",
+          "example": "0",
+          "description": "metadata中的表示加密功能的字段,0代表不加密,1代表加密。\n\n该字段不存在时,云硬盘默认为不加密。",
+          "default": "0",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "__system__cmkid": {
+          "type": "string",
+          "example": "1189efbf-d48b-46ad-a823-94b942e2a000",
+          "description": "metadata中的加密cmkid字段,与__system__encrypted配合表示需要加密,cmkid长度固定为36个字节。\n\n> 说明:\n\n- 请参考[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html),通过HTTPS请求获取密钥ID。",
+          "x-obc": "Y",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "user_data": {
+          "type": "string",
+          "example": "IyEvYmluL2Jhc2gKL2Jpbi9zdQplY2hvICJJIGFtIGluIHlvdSEiCg==",
+          "description": "重装云服务器过程中注入用户数据。\n\n支持注入文本、文本文件或gzip文件。注入内容最大长度32KB。注入内容,需要进行base64格式编码。\n\n了解更多用户数据注入请参考[用户数据注入](https://support.huaweicloud.com/usermanual-ecs/zh-cn_topic_0032380449.html)。"
+        }
+      },
+      "description": ""
+    },
+    "ReinstallServerWithCloudInitRequestBody": {
+      "required": [
+        "os-reinstall"
+      ],
+      "properties": {
+        "os-reinstall": {
+          "description": "重装弹性云服务器",
+          "$ref": "#/definitions/ReinstallServerWithCloudInitOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

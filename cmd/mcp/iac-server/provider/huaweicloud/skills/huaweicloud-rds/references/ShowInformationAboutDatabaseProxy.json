@@ -1,0 +1,403 @@
+{
+  "name": "ShowInformationAboutDatabaseProxy",
+  "summary": "查询数据库代理信息",
+  "tags": "数据库代理(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/proxy": {
+      "get": {
+        "tags": [
+          "数据库代理(PostgreSQL)"
+        ],
+        "operationId": "ShowInformationAboutDatabaseProxy",
+        "summary": "查询数据库代理信息",
+        "description": "查询指定实例的数据库代理详细信息。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口仅支持PostgreSQL 11、PostgreSQL 12查询数据库代理详情。\n- 数据库实例必须已开启数据库代理 。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/QueryProxyInformationResponse"
+            },
+            "examples": {
+              "application/json": {
+                "proxy": {
+                  "pool_id": "c6ee492784b640e694f1da0201cd82c8po03",
+                  "status": "open",
+                  "address": "192.168.0.60",
+                  "elb_vip": null,
+                  "eip": null,
+                  "port": 3306,
+                  "pool_status": "normal",
+                  " delay_threshold_in_kilobytes ": 30,
+                  "cpu": "4",
+                  "mem": "8",
+                  "node_num": 2,
+                  "nodes": [
+                    {
+                      "id": "4fb00607cffd42dc9583ca09863df93cpn03",
+                      "name": "PROXY-c6ee492784b640e694f1da0201cd82c8po03_1",
+                      "role": "slave",
+                      "az_code": "az1xahz",
+                      "status": "normal",
+                      "frozen_flag": 0
+                    },
+                    {
+                      "id": "191f3164f918463bb6aedeb6ba742920pn03",
+                      "name": "PROXY-c6ee492784b640e694f1da0201cd82c8po03_0",
+                      "role": "master",
+                      "az_code": "az1xahz",
+                      "status": "normal",
+                      "frozen_flag": 0
+                    }
+                  ],
+                  "mode": "Ha"
+                },
+                "master_instance": {
+                  "id": "49fcbb94435c4d89930e91dcf5884909in03",
+                  "status": "normal",
+                  "name": "proxy-hwt-0922-3",
+                  "weight": 0,
+                  "available_zones": [
+                    {
+                      "code": "az1xahz",
+                      "description": "可用区1"
+                    }
+                  ],
+                  "cpu_num": 8
+                },
+                "readonly_instances": [
+                  {
+                    "id": "83251d1398594b9fbfc8f1ab8b8228b2in03",
+                    "status": "normal",
+                    "name": "replica-a392",
+                    "weight": 100,
+                    "available_zones": [
+                      {
+                        "code": "az1xahz",
+                        "description": "可用区1"
+                      }
+                    ],
+                    "cpu_num": 4
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/0483b6b16e954cb88930a360d2c4e663/instances/cee5265e1e5845649e354841234567dfin01/proxy"
+      }
+    }
+  },
+  "definitions": {
+    "Proxy": {
+      "properties": {
+        "pool_id": {
+          "type": "string",
+          "description": "Proxy实例ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "Proxy实例开启状态,取值范围如下。\n- open:打开。\n- closed:关闭。\n- frozen:已冻结。\n- opening:打开中。\n- closing:关闭中。\n- freezing:冻结中。\n- unfreezing:解冻中。"
+        },
+        "address": {
+          "type": "string",
+          "description": "Proxy读写分离地址。"
+        },
+        "elb_vip": {
+          "type": "string",
+          "description": "elb模式的虚拟IP信息。"
+        },
+        "eip": {
+          "type": "string",
+          "description": "弹性公网IP信息。"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Proxy端口信息。"
+        },
+        "pool_status": {
+          "type": "string",
+          "description": "Proxy实例状态。\n- abnormal:异常。\n- normal:正常。\n- creating:创建中。\n- deleted:已删除。"
+        },
+        "delay_threshold_in_kilobytes": {
+          "type": "integer",
+          "format": "int32",
+          "description": "延时阈值(单位:KB)。"
+        },
+        "cpu": {
+          "type": "string",
+          "description": "Proxy实例规格的CPU数量。"
+        },
+        "mem": {
+          "type": "string",
+          "description": "Proxy实例规格的内存数量。"
+        },
+        "node_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Proxy节点个数。"
+        },
+        "nodes": {
+          "type": "array",
+          "description": "Proxy节点信息。",
+          "items": {
+            "$ref": "#/definitions/ProxyNode"
+          }
+        },
+        "mode": {
+          "type": "string",
+          "description": "Proxy主备模式,取值范围:Ha。"
+        }
+      },
+      "required": [
+        "pool_id",
+        "status",
+        "address",
+        "elb_vip",
+        "eip",
+        "port",
+        "pool_status",
+        "delay_threshold_in_kilobytes",
+        "cpu",
+        "mem",
+        "node_num",
+        "nodes",
+        "mode"
+      ]
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "MasterInstance": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "主实例ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "主实例状态。"
+        },
+        "name": {
+          "type": "string",
+          "description": "主实例名称。"
+        },
+        "weight": {
+          "type": "integer",
+          "description": "主实例读写分离权重。",
+          "format": "int32"
+        },
+        "available_zones": {
+          "type": "array",
+          "description": "可用区信息。",
+          "items": {
+            "$ref": "#/definitions/AvailableZone"
+          }
+        },
+        "cpu_num": {
+          "type": "integer",
+          "description": "主实例CPU个数。",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "name",
+        "weight",
+        "available_zones",
+        "cpu_num"
+      ]
+    },
+    "AvailableZone": {
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "可用区编码。"
+        },
+        "description": {
+          "type": "string",
+          "description": "可用区描述。"
+        }
+      },
+      "required": [
+        "code",
+        "description"
+      ]
+    },
+    "ReadonlyInstances": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "只读实例ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "只读实例状态。"
+        },
+        "name": {
+          "type": "string",
+          "description": "只读实例名称。"
+        },
+        "weight": {
+          "type": "integer",
+          "description": "只读实例读写分离权重。",
+          "format": "int32"
+        },
+        "available_zones": {
+          "type": "array",
+          "description": "可用区信息。",
+          "items": {
+            "$ref": "#/definitions/AvailableZone"
+          }
+        },
+        "cpu_num": {
+          "type": "integer",
+          "description": "只读实例CPU个数。",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "name",
+        "weight",
+        "available_zones",
+        "cpu_num"
+      ]
+    },
+    "ProxyNode": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Proxy节点ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "Proxy节点名称。"
+        },
+        "role": {
+          "type": "string",
+          "description": "Proxy节点角色。\n- master:主节点。\n- slave:备节点。"
+        },
+        "az_code": {
+          "type": "string",
+          "description": "可用区。"
+        },
+        "status": {
+          "type": "string",
+          "description": "Proxy节点状态。\n- normal:正常。\n- abnormal:异常。\n- creating:创建中。\n- deleted:已删除。"
+        },
+        "frozen_flag": {
+          "type": "integer",
+          "description": "Proxy节点是否被冻结。\n- 0:未冻结。\n- 1:冻结。\n- 2:冻结删除。",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "az_code",
+        "status",
+        "frozen_flag"
+      ]
+    },
+    "QueryProxyInformationResponse": {
+      "properties": {
+        "proxy": {
+          "description": "Proxy实例信息。",
+          "type": "object",
+          "$ref": "#/definitions/Proxy"
+        },
+        "master_instance": {
+          "description": "主实例信息。",
+          "type": "object",
+          "$ref": "#/definitions/MasterInstance"
+        },
+        "readonly_instances": {
+          "type": "array",
+          "description": "只读实例信息。",
+          "items": {
+            "$ref": "#/definitions/ReadonlyInstances"
+          }
+        }
+      },
+      "required": [
+        "proxy",
+        "master_instance",
+        "readonly_instances"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

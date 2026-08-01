@@ -1,0 +1,199 @@
+{
+  "name": "UpdatePtr",
+  "summary": "修改弹性公网IP的反向解析记录",
+  "tags": "反向解析管理(v2.1)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/ptrs/{ptr_id}": {
+      "put": {
+        "tags": [
+          "反向解析管理(v2.1)"
+        ],
+        "x-request-examples-description-1": "修改弹性公网IP的反向解析记录对应的域名和描述信息,设置TTL为300秒。",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v2.1/ptrs/9a175b97889f2f3501889fa3a8a66ed0",
+        "x-request-examples-1": {
+          "ptrdnames": [
+            "www.example.com"
+          ],
+          "description": "Description for this PTR records",
+          "ttl": 300
+        },
+        "operationId": "UpdatePtr",
+        "summary": "修改弹性公网IP的反向解析记录",
+        "description": "修改弹性公网IP的反向解析记录。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-publishpath": "dns_api_66006",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/PtrIdInPath"
+          },
+          {
+            "name": "UpdatePtrRequestBody",
+            "description": "修改弹性公网IP的反向解析记录请求。",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UpdatePtrRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "修改弹性公网IP的反向解析记录响应。",
+            "schema": {
+              "$ref": "#/definitions/CreatOrShowPtrResp"
+            },
+            "examples": {
+              "application/json": {
+                "publicip": {
+                  "region": "xxx",
+                  "id": "a1645603-9814-44f9-ba19-1c565af9eb81",
+                  "address": "215.255.1.80"
+                },
+                "ptrdnames": [
+                  "www.example.com"
+                ],
+                "id": "9a175b97889f2f3501889fa3a8a66ed0",
+                "description": "Description for this PTR records",
+                "ttl": 300,
+                "status": "PENDING_UPDATE",
+                "links": {
+                  "self": "https://Endpoint/v2.1/ptrs/9a175b97889f2f3501889fa3a8a66ed0"
+                }
+              }
+            }
+          }
+        },
+        "x-order": 3
+      }
+    }
+  },
+  "definitions": {
+    "UpdatePtrRequestBody": {
+      "required": [
+        "ptrdnames"
+      ],
+      "properties": {
+        "ptrdnames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "反向解析记录对应的域名列表,最大个数不超过10个。"
+        },
+        "description": {
+          "type": "string",
+          "description": "对反向解析记录的描述。"
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "反向解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。取值范围:1~2147483647"
+        }
+      }
+    },
+    "CreatOrShowPtrResp": {
+      "properties": {
+        "publicip": {
+          "$ref": "#/definitions/PublicIpRes",
+          "description": "EIP对象。"
+        },
+        "ptrdnames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "反向解析记录对应的域名列表,最大个数不超过10个。"
+        },
+        "id": {
+          "type": "string",
+          "description": "反向解析记录的ID。"
+        },
+        "description": {
+          "type": "string",
+          "description": "对反向解析记录的描述。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "反向解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- ERROR:失败"
+        },
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "反向解析关联的企业项目ID,长度不超过36个字符。"
+        }
+      }
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    },
+    "PublicIpRes": {
+      "properties": {
+        "region": {
+          "type": "string",
+          "description": "弹性公网IP(EIP)所属的区域。"
+        },
+        "id": {
+          "type": "string",
+          "description": "弹性公网IP(EIP)的ID。"
+        },
+        "address": {
+          "type": "string",
+          "description": "弹性公网IP(EIP)。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "PtrIdInPath": {
+      "name": "ptr_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "反向解析ID。"
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

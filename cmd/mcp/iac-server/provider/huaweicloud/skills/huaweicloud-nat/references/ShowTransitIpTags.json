@@ -1,0 +1,196 @@
+{
+  "name": "ShowTransitIpTags",
+  "summary": "查询中转IP标签",
+  "tags": "中转IP标签管理",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/transit-ips/{resource_id}/tags": {
+      "get": {
+        "tags": [
+          "中转IP标签管理"
+        ],
+        "summary": "查询中转IP标签",
+        "description": "- 查询指定中转IP实例的标签信息。\n- 标签管理服务需要使用该接口查询指定中转IP实例的全部标签数据。",
+        "operationId": "ShowTransitIpTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 32
+          },
+          {
+            "name": "resource_id",
+            "in": "path",
+            "description": "中转IP的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 4,
+            "minLength": 1,
+            "maxLength": 10240
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询操作成功。",
+            "examples": {
+              "application/json": {
+                "request_id": "80ef5f21-b81a-4546-b23d-84272507d330",
+                "tags": [
+                  {
+                    "key": "key1",
+                    "value": "value1"
+                  },
+                  {
+                    "key": "key2",
+                    "value": "value2"
+                  },
+                  {
+                    "key": "key3",
+                    "value": "value3"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowResourceTagResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询中转IP标签",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-url-1": "GET  https://{Endpoint}/v3/cfa563efb77d4b6d9960781d82530fd8/transit-ips/b0399473-c352-4d0c-8ff4-cfde719cfde9/tags",
+        "x-obc": "Y",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "400",
+            "httpStatus": "400",
+            "errorMessage": "",
+            "errorDescription": "Bad Request",
+            "solution": "",
+            "errorDescriptionEn": "Bad Request",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "401",
+            "httpStatus": "401",
+            "errorMessage": "",
+            "errorDescription": "Unauthorized",
+            "solution": "",
+            "errorDescriptionEn": "Unauthorized",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "403",
+            "httpStatus": "403",
+            "errorMessage": "",
+            "errorDescription": "Forbidden",
+            "solution": "",
+            "errorDescriptionEn": "Forbidden",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "404",
+            "httpStatus": "404",
+            "errorMessage": "",
+            "errorDescription": "Not Found",
+            "solution": "",
+            "errorDescriptionEn": "Not Found",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "500",
+            "httpStatus": "500",
+            "errorMessage": "",
+            "errorDescription": "Internal Server Error",
+            "solution": "",
+            "errorDescriptionEn": "Internal Server Error",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ShowResourceTagResponseBody": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求id。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Tag"
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "查询资源标签的响应体。"
+    },
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,182 @@
+{
+  "name": "ShowCustomerAccountBalances",
+  "summary": "查询账户余额",
+  "tags": "管理账户(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/customer-accounts/balances": {
+      "get": {
+        "summary": "查询账户余额",
+        "description": "客户可以查询自身的账户余额。\n\n客户可以登录费用中心进入“[总览](https://account.huaweicloud.com/usercenter/#/userindex/allview)”页面,在“可用额度”区域可以查询自身的账户余额。",
+        "tags": [
+          "管理账户(客户)"
+        ],
+        "operationId": "ShowCustomerAccountBalances",
+        "x-constraint": "客户查询自身的账户余额的时候,只允许使用客户自身的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/accounts/customer-accounts/balances",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-07-06",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/accounts/customer-accounts/balances",
+        "responses": {
+          "200": {
+            "description": "查询账户余额响应",
+            "schema": {
+              "$ref": "#/definitions/QueryCustomerAccountBalancesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "account_balances": [
+                  {
+                    "account_id": "AT001017264D6E9FF7",
+                    "account_type": 1,
+                    "amount": 0,
+                    "currency": "CNY",
+                    "designated_amount": 0,
+                    "credit_amount": 0,
+                    "measure_id": 1
+                  },
+                  {
+                    "account_id": "AT001017264D6EA084",
+                    "account_type": 5,
+                    "amount": 0,
+                    "currency": "CNY",
+                    "designated_amount": 0,
+                    "credit_amount": 0,
+                    "measure_id": 1
+                  }
+                ],
+                "debt_amount": 120.0,
+                "measure_id": 1,
+                "currency": "CNY"
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误。|"
+          }
+        },
+        "x-category": "管理账户(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryCustomerAccountBalancesRsp": {
+      "properties": {
+        "account_balances": {
+          "description": "账户余额列表。 具体请参见表1。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountBalanceV3"
+          }
+        },
+        "debt_amount": {
+          "description": "欠款总金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币。",
+          "example": ""
+        }
+      }
+    },
+    "AccountBalanceV3": {
+      "required": [
+        "account_id",
+        "account_type",
+        "amount",
+        "currency",
+        "measure_id"
+      ],
+      "properties": {
+        "account_id": {
+          "type": "string",
+          "description": "账户标识。",
+          "example": ""
+        },
+        "account_type": {
+          "description": "账户类型。 1:余额2:信用5:奖励金7:保证金",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amount": {
+          "description": "账户余额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币。",
+          "example": "",
+          "default": "CNY"
+        },
+        "designated_amount": {
+          "description": "专款专用余额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "credit_amount": {
+          "description": "总信用额度,仅信用账户存在该字段。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "measure_id": {
+          "description": "度量单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

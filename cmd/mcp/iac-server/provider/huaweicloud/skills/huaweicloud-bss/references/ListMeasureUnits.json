@@ -1,0 +1,117 @@
+{
+  "name": "ListMeasureUnits",
+  "summary": "查询度量单位列表",
+  "tags": "管理产品(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bases/measurements": {
+      "get": {
+        "summary": "查询度量单位列表",
+        "description": "功能描述:查询资源使用量,包年包月资源的时长及金额的度量单位及名称,度量单位类型等。",
+        "tags": [
+          "管理产品(公共)"
+        ],
+        "operationId": "ListMeasureUnits",
+        "x-constraint": "该接口可以使用合作伙伴自身的AK/SK或者Token调用,也可以用客户的AK/SK或者Token来调用。",
+        "x-externalURL": "/v2/bases/measurements",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-11-17",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L1",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。zh_CN:中文en_US:英文缺省为zh_CN。",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询用量单位列表响应",
+            "schema": {
+              "$ref": "#/definitions/ListMeasureUnitssRsp"
+            },
+            "examples": {}
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理产品(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/bases/measurements"
+      }
+    }
+  },
+  "definitions": {
+    "MeasureUnitRest": {
+      "properties": {
+        "measure_id": {
+          "description": "度量单位ID。 例如:10表示GB。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "measure_name": {
+          "type": "string",
+          "description": "度量单位的名称,根据查询的语言类型返回结果。 例如:GB。",
+          "example": ""
+        },
+        "abbreviation": {
+          "type": "string",
+          "description": "度量单位名称的英文缩写。 例如:度量单位名称“GB”的英文缩写为“G”。",
+          "example": ""
+        },
+        "measure_type": {
+          "description": "度量类型。 1:货币2:时长3:流量4:数量6:长度7:容量9:行数10:周期11:频率12:个数15:容量*时长16:带宽速率17:容量时长18:查询速率19:带宽速率(1000进制)20:性能测试用量21:面积22:视频23:吞吐量24:分辨率26:通用资源包抵扣单位27:核数*时长28:内存*时长29:IOPS*时长30:吞吐量*时长31:个/时长40:流量(1000进制)41:1K Tokens82:帧98:缓存带宽x时长",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        }
+      }
+    },
+    "ListMeasureUnitssRsp": {
+      "properties": {
+        "measure_units": {
+          "description": "度量单位信息,具体参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MeasureUnitRest"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

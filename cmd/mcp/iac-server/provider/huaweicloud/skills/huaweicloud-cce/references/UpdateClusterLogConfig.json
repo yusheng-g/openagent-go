@@ -1,0 +1,210 @@
+{
+  "name": "UpdateClusterLogConfig",
+  "summary": "配置集群日志",
+  "tags": "集群管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/cluster/{cluster_id}/log-configs": {
+      "put": {
+        "x-request-examples-url-1": "/api/v3/projects/{project_id}/cluster/{cluster_id}/log-configs",
+        "x-request-examples-description-1": "配置集群日志上报LTS",
+        "x-request-examples-1": {
+          "log_configs": [
+            {
+              "name": "kube-apiserver",
+              "enable": true
+            },
+            {
+              "name": "kube-controller-manager",
+              "enable": false
+            },
+            {
+              "name": "kube-scheduler",
+              "enable": false
+            },
+            {
+              "name": "volcano",
+              "enable": true,
+              "type": "system-addon"
+            },
+            {
+              "name": "coredns",
+              "enable": false,
+              "type": "system-addon"
+            },
+            {
+              "name": "everest",
+              "enable": false,
+              "type": "system-addon"
+            }
+          ]
+        },
+        "tags": [
+          "集群管理"
+        ],
+        "operationId": "UpdateClusterLogConfig",
+        "summary": "配置集群日志",
+        "description": "用户可以选择集群管理节点上哪些组件的日志上报LTS",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-publishpath": "UpdateClusterLogConfig",
+        "x-scope": "Commercial",
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "name": "UpdateClusterLogConfigRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "集群日志上报配的置信息",
+            "schema": {
+              "$ref": "#/definitions/ClusterLogConfig"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示集群日志配置成功",
+            "schema": {
+              "$ref": "#/definitions/ClusterLogConfig"
+            },
+            "examples": {
+              "application/json": {
+                "ttl_in_days": 7,
+                "log_configs": [
+                  {
+                    "name": "kube-apiserver",
+                    "enable": true
+                  },
+                  {
+                    "name": "kube-controller-manager",
+                    "enable": false
+                  },
+                  {
+                    "name": "kube-scheduler",
+                    "enable": false
+                  },
+                  {
+                    "name": "volcano",
+                    "enable": true,
+                    "type": "system-addon"
+                  },
+                  {
+                    "name": "coredns",
+                    "enable": false,
+                    "type": "system-addon"
+                  },
+                  {
+                    "name": "everest",
+                    "enable": false,
+                    "type": "system-addon"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ClusterLogConfig": {
+      "type": "object",
+      "properties": {
+        "ttl_in_days": {
+          "type": "integer",
+          "format": "int32",
+          "example": 7,
+          "minimum": 0,
+          "maximum": 30,
+          "description": "**参数解释**: \n存储时长,单位:天。 \n**约束限制**: \n不涉及 \n**取值范围**:\n0-30 \n**默认取值**:\n不涉及"
+        },
+        "log_configs": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "audit",
+                "description": "**参数解释**:\n日志类型\n**约束限制**:\n必须为 **kube-apiserver**、**kube-controller-manager**、**kube-scheduler**、**audit** 或者系统插件名称\n**取值范围**:\n- kube-apiserver:采集kube-apiserver组件日志\n- kube-controller-manager:采集kube-controller-manager日志\n- kube-scheduler:采集kube-scheduler日志\n- audit:采集审计日志\n- 系统插件名称:采集插件日志\n\n**默认取值**:\n不涉及"
+              },
+              "enable": {
+                "type": "boolean",
+                "example": false,
+                "description": "**参数解释**:\n是否采集\n**约束限制**:\n不涉及\n**取值范围**:\n- true:开启日志采集\n- false:关闭采集日志\n\n**默认取值**:\n不涉及"
+              },
+              "type": {
+                "type": "string",
+                "example": "system-addon",
+                "enum": [
+                  "control",
+                  "audit",
+                  "system-addon"
+                ],
+                "description": "**参数解释**:\n组件类型 , 合法取值为control,audit,system-addon。\n**约束限制**:\n- 仅组件类型为系统插件类型时返回该参数\n- 作为**配置集群日志**接口更新参数时,如果要采集系统插件日志则必须声明为**system-addon**\n\n**取值范围**:\n- control: 控制面组件日志。\n- audit: 控制面审计日志。\n- system-addon: 系统插件日志。\n\n**默认取值**:\n不涉及"
+              }
+            }
+          },
+          "type": "array",
+          "description": "**参数解释**:\n日志配置项详细信息\n**约束限制**:\n不涉及"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

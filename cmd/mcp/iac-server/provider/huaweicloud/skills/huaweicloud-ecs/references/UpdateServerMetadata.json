@@ -1,0 +1,149 @@
+{
+  "name": "UpdateServerMetadata",
+  "summary": "更新云服务器元数据",
+  "tags": "元数据管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/metadata": {
+      "post": {
+        "tags": [
+          "元数据管理"
+        ],
+        "summary": "更新云服务器元数据",
+        "description": "更新云服务器元数据。\n\n- 如果元数据中没有待更新字段,则自动添加该字段。\n\n- 如果元数据中已存在待更新字段,则直接更新字段值。\n\n- 如果元数据中的字段不再请求参数中,则保持不变",
+        "operationId": "UpdateServerMetadata",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "UpdateServerMetadataRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateServerMetadataRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "metadata": {
+                  "key": "value"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateServerMetadataResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新云服务器元数据",
+        "x-constraint": "云服务器状态(云服务器的OS-EXT-STS:vm_state属性)必须是active,stopped,paused或者suspended。",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 40,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/metadata",
+        "x-request-examples-1": {
+          "metadata": {
+            "key": "value"
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"metadata\": {\n\t\t\"key\": \"value\"\n\t}\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-7-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateServerMetadataRequestBody": {
+      "required": [
+        "metadata"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "description": "用户自定义metadata键值对。\n\n结构体允许为空,取值为空时不更新数据。\n\n键。最大长度255个Unicode字符,不能为空。可以为大写字母(A-Z)、小写字母(a-z)、数字(0-9)、中划线(-)、下划线(_)、冒号(:)和小数点(.)。\n\n值。最大长度为255个Unicode字符。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          },
+          "x-obc": "",
+          "x-admin": "",
+          "x-internal": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "UpdateServerMetadataResponseBody": {
+      "required": [
+        "metadata"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "example": "{\"key\":\"value\"}",
+          "description": "用户自定义metadata键值对。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

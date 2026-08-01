@@ -1,0 +1,99 @@
+{
+  "name": "UpdateScalingConfig",
+  "summary": "修改伸缩配置",
+  "tags": "弹性伸缩配置",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_configuration/{scaling_configuration_id}": {
+      "put": {
+        "tags": [
+          "弹性伸缩配置"
+        ],
+        "description": "修改伸缩配置",
+        "summary": "修改伸缩配置",
+        "operationId": "UpdateScalingConfig",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "scaling_configuration_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateScalingConfigOption"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求成功"
+          }
+        },
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": false,
+        "x-request-examples-url-1": "PUT https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_configuration/8552e3ad-f1b7-4fb1-a8ee-7f715deef8f0",
+        "x-request-examples-description-1": "本示例为修改伸缩配置8552e3ad-f1b7-4fb1-a8ee-7f715deef8f0,将其镜像ID修改为3aa499ee-a1f5-4496-8fa8-746be73a9656",
+        "x-request-examples-text-1": {
+          "instance_config": {
+            "imageRef": "3aa499ee-a1f5-4496-8fa8-746be73a9656"
+          }
+        },
+        "x-request-examples-1": {
+          "instance_config": {
+            "imageRef": "3aa499ee-a1f5-4496-8fa8-746be73a9656"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdateInstanceConfig": {
+      "type": "object",
+      "required": [
+        "imageRef"
+      ],
+      "properties": {
+        "imageRef": {
+          "type": "string",
+          "description": "镜像ID"
+        }
+      }
+    },
+    "UpdateScalingConfigOption": {
+      "type": "object",
+      "required": [
+        "instance_config"
+      ],
+      "properties": {
+        "instance_config": {
+          "$ref": "#/definitions/UpdateInstanceConfig"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

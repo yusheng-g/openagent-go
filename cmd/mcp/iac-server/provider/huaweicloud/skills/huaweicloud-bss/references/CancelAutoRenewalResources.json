@@ -1,0 +1,72 @@
+{
+  "name": "CancelAutoRenewalResources",
+  "summary": "取消包年/包月资源自动续费",
+  "tags": "管理包年/包月订单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/subscriptions/resources/autorenew/{resource_id}": {
+      "delete": {
+        "summary": "取消包年/包月资源自动续费",
+        "description": "客户设置自动续费后,还可以执行取消自动续费的操作。关闭自动续费后,资源到期将不会被自动续费。\n\n客户在费用中心取消包年/包月资源自动续费请参见[这里](https://support.huaweicloud.com/usermanual-billing/renewals_topic_20000005.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>-   前提是已经调用“[设置包年/包月资源自动续费](https://support.huaweicloud.com/api-oce/api_order_00022.html)”接口设置自动续费或在调用“[续订包年/包月资源](https://support.huaweicloud.com/api-oce/api_order_00018.html)”接口时设置到期策略为自动续订。\n>-   目前支持取消自动续费的包年/包月产品同支持自动续费的包年/包月产品。\n>-   在调用本接口前,您可以调用“[查询客户包年/包月资源列表](https://support.huaweicloud.com/api-bpconsole/api_order_00021.html)”接口获取资源ID、资源过期时间以及资源过期后扣费策略等信息。",
+        "tags": [
+          "管理包年/包月订单(客户)"
+        ],
+        "operationId": "CancelAutoRenewalResources",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/orders/subscriptions/resources/autorenew/{resource_id}",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-21",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "resource_id",
+            "in": "path",
+            "required": true,
+            "description": "资源实例ID。您可以调用[查询客户包年包月资源列表](https://support.huaweicloud.com/api-bpconsole/api_order_00021.html)接口获取资源ID。在取消弹性云服务器自动续费的时候,能够自动将其挂载的硬盘一并取消自动续费。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": ""
+          }
+        ],
+        "x-request-examples-url-1": "DELETE https://bss.myhuaweicloud.com/v2/orders/subscriptions/resources/autorenew/eb1cac79-773b-414b-8915-6c3eed8ddf24",
+        "responses": {
+          "204": {
+            "description": "默认返回:no content"
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:parameter error输入参数校验失败|"
+          }
+        },
+        "x-category": "管理包年/包月订单(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

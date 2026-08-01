@@ -1,0 +1,124 @@
+{
+  "name": "ShowAutopilotUserChartsQuotas",
+  "summary": "获取用户模板配额",
+  "tags": "模板管理(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v2/charts/{project_id}/quotas": {
+      "get": {
+        "tags": [
+          "模板管理(Autopilot)"
+        ],
+        "summary": "获取用户模板配额",
+        "description": "获取用户模板配额",
+        "operationId": "ShowAutopilotUserChartsQuotas",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/QuotaResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取用户模板配额",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-order": 7,
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QuotaResp": {
+      "required": [
+        "quotas"
+      ],
+      "properties": {
+        "quotas": {
+          "type": "object",
+          "description": "模板配额",
+          "properties": {
+            "resources": {
+              "type": "array",
+              "description": "资源",
+              "items": {
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "**参数解释**:\n类型\n**取值范围**:\n- Charts:配额类型为模板",
+                    "example": "Charts"
+                  },
+                  "quota": {
+                    "type": "integer",
+                    "description": "配额",
+                    "example": 200
+                  },
+                  "used": {
+                    "type": "integer",
+                    "description": "已使用量",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "quota of charts"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

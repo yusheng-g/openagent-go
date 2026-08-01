@@ -1,0 +1,321 @@
+{
+  "name": "ListBackups",
+  "summary": "获取备份列表",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/backups": {
+      "get": {
+        "x-support-sdk": "Y",
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListBackups",
+        "summary": "获取备份列表",
+        "x-constraint": "该接口支持查询MySQL、PostgreSQL、Microsoft SQL Server的全量备份,以及MySQL的增量备份。",
+        "description": "获取备份列表。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "type": "string",
+            "required": true,
+            "description": "实例ID。"
+          },
+          {
+            "name": "backup_id",
+            "in": "query",
+            "type": "string",
+            "description": "备份ID。",
+            "required": false
+          },
+          {
+            "name": "backup_type",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "auto",
+              "manual",
+              "fragment",
+              "incremental"
+            ],
+            "description": "备份类型,取值:\n\n- “auto”: 自动全量备份\n- “manual”: 手动全量备份\n- “fragment”: 差异全量备份\n- “incremental”: 自动增量备份",
+            "required": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "BUILDING",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "description": "备份状态,只支持筛选RDS for SQL Server的全量备份的状态。取值:\n\n- “BUILDING”: 备份中\n- “COMPLETED”: 备份完成\n- “FAILED”: 备份失败",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "integer",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "minimum": 0,
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "查询记录数。默认为100,不能为负数,最小值为1,最大值为100。",
+            "minimum": 1,
+            "maximum": 100,
+            "required": false
+          },
+          {
+            "name": "begin_time",
+            "in": "query",
+            "type": "string",
+            "description": "查询开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。与end_time必须同时使用。",
+            "required": false
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "string",
+            "description": "查询结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”,且大于查询开始时间。其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。与begin_time必须同时使用。",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListBackupsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "backups": [
+                  {
+                    "id ": "43e4feaab48f11e89039fa163ebaa7e4br04",
+                    "name": "xxxx.xxx",
+                    "type": "manual",
+                    "size": 2803,
+                    "status": "COMPLETED",
+                    "begin_time": "2018-08-06T12:41:14+0800",
+                    "end_time": "2018-08-06T12:43:14+0800",
+                    "datastore": {
+                      "type": "SQLServer",
+                      "version": "2014_WEB"
+                    },
+                    "databases": [
+                      {
+                        "name": "user01"
+                      },
+                      {
+                        "name": "user02"
+                      }
+                    ],
+                    "instance_id": "a48e43ff268f4c0e879652d65e63d0fbin04",
+                    "associated_with_ddm": false
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/backups?instance_id=a48e43ff268f4c0e879652d65e63d0fbin04"
+      }
+    }
+  },
+  "definitions": {
+    "BackupDatabase": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "SqlServer引擎指定备份的数据库。",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ListBackupsResponseBody": {
+      "required": [
+        "backups",
+        "total_count"
+      ],
+      "properties": {
+        "backups": {
+          "description": "备份信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BackupForList"
+          }
+        },
+        "total_count": {
+          "description": "总记录数。",
+          "type": "integer"
+        }
+      }
+    },
+    "BackupForList": {
+      "description": "备份信息。",
+      "required": [
+        "id",
+        "instance_id",
+        "name",
+        "begin_time",
+        "end_time",
+        "status",
+        "type",
+        "size",
+        "datastore"
+      ],
+      "properties": {
+        "id": {
+          "description": "备份ID。",
+          "type": "string"
+        },
+        "instance_id": {
+          "description": "实例ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "备份名称。",
+          "type": "string"
+        },
+        "databases": {
+          "description": "备份的数据库。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BackupDatabase"
+          }
+        },
+        "begin_time": {
+          "description": "备份开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "end_time": {
+          "description": "备份结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "status": {
+          "description": "备份状态,取值:\n\n- BUILDING: 备份中。\n- COMPLETED: 备份完成。\n- FAILED:备份失败。\n- DELETING:备份删除中。",
+          "type": "string",
+          "enum": [
+            "BUILDING",
+            "COMPLETED",
+            "FAILED",
+            "DELETING"
+          ]
+        },
+        "type": {
+          "description": "备份类型,取值:\n\n- “auto”: 自动全量备份\n- “manual”: 手动全量备份\n- “fragment”: 差异全量备份\n- “incremental”: 自动增量备份",
+          "type": "string",
+          "enum": [
+            "auto",
+            "manual",
+            "fragment",
+            "incremental"
+          ]
+        },
+        "size": {
+          "description": "备份大小,单位为KB。",
+          "type": "integer",
+          "format": "int64"
+        },
+        "datastore": {
+          "$ref": "#/definitions/BackupDatastore"
+        },
+        "associated_with_ddm": {
+          "type": "boolean",
+          "description": "是否已被DDM实例关联。"
+        },
+        "min_data_volume_capacity_for_restore": {
+          "type": "integer",
+          "description": "该备份源文件大小,用于该备份文件恢复到新实例时需要的最小磁盘空间大小。"
+        }
+      }
+    },
+    "BackupDatastore": {
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,不区分大小写:\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+          "enum": [
+            "MySQL",
+            "PostgreSQL",
+            "SQLServer",
+            "MariaDB"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

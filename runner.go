@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -61,7 +62,7 @@ func (r *runner) observe(ctx context.Context, name string, phase string, detail 
 func (r *runner) run(ctx context.Context, session Session, prefix []Message, input Message, ch chan<- StreamEvent) (_ *RunResult, runErr error) {
 	maxTurns := r.agent.MaxTurns
 	if maxTurns <= 0 {
-		maxTurns = 20
+		maxTurns = 100
 	}
 
 	// Resolve model for this run.
@@ -690,11 +691,15 @@ func (r *runner) buildPrompt(ctx context.Context, session Session, working []Mes
 
 	// ── Dynamic context (re-assembled every turn) ──
 	var dynamicParts []string
-	dynamicParts = append(dynamicParts,
-		"\nIMPORTANT: The context below is generated fresh for this turn. "+
-			"If it conflicts with static instructions or earlier conversation, the latest context here is authoritative. "+
-			"Earlier summaries, skill lists, semantic memory, or plan state may be outdated.\n",
-	)
+	dynamicParts = append(dynamicParts, fmt.Sprintf(`
+
+IMPORTANT: The context below is generated fresh for this turn. If it conflicts with static instructions or earlier conversation, the latest context here is authoritative. Earlier summaries, skill lists, semantic memory, or plan state may be outdated.
+
+OS: %s
+Arch: %s
+Date: %s
+
+`, runtime.GOOS, runtime.GOARCH, time.Now().Format("2006-01-02")))
 
 	// Skills catalog + loaded skill bodies.
 	if len(r.skills) > 0 {
@@ -860,7 +865,7 @@ func (r *runner) executeTools(ctx context.Context, session Session, calls []Tool
 					results[i] = Message{
 						Role:       RoleTool,
 						ToolCallID: call.ID,
-						Content:    fmt.Sprintf("tool %q rejected: %s", call.Function.Name, reason),
+						Content:    fmt.Sprintf("this call rejected by user, reason: %s", reason),
 					}
 					continue
 				}

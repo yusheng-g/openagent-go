@@ -1,0 +1,154 @@
+{
+  "name": "CopyDatabase",
+  "summary": "复制数据库",
+  "tags": "管理数据库和用户(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/database/procedure": {
+      "post": {
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "x-request-examples-url-1": "https://{endpoint}/v3/054b93101a00d3a02fe3c01fb31462ac/instances/463a6520abc345888850ea5bfb245e4fin04/database/procedure",
+        "x-request-examples-text-1": {
+          "procedure_name": "copy_database",
+          "params": {
+            "db_name_source": "Test_Database",
+            "db_name_target": "Test_Database2"
+          }
+        },
+        "x-request-examples-1": {
+          "procedure_name": "copy_database",
+          "params": {
+            "db_name_source": "Test_Database",
+            "db_name_target": "Test_Database2"
+          }
+        },
+        "tags": [
+          "管理数据库和用户(SQL Server)"
+        ],
+        "summary": "复制数据库",
+        "description": "复制数据库",
+        "operationId": "CopyDatabase",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "AddCopyDatabaseRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddCopyDatabaseRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/CopyDatabaseJobResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "603d87db-9a91-411e-b369-ca4d72007e27"
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "CopyDatabaseJobResponse": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务id"
+        }
+      }
+    },
+    "CopyDatabaseOption": {
+      "type": "object",
+      "required": [
+        "db_name_source",
+        "db_name_target"
+      ],
+      "properties": {
+        "db_name_source": {
+          "type": "string",
+          "description": "源库名称"
+        },
+        "db_name_target": {
+          "type": "string",
+          "description": "目的库名称"
+        }
+      }
+    },
+    "AddCopyDatabaseRequestBody": {
+      "type": "object",
+      "properties": {
+        "procedure_name": {
+          "type": "string",
+          "description": "操作名称(copy_database)"
+        },
+        "params": {
+          "type": "object",
+          "items": {
+            "$ref": "#/definitions/CopyDatabaseOption"
+          },
+          "description": "源库和目的库信息"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

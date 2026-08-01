@@ -1,0 +1,274 @@
+{
+  "name": "ListParts",
+  "summary": "列举已上传未合并的段",
+  "tags": "多段操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "get": {
+        "x-request-examples-url-1": "GET /object02?uploadId=00000163D40171ED8DF4050919BD02B8",
+        "x-request-examples-1": "GET /object02?uploadId=00000163D40171ED8DF4050919BD02B8 HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 05:20:35 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:xkABdSrBPrz5yqzuZdJnK5oL/yU=",
+        "tags": [
+          "多段操作"
+        ],
+        "operationId": "ListParts",
+        "summary": "列举已上传未合并的段",
+        "description": "列举已上传未合并的段\n用户可以通过本接口查询一个任务所属的所有段信息。此接口列举的各个段大小和分段上传的各个段大小一致。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "produces": [
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "对象名称。\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "uploadId",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "多段上传任务的id。\n"
+          },
+          {
+            "name": "max-parts",
+            "in": "query",
+            "required": false,
+            "description": "规定在列举已上传段响应中的最大Part数目\n默认值:1,000。\n",
+            "type": "string"
+          },
+          {
+            "name": "part-number-marker",
+            "in": "query",
+            "required": false,
+            "description": "指定List的起始位置,只有Part Number数目大于该参数的Part会被列出\n",
+            "type": "string"
+          },
+          {
+            "name": "encoding-type",
+            "in": "query",
+            "required": false,
+            "description": "对响应中的Key进行指定类型的编码。如果Key包含xml 1.0标准不支持的控制字符,可通过设置encoding-type对响应中的Key进行编码。",
+            "type": "string",
+            "enum": [
+              "url"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListPartsResult"
+            },
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: 8DF400000163D40C099A04EF4DD1BDD9\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSK71fr+hDnzB0JBvQC1B9+S12AWxC41\nContent-Type: application/xml\nDate: WED, 01 Jul 2015 05:20:35 GMT\nContent-Length: 888\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ListPartsResult xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n  <Bucket>test333</Bucket>\n  <Key>obj2</Key>\n  <UploadId>00000163D40171ED8DF4050919BD02B8</UploadId>\n  <Initiator>\n    <ID>domainID/domainiddomainiddomainiddo000008:userID/useriduseriduseriduseridus000008</ID>\n  </Initiator>\n  <Owner>\n    <ID>domainiddomainiddomainiddo000008</ID>\n  </Owner>\n  <StorageClass>STANDARD</StorageClass>\n  <PartNumberMarker>0</PartNumberMarker>\n  <NextPartNumberMarker>2</NextPartNumberMarker>\n  <MaxParts>1000</MaxParts>\n  <IsTruncated>false</IsTruncated>\n  <Part>\n    <PartNumber>1</PartNumber>\n    <LastModified>2018-06-06T07:39:32.522Z</LastModified>\n    <ETag>\"b026324c6904b2a9cb4b88d6d61c81d1\"</ETag>\n    <Size>2058462721</Size>\n  </Part>\n  <Part>\n    <PartNumber>2</PartNumber>\n    <LastModified>2018-06-06T07:41:03.344Z</LastModified>\n    <ETag>\"3b46eaf02d3b6b1206078bb86a7b7013\"</ETag>\n    <Size>4572</Size>\n  </Part>\n</ListPartsResult>"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|AccessDenied|AccessKey或签名无效。|403 Forbidden|\n|AccessDenied|用户DomainId对目的桶没有读权限。|403 Forbidden|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|NoSuchBucket|桶不存在。|404 Not Found|\n|NoSuchUpload|多段上传任务不存在。|404 Not Found|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Part": {
+      "description": "保存Part信息的容器。\n",
+      "properties": {
+        "PartNumber": {
+          "description": "已上传Part的编号。\n",
+          "type": "string"
+        },
+        "LastModified": {
+          "description": "Part上传的时间。\n",
+          "type": "string"
+        },
+        "ETag": {
+          "description": "已上传段内容的ETag,是段内容的唯一标识,用于段合并时校验数据一致性。\n",
+          "type": "string"
+        },
+        "Size": {
+          "description": "已上传Part大小。\n",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "ListPartsResult": {
+      "description": "保存List Part请求结果的容器。\n",
+      "properties": {
+        "Bucket": {
+          "description": "Bucket名称。\n",
+          "type": "string"
+        },
+        "EncodingType": {
+          "description": "对象Key的编码类型。如果请求中设置了encoding-type,那响应中的Key会被编码。\n",
+          "type": "string"
+        },
+        "Key": {
+          "description": "Object名称。\n",
+          "type": "string"
+        },
+        "UploadId": {
+          "description": "Upload任务ID。\n",
+          "type": "string"
+        },
+        "Initiator": {
+          "description": "Upload任务的创建者。\n",
+          "properties": {
+            "ID": {
+              "description": "创建者的DomainId。\n",
+              "type": "string"
+            }
+          }
+        },
+        "Owner": {
+          "description": "和Initiator相同。\n",
+          "properties": {
+            "ID": {
+              "description": "创建者的DomainId。\n",
+              "type": "string"
+            }
+          }
+        },
+        "StorageClass": {
+          "description": "存储类型。\n",
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "WARM",
+            "COLD"
+          ]
+        },
+        "PartNumberMarker": {
+          "description": "本次List结果的Part Number起始位置。\n",
+          "type": "integer",
+          "format": "int32"
+        },
+        "NextPartNumberMarker": {
+          "description": "如果本次没有返回全部结果,响应请求中将包含NextPartNumberMarker元素,用于标明接下来请求的PartNumberMarker值。\n",
+          "type": "integer",
+          "format": "int32"
+        },
+        "MaxParts": {
+          "description": "返回请求中最大的Part数目。\n",
+          "type": "integer",
+          "format": "int32"
+        },
+        "IsTruncated": {
+          "description": "标明是否本次返回的List Part结果列表被截断。“true”表示本次没有返回全部结果;“false”表示本次已经返回了全部结果。\n",
+          "type": "boolean"
+        },
+        "Part": {
+          "$ref": "#/definitions/Part"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

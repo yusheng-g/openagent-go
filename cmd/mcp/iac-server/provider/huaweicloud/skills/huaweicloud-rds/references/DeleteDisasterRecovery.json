@@ -1,0 +1,177 @@
+{
+  "name": "DeleteDisasterRecovery",
+  "summary": "解除实例容灾关系接口",
+  "tags": "灾备实例",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/delete-disaster-recovery": {
+      "delete": {
+        "x-request-examples-url-1": "DELETE https://{Endpoint}/v3/054e292c9880d4992f02c0196d3ea468/instances/42d4b4fc17d144bbb3ba64a306e68c72in03/delete-disaster-recovery",
+        "x-request-examples-description-1": "解除实例容灾关系",
+        "x-request-examples-text-1": {
+          "target_instance_id": "8c08eda627cc4344aca26832c87ff16cin03",
+          "target_project_id": "0ddd1dbcb3494d3dbdb614b39104760b",
+          "target_region": "cn-southwest-244",
+          "target_ip": "192.168.2.70",
+          "is_master": true
+        },
+        "x-request-examples-1": {
+          "target_instance_id": "8c08eda627cc4344aca26832c87ff16cin03",
+          "target_project_id": "0ddd1dbcb3494d3dbdb614b39104760b",
+          "target_region": "cn-southwest-244",
+          "target_ip": "192.168.2.70",
+          "is_master": true
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "tags": [
+          "灾备实例"
+        ],
+        "summary": "解除实例容灾关系接口",
+        "description": "解除实例容灾关系接口",
+        "operationId": "DeleteDisasterRecovery",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "DeleteDisasterRecoveryRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "解除实例容灾关系请求体",
+            "schema": {
+              "$ref": "#/definitions/DeleteDisasterRecoveryRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常响应",
+            "schema": {
+              "$ref": "#/definitions/CommonJobIdRsp"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "64a5083a-d8e0-4cee-b086-5c2a776ee92d"
+              }
+            }
+          },
+          "500": {
+            "description": "异常响应",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_code": "DBS.200005",
+                "error_msg": "Parameter error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DeleteDisasterRecoveryRequestBody": {
+      "type": "object",
+      "description": "解除实例容灾关系请求体",
+      "required": [
+        "target_instance_id",
+        "target_project_id",
+        "target_region",
+        "target_ip",
+        "is_master"
+      ],
+      "properties": {
+        "target_instance_id": {
+          "type": "string",
+          "description": "解除目标的实例id"
+        },
+        "target_project_id": {
+          "type": "string",
+          "description": "解除目标的project id"
+        },
+        "target_region": {
+          "type": "string",
+          "description": "解除目标的region"
+        },
+        "target_ip": {
+          "type": "string",
+          "description": "解除目标的数据浮动ip"
+        },
+        "is_master": {
+          "type": "boolean",
+          "description": "当前操作对象是否是主实例"
+        }
+      }
+    },
+    "CommonJobIdRsp": {
+      "type": "object",
+      "description": "只返回工作流id的通用响应体",
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "工作流id"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "delete",
+  "uri": null
+}

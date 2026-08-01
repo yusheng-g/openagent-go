@@ -1,0 +1,336 @@
+{
+  "name": "ListResolverRules",
+  "summary": "查询解析器转发规则列表",
+  "tags": "解析器管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/resolverrules": {
+      "get": {
+        "tags": [
+          "解析器管理"
+        ],
+        "operationId": "ListResolverRules",
+        "summary": "查询解析器转发规则列表",
+        "description": "查询解析器转发规则列表。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "domain_name",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "待查询的转发规则的域名。",
+            "minLength": 0,
+            "maxLength": 255
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "待查询的转发规则的名称。",
+            "pattern": "[\\w\\一-\\龥\\._-]{0,64}"
+          },
+          {
+            "name": "endpoint_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "终端节点ID。",
+            "pattern": "^(|[0-9a-fA-F]{32})$"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "转发规则ID。",
+            "pattern": "^(|[0-9a-fA-F]{32})$"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/offset"
+          },
+          {
+            "$ref": "#/parameters/marker"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询解析器转发规则列表响应。",
+            "schema": {
+              "$ref": "#/definitions/ListResolverRuleResp"
+            },
+            "examples": {
+              "application/json": {
+                "resolver_rules": [
+                  {
+                    "id": "8a36f60a753badb401753bade3400002",
+                    "name": "rule-xxx",
+                    "domain_name": "www.example.com",
+                    "endpoint_id": "8a36f60a753badb401753bade3400001",
+                    "status": "ACTIVE",
+                    "rule_type": "FORWARD",
+                    "ipaddress_count": 0,
+                    "routers": [
+                      {
+                        "router_id": "ff7bd47f-3f12-4f24-a078-e6064abaa670",
+                        "router_region": "NetworkService",
+                        "status": "ACTIVE"
+                      },
+                      {
+                        "router_id": "ff7bd47f-3f12-4f24-a078-e6064abaa671",
+                        "router_region": "NetworkService",
+                        "status": "ACTIVE"
+                      }
+                    ],
+                    "create_time": "2020-10-18T12:27:31.448",
+                    "update_time": "2020-10-18T12:27:31.448"
+                  }
+                ],
+                "metadata": {
+                  "total_count": 33
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 10
+      }
+    }
+  },
+  "definitions": {
+    "metadata": {
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "description": "**参数解释:**\n满足查询条件的资源总数,不受分页(即limit、offset参数)影响。\n**取值范围:**\n不涉及。",
+          "format": "int32",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。"
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "PageInfo": {
+      "description": "**参数解释:**\n分页信息。\n**取值范围:**\n不涉及。",
+      "properties": {
+        "next_marker": {
+          "description": "**参数解释:**\n下一页的页面标识。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "readOnly": true
+        },
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释:**\n上一页的页面标识。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "current_count": {
+          "type": "integer",
+          "description": "**参数解释:**\n页面数量。\n**取值范围:**\n不涉及。",
+          "format": "int32",
+          "readOnly": true
+        }
+      }
+    },
+    "ListResolverRuleParam": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "转发规则的ID。",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "规则名称。",
+          "readOnly": true
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "域名。",
+          "readOnly": true
+        },
+        "endpoint_id": {
+          "type": "string",
+          "description": "当前规则所属的终端节点ID。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_DELETE:删除中\n- ERROR:失败",
+          "readOnly": true
+        },
+        "rule_type": {
+          "type": "string",
+          "description": "规则类型。\n预留字段,当前默认为FORWARD。",
+          "readOnly": true,
+          "format": "int32"
+        },
+        "ipaddress_count": {
+          "type": "integer",
+          "description": "当前规则下的IP地址数量。",
+          "readOnly": true,
+          "format": "int32"
+        },
+        "routers": {
+          "type": "array",
+          "description": "关联的VPC信息。",
+          "items": {
+            "$ref": "#/definitions/Router"
+          },
+          "readOnly": true
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。",
+          "readOnly": true
+        },
+        "update_time": {
+          "type": "string",
+          "description": "更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。",
+          "readOnly": true
+        }
+      }
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    },
+    "ListResolverRuleResp": {
+      "properties": {
+        "resolver_rules": {
+          "type": "array",
+          "description": "解析器转发规则列表。",
+          "items": {
+            "$ref": "#/definitions/ListResolverRuleParam"
+          },
+          "readOnly": true
+        },
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "metadata": {
+          "$ref": "#/definitions/metadata"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      }
+    },
+    "Router": {
+      "required": [
+        "router_id"
+      ],
+      "properties": {
+        "router_id": {
+          "type": "string",
+          "description": "关联VPC的ID。"
+        },
+        "router_region": {
+          "type": "string",
+          "description": "关联VPC所在的region。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_DELETE:删除中\n- ERROR:失败"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "marker": {
+      "name": "marker",
+      "in": "query",
+      "required": false,
+      "description": "**参数解释:**\n分页查询的起始资源ID。\n- 查询第一页时,设置为空。\n- 查询下一页时,设置为上一页最后一条资源的ID。\n\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "type": "string",
+      "pattern": "[0-9a-zA-Z]{0,32}"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "offset": {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "description": "**参数解释:**\n分页查询起始偏移量,表示从偏移量的下一个资源开始查询。\n**约束限制:**\n当设置marker不为空时,以marker为分页起始标识,offset不生效。\n**取值范围:**\n0~2147483647。\n**默认取值:**\n0",
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
+    },
+    "limit": {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "description": "**参数解释:**\n分页查询时配置每页返回的资源个数。\n**约束限制:**\n不涉及。\n**取值范围:**\n0~500。\n**默认取值:**\n500",
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0,
+      "maximum": 500
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

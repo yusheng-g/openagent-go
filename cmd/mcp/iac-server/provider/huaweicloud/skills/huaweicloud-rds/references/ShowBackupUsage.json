@@ -1,0 +1,141 @@
+{
+  "name": "ShowBackupUsage",
+  "summary": "查询备份用量总览",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/backups/backup-usage": {
+      "get": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "x-request-examples-url-1": "/v3/54623db08b174c858ba779d2aa7923a3/backups/backup-usage?engine=mysql",
+        "x-request-examples-description-1": "查询备份用量总览",
+        "x-api-type": "open-api",
+        "operationId": "ShowBackupUsage",
+        "summary": "查询备份用量总览",
+        "description": "查询备份用量总览",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "required": true,
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "engine",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n引擎名称, 只支持筛选RDS for MySQL, RDS for MariaDB\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- mysql\n- mariadb\n\n**默认取值**:\n\n不涉及。",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "type": "string",
+            "maxLength": 8076,
+            "minLength": 1
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ShowBackupUsageResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "backup_use_space": 800,
+                "db_use_space": 300,
+                "rds_snapshot_use_space": 400,
+                "offsite_use_space": 100
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ShowBackupUsageResponseBody": {
+      "type": "object",
+      "description": "查询备份用量总览返回信息",
+      "properties": {
+        "backup_use_space": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n备份总使用量,各类备份占用的备份总大小。 单位:MB\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。"
+        },
+        "db_use_space": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n物理备份总使用量,包括本区域的物理全量备份,binlog日志备份,审计日志。 单位:MB\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。"
+        },
+        "rds_snapshot_use_space": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n由RDS计费的cbr快照备份总使用量, 单位MB\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。"
+        },
+        "offsite_use_space": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n跨区域备份总使用量,包括跨区域的物理全量备份,binlog日志备份, 单位:MB\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,402 @@
+{
+  "name": "CreateHealthmonitor",
+  "summary": "创建健康检查",
+  "tags": "健康检查",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/healthmonitors": {
+      "post": {
+        "tags": [
+          "健康检查"
+        ],
+        "summary": "创建健康检查",
+        "description": "给后端云服务器组添加健康检查",
+        "operationId": "CreateHealthmonitor",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateHealthmonitorRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateHealthmonitorRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "所在项目Id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "healthmonitor": {
+                  "name": "",
+                  "admin_state_up": true,
+                  "tenant_id": "145483a5107745e9b3d80f956713e6a3",
+                  "project_id": "145483a5107745e9b3d80f956713e6a3",
+                  "domain_name": "www.test.com",
+                  "delay": 10,
+                  "expected_codes": "200",
+                  "max_retries": 10,
+                  "http_method": "GET",
+                  "timeout": 10,
+                  "pools": [
+                    {
+                      "id": "bb44bffb-05d9-412c-9d9c-b189d9e14193"
+                    }
+                  ],
+                  "url_path": "/",
+                  "type": "HTTP",
+                  "id": "2dca3867-98c5-4cde-8f2c-b89ae6bd7e36",
+                  "monitor_port": 112,
+                  "max_retries_down": 3
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateHealthmonitorResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "408": {
+            "description": "Request Timeout",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建健康检查",
+        "x-constraint": "安全组需放通网段100.125.0.0/16流量。UDP的检查健康只能使用在UDP的后端云服务器组上。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 22,
+        "x-request-examples-1": "POST https://{ELB_Endpoint}/v2/{project_id}/elb/healthmonitors\n{\n    \"healthmonitor\": {\n        \"admin_state_up\": true,\n        \"pool_id\": \"bb44bffb-05d9-412c-9d9c-b189d9e14193\",\n        \"domain_name\": \"www.test.com\",\n        \"delay\": 10,\n        \"max_retries\": 10,\n        \"timeout\": 10,\n        \"type\": \"HTTP\"\n    }\n}",
+        "x-request-examples-text-1": "POST https://{ELB_Endpoint}/v2/{project_id}/elb/healthmonitors\n{\n    \"healthmonitor\": {\n        \"admin_state_up\": true,\n        \"pool_id\": \"bb44bffb-05d9-412c-9d9c-b189d9e14193\",\n        \"domain_name\": \"www.test.com\",\n        \"delay\": 10,\n        \"max_retries\": 10,\n        \"timeout\": 10,\n        \"type\": \"HTTP\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ocb,ctc,ct",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "HealthmonitorResp": {
+      "required": [
+        "id",
+        "project_id",
+        "tenant_id",
+        "name",
+        "admin_state_up",
+        "monitor_port",
+        "timeout",
+        "type",
+        "expected_codes",
+        "domain_name",
+        "url_path",
+        "http_method",
+        "delay",
+        "max_retries",
+        "pools",
+        "max_retries_down"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "健康检查ID"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "健康检查所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "健康检查所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "健康检查名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "健康检查的管理状态;该字段虽然支持创建、更新,但实际取值决定于后端云服务器对应的弹性云服务器是否存在。若存在,该值为true,否则,该值为false。"
+        },
+        "monitor_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查端口号。默认为空,表示使用后端云服务器组的端口。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查的超时时间。建议该值小于delay的值。",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "健康检查类型",
+          "enum": [
+            "TCP",
+            "UDP_CONNECT",
+            "HTTP"
+          ]
+        },
+        "expected_codes": {
+          "type": "string",
+          "description": "期望HTTP响应状态码,指定下列值:单值,例如200;列表,例如200,202;区间,例如200-204。仅当type为HTTP时生效。该字段为预留字段,暂未启用。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "功能说明:健康检查测试member健康状态时,发送的http请求的域名。仅当type为HTTP时生效。使用说明:默认为空,表示使用负载均衡器的vip作为http请求的目的地址。以数字或字母开头,只能包含数字、字母、’-’、’.’。",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "url_path": {
+          "type": "string",
+          "description": "健康检查请求的请求路径。以\"/\"开头,默认为\"/\"。\n支持使用字母、数字和短划线(-)、正斜线(/)、半角句号(.)、百分号(%)、半角问号(?)、井号(#)和and(&)以及扩展字符集_;~!()*[]@$^:',+\n\n使用说明:当type为HTTP/HTTPS时生效。",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "http_method": {
+          "type": "string",
+          "description": "HTTP方法,可以为GET、HEAD、POST、PUT、DELETE、TRACE、OPTIONS、CONNECT、PATCH。仅当type为HTTP时生效。该字段为预留字段,暂未启用。"
+        },
+        "delay": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查间隔,单位秒",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "max_retries": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "pools": {
+          "type": "array",
+          "description": "健康检查关联的后端云服务器组列表",
+          "items": {
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "max_retries_down": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查连续失败多少次后,将后端服务器的健康检查状态由ONLINE判定为OFFLINE。取值范围:1-10。"
+        }
+      },
+      "description": "健康检查响应体",
+      "type": "object"
+    },
+    "CreateHealthmonitorResponseBody": {
+      "required": [
+        "healthmonitor"
+      ],
+      "properties": {
+        "healthmonitor": {
+          "description": "健康检查对象",
+          "$ref": "#/definitions/HealthmonitorResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "CreateHealthmonitorRequestBody": {
+      "required": [
+        "healthmonitor"
+      ],
+      "properties": {
+        "healthmonitor": {
+          "description": "创建健康检查请求参数",
+          "$ref": "#/definitions/CreateHealthmonitorReq"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResourceList": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "资源ID"
+        }
+      },
+      "description": "资源对象id列表。"
+    },
+    "CreateHealthmonitorReq": {
+      "required": [
+        "timeout",
+        "type",
+        "delay",
+        "max_retries",
+        "pool_id"
+      ],
+      "properties": {
+        "tenant_id": {
+          "type": "string",
+          "description": "健康检查所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "健康检查名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "健康检查的管理状态;该字段虽然支持创建、更新,但实际取值决定于后端云服务器对应的弹性云服务器是否存在。若存在,该值为true,否则,该值为false。",
+          "default": true
+        },
+        "monitor_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查端口号。默认为空,表示使用后端云服务器组的端口。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查的超时时间。建议该值小于delay的值。",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "健康检查类型",
+          "enum": [
+            "TCP",
+            "UDP_CONNECT",
+            "HTTP"
+          ]
+        },
+        "expected_codes": {
+          "type": "string",
+          "description": "期望HTTP响应状态码,指定下列值:单值,例如200;列表,例如200,202;区间,例如200-204。仅当type为HTTP时生效。该字段为预留字段,暂未启用。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "功能说明:健康检查测试member健康状态时,发送的http请求的域名。仅当type为HTTP时生效。使用说明:默认为空,表示使用负载均衡器的vip作为http请求的目的地址。以数字或字母开头,只能包含数字、字母、’-’、’.’。",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "url_path": {
+          "type": "string",
+          "description": "健康检查请求的请求路径。以\"/\"开头,默认为\"/\"。\n支持使用字母、数字和短划线(-)、正斜线(/)、半角句号(.)、百分号(%)、半角问号(?)、井号(#)和and(&)以及扩展字符集_;~!()*[]@$^:',+\n\n使用说明:当type为HTTP/HTTPS时生效。",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "http_method": {
+          "type": "string",
+          "description": "HTTP方法,可以为GET、HEAD、POST、PUT、DELETE、TRACE、OPTIONS、CONNECT、PATCH。仅当type为HTTP时生效。该字段为预留字段,暂未启用。"
+        },
+        "delay": {
+          "type": "integer",
+          "format": "int32",
+          "description": "健康检查间隔",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "max_retries": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大重试次数",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "pool_id": {
+          "type": "string",
+          "description": "健康检查关联的后端云服务器组ID"
+        }
+      },
+      "description": "创建健康检查请求",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

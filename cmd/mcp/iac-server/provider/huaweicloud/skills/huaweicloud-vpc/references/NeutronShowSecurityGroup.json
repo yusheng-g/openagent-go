@@ -1,0 +1,460 @@
+{
+  "name": "NeutronShowSecurityGroup",
+  "summary": "查询安全组",
+  "tags": "OpenStack - 安全组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/security-groups/{security_group_id}": {
+      "get": {
+        "tags": [
+          "OpenStack - 安全组"
+        ],
+        "summary": "查询安全组",
+        "description": "查询安全组详情",
+        "operationId": "NeutronShowSecurityGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "name": "security_group_id",
+            "in": "path",
+            "description": "安全组ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-example": "3ec3b33f-ac1c-4630-ad1c-7dba1ed79d85",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "security_group": {
+                  "id": "0431c9c5-1660-42e0-8a00-134bec7f03e2",
+                  "name": "sg-ad3f",
+                  "description": "",
+                  "tenant_id": "bbfe8c41dd034a07bebd592bf03b4b0c",
+                  "project_id": "bbfe8c41dd034a07bebd592bf03b4b0c",
+                  "security_group_rules": [
+                    {
+                      "id": "d90e55ba-23bd-4d97-b722-8cb6fb485d69",
+                      "direction": "ingress",
+                      "protocol": null,
+                      "ethertype": "IPv4",
+                      "description": null,
+                      "remote_group_id": "0431c9c5-1660-42e0-8a00-134bec7f03e2",
+                      "remote_ip_prefix": null,
+                      "tenant_id": "bbfe8c41dd034a07bebd592bf03b4b0c",
+                      "port_range_max": null,
+                      "port_range_min": null,
+                      "security_group_id": "0431c9c5-1660-42e0-8a00-134bec7f03e2"
+                    },
+                    {
+                      "id": "aecff4d4-9ce9-489c-86a3-803aedec65f7",
+                      "direction": "egress",
+                      "protocol": null,
+                      "ethertype": "IPv4",
+                      "description": null,
+                      "remote_group_id": null,
+                      "remote_ip_prefix": null,
+                      "tenant_id": "bbfe8c41dd034a07bebd592bf03b4b0c",
+                      "port_range_max": null,
+                      "port_range_min": null,
+                      "security_group_id": "0431c9c5-1660-42e0-8a00-134bec7f03e2"
+                    }
+                  ],
+                  "created_at": "2018-09-12T08:24:14",
+                  "updated_at": "2018-09-12T08:24:14"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NeutronSecurityGroupResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询安全组",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 117,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v2.0/security-groups/{security_group_id}",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v2.0/security-groups/{security_group_id}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2016-6-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronSecurityGroupRule": {
+      "required": [
+        "created_at",
+        "description",
+        "direction",
+        "ethertype",
+        "id",
+        "port_range_max",
+        "port_range_min",
+        "project_id",
+        "protocol",
+        "remote_address_group_id",
+        "remote_group_id",
+        "remote_ip_prefix",
+        "security_group_id",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "安全组规则描述",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "direction": {
+          "type": "string",
+          "example": "egress",
+          "description": "功能说明:规则方向\n取值范围:ingress、egress",
+          "enum": [
+            "ingress",
+            "egress"
+          ],
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "ethertype": {
+          "type": "string",
+          "description": "功能说明:网络类型\n取值范围:IPv4、IPv6",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组规则ID,查询安全组规则非必选",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "port_range_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:最大端口\n取值范围:当协议类型为ICMP时,该值表示ICMP的code",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "port_range_min": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:最小端口\n当协议类型为ICMP时,该值表示ICMP的type。protocol为tcp和udp时,port_range_max和port_range_min必须同时输入,且port_range_max应大于等于port_range_min。protocol为icmp时,指定ICMP code(port_range_max)时,必须同时指定ICMP type(port_range_min)。",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:tcp/udp/icmp/icmpv6或IP协议编号(0~255)\n约束:协议为icmpv6时,网络类型应该为IPv6;协议为icmp时,网络类型应该为IPv4",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "remote_group_id": {
+          "type": "string",
+          "description": "所属安全组的对端ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "remote_ip_prefix": {
+          "type": "string",
+          "description": "对端ip网段",
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "remote_address_group_id": {
+          "type": "string",
+          "description": "功能说明:远端IP地址组ID\n约束:和remote_ip_prefix,remote_group_id互斥",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "所属安全组ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        }
+      },
+      "description": ""
+    },
+    "NeutronSecurityGroup": {
+      "required": [
+        "created_at",
+        "description",
+        "id",
+        "name",
+        "project_id",
+        "security_group_rules",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "功能说明:安全组描述\n取值范围:0-255个字符",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "id": {
+          "type": "string",
+          "description": "安全组ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:安全组名称\n取值范围:0-255个字符",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "security_group_rules": {
+          "type": "array",
+          "description": "安全组规则,详情参见Security Group Rule对象",
+          "items": {
+            "$ref": "#/definitions/NeutronSecurityGroupRule"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronSecurityGroupResponseBody": {
+      "required": [
+        "security_group"
+      ],
+      "properties": {
+        "security_group": {
+          "description": "安全组对象",
+          "$ref": "#/definitions/NeutronSecurityGroup",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

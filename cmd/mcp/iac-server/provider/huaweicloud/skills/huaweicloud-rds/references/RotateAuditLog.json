@@ -1,0 +1,146 @@
+{
+  "name": "RotateAuditLog",
+  "summary": "触发审计日志轮转",
+  "tags": "RDS",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/auditlog-rotate": {
+      "post": {
+        "x-request-examples-url-1": "/v3/54623db08b174c858ba779d2aa7923a3/instances/ada13e26fd60414d8d01162a2c14bf21in01/auditlog-rotate",
+        "tags": [
+          "RDS"
+        ],
+        "summary": "触发审计日志轮转",
+        "description": "触发审计日志轮转",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "operationId": "RotateAuditLog",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "参数解释:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n约束限制:\n\n不涉及。\n\n取值范围:\n\n不涉及。\n\n默认取值:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 32
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "参数解释:\n\n实例id\n\n约束限制:\n\n不涉及。\n\n取值范围:\n\n不涉及。\n\n默认取值:\n\n不涉及",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "参数解释:\n\n用户Token。\n\n约束限制:\n\n不涉及。\n\n取值范围:\n\n不涉及。\n\n默认取值:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "参数解释:\n\n请求语言类型。\n\n约束限制:\n\n不涉及。\n\n取值范围:\n\nen-us\nzh-cn\n默认取值:\nen-us。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "RotateAuditLogRequest",
+            "in": "body",
+            "description": "请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RotateAuditLogRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "schema": {
+              "$ref": "#/definitions/RotateAuditLogResponseBody"
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "instance_id": "ada13e26fd60414d8d01162a2c14bf21in01"
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "RotateAuditLogResponseBody": {
+      "type": "object",
+      "description": "轮转审计日志响应体",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n实例id。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        }
+      }
+    },
+    "RotateAuditLogRequestBody": {
+      "type": "object",
+      "description": "轮转审计日志请求体",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "**参数解释**:\n\n实例id。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

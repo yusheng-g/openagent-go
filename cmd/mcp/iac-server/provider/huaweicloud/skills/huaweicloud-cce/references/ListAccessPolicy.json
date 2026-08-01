@@ -1,0 +1,178 @@
+{
+  "name": "ListAccessPolicy",
+  "summary": "获取访问策略列表",
+  "tags": "权限管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/access-policies": {
+      "get": {
+        "tags": [
+          "权限管理"
+        ],
+        "summary": "获取访问策略列表",
+        "description": "该API用于获取访问策略列表。",
+        "operationId": "ListAccessPolicy",
+        "parameters": [
+          {
+            "name": "cluster_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释:**\n集群ID,仅返回与该集群相关的授权项。获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/AccessPolicyListResp"
+            },
+            "examples": {
+              "application/json": "kind: List\napiVersion: v3\naccessPolicyList:\n  - kind: AccessPolicy\n    apiVersion: v3\n    name: test-access-policy\n    policyId: 402358e8-2e3a-4531-bae7-fe9cba14d0d1\n    clusters:\n      - \"*\"\n    accessScope:\n      namespaces:\n        - \"*\"\n    policy: CCEAdminPolicy\n    principal:\n      type: user\n      ids:\n        - '069fcc2116c347b89869eae3cdxxxxxx1'\n        - '069fcc2116c347b89869eae3cdxxxxxx2'\n    createTime: ''\n    updateTime: ''"
+            }
+          }
+        },
+        "x-name": "获取访问策略",
+        "deprecated": false,
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-publishpath": "ListAccessPolicy"
+      }
+    }
+  },
+  "definitions": {
+    "AccessPolicyResp": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI类型。\n**约束限制:**\n该值不可修改。\n**取值范围:**\n不涉及\n**默认取值:**\nAccessPolicy",
+          "default": "AccessPolicy"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI版本。\n**约束限制:**\n该值不可修改。\n**取值范围:**\n不涉及\n**默认取值:**\nv3",
+          "default": "v3"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n访问策略名称。\n**约束限制:**\n以小写字母开头,由小写字母、数字、中划线(-)、点(.)组成,长度范围1-56位,且不能以中划线(-)结尾。\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+          "minItems": 1,
+          "maxItems": 56
+        },
+        "policyId": {
+          "type": "string",
+          "description": "**参数解释:**\n权限ID。\n**约束限制:**\n系统自动生成,该值不可修改。\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "clusters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释:**\n集群ID的列表,允许使用通配符(“\\*”),表示所有集群。\n**约束限制:**\n当前最多支持同时授权200个集群。\n**取值范围:**\n\\[\"\\*\"\\]或者集群ID列表。\n**默认取值:**\n不涉及",
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "accessScope": {
+          "description": "**参数解释:**\n授权范围,指定需要授权的集群及命名空间。\n**约束限制:**\n不涉及",
+          "$ref": "#/definitions/AccessScope"
+        },
+        "policyType": {
+          "type": "string",
+          "description": "**参数解释:**\n权限类型。\n**约束限制:**\n不涉及\n**取值范围:**\n- CCEClusterAdminPolicy:管理员权限\n- CCEAdminPolicy:运维权限\n- CCEEditPolicy:开发权限\n- CCEViewPolicy:只读权限\n\n**默认取值:**\n不涉及"
+        },
+        "principal": {
+          "description": "**参数解释:**\n授权对象。\n**约束限制:**\n不涉及",
+          "$ref": "#/definitions/Principal"
+        },
+        "createTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释:**\n创建时间。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        },
+        "updateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释:**\n更新时间。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及"
+        }
+      }
+    },
+    "Principal": {
+      "type": "object",
+      "required": [
+        "type",
+        "ids"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n授权对象的类型。\n**约束限制:**\n不涉及\n**取值范围:**\n- user:用户\n- group:用户组\n- agency:委托账号\n\n**默认取值:**\n不涉及",
+          "enum": [
+            "user",
+            "group",
+            "agency"
+          ]
+        },
+        "ids": {
+          "type": "array",
+          "description": "**参数解释:**\n授权对象ID列表,根据授权对象的类型,用户、用户组和委托账号,填入对应的ID。\n**约束限制:**\n当前最多支持同时授权500个用户/用户组。\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 500
+        }
+      }
+    },
+    "AccessPolicyListResp": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI类型。\n**约束限制:**\n该值不可修改。\n**取值范围:**\n不涉及\n**默认取值:**\nList"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释:**\nAPI版本。\n**约束限制:**\n该值不可修改。\n**取值范围:**\n不涉及\n**默认取值:**\nv3"
+        },
+        "accessPolicyList": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccessPolicyResp"
+          }
+        }
+      }
+    },
+    "AccessScope": {
+      "type": "object",
+      "required": [
+        "namespaces"
+      ],
+      "properties": {
+        "namespaces": {
+          "type": "array",
+          "description": "**参数解释:**\n集群命名空间的列表,允许使用通配符(“\\*”),表示所有命名空间。当选择了不同集群时,命名空间的列表可以为多个集群的集合,在转化成RBAC策略时,会自动判断集群下的命名空间是否存在。\n**约束限制:**\n当前最多支持同时授权500个命名空间。\n**取值范围:**\n\\[\"\\*\"\\]或者集群命名空间列表。\n**默认取值:**\n不涉及",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 500
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

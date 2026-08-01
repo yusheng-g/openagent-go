@@ -1,0 +1,205 @@
+{
+  "name": "KeystoneListFederationProjects",
+  "summary": "查询联邦用户可以访问的项目列表",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/OS-FEDERATION/projects": {
+      "get": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "查询联邦用户可以访问的项目列表",
+        "description": "该接口可以用于查询联邦用户可以访问的项目列表。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。\n> - 推荐使用[查询IAM用户可以访问的项目列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=KeystoneListAccessibleProjectsToUser),该接口可以返回相同的响应格式。",
+        "operationId": "KeystoneListFederationProjects",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "联邦认证的unscoped token信息。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "projects": [
+                  {
+                    "domain_id": "d78cbac186b744899480f25bd022f468",
+                    "is_domain": false,
+                    "parent_id": "d78cbac186b744899480f25bd022f468",
+                    "name": "af-south-1",
+                    "description": "",
+                    "links": {
+                      "self": "https://iam.myhuaweicloud.com/v3/projects/06f1cbbaf280106b2f14c00313a9d065"
+                    },
+                    "id": "06f1cbbaf280106b2f14c00313a9d065",
+                    "enabled": true
+                  },
+                  {
+                    "domain_id": "d78cbac186b744899480f25bd022f468",
+                    "is_domain": false,
+                    "parent_id": "d78cbac186b744899480f25bd022f468",
+                    "name": "cn-east-2",
+                    "description": "",
+                    "links": {
+                      "self": "https://iam.myhuaweicloud.com/v3/projects/065a7c66da0010992ff7c0031e5a5e7d"
+                    },
+                    "id": "065a7c66da0010992ff7c0031e5a5e7d",
+                    "enabled": true
+                  }
+                ],
+                "links": {
+                  "self": "https://iam.myhuaweicloud.com/v3/OS-FEDERATION/projects"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneListFederationProjectsResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "405": {
+            "description": "未找到相应的资源。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询联邦用户可以访问的项目列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 104,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/OS-FEDERATION/projects",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/OS-FEDERATION/projects",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AuthProjectResult": {
+      "required": [
+        "description",
+        "domain_id",
+        "enabled",
+        "id",
+        "is_domain",
+        "links",
+        "name",
+        "parent_id"
+      ],
+      "properties": {
+        "is_domain": {
+          "type": "boolean",
+          "example": false,
+          "description": "false."
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "项目描述信息。"
+        },
+        "links": {
+          "description": "项目的资源链接。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "项目是否可用。"
+        },
+        "id": {
+          "type": "string",
+          "example": "06f1cbbaf280106b2f14c00313a9d065",
+          "description": "项目ID。"
+        },
+        "parent_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "如果查询自己创建的项目,则此处返回所属区域的项目ID。\n\n如果查询的是系统内置项目,如cn-north-4,则此处返回账号ID。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "项目所属账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "af-south-1",
+          "description": "项目名称。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneListFederationProjectsResponseBody": {
+      "required": [
+        "links",
+        "projects"
+      ],
+      "properties": {
+        "links": {
+          "description": "资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "projects": {
+          "type": "array",
+          "description": "项目信息列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AuthProjectResult"
+          }
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,543 @@
+{
+  "name": "NeutronCreateSubnet",
+  "summary": "创建子网",
+  "tags": "OpenStack - 子网",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/subnets": {
+      "post": {
+        "tags": [
+          "OpenStack - 子网"
+        ],
+        "summary": "创建子网",
+        "description": "创建子网。",
+        "operationId": "NeutronCreateSubnet",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "in": "body",
+            "name": "subnet",
+            "description": "子网对象",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NeutronCreateSubnetRequestBody"
+            },
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "subnet": {
+                  "name": "subnet-test",
+                  "cidr": "172.16.2.0/24",
+                  "id": "66ef9989-4c38-4249-bd6e-86277aa954ca",
+                  "enable_dhcp": true,
+                  "network_id": "7b1ff976-bb29-4718-b348-2c4c2da54b75",
+                  "tenant_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                  "project_id": "6e9dfd51d1124e8d8498dce894923a0d",
+                  "dns_nameservers": [],
+                  "allocation_pools": [
+                    {
+                      "start": "172.16.2.2",
+                      "end": "172.16.2.252"
+                    }
+                  ],
+                  "host_routes": [],
+                  "ip_version": 4,
+                  "gateway_ip": "172.16.2.1",
+                  "created_at": "2019-05-08T02:20:04",
+                  "updated_at": "2019-05-08T02:20:04"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NeutronSubnetResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建子网",
+        "x-constraint": "网络下存在IPv4子网的情况下才允许创建IPv6子网。",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 89,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/subnets",
+        "x-request-examples-1": {
+          "subnet": {
+            "name": "subnet-test",
+            "network_id": "0133cd73-34d4-4d4c-bf1f-e65b24603206",
+            "cidr": "172.16.2.0/24",
+            "enable_dhcp": true
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"subnet\": {\n\t\t\"name\": \"subnet-test\",\n\t\t\"network_id\": \"0133cd73-34d4-4d4c-bf1f-e65b24603206\",\n\t\t\"cidr\": \"172.16.2.0/24\",\n\t\t\"enable_dhcp\": true\n\t}\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2016-6-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronSubnetResponseBody": {
+      "required": [
+        "subnet"
+      ],
+      "properties": {
+        "subnet": {
+          "description": "subnet对象",
+          "$ref": "#/definitions/NeutronSubnet",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronSubnet": {
+      "required": [
+        "allocation_pools",
+        "cidr",
+        "created_at",
+        "dns_nameservers",
+        "enable_dhcp",
+        "gateway_ip",
+        "host_routes",
+        "id",
+        "ip_version",
+        "ipv6_address_mode",
+        "ipv6_ra_mode",
+        "name",
+        "network_id",
+        "project_id",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "allocation_pools": {
+          "type": "array",
+          "description": "功能说明:可用的IP池,allocation_pool对象参见 allocation_pool对象\n例如:[ { \"start\": \"10.0.0.2\", \"end\": \"10.0.0.251\"} ]每个子网的第1个和最后4个IP地址为系统保留地址。以192.168.1.0/24为例,192.168.1.0、 192.168.1.252、192.168.1.253、192.168.1.254和192.168.1.255这些地址是系统保留地址。系统预留地址默认不在allocation_pool范围内\n约束:更新时allocation_pool范围不能包含网关和广播地址的所有IP。",
+          "items": {
+            "$ref": "#/definitions/AllocationPool"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "功能说明:子网网段\n取值范围:CIDR格式,只支持10.0.0.0/8,172.16.0.0/12,192.168.0.0/16三个网段内的地址,掩码长度不能大于28\n约束:当ip_version=6时,该字段不支持设置",
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "dns_nameservers": {
+          "type": "array",
+          "description": "功能说明:子网关联的DNS名称服务器列表\n取值范围:IP地址格式例如:\"dns_nameservers\": [\"8.xx.xx.8\",\"8.xx.xx.4\"];\n默认值:不填时为空,无法使用云内网DNS功能",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "enable_dhcp": {
+          "type": "boolean",
+          "description": "功能说明:是否启动dhcp\n取值范围:只支持true",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "gateway_ip": {
+          "type": "string",
+          "description": "功能说明:子网网关IP \n取值范围:本子网网段内的可用IP \n约束:不允许和allocation_pools地址块冲突;ip_version=6时该字段不支持设置\n默认值:本子网网段内第一个可用IP",
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "host_routes": {
+          "type": "array",
+          "description": "虚拟机静态路由,参见“host_route对象”表",
+          "items": {
+            "$ref": "#/definitions/HostRoute"
+          },
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "id": {
+          "type": "string",
+          "description": "子网ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:IP协议版本\n取值范围:4或6(支持后)",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "ipv6_address_mode": {
+          "type": "string",
+          "description": "功能说明:IPv6寻址模式\n取值范围:dhcpv6-stateful",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "ipv6_ra_mode": {
+          "type": "string",
+          "description": "功能说明:IPv6路由广播模式\n取值范围:dhcpv6-stateful",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:子网的名称\n取值范围:0-255个字符",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "所属网络的ID",
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 255,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "maxLength": 64,
+          "x-obc": "Y",
+          "x-admin": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "subnetpool_id": {
+          "type": "string",
+          "description": "子网池id\n【使用说明】目前IPv4不支持,IPv6支持",
+          "x-open-region-cloud": "hc,hk,otc,hcso_dt"
+        }
+      },
+      "description": ""
+    },
+    "NeutronCreateSubnetRequestBody": {
+      "required": [
+        "subnet"
+      ],
+      "properties": {
+        "subnet": {
+          "description": "subnet对象",
+          "$ref": "#/definitions/NeutronCreateSubnetOption",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "AllocationPool": {
+      "properties": {
+        "end": {
+          "type": "string",
+          "description": "网络池结束IP",
+          "maxLength": 64,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "start": {
+          "type": "string",
+          "description": "网络池起始IP",
+          "maxLength": 64,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronCreateSubnetOption": {
+      "required": [
+        "cidr",
+        "network_id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:子网的名称\n取值范围:0-255个字符",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "功能说明:子网网段\n取值范围:必须是cidr格式,只支持10.0.0.0/8,172.16.0.0/12,192.168.0.0/16三个网段内的地址,掩码长度不能大于28",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "network_id": {
+          "type": "string",
+          "description": "功能说明:子网所属网络ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "gateway_ip": {
+          "type": "string",
+          "description": "功能说明:子网网关\n取值范围:子网网段中的IP地址\n约束:必须是ip格式",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:IP版本信息\n取值范围:4或者6(特定局点)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "allocation_pools": {
+          "type": "array",
+          "description": "功能说明:可用的IP池,allocation_pool对象参见allocation_pool对象\n例如:[ { \"start\": \"10.0.0.2\", \"end\": \"10.0.0.251\"} ]每个子网的第1个和最后4个IP地址为系统保留地址。以192.168.1.0/24为例,192.168.1.0、 192.168.1.252、192.168.1.253、192.168.1.254和192.168.1.255这些地址是系统保留地址。系统预留地址默认不在allocation_pool范围内。\n约束:更新时allocation_pool范围不能包含网关和广播地址的所有IP。",
+          "items": {
+            "$ref": "#/definitions/AllocationPool"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "dns_nameservers": {
+          "type": "array",
+          "description": "功能说明:子网关联的DNS名称服务器列表\n取值范围:IP地址格式例如:\"dns_nameservers\": [\"8.xx.xx.8\",\"8.xx.xx.4\"]\n默认值:不填时为空,无法使用云内网DNS功能\n[内网DNS地址请参见](https://support.huaweicloud.com/dns_faq/dns_faq_002.html)\n[通过API获取请参见](https://support.huaweicloud.com/api-dns/dns_api_69001.html)",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "host_routes": {
+          "type": "array",
+          "description": "功能说明:虚拟机静态路由,参见“host_route对象”表\n约束:不支持设置",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/HostRoute"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "enable_dhcp": {
+          "type": "boolean",
+          "description": "功能说明:是否启动dhcp,false表示不提供dhcp服务的能力\n约束:只支持true",
+          "default": true,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "ipv6_address_mode": {
+          "type": "string",
+          "description": "功能说明:IPv6寻址模式\n取值范围:dhcpv6-stateful",
+          "default": "dhcpv6-stateful",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "ipv6_ra_mode": {
+          "type": "string",
+          "description": "功能说明:IPv6路由广播模式\n取值范围:dhcpv6-stateful",
+          "default": "dhcpv6-stateful",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        }
+      },
+      "description": ""
+    },
+    "HostRoute": {
+      "properties": {
+        "destination": {
+          "type": "string",
+          "description": "路由目的子网",
+          "maxLength": 64,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "nexthop": {
+          "type": "string",
+          "description": "路由下一跳IP",
+          "maxLength": 64,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

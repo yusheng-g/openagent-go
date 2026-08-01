@@ -1,0 +1,141 @@
+{
+  "name": "ChangeTheDelayThreshold",
+  "summary": "修改读写分离阈值",
+  "tags": "数据库代理(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/proxy/delay-threshold": {
+      "put": {
+        "x-request-examples-1": {
+          "delay_threshold_in_kilobytes": 30
+        },
+        "tags": [
+          "数据库代理(PostgreSQL)"
+        ],
+        "operationId": "ChangeTheDelayThreshold",
+        "summary": "修改读写分离阈值",
+        "description": "修改指定实例的读写分离延时阈值。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口仅支持PostgreSQL 11、PostgreSQL 12修改读写分离阈值。\n- 数据库实例必须已开启数据库代理 。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "ChangingTheDelayThresholdRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangingTheDelayThresholdRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ModifyProxyWeightOrDelayThresholdResponse"
+            },
+            "examples": {
+              "application/json": {
+                "result": "success"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/0483b6b16e954cb88930a360d2c4e663/instances/cee5265e1e5845649e354841234567dfin01/proxy/delay-threshold"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ModifyProxyWeightOrDelayThresholdResponse": {
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "type": "string",
+          "description": "修改读写分离权重或延时阈值的结果。"
+        }
+      }
+    },
+    "ChangingTheDelayThresholdRequestBody": {
+      "required": [
+        "delay_threshold_in_kilobytes"
+      ],
+      "properties": {
+        "delay_threshold_in_kilobytes": {
+          "type": "integer",
+          "description": "延时阈值(单位:KB),取值范围为0~10485760。",
+          "format": "int32"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

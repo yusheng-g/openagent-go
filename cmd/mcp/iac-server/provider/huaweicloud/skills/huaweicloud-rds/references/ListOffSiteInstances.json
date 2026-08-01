@@ -1,0 +1,207 @@
+{
+  "name": "ListOffSiteInstances",
+  "summary": "查询跨区域备份实例列表",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/backups/offsite-backup-instance": {
+      "get": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListOffSiteInstances",
+        "x-support-sdk": "Y",
+        "summary": "查询跨区域备份实例列表",
+        "x-constraint": "仅支持查询MySQL和SQL Server的跨区域备份实例列表信息。",
+        "description": "查询跨区域备份实例列表。",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "type": "string",
+            "default": "application/json"
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "Integer",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数。默认为100,不能为负数,最小值为1,最大值为100。",
+            "type": "Integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/OffSiteInstanceListResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "offsite_backup_instance": [
+                  {
+                    "id": "ed7cc6166ec24360a5ed5c5c9c2ed726in01",
+                    "name": "mysql-0820-022709-01",
+                    "source_region": "cn-xianhz-1",
+                    "source_project_id": "ba1f7fc8-3307-42a7-aa6f-42c8b9b8f85c",
+                    "datastore": {
+                      "type": "MySQL",
+                      "version": "5.7"
+                    },
+                    "destination_region": "cn-guangzhou-1",
+                    "destination_project_id": "0503fd7f7580d3262fc5c001170fbab9",
+                    "keep_days": 7
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/offsite-backup-instance"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "offsiteBackupInstance": {
+      "description": "跨区域备份实例信息。",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "description": "实例ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "创建的实例名称。",
+          "type": "string"
+        },
+        "source_region": {
+          "description": "源区域。",
+          "type": "string"
+        },
+        "source_project_id": {
+          "description": "租户在源区域下的project ID。",
+          "type": "string"
+        },
+        "datastore": {
+          "description": "数据库信息。",
+          "$ref": "#/definitions/ParaGroupDatastore"
+        },
+        "destination_region": {
+          "description": "跨区域备份所在区域。",
+          "type": "string"
+        },
+        "destination_project_id": {
+          "description": "租户在目标区域下的project ID。",
+          "type": "string"
+        },
+        "keep_days": {
+          "description": "跨区域备份保留天数。",
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "OffSiteInstanceListResponseBody": {
+      "required": [
+        "offsite_backup_instances",
+        "total_count"
+      ],
+      "properties": {
+        "offsite_backup_instances": {
+          "description": "跨区域备份实例信息。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/offsiteBackupInstance"
+          }
+        },
+        "total_count": {
+          "description": "总记录数。",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "ParaGroupDatastore": {
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,不区分大小写:\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+          "enum": [
+            "MySQL",
+            "PostgreSQL",
+            "SQLServer",
+            "MariaDB"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。\n\n- MySQL引擎支持5.6、5.7、8.0版本。取值示例:5.7。具有相应权限的用户才可使用8.0,您可联系华为云客服人员申请。\n- PostgreSQL引擎支持9.5、9.6、10、11版本。取值示例:9.6。\n- Microsoft SQL Server:仅支持2017 企业版、2017 标准版、2017 web版、2014 标准版、2014 企业版、2016 标准版、2016 企业版、2012 企业版、2012 标准版、2012 web版、2008 R2 企业版、2008 R2 web版、2014 web版、2016 web版。取值示例2014_SE。 例如:2017标准版可填写2017_SE,2017企业版可填写2017_EE,2017web版可以填写2017_WEB"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

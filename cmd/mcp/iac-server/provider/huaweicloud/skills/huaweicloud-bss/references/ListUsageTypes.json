@@ -1,0 +1,193 @@
+{
+  "name": "ListUsageTypes",
+  "summary": "查询使用量类型列表",
+  "tags": "管理产品(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/products/usage-types": {
+      "get": {
+        "summary": "查询使用量类型列表",
+        "description": "伙伴在伙伴销售平台查询资源的使用量类型列表。",
+        "tags": [
+          "管理产品(公共)"
+        ],
+        "operationId": "ListUsageTypes",
+        "x-constraint": "该接口可以使用合作伙伴AK/SK或者Token调用,也该接口可以使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/products/usage-types",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-09-29",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L1",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。中文:zh_CN英文:en_US缺省为zh_CN。",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "resource_type_code",
+            "in": "query",
+            "required": false,
+            "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用[查询资源类型列表](https://support.huaweicloud.com/api-oce/zh-cn_topic_0000001256519451.html)接口获取。此参数不携带或携带值为空时,不作为筛选条件;携带值为空串时,作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "hws.resource.type.vm",
+            "x-allowNull": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "x-allowNull": true,
+            "default": "0"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量,默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "x-allowNull": true,
+            "default": "10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询使用量类型列表响应",
+            "schema": {
+              "$ref": "#/definitions/QueryUsageTypesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1133,
+                "usage_types": [
+                  {
+                    "code": "flow",
+                    "name": "视频联接流量",
+                    "resource_type_code": "hws.resource.type.live.videoconnect",
+                    "service_type_code": "hws.service.type.live"
+                  },
+                  {
+                    "code": "reqNumber",
+                    "name": "调用次数",
+                    "resource_type_code": "hws.resource.type.pca.quantity",
+                    "service_type_code": "hws.service.type.ccm"
+                  },
+                  {
+                    "code": "dailyalarmnum",
+                    "name": "告警数",
+                    "resource_type_code": "hws.resource.type.aicms.cdfl",
+                    "service_type_code": "hws.service.type.aimgs",
+                    "resource_type_name": "云主机",
+                    "service_type_name": "弹性云服务器"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理产品(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/products/usage-types?resource_type_code=hws.resource.type.vm&offset=0&limit=100"
+      }
+    }
+  },
+  "definitions": {
+    "UsageType": {
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "使用量类型编码。如:reqNumber。",
+          "example": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "使用量类型名称。如:调用次数。",
+          "example": ""
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码。例如ECS的VM为“hws.resource.type.vm”。",
+          "example": ""
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码。例如OBS的云服务类型编码为“hws.service.type.obs”。",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        }
+      }
+    },
+    "QueryUsageTypesRsp": {
+      "properties": {
+        "total_count": {
+          "description": "总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "usage_types": {
+          "description": "使用量类型列表,具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UsageType"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

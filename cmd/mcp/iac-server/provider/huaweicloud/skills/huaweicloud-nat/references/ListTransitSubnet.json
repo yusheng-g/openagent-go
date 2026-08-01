@@ -1,0 +1,425 @@
+{
+  "name": "ListTransitSubnet",
+  "summary": "查询中转子网列表",
+  "tags": "中转子网",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/transit-subnets": {
+      "get": {
+        "x-name": "查询中转子网列表",
+        "x-api-type": "open-api",
+        "x-constraint": "可以在URI后面用‘?’和‘&’添加不同的查询条件组合。 支持参数说明中所有非必选参数过滤,请参考请求样例。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-obc": "N",
+        "x-hybridcloud": false,
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "tags": [
+          "中转子网"
+        ],
+        "summary": "查询中转子网列表",
+        "description": "查询中转子网列表。",
+        "operationId": "ListTransitSubnet",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的ID",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的名字",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的描述",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "virsubnet_project_id",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的子网所属项目的ID",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "vpc_id",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的子网所属的VPC的ID",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "virsubnet_id",
+            "in": "query",
+            "required": false,
+            "description": "中转子网的子网ID",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "中转子网状态。\n取值范围:\n- ACTIVE: 当前资源状态正常。\n- INACTIVE: 不可用。",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "功能说明:每页返回的个数。 取值范围:1~2000。 默认值:2000",
+            "type": "integer",
+            "format": "int32",
+            "default": 2000,
+            "minimum": 1,
+            "maximum": 2000
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "required": false,
+            "description": "功能说明:分页查询起始的资源ID,为空时查询第一页。 值从上一次查询的PageInfo中的next_marker或者previous_marker中获取",
+            "type": "string",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "required": false,
+            "description": "是否查询前一页",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询中转子网列表成功。",
+            "schema": {
+              "$ref": "#/definitions/ListTransitSubnetResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "transit_subnets": [
+                  {
+                    "id": "48b55781-306c-4a90-9cc0-d376337fae4f",
+                    "name": "transit-subnet_t1",
+                    "description": "transit-subnet-description",
+                    "virsubnet_project_id": "aea5011c0bc2454d8645a560345da810",
+                    "project_id": "aea5011c0bc2454d8645a560345da810",
+                    "vpc_id": "f9169a4f-5f0a-41ce-b2a3-834c15b038c2",
+                    "virsubnet_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                    "cidr": "192.168.1.0/24",
+                    "type": "VPC",
+                    "status": "ACTIVE",
+                    "ip_count": 0,
+                    "created_at": "2021-07-01T09:15:54Z",
+                    "updated_at": "2021-04-01T09:15:54Z",
+                    "tags": [
+                      {
+                        "key": "key1",
+                        "value": "value1"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "500caad8-5023-11f0-8369-02421d92b15b",
+                    "name": "transit-subnet_t2",
+                    "description": "transit-subnet-description",
+                    "virsubnet_project_id": "aea5011c0bc2454d8645a560345da810",
+                    "project_id": "aea5011c0bc2454d8645a560345da810",
+                    "vpc_id": "f9169a4f-5f0a-41ce-b2a3-834c15b038c2",
+                    "virsubnet_id": "2759da7b-8015-404c-ae0a-a389007b0e2d",
+                    "cidr": "192.168.2.0/24",
+                    "type": "VPC",
+                    "status": "ACTIVE",
+                    "ip_count": 0,
+                    "created_at": "2021-07-01T09:15:54Z",
+                    "updated_at": "2021-04-01T09:15:54Z",
+                    "tags": [
+                      {
+                        "key": "key2",
+                        "value": "value2"
+                      }
+                    ]
+                  }
+                ],
+                "request_id": "a7b00469-5a31-4274-bb10-59167243383e",
+                "page_info": {
+                  "previous_marker": "14338426-6afe-4019-996b-018008113013",
+                  "current_count": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "ListTransitSubnetResponseBody": {
+      "description": "查询中转子网列表的响应体",
+      "required": [
+        "transit_subnets",
+        "request_id"
+      ],
+      "properties": {
+        "transit_subnets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransitSubnet"
+          },
+          "description": "查询中转子网列表的响应体。详见TransitSubnet字段说明",
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      }
+    },
+    "PageInfo": {
+      "properties": {
+        "next_marker": {
+          "type": "string",
+          "description": "分页查询结果中最后一条记录的ID。通常用于查询下一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "previous_marker": {
+          "type": "string",
+          "description": "分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "分页查询资源时,本页的实例的个数。",
+          "minimum": 1,
+          "maximum": 2000,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "分页信息。"
+    },
+    "TransitSubnet": {
+      "description": "中转子网的响应体",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "virsubnet_project_id",
+        "project_id",
+        "vpc_id",
+        "virsubnet_id",
+        "cidr",
+        "type",
+        "status",
+        "ip_count",
+        "created_at",
+        "updated_at",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "中转子网的ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "name": {
+          "type": "string",
+          "description": "中转子网的名称",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "description": {
+          "type": "string",
+          "description": "中转子网的描述",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "virsubnet_project_id": {
+          "type": "string",
+          "description": "中转子网的子网所属的项目ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "中转子网的子网所属VPC的ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "中转子网的子网ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "cidr": {
+          "type": "string",
+          "description": "中转子网的子网网段",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "type": {
+          "type": "string",
+          "description": "中转子网类型。取值范围:VPC",
+          "enum": [
+            "VPC"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "description": "中转子网状态。\n取值范围:\n- ACTIVE: 当前资源状态正常。\n- INACTIVE: 不可用。",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        "ip_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前中转子网下已分配的中转子网IP数量。",
+          "minimum": 0,
+          "maximum": 16777215
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "中转子网创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "中转子网更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
+          "description": "标签列表",
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

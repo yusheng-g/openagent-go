@@ -1,0 +1,247 @@
+{
+  "name": "ShowTaskDetail",
+  "summary": "获取任务信息",
+  "tags": "获取任务信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/task-center-detail": {
+      "post": {
+        "x-publishpath": 240805,
+        "tags": [
+          "获取任务信息"
+        ],
+        "operationId": "ShowTaskDetail",
+        "summary": "获取任务信息",
+        "description": "获取任务信息",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "maxLength": 4096,
+            "minLength": 1,
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "maxLength": 4096,
+            "minLength": 1,
+            "x-example": "32ed287343ef468a9e12e32b7f3730d5in01"
+          },
+          {
+            "name": "ShowTaskDetailRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskDetailRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/TaskDetailResponseBody"
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname."
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "headers": {
+              "X-request-id": {
+                "type": "string",
+                "description": "This field is the request ID number for task tracking. Format is request_uuid-timestamp-hostname."
+              }
+            }
+          }
+        },
+        "x-apigateway-ratelimit": "rds_user_policy_100"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "TaskDetailResponseBody": {
+      "description": "获取任务信息请求响应",
+      "required": [
+        "instance_id",
+        "instance_name",
+        "job_id",
+        "job_name",
+        "created_at",
+        "update_at",
+        "process",
+        "status",
+        "sub_task_list"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例ID。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "instance_name": {
+          "type": "string",
+          "description": "实例名。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "job_id": {
+          "type": "string",
+          "description": "工作流ID。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "job_name": {
+          "type": "string",
+          "description": "工作流名称。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "description": "工作流创建时间。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "update_at": {
+          "type": "string",
+          "description": "工作流更新时间。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "process": {
+          "type": "string",
+          "description": "工作流进度。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "description": "工作流状态。",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "sub_task_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubTaskInfo"
+          },
+          "description": "子任务进度信息",
+          "maxItems": 100,
+          "minItems": 0
+        }
+      }
+    },
+    "SubTaskInfo": {
+      "type": "object",
+      "description": "子任务进度信息",
+      "properties": {
+        "sub_task_name": {
+          "type": "string",
+          "description": "子任务名",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "percent": {
+          "type": "string",
+          "description": "子任务进度",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "executed_time": {
+          "type": "string",
+          "description": "子任务执行时间",
+          "maxLength": 4096,
+          "minLength": 0
+        },
+        "status": {
+          "type": "string",
+          "description": "子任务状态",
+          "maxLength": 4096,
+          "minLength": 1
+        },
+        "remaining_time": {
+          "type": "string",
+          "description": "子任务剩余预估时长",
+          "maxLength": 4096,
+          "minLength": 0
+        },
+        "show_detail": {
+          "type": "boolean",
+          "description": "是否展示已恢复库表",
+          "default": "flase"
+        }
+      }
+    },
+    "TaskDetailRequest": {
+      "description": "获取任务信息请求体。",
+      "required": [
+        "workflow_id",
+        "workflow_name"
+      ],
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "description": "任务流ID",
+          "maxLength": 4096,
+          "minLength": 1,
+          "example": "7acfb77b-ec22-4ce9-b485-c373a9446320"
+        },
+        "workflow_name": {
+          "type": "string",
+          "description": "任务名",
+          "maxLength": 4096,
+          "minLength": 1,
+          "example": "CloneMysqlNewInstance"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

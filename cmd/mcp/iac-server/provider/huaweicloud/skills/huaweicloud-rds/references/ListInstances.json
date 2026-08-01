@@ -1,0 +1,687 @@
+{
+  "name": "ListInstances",
+  "summary": "查询数据库实例列表",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ListInstances",
+        "summary": "查询数据库实例列表",
+        "description": "查询数据库实例列表。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "type": "string",
+            "default": "application/json"
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "实例ID。\n\n“\\*”为系统保留字符,如果id是以“\\*”起始,表示按照\\*后面的值模糊匹配,否则,按照id精确匹配查询。不能只传入“\\*”。",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "实例名称。\n\n“\\*”为系统保留字符,如果name是以“\\*”起始,表示按照\\*后面的值模糊匹配,否则,按照name精确匹配查询。不能只传入“\\*”。",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "按照实例类型查询。取值Single、Ha、Replica,分别对应于单实例、主备实例和只读实例。",
+            "type": "string",
+            "enum": [
+              "Single",
+              "Ha",
+              "Replica"
+            ]
+          },
+          {
+            "name": "datastore_type",
+            "in": "query",
+            "description": "数据库类型,区分大小写。\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+            "type": "string",
+            "enum": [
+              "MySQL",
+              "PostgreSQL",
+              "SQLServer",
+              "MariaDB"
+            ]
+          },
+          {
+            "name": "eps_id",
+            "in": "query",
+            "description": "企业项目id。",
+            "type": "string"
+          },
+          {
+            "name": "vpc_id",
+            "in": "query",
+            "description": "虚拟私有云ID。",
+            "type": "string"
+          },
+          {
+            "name": "subnet_id",
+            "in": "query",
+            "description": "子网ID。",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数。默认为100,不能为负数,最小值为1,最大值为100。",
+            "type": "integer"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "根据实例标签键值对进行查询。 {key}表示标签键,不可以为空或重复。最大长度127个unicode字符。key不能为空或者空字符串,不能为空格,使用之前先trim前后半角空格。不能包含+/?#&=,%特殊字符。 {value}表示标签值,可以为空。最大长度255个unicode字符,使用之前先trim 前后半角空格。不能包含+/?#&=,%特殊字符。如果value为空,则表示any_value(查询任意value)。 如果同时使用多个标签键值对进行查询,中间使用逗号分隔开,最多包含10组。",
+            "type": "string"
+          },
+          {
+            "name": "group_type",
+            "in": "query",
+            "description": "查询flexusrds实例,传flexus。其他场景不传。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/InstanceListResponse"
+            },
+            "examples": {
+              "application/json": {
+                "instances": [
+                  {
+                    "id": "ed7cc6166ec24360a5ed5c5c9c2ed726in01",
+                    "status": "ACTIVE",
+                    "name": "mysql-0820-022709-01",
+                    "port": 3306,
+                    "enable_ssl": true,
+                    "type": "Single",
+                    "region": "aaa",
+                    "datastore": {
+                      "type": "MySQL",
+                      "version": "5.7"
+                    },
+                    "created": "2018-08-20T02:33:49+0800",
+                    "updated": "2018-08-20T02:33:50+0800",
+                    "volume": {
+                      "type": "ULTRAHIGH",
+                      "size": 100
+                    },
+                    "nodes": [
+                      {
+                        "id": "06f1c2ad57604ae89e153e4d27f4e4b8no01",
+                        "name": "mysql-0820-022709-01_node0",
+                        "role": "master",
+                        "status": "ACTIVE",
+                        "availability_zone": "bbb"
+                      }
+                    ],
+                    "private_ips": [
+                      "192.168.0.142"
+                    ],
+                    "public_ips": [
+                      "10.154.219.187",
+                      "10.154.219.186"
+                    ],
+                    "public_dns_names": [
+                      "example3.com.",
+                      "example4.com."
+                    ],
+                    "db_user_name": "root",
+                    "vpc_id": "b21630c1-e7d3-450d-907d-39ef5f445ae7",
+                    "subnet_id": "45557a98-9e17-4600-8aec-999150bc4eef",
+                    "security_group_id": "38815c5c-482b-450a-80b6-0a301f2afd97",
+                    "flavor_ref": "rds.mysql.s1.large",
+                    "switch_strategy": "reliability",
+                    "read_only_by_user": false,
+                    "charge_info": {
+                      "charge_mode": "postPaid"
+                    },
+                    "backup_strategy": {
+                      "start_time": "19:00-20:00",
+                      "keep_days": 7
+                    },
+                    "maintenance_window": "02:00-06:00",
+                    "related_instance": [],
+                    "disk_encryption_id": "",
+                    "enterprise_project_id": "0",
+                    "time_zone": "UTC",
+                    "tags": [
+                      {
+                        "key": "rds001",
+                        "value": "rds001"
+                      }
+                    ]
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances",
+        "x-request-examples-url-2": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/97b026aa9cc4417888c14c84a1ad9860/instances?id=ed7cc6166ec24360a5ed5c5c9c2ed726in01&name=hy&type=Ha&datastore_type=MySQL&vpc_id=19e5d45d-70fd-4a91-87e9-b27e71c9891f&subnet_id=bd51fb45-2dcb-4296-8783-8623bfe89bb7&offset=0&limit=10&tags=rds001=001,rds002=002"
+      }
+    }
+  },
+  "definitions": {
+    "InstanceListResponse": {
+      "required": [
+        "instances",
+        "total_count"
+      ],
+      "properties": {
+        "instances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InstanceResponse"
+          }
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "总实例数。"
+        }
+      }
+    },
+    "Datastore": {
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,不区分大小写:\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+          "enum": [
+            "MySQL",
+            "PostgreSQL",
+            "SQLServer",
+            "MariaDB"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。\n- MySQL引擎支持5.6、5.7、8.0版本。取值示例:5.7。具有相应权限的用户才可使用8.0,您可联系华为云客服人员申请。\n- PostgreSQL引擎支持9.5、9.6、10、11版本。取值示例:9.6。\n- Microsoft SQL Server:仅支持2017 企业版、2017 标准版、2017 web版、2014 标准版、2014 企业版、2016 标准版、2016 企业版、2012 企业版、2012 标准版、2012 web版、2008 R2 企业版、2008 R2 web版、2014 web版、2016 web版。取值示例2014_SE。 例如:2017标准版可填写2017_SE,2017企业版可填写2017_EE,2017web版可以填写2017_WEB"
+        },
+        "complete_version": {
+          "type": "string",
+          "description": "数据库完整版本号。仅在数据库引擎是”MySQL”和”PostgreSQL”时返回。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "TagResponse": {
+      "description": "标签信息。",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "标签键。",
+          "example": "rds001"
+        },
+        "value": {
+          "type": "string",
+          "description": "标签值。",
+          "example": "rds001"
+        }
+      }
+    },
+    "BackupStrategyForResponse": {
+      "required": [
+        "start_time",
+        "keep_days"
+      ],
+      "description": "自动备份策略。",
+      "properties": {
+        "start_time": {
+          "type": "string",
+          "description": "备份时间段。自动备份将在该时间段内触发。\n\n取值范围:非空,格式必须为hh:mm-HH:MM且有效,当前时间指UTC时间。\n\nHH取值必须比hh大1。\nmm和MM取值必须相同,且取值必须为00、15、30或45。",
+          "example": "23:00-00:00"
+        },
+        "keep_days": {
+          "type": "integer",
+          "description": "指定备份文件的可保存天数。\n\n取值范围:0~732。该参数缺省,或取值为0,表示关闭自动备份策略。如果需要延长保留时间请联系客服人员申请,自动备份最长可以保留2562天。\n\n说明:SQL Server的HA实例不支持关闭自动备份策略。"
+        }
+      }
+    },
+    "NodeResponse": {
+      "description": "实例节点信息。",
+      "required": [
+        "id",
+        "name",
+        "role",
+        "status",
+        "availability_zone"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "节点ID。",
+          "example": "5b0fda418d9f4b51b0d188732aaf992fno01"
+        },
+        "name": {
+          "type": "string",
+          "description": "节点名称。",
+          "example": "mysql_node1"
+        },
+        "role": {
+          "type": "string",
+          "description": "节点类型,取值为“master”、“slave”或“readreplica”,分别对应于主节点、备节点和只读节点。",
+          "example": "master"
+        },
+        "status": {
+          "type": "string",
+          "description": "节点状态。",
+          "example": "ACTIVE"
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "可用区。",
+          "example": "az1"
+        }
+      }
+    },
+    "ChargeInfoResponse": {
+      "description": "计费类型信息,支持包年包月和按需,默认为按需。",
+      "required": [
+        "charge_mode"
+      ],
+      "properties": {
+        "charge_mode": {
+          "type": "string",
+          "description": "计费模式。\n\n取值范围:\n\n- prePaid:预付费,即包年/包月。\n- postPaid:后付费,即按需付费。",
+          "enum": [
+            "prePaid",
+            "postPaid"
+          ]
+        }
+      }
+    },
+    "RelatedInstance": {
+      "description": "所关联的数据库实例列表。",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "关联实例id。",
+          "example": "e73893ef73754465a8bd2e0857bbf13ein01"
+        },
+        "type": {
+          "type": "string",
+          "description": "关联实例类型。\n\n- “replica_of”对应于“主实例”。\n- “replica”对应于“只读实例”。",
+          "example": "replica"
+        }
+      }
+    },
+    "HaResponse": {
+      "required": [
+        "replication_mode"
+      ],
+      "description": "HA配置参数,创建HA实例时使用。",
+      "properties": {
+        "replication_mode": {
+          "type": "string",
+          "description": "备机同步参数。实例主备模式为Ha时有效。\n取值:\n- MySQL为“async”或“semisync”。\n- PostgreSQL为“async”或“sync”。\n- Microsoft SQL Server为“sync”。",
+          "enum": [
+            "async",
+            "semisync",
+            "sync"
+          ]
+        }
+      }
+    },
+    "InstanceResponse": {
+      "description": "实例信息。",
+      "required": [
+        "id",
+        "status",
+        "enable_ssl",
+        "private_ips",
+        "public_ips",
+        "type",
+        "created",
+        "updated",
+        "db_user_name",
+        "switch_strategy",
+        "maintenance_window",
+        "nodes",
+        "related_instance",
+        "name",
+        "datastore",
+        "port",
+        "backup_strategy",
+        "enterprise_project_id",
+        "disk_encryption_id",
+        "flavor_ref",
+        "volume",
+        "region",
+        "vpc_id",
+        "subnet_id",
+        "security_group_id",
+        "charge_info",
+        "time_zone",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "实例ID。",
+          "example": "5a0c7051faa0471a8e23703f1dc0f458in01"
+        },
+        "status": {
+          "type": "string",
+          "description": "实例状态。\n- 值为“BUILD”,表示实例正在创建。\n- 值为“ACTIVE”,表示实例正常。\n- 值为“FAILED”,表示实例异常。\n- 值为“FROZEN”,表示实例冻结。\n- 值为“MODIFYING”,表示实例正在扩容。\n- 值为“REBOOTING”,表示实例正在重启。\n- 值为“RESTORING”,表示实例正在恢复。\n- 值为“MODIFYING INSTANCE TYPE”,表示实例正在转主备。\n- 值为“SWITCHOVER”,表示实例正在主备切换。\n- 值为“MIGRATING”,表示实例正在迁移。\n- 值为“BACKING UP”,表示实例正在进行备份。\n- 值为“MODIFYING DATABASE PORT”,表示实例正在修改数据库端口。\n- 值为“STORAGE FULL”,表示实例磁盘空间满。",
+          "example": "BUILD"
+        },
+        "enable_ssl": {
+          "type": "boolean",
+          "description": "实例是否开启SSL,取值为\"true\"表示实例开启了SSL,取值为\"false\"表示实例未开启SSL。"
+        },
+        "private_ips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "实例内网IP地址列表。弹性云服务器创建成功后该值存在,其他情况下为空字符串。"
+        },
+        "private_dns_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "内网域名列表"
+        },
+        "public_dns_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "公网域名列表"
+        },
+        "public_ips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "实例外网IP地址列表。"
+        },
+        "type": {
+          "type": "string",
+          "description": "实例类型,取值为“Single”,“Ha”或“Replica”,分别对应于单机实例、主备实例、只读实例。"
+        },
+        "created": {
+          "type": "string",
+          "description": "创建时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。\n\n说明:创建时返回值为空,数据库实例创建成功后该值不为空。"
+        },
+        "updated": {
+          "type": "string",
+          "description": "更新时间,格式与“created”字段对应格式完全相同。\n\n说明:创建时返回值为空,数据库实例创建成功后该值不为空。"
+        },
+        "db_user_name": {
+          "type": "string",
+          "description": "默认用户名。",
+          "example": "root"
+        },
+        "switch_strategy": {
+          "type": "string",
+          "description": "数据库切换策略。取值为“reliability”或“availability”,分别对应于可靠性优先和可用性优先。"
+        },
+        "read_only_by_user": {
+          "type": "boolean",
+          "description": "客户设置实例只读API的状态信息。仅支持RDS for MySQL引擎。 - true,表示该实例为客户设置的只读状态 - false, 表示该实例未被客户设置只读"
+        },
+        "maintenance_window": {
+          "type": "string",
+          "description": "可维护时间窗,为UTC时间。"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NodeResponse"
+          }
+        },
+        "related_instance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RelatedInstance"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "实例名称。"
+        },
+        "datastore": {
+          "description": "数据库信息。",
+          "$ref": "#/definitions/Datastore"
+        },
+        "ha": {
+          "$ref": "#/definitions/HaResponse"
+        },
+        "port": {
+          "type": "integer",
+          "description": "数据库端口信息。\n\n- MySQL数据库端口设置范围为1024~65535(其中12017和33071被RDS系统占用不可设置)。\n- PostgreSQL数据库端口修改范围为2100~9500。\n- Microsoft SQL Server实例的端口设置范围为1433和2100~9500(其中5355和5985不可设置。对于2017 EE版,5050、5353和5986不可设置)。\n\n当不传该参数时,默认端口如下:\n\n- MySQL默认3306。\n- PostgreSQL默认5432。\n- Microsoft SQL Server默认1433。",
+          "example": 3306
+        },
+        "backup_strategy": {
+          "$ref": "#/definitions/BackupStrategyForResponse"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。"
+        },
+        "disk_encryption_id": {
+          "type": "string",
+          "description": "用于磁盘加密的密钥ID。"
+        },
+        "flavor_ref": {
+          "type": "string",
+          "description": "规格码。",
+          "example": "rds.mysql.s1.large"
+        },
+        "cpu": {
+          "type": "string",
+          "description": "CPU大小。例如,1表示1U。",
+          "example": 1
+        },
+        "mem": {
+          "type": "string",
+          "description": "内存大小(单位:GB)。",
+          "example": 80
+        },
+        "volume": {
+          "description": "实例存储信息。",
+          "$ref": "#/definitions/VolumeForInstanceResponse"
+        },
+        "region": {
+          "type": "string",
+          "description": "区域ID。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "虚拟私有云ID。"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "子网ID。"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "安全组ID。"
+        },
+        "charge_info": {
+          "$ref": "#/definitions/ChargeInfoResponse"
+        },
+        "time_zone": {
+          "type": "string",
+          "description": "时区。"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagResponse"
+          }
+        },
+        "backup_used_space": {
+          "type": "number",
+          "format": "double",
+          "description": "备份空间使用量,单位GB。\n\n该字段仅用于查询指定SQL Server实例信息时返回。"
+        },
+        "storage_used_space": {
+          "type": "number",
+          "format": "double",
+          "description": "磁盘空间使用量,单位GB。\n\n该字段仅用于查询指定SQL Server实例信息时返回。"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID,仅包周期场景返回。"
+        },
+        "associated_with_ddm": {
+          "type": "boolean",
+          "description": "是否已被DDM实例关联。"
+        },
+        "alias": {
+          "type": "string",
+          "description": "实例的备注信息。"
+        },
+        "max_iops": {
+          "type": "integer",
+          "format": "int64",
+          "description": "实例磁盘的最大IOPS值。\n\n当前该字段仅对于SQL Server引擎实例返回。"
+        },
+        "expiration_time": {
+          "type": "string",
+          "description": "实例的到期时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n仅包周期场景返回。"
+        },
+        "serverless_info": {
+          "description": "Serverless型实例的算力区间,单位RCU。",
+          "$ref": "#/definitions/ServerlessInfoResponse"
+        }
+      }
+    },
+    "VolumeForInstanceResponse": {
+      "required": [
+        "type",
+        "size"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "磁盘类型。\n取值范围如下,区分大小写:\n- COMMON,表示SATA。\n- HIGH,表示SAS。\n- ULTRAHIGH,表示SSD。\n- ULTRAHIGHPRO,表示SSD尊享版,仅支持超高性能型尊享版。\n- CLOUDSSD,表示SSD云盘,仅支持通用型和独享型规格实例。\n- LOCALSSD,表示本地SSD。\n- ESSD,表示极速型SSD,仅支持独享型规格实例。",
+          "enum": [
+            "ULTRAHIGH",
+            "HIGH",
+            "COMMON",
+            "NVMESSD",
+            "ULTRAHIGHPRO",
+            "CLOUDSSD",
+            "LOCALSSD",
+            "ESSD"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "description": "磁盘大小,单位为GB。"
+        }
+      }
+    },
+    "ServerlessInfoResponse": {
+      "required": [
+        "min_compute_unit",
+        "max_compute_unit"
+      ],
+      "properties": {
+        "min_compute_unit": {
+          "type": "string",
+          "description": "Serverless型实例的算力范围最小值。取值范围:0.5 ~ 8,单位:RCU。"
+        },
+        "max_compute_unit": {
+          "type": "string",
+          "description": "Serverless型实例的算力范围最大值。取值范围:0.5 ~ 8,单位:RCU。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

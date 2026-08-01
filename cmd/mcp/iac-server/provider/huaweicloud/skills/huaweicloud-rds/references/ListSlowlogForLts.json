@@ -1,0 +1,221 @@
+{
+  "name": "ListSlowlogForLts",
+  "summary": "查询实例的慢日志数据",
+  "tags": "日志",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/slow-logs": {
+      "post": {
+        "x-constraint": "该接口仅支持MySQL引擎和PostgreSQL引擎。",
+        "x-publishpath": "getlog",
+        "tags": [
+          "日志"
+        ],
+        "description": "查询实例的慢日志数据。",
+        "operationId": "ListSlowlogForLts",
+        "summary": "查询实例的慢日志数据",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。获取方法请参见获取项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "description": "查询条件。",
+            "schema": {
+              "$ref": "#/definitions/SlowlogForLtsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/MysqlSlowLogDetailsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "slow_log_list": [
+                  {
+                    "count": "1",
+                    "time": "1.04899 s",
+                    "lock_time": "0.00003 s",
+                    "rows_sent": "0",
+                    "rows_examined": "0",
+                    "database": "test_db",
+                    "users": "root",
+                    "query_sample": "INSERT INTO time_zone_name (Name, Time_zone_id) VALUES (N, @time_zone_id);",
+                    "type": "INSERT",
+                    "start_time": "2018-08-06T10:41:14",
+                    "client_ip": "192.*.*.1",
+                    "line_num": "1595659490239433658"
+                  }
+                ],
+                "long_query_time": "1"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MysqlSlowLogDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "slow_log_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MysqlSlowLogDetailsItem"
+          },
+          "description": "日志数据集合。"
+        },
+        "long_query_time": {
+          "type": "string",
+          "description": "当前慢日志阈值时间。"
+        }
+      }
+    },
+    "SlowlogForLtsRequest": {
+      "type": "object",
+      "description": "查询实例的慢日志对象",
+      "required": [
+        "start_time",
+        "end_time"
+      ],
+      "properties": {
+        "start_time": {
+          "description": "开始日期,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "end_time": {
+          "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。只能查询当前时间前一个月内的慢日志。",
+          "type": "string"
+        },
+        "type": {
+          "description": "语句类型,取空值,表示查询所有语句类型。",
+          "type": "string",
+          "enum": [
+            "INSERT",
+            "UPDATE",
+            "SELECT",
+            "DELETE",
+            "CREATE"
+          ]
+        },
+        "line_num": {
+          "description": "日志单行序列号,第一次查询时不需要此参数,后续分页查询时需要使用,可从上次查询的返回信息中获取。line_num应在start_time和end_time之间。",
+          "type": "string"
+        },
+        "limit": {
+          "description": "每页多少条记录(查询结果),取值范围是1~100,不填时默认为10。",
+          "type": "integer"
+        },
+        "search_type": {
+          "description": "搜索方式。默认forwards。配合line_num使用,以line_num为起点,向前搜索或向后搜索。",
+          "type": "string",
+          "enum": [
+            "forwards",
+            "backwards"
+          ]
+        },
+        "database": {
+          "description": "数据库名称。",
+          "type": "string"
+        }
+      }
+    },
+    "MysqlSlowLogDetailsItem": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "description": "执行次数。"
+        },
+        "time": {
+          "type": "string",
+          "description": "执行时间。"
+        },
+        "lock_time": {
+          "type": "string",
+          "description": "等待锁时间。mysql支持"
+        },
+        "rows_sent": {
+          "type": "string",
+          "description": "结果行数量。mysql支持"
+        },
+        "rows_examined": {
+          "type": "string",
+          "description": "扫描的行数量。mysql支持"
+        },
+        "database": {
+          "type": "string",
+          "description": "所属数据库。"
+        },
+        "users": {
+          "type": "string",
+          "description": "帐号。"
+        },
+        "query_sample": {
+          "type": "string",
+          "description": "执行语法。慢日志默认脱敏显示,如需明文显示,请联系客服人员添加白名单。"
+        },
+        "type": {
+          "type": "string",
+          "description": "语句类型。"
+        },
+        "start_time": {
+          "type": "string",
+          "description": "发生时间,UTC时间。"
+        },
+        "client_ip": {
+          "type": "string",
+          "description": "IP地址。"
+        },
+        "line_num": {
+          "type": "string",
+          "description": "日志单行序列号。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

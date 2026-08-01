@@ -1,0 +1,487 @@
+{
+  "name": "UpdateDomainConsoleAclPolicy",
+  "summary": "修改账号控制台访问策略",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/console-acl-policy": {
+      "put": {
+        "tags": [
+          "安全设置"
+        ],
+        "summary": "修改账号控制台访问策略",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)修改账号控制台访问策略。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "UpdateDomainConsoleAclPolicy",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "description": "账号ID,获取方式请参见:[获取账号ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "in": "body",
+            "name": "UpdateDomainConsoleAclPolicyRequestBody",
+            "description": "请求体。",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UpdateDomainConsoleAclPolicyRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "console_acl_policy": {
+                  "allow_ip_ranges": [
+                    {
+                      "ip_range": "0.0.0.0-255.255.255.255",
+                      "description": ""
+                    },
+                    {
+                      "ip_range": "0.0.0.0-255.255.255.253",
+                      "description": ""
+                    }
+                  ],
+                  "allow_address_netmasks": [
+                    {
+                      "address_netmask": "192.168.0.2/23",
+                      "description": ""
+                    },
+                    {
+                      "address_netmask": "192.168.0.1/24",
+                      "description": ""
+                    }
+                  ],
+                  "allow_vpc_endpoints": [
+                    {
+                      "vpc_endpoint_id": "8di3jdu-38d7-jhfa-7df6-8adyfiadfia6d",
+                      "description": ""
+                    },
+                    {
+                      "vpc_endpoint_id": "23i3jdu-38d7-jhfa-7df6-8adyfiadfia8j",
+                      "description": ""
+                    }
+                  ],
+                  "allow_ip_ranges_ipv6": [
+                    {
+                      "ip_range": "0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
+                      "description": ""
+                    },
+                    {
+                      "ip_range": "0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:AAAA",
+                      "description": ""
+                    }
+                  ],
+                  "allow_address_netmasks_ipv6": [
+                    {
+                      "address_netmask": "0000:0000:0000:0000:0000:0000:0000:0000/126",
+                      "description": ""
+                    },
+                    {
+                      "address_netmask": "0000:0000:0000:0000:0000:0000:0000:0000/125",
+                      "description": ""
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateDomainConsoleAclPolicyResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "examples": {
+              "application/json": {
+                "error_msg": "'%(key)s' is a required property.",
+                "error_code": "IAM.0072"
+              },
+              "application/json-1": {
+                "error_msg": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+                "error_code": "IAM.0073"
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "鉴权失败。"
+          },
+          "500": {
+            "description": "系统异常。",
+            "examples": {
+              "application/json": {
+                "error_msg": "An unexpected error prevented the server from fulfilling your request.",
+                "error_code": "IAM.0006"
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改账号控制台访问策略",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 16,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-SECURITYPOLICY/domains/{domain_id}/console-acl-policy",
+        "x-request-examples-1": {
+          "console_acl_policy": {
+            "allow_ip_ranges": [
+              {
+                "ip_range": "0.0.0.0-255.255.255.255",
+                "description": ""
+              },
+              {
+                "ip_range": "0.0.0.0-255.255.255.253",
+                "description": ""
+              }
+            ],
+            "allow_address_netmasks": [
+              {
+                "address_netmask": "192.168.0.1/24",
+                "description": ""
+              },
+              {
+                "address_netmask": "192.168.0.2/23",
+                "description": ""
+              }
+            ]
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"console_acl_policy\":{\n        \"allow_ip_ranges\":[\n            {\n                \"ip_range\":\"0.0.0.0-255.255.255.255\",\n                \"description\":\"1\"\n            },\n            {\n                \"ip_range\":\"0.0.0.0-255.255.255.253\",\n                \"description\":\"12\"\n            }\n        ],\n        \"allow_address_netmasks\":[\n            {\n                \"address_netmask\":\"192.168.0.1/24\",\n                \"description\":\"3\"\n            },\n            {\n                \"address_netmask\":\"192.168.0.2/23\",\n                \"description\":\"4\"\n            }\n        ]\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "IAM.0072",
+            "httpStatus": "400",
+            "errorMessage": "'%(key)s' is a required property.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0073",
+            "httpStatus": "400",
+            "errorMessage": "Invalid input for field '%(key)s'. The value is '%(value)s'.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0001",
+            "httpStatus": "401",
+            "errorMessage": "The request you have made requires authentication.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0002",
+            "httpStatus": "403",
+            "errorMessage": "You are not authorized to perform the requested action.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0003",
+            "httpStatus": "403",
+            "errorMessage": "Policy doesn't allow %(actions)s to be performed.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "IAM.0006",
+            "httpStatus": "500",
+            "errorMessage": "An unexpected error prevented the server from fulfilling your request.",
+            "errorDescription": "",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AllowAddressNetmasksResultIPv6": {
+      "required": [
+        "address_netmask"
+      ],
+      "properties": {
+        "address_netmask": {
+          "type": "string",
+          "example": "0000:0000:0000:0000:0000:0000:0000:0000/126",
+          "description": "IPv6地址或网段,例如: 0000:0000:0000:0000:0000:0000:0000:0000/126。"
+        },
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        }
+      },
+      "description": ""
+    },
+    "UpdateDomainConsoleAclPolicyRequestBody": {
+      "required": [
+        "console_acl_policy"
+      ],
+      "properties": {
+        "console_acl_policy": {
+          "description": "控制台访问控制策略,请至少选择一种控制台访问策略。",
+          "$ref": "#/definitions/ConsoleAclPolicyOption"
+        }
+      },
+      "description": ""
+    },
+    "ConsoleAclPolicyOption": {
+      "properties": {
+        "allow_address_netmasks": {
+          "type": "array",
+          "example": "[{\"address_netmask\":\"192.168.0.1/24\",\"description\":\"3\"},{\"address_netmask\":\"192.168.0.2/23\",\"description\":\"4\"}]",
+          "description": "允许访问的IP地址或网段。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowAddressNetmasksOption"
+          }
+        },
+        "allow_ip_ranges": {
+          "type": "array",
+          "example": "[{\"ip_range\":\"0.0.0.0-255.255.255.255\",\"description\":\"1\"},{\"ip_range\":\"0.0.0.0-255.255.255.254\",\"description\":\"12\"}]",
+          "description": "允许访问的IP地址区间。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowIpRangesOption"
+          }
+        },
+        "allow_address_netmasks_ipv6": {
+          "type": "array",
+          "example": "[{\"address_netmask\":\"0000:0000:0000:0000:0000:0000:0000:0000/126\",\"description\":\"\"},{\"address_netmask\":\"0000:0000:0000:0000:0000:0000:0000:0000/125\",\"description\":\"\"}]",
+          "description": "允许访问的IPv6地址或网段。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowAddressNetmasksOptionIPv6"
+          }
+        },
+        "allow_ip_ranges_ipv6": {
+          "type": "array",
+          "example": "[{\"ip_range\":\"0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:AAAA\",\"description\":\"\"},{\"ip_range\":\"0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF\",\"description\":\"\"}]",
+          "description": "允许访问的IPv6地址区间。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowIpRangesOptionIPv6"
+          }
+        }
+      },
+      "description": ""
+    },
+    "AllowAddressNetmasksOptionIPv6": {
+      "required": [
+        "address_netmask"
+      ],
+      "properties": {
+        "address_netmask": {
+          "type": "string",
+          "example": "0000:0000:0000:0000:0000:0000:0000:0000/126",
+          "description": "IPv6地址或网段,例如: 0000:0000:0000:0000:0000:0000:0000:0000/126。"
+        },
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        }
+      },
+      "description": ""
+    },
+    "UpdateDomainConsoleAclPolicyResponseBody": {
+      "required": [
+        "console_acl_policy"
+      ],
+      "properties": {
+        "console_acl_policy": {
+          "description": "Console访问控制策略。",
+          "$ref": "#/definitions/ConsoleAclPolicyResult"
+        }
+      },
+      "description": ""
+    },
+    "AllowIpRangesResultIPv6": {
+      "required": [
+        "ip_range"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        },
+        "ip_range": {
+          "type": "string",
+          "example": "0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
+          "description": "IPv6地址区间,例如: 0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF。"
+        }
+      },
+      "description": ""
+    },
+    "AllowIpRangesResult": {
+      "required": [
+        "description",
+        "ip_range"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        },
+        "ip_range": {
+          "type": "string",
+          "example": "0.0.0.0-255.255.255.255",
+          "description": "IP地址区间,例如:0.0.0.0-255.255.255.255。"
+        }
+      },
+      "description": ""
+    },
+    "AllowAddressNetmasksOption": {
+      "required": [
+        "address_netmask"
+      ],
+      "properties": {
+        "address_netmask": {
+          "type": "string",
+          "example": "192.168.0.1/24",
+          "description": "IP地址或网段,例如:192.168.0.1/24。"
+        },
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        }
+      },
+      "description": ""
+    },
+    "AllowIpRangesOptionIPv6": {
+      "required": [
+        "ip_range"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        },
+        "ip_range": {
+          "type": "string",
+          "example": "0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
+          "description": "IPv6地址区间,例如: 0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF。"
+        }
+      },
+      "description": ""
+    },
+    "ConsoleAclPolicyResult": {
+      "properties": {
+        "allow_address_netmasks": {
+          "type": "array",
+          "example": "[{\"address_netmask\":\"192.168.0.1/24\",\"description\":\"\"},{\"address_netmask\":\"192.168.0.1/24\",\"description\":\"\"}]",
+          "description": "允许访问的IP地址或网段。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowAddressNetmasksResult"
+          }
+        },
+        "allow_ip_ranges": {
+          "type": "array",
+          "example": "[{\"ip_range\":\"0.0.0.0-255.255.255.255\",\"description\":\"\"},{\"ip_range\":\"0.0.0.0-255.255.255.254\",\"description\":\"\"}]",
+          "description": "允许访问的IP地址区间。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowIpRangesResult"
+          }
+        },
+        "allow_address_netmasks_ipv6": {
+          "type": "array",
+          "example": "[{\"address_netmask\":\"0000:0000:0000:0000:0000:0000:0000:0000/126\",\"description\":\"\"},{\"address_netmask\":\"0000:0000:0000:0000:0000:0000:0000:0000/125\",\"description\":\"\"}]",
+          "description": "允许访问的IPv6地址或网段。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowAddressNetmasksResultIPv6"
+          }
+        },
+        "allow_ip_ranges_ipv6": {
+          "type": "array",
+          "example": "[{\"ip_range\":\"0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:AAAA\",\"description\":\"\"},{\"ip_range\":\"0000:0000:0000:0000:0000:0000:0000:0000-FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF\",\"description\":\"\"}]",
+          "description": "允许访问的IPv6地址区间。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/AllowIpRangesResultIPv6"
+          }
+        }
+      },
+      "description": ""
+    },
+    "AllowIpRangesOption": {
+      "required": [
+        "ip_range"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        },
+        "ip_range": {
+          "type": "string",
+          "example": "0.0.0.0-255.255.255.255",
+          "description": "IP地址区间,例如:0.0.0.0-255.255.255.255。"
+        }
+      },
+      "description": ""
+    },
+    "AllowAddressNetmasksResult": {
+      "required": [
+        "address_netmask",
+        "description"
+      ],
+      "properties": {
+        "address_netmask": {
+          "type": "string",
+          "example": "192.168.0.1/24",
+          "description": "IP地址或网段,例如:192.168.0.1/24。"
+        },
+        "description": {
+          "type": "string",
+          "description": "描述信息。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,139 @@
+{
+  "name": "DeleteTransitSubnetTag",
+  "summary": "删除中转子网标签",
+  "tags": "中转子网标签管理",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/transit-subnets/{resource_id}/tags/{key}": {
+      "delete": {
+        "tags": [
+          "中转子网标签管理"
+        ],
+        "summary": "删除中转子网标签",
+        "x-api-type": "open-api",
+        "description": "- 幂等接口:\n- 删除时,不对标签字符集做校验,调用接口前必须要做encodeURI,服务端需要对接口uri做decodeURI。删除的key不存在报404,key不能为空或者空字符串。",
+        "operationId": "DeleteTransitSubnetTag",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "标签key。",
+            "required": true,
+            "type": "string",
+            "x-order": 4,
+            "minLength": 1,
+            "maxLength": 128
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "resource_id",
+            "in": "path",
+            "description": "中转子网的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 5,
+            "minLength": 1,
+            "maxLength": 10240
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "删除操作成功。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除中转子网标签",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 6,
+        "x-request-examples-description-1": "删除中转子网标签。",
+        "x-request-examples-url-1": "DELETE  https://{Endpoint}/v3/cfa563efb77d4b6d9960781d82530fd8/transit-subnets/56121618-fb0a-4a51-aff0-e2eb9cba4c73/tags/key1",
+        "x-obc": "Y",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "400",
+            "httpStatus": "400",
+            "errorMessage": "",
+            "errorDescription": "Bad Request",
+            "solution": "",
+            "errorDescriptionEn": "Bad Request",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "401",
+            "httpStatus": "401",
+            "errorMessage": "",
+            "errorDescription": "Unauthorized",
+            "solution": "",
+            "errorDescriptionEn": "Unauthorized",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "403",
+            "httpStatus": "403",
+            "errorMessage": "",
+            "errorDescription": "Forbidden",
+            "solution": "",
+            "errorDescriptionEn": "Forbidden",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "404",
+            "httpStatus": "404",
+            "errorMessage": "",
+            "errorDescription": "Not Found",
+            "solution": "",
+            "errorDescriptionEn": "Not Found",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "500",
+            "httpStatus": "500",
+            "errorMessage": "",
+            "errorDescription": "Internal Server Error",
+            "solution": "",
+            "errorDescriptionEn": "Internal Server Error",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {},
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

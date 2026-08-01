@@ -1,0 +1,134 @@
+{
+  "name": "ModifyCollation",
+  "summary": "修改实例字符集",
+  "tags": "管理数据库和用户(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/collations": {
+      "put": {
+        "x-request-examples-url-1": "https://{Endpoint}/v3/{project_id}/instances/{instance_id}/collations",
+        "tags": [
+          "管理数据库和用户(SQL Server)"
+        ],
+        "operationId": "ModifyCollation",
+        "summary": "修改实例字符集",
+        "description": "修改实例字符集。",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "ModifyCollationRequestBody",
+            "description": "修改实例字符集请求体。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModifyCollationRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "7be09cc4-c269-4f3a-9539-aaf2b40d79a0"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-text-1": {
+          "collation": "Chinese_PRC_CI_AS"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JobId": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ModifyCollationRequestBody": {
+      "required": [
+        "collation"
+      ],
+      "properties": {
+        "collation": {
+          "description": "字符集。\n取值范围:根据查询SQL Server可用字符集查询可设置的字符集。",
+          "type": "string",
+          "example": "Chinese_PRC_CI_AS"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

@@ -1,0 +1,142 @@
+{
+  "name": "StartInstanceDrToMasterAction",
+  "summary": "灾备实例升主",
+  "tags": "灾备实例",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/action": {
+      "post": {
+        "tags": [
+          "灾备实例"
+        ],
+        "operationId": "StartInstanceDrToMasterAction",
+        "summary": "灾备实例升主",
+        "description": "实例间建立的跨云容灾关系出现异常后,将灾备实例升级为主实例。",
+        "x-support-sdk": "N",
+        "x-constraint": "- 主实例和灾备实例状态正常,主实例和灾备实例在不同云且灾备实例为单实例。\n- 主实例和灾备实例的容灾关系建立完成。\n- 仅PostgreSQL 11、PostgreSQL 12和PostgreSQL 增强版支持灾备实例升级为主实例。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "InstanceDrMasterRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DrReplicaToMaster"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "灾备实例升主",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin03/action",
+        "x-request-examples-1": {
+          "drreplica_to_master": {}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JobId": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "DrReplicaToMaster": {
+      "required": [
+        "drreplica_to_master"
+      ],
+      "properties": {
+        "drreplica_to_master": {
+          "type": "object",
+          "description": "灾备实例升级为主实例的标识符,无其他参数。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

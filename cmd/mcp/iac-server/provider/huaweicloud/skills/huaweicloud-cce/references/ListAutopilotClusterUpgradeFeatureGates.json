@@ -1,0 +1,150 @@
+{
+  "name": "ListAutopilotClusterUpgradeFeatureGates",
+  "summary": "获取集群升级特性开关配置",
+  "tags": "集群升级(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/clusterupgradefeaturegates": {
+      "get": {
+        "tags": [
+          "集群升级(Autopilot)"
+        ],
+        "operationId": "ListAutopilotClusterUpgradeFeatureGates",
+        "summary": "获取集群升级特性开关配置",
+        "description": "获取集群升级特性开关配置",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取集群升级路径信息成功。",
+            "examples": {
+              "application/json": {
+                "kind": "ClusterUpgradeFeatureGates",
+                "apiVersion": "v3",
+                "metadata": {},
+                "upgradeFeatureGates": {
+                  "DisplayPreCheckDetail": "Support",
+                  "EvsSnapshot": "Support",
+                  "LabelForSkippedNode": "Support",
+                  "UpgradeStrategy": "Support"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ClusterUpgradeFeatureGatesResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "获取集群升级特性开关配置",
+        "x-order": 15,
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "ClusterUpgradeFeatureGatesResponseBody": {
+      "description": "集群升级特性开关配置返回体",
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型"
+        },
+        "metadata": {
+          "description": "基本信息,为集合类的元素类型,包含一组由不同名称定义的属性",
+          "$ref": "#/definitions/Metadata"
+        },
+        "upgradeFeatureGates": {
+          "type": "object",
+          "description": "特性开关信息,格式为key/value键值对。\n- Key: 目前有下列值:DisplayPreCheckDetail(展示所有集群升级前检查项详情),EvsSnapshot(使用EVS快照备份集群), LabelForSkippedNode(支持为集群升级过程中跳过的节点打标签), UpgradeStrategy(集群升级策略)\n- Value: Support 支持,Disable 关闭,Default 使用CCE服务默认规则判断",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Metadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n唯一id标识\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n资源名称\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "labels": {
+          "type": "object",
+          "description": "**参数解释**:\n资源标签,key/value对格式,接口保留字段,填写不会生效\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "description": "**参数解释**:\n资源注解,由key/value组成\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n更新时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n创建时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": "**参数解释**:\n资源描述基本信息,集合类的元素类型,包含一组由不同名称定义的属性。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

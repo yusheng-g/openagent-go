@@ -1,0 +1,261 @@
+{
+  "name": "CreateSnapshot",
+  "summary": "创建云硬盘快照",
+  "tags": "云硬盘快照",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/cloudsnapshots": {
+      "post": {
+        "tags": [
+          "云硬盘快照"
+        ],
+        "summary": "创建云硬盘快照",
+        "description": "创建云硬盘快照。",
+        "operationId": "CreateSnapshot",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateSnapshotRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateSnapshotRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "snapshot": {
+                  "status": "creating",
+                  "description": "Daily backup",
+                  "created_at": "2013-02-25T03:56:53.081642",
+                  "metadata": {},
+                  "volume_id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+                  "size": 1,
+                  "id": "ffa9bc5e-1172-4021-acaf-cdcd78a9584d",
+                  "name": "snap-001",
+                  "updated_at": "2013-02-25T03:56:53.081642"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateSnapshotResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建云硬盘快照",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 17,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/{project_id}/cloudsnapshots",
+        "x-request-examples-1": {
+          "snapshot": {
+            "name": "snap-001",
+            "description": "Daily backup",
+            "volume_id": "5aa119a8-d25b-45a7-8d1b-88e127885635",
+            "force": false,
+            "metadata": {}
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"snapshot\": {\n        \"name\": \"snap-001\", \n        \"description\": \"Daily backup\", \n        \"volume_id\": \"5aa119a8-d25b-45a7-8d1b-88e127885635\", \n        \"force\": false, \n        \"metadata\": { }\n    }\n}",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016/6/30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateSnapshotResponseBody": {
+      "required": [
+        "snapshot"
+      ],
+      "properties": {
+        "snapshot": {
+          "description": "快照信息",
+          "$ref": "#/definitions/SnapshotDetails"
+        }
+      },
+      "description": ""
+    },
+    "CreateSnapshotOption": {
+      "required": [
+        "volume_id"
+      ],
+      "properties": {
+        "volume_id": {
+          "type": "string",
+          "description": "源云硬盘的ID。"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "强制创快照标示,默认为false。\n当force标记为false时,云硬盘处于挂载状态时,不能强制创建快照。\n当force标记为true时,即使云硬盘处于挂载状态时,仍可以创建快照。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云硬盘快照的元数据信息。",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "description": "云硬盘快照描述,最大支持255个字节。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘快照名称。最大支持255个字节。\n\n>\n> 说明:\n> 对云硬盘创建备份时,同时会创建以autobk_snapshot_为名称前缀的快照,云硬盘控制台对此类快照会有操作限制。因此建议不要创建以> > autobk_snapshot_为名称前缀的快照,避免影响快照的正常使用",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "快照信息。"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "CreateSnapshotRequestBody": {
+      "required": [
+        "snapshot"
+      ],
+      "properties": {
+        "snapshot": {
+          "description": "快照信息。",
+          "$ref": "#/definitions/CreateSnapshotOption",
+          "x-admin": "",
+          "x-internal": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "SnapshotDetails": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云硬盘快照ID。"
+        },
+        "status": {
+          "type": "string",
+          "description": "云硬盘快照状态。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘快照名称。"
+        },
+        "description": {
+          "type": "string",
+          "description": "云硬盘快照描述信息。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "云硬盘快照创建时间。\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "快照更新时间。\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云硬盘快照的元数据信息。"
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "快照所属的云硬盘ID。"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘快照大小,单位为GB。"
+        },
+        "os-extended-snapshot-attributes:project_id": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "os-extended-snapshot-attributes:progress": {
+          "type": "string",
+          "description": "预留属性。"
+        }
+      },
+      "description": "快照详情。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

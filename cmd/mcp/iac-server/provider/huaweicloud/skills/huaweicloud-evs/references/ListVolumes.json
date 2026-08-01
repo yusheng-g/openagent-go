@@ -1,0 +1,686 @@
+{
+  "name": "ListVolumes",
+  "summary": "查询所有云硬盘详情",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/cloudvolumes/detail": {
+      "get": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "查询所有云硬盘详情",
+        "description": "查询所有云硬盘的详细信息。",
+        "operationId": "ListVolumes",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "通过云硬盘ID进行分页查询。默认为查询第一页数据。",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "磁盘名称。",
+            "required": false,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "返回结果个数限制。默认值为1000。",
+            "required": false,
+            "type": "integer",
+            "default": 1000,
+            "maximum": 1000,
+            "minimum": 1,
+            "format": "int32",
+            "x-order": 5
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "description": "返回结果按该关键字排序,支持id,status,size,created_at等关键字,默认为“created_at”。",
+            "required": false,
+            "type": "string",
+            "x-order": 6
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "偏移量(偏移量为一个大于0小于磁盘总个数的整数,表示查询该偏移量后面的所有的磁盘)。",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 7
+          },
+          {
+            "name": "sort_dir",
+            "in": "query",
+            "description": "返回结果按照降序或升序排列,默认为“desc”。\n降序:desc\n升序:asc",
+            "required": false,
+            "type": "string",
+            "x-order": 8
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "云硬盘状态,取值可参考:\"[云硬盘状态](https://support.huaweicloud.com/api-evs/evs_04_0040.html)\"。",
+            "required": false,
+            "type": "string",
+            "x-order": 9
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "description": "云硬盘元数据。",
+            "required": false,
+            "type": "string",
+            "x-order": 10
+          },
+          {
+            "name": "availability_zone",
+            "in": "query",
+            "description": "可用区信息。",
+            "required": false,
+            "type": "string",
+            "x-order": 11,
+            "x-admin": "",
+            "x-internal": ""
+          },
+          {
+            "name": "multiattach",
+            "in": "query",
+            "description": "是否为共享云硬盘。\ntrue:表示为共享云硬盘。\nfalse:表示为非共享云硬盘。",
+            "required": false,
+            "type": "boolean",
+            "x-order": 12
+          },
+          {
+            "name": "service_type",
+            "in": "query",
+            "description": "服务类型,仅支持EVS、DSS、DESS。",
+            "required": false,
+            "type": "string",
+            "x-order": 13
+          },
+          {
+            "name": "dedicated_storage_id",
+            "in": "query",
+            "description": "专属存储池ID,可过滤出该专属存储池下的所有云硬盘,必须精确匹配。",
+            "required": false,
+            "type": "string",
+            "x-order": 14
+          },
+          {
+            "name": "dedicated_storage_name",
+            "in": "query",
+            "description": "专属存储池的名字,可过滤出该专属存储池下的所有云硬盘,支持模糊匹配。",
+            "required": false,
+            "type": "string",
+            "x-order": 15
+          },
+          {
+            "name": "volume_type_id",
+            "in": "query",
+            "description": "云硬盘类型id。\n通过\"[查询云硬盘类型列表](https://support.huaweicloud.com/api-evs/evs_04_3035.html)\"可以查到,即volume_types参数说明表格中的“id”",
+            "required": false,
+            "type": "string",
+            "x-order": 16
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "云硬盘ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 17
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "云硬盘id列表,格式为ids=['id1','id2',...,'idx'],返回“ids”中有效id的云硬盘详情,无效的id会被忽略。\n支持查询最多60个id对应的云硬盘详情。\n如果“id”和“ids”查询参数同时存在,“id”会被忽略。",
+            "required": false,
+            "type": "string",
+            "x-order": 18
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "指定企业项目id进行过滤。\n传入“all_granted_eps”,代表查询权限范围内的所有企业项目下的云硬盘。\n> 说明:\n> \n> 关于企业项目ID的获取及企业项目特性的详细信息,请参考:\"[企业管理用户指南](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0123692049.html)\"。",
+            "required": false,
+            "type": "string",
+            "x-order": 19
+          },
+          {
+            "name": "server_id",
+            "in": "query",
+            "description": "云服务器id。",
+            "required": false,
+            "type": "string",
+            "x-order": 20
+          },
+          {
+            "name": "not_metadata",
+            "in": "query",
+            "description": "查询不包含所选元数据的云硬盘",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "{\"hw:passthrough\":true}",
+              "{\"hw:passthrough\":false}",
+              "{\"__system__encrypted\":1}",
+              "{\"__system__encrypted\":0}"
+            ],
+            "x-order": 21,
+            "x-open-region-cloud": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "count": 1,
+                "volumes": [
+                  {
+                    "attachments": [],
+                    "availability_zone": "az-dc-1",
+                    "bootable": "false",
+                    "created_at": "2016-05-25T02:42:10.856332",
+                    "description": null,
+                    "id": "b104b8db-170d-441b-897a-3c8ba9c5a214",
+                    "links": [
+                      {
+                        "href": "https://volume.localdomain.com:8776/v2/dd14c6ac581f40059e27f5320b60bf2f/volumes/b104b8db-170d-441b-897a-3c8ba9c5a214",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "https://volume.localdomain.com:8776/dd14c6ac581f40059e27f5320b60bf2f/volumes/b104b8db-170d-441b-897a-3c8ba9c5a214",
+                        "rel": "bookmark"
+                      }
+                    ],
+                    "metadata": {},
+                    "name": "zjb_u25_test",
+                    "os-vol-host-attr:host": "pod01.xxx#SATA",
+                    "volume_image_metadata": {},
+                    "os-vol-mig-status-attr:migstat": null,
+                    "os-vol-mig-status-attr:name_id": null,
+                    "os-vol-tenant-attr:tenant_id": "dd14c6ac581f40059e27f5320b60bf2f",
+                    "os-volume-replication:extended_status": null,
+                    "replication_status": "disabled",
+                    "multiattach": false,
+                    "size": 1,
+                    "snapshot_id": null,
+                    "status": "available",
+                    "updated_at": "2016-05-25T02:42:22.341984",
+                    "user_id": "b0524e8342084ef5b74f158f78fc3049",
+                    "volume_type": "SATA",
+                    "service_type": "EVS",
+                    "dedicated_storage_id": null,
+                    "dedicated_storage_name": null,
+                    "wwn": " 688860300000d136fa16f48f05992360"
+                  }
+                ],
+                "volumes_links": [
+                  {
+                    "href": "https://volume.localdomain.com:8776/v2/dd14c6ac581f40059e27f5320b60bf2f/volumes/detail?limit=1&marker=b104b8db-170d-441b-897a-3c8ba9c5a214",
+                    "rel": "next"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListVolumesResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询所有云硬盘详情",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/{project_id}/cloudvolumes/detail",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2016/6/30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListVolumesResponseBody": {
+      "required": [
+        "count",
+        "volumes",
+        "volumes_links"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "查询到的云硬盘总数量,不受分页影响。"
+        },
+        "volumes_links": {
+          "type": "array",
+          "description": "云硬盘列表查询位置标记。如果本次查询只返回部分列表信息时,会返回查询到的当前磁盘mark标记的url,可以继续使用这个url查询剩余列表信息。",
+          "items": {
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "volumes": {
+          "type": "array",
+          "description": "查询请求返回的云硬盘列表。",
+          "items": {
+            "$ref": "#/definitions/VolumeDetail"
+          }
+        }
+      },
+      "description": "查询所有磁盘详情列表"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "VolumeDetail": {
+      "required": [
+        "attachments",
+        "availability_zone",
+        "bootable",
+        "created_at",
+        "description",
+        "id",
+        "links",
+        "metadata",
+        "multiattach",
+        "name",
+        "os-vol-host-attr:host",
+        "os-vol-mig-status-attr:migstat",
+        "os-vol-mig-status-attr:name_id",
+        "os-vol-tenant-attr:tenant_id",
+        "os-volume-replication:extended_status",
+        "replication_status",
+        "service_type",
+        "shareable",
+        "size",
+        "snapshot_id",
+        "status",
+        "tags",
+        "updated_at",
+        "user_id",
+        "volume_image_metadata",
+        "volume_type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云硬盘的ID。"
+        },
+        "links": {
+          "type": "array",
+          "description": "云硬盘URI自描述信息。请参见 [links参数说明](https://support.huaweicloud.com/api-evs/evs_04_2006.html#evs_04_2006__evs_04_2010_li1077125119136)。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Link"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘名称。"
+        },
+        "status": {
+          "type": "string",
+          "description": "云硬盘状态,请参见[云硬盘状态](https://support.huaweicloud.com/api-evs/evs_04_0040.html)。"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "云硬盘的挂载信息,请参见•[attachments参数说明](https://support.huaweicloud.com/api-evs/evs_04_2006.html#evs_04_2006__evs_04_2010_li12430153610291)。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Attachment"
+          }
+        },
+        "availability_zone": {
+          "type": "string",
+          "description": "云硬盘所属的AZ信息。"
+        },
+        "os-vol-host-attr:host": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "source_volid": {
+          "type": "string",
+          "description": "源云硬盘ID,如果是从源云硬盘创建,则有值。\n\n当前云硬盘服务不支持该字段。"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "description": "快照ID,如果是从快照创建,则有值。"
+        },
+        "description": {
+          "type": "string",
+          "description": "云硬盘描述。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "云硬盘创建时间。\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "os-vol-tenant-attr:tenant_id": {
+          "type": "string",
+          "description": "云硬盘所属的租户ID。租户ID就是项目ID。"
+        },
+        "volume_image_metadata": {
+          "type": "object",
+          "description": "云硬盘镜像的元数据。\n> 说明:\n> \n> 关于“volume_image_metadata”字段的详细说明,具体请参见:\"[查询镜像详情](https://support.huaweicloud.com/api-ims/ims_03_0703.html)\"。",
+          "additionalProperties": {
+            "type": "object",
+            "description": ""
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "volume_type": {
+          "type": "string",
+          "description": "云硬盘类型。\n目前支持\"SATA\",\"SAS\",\"GPSSD\",\"SSD\",\"ESSD\",\"GPSSD2\",\"ESSD2\"七种。\n\n- \"SATA\"为普通IO云硬盘\n- \"SAS\"为高IO云硬盘\n- \"GPSSD\"为通用型SSD云硬盘\n- \"SSD\"为超高IO云硬盘\n- \"ESSD\"为极速IO云硬盘\n- \"GPSSD2\"为通用型SSD V2云硬盘\n- \"ESSD2\"为极速型SSD V2云硬盘"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘大小,单位为GB。"
+        },
+        "consistencygroup_id": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "bootable": {
+          "type": "string",
+          "description": "是否为启动云硬盘。\ntrue:表示为启动云硬盘。\nfalse:表示为非启动云硬盘。"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "云硬盘的元数据。\n __system__cmkid metadata中的加密cmkid字段,与__system__encrypted配合表示需要加密,cmkid长度固定为36个字节。\n> \n> 请求获取密钥ID的方法请参考:\"[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html)\"。\n\n__system__encrypted\nmetadata中的表示加密功能的字段,0代表不加密,1代表加密。\n不指定该字段时,云硬盘的加密属性与数据源保持一致,如果不是从数据源创建的场景,则默认不加密。\n\nfull_clone\n从快照创建云硬盘时的创建方式。\n* 0表示使用链接克隆方式。\n* 1表示使用全量克隆方式。\n\nhw:passthrough\n* true表示云硬盘的设备类型为SCSI类型,即允许ECS操作系统直接访问底层存储介质。支持SCSI锁命令。\n* false表示云硬盘的设备类型为VBD (虚拟块存储设备 , Virtual Block Device)类型,即为默认类型,VBD只能支持简单的SCSI读写命令。\n* 该字段不存在时,云硬盘默认为VBD类型。\n\norderID\nmetadata中的表示云硬盘计费类型的字段。\n当该字段有值时,表示该云硬盘的计费类型为包周期计费,否则计费类型为按需计费。",
+          "additionalProperties": {
+            "type": "object",
+            "description": ""
+          }
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "云硬盘更新时间。\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "encrypted": {
+          "type": "boolean",
+          "description": "当前云硬盘服务不支持该字段。"
+        },
+        "replication_status": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "os-volume-replication:extended_status": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "os-vol-mig-status-attr:migstat": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "os-vol-mig-status-attr:name_id": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "shareable": {
+          "type": "string",
+          "description": "是否为共享云硬盘。true为共享盘,false为普通云硬盘。\n该字段已经废弃,请使用multiattach。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "user_id": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "service_type": {
+          "type": "string",
+          "description": "服务类型,结果为EVS、DSS、DESS。"
+        },
+        "multiattach": {
+          "type": "boolean",
+          "description": "是否为共享云硬盘。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "dedicated_storage_id": {
+          "type": "string",
+          "description": "云硬盘所属的专属存储池ID。"
+        },
+        "dedicated_storage_name": {
+          "type": "string",
+          "description": "云硬盘所属的专属存储池的名称。"
+        },
+        "tags": {
+          "type": "object",
+          "description": "云硬盘的标签。\n如果云硬盘有标签,则会有该字段,否则该字段为空。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "wwn": {
+          "type": "string",
+          "description": "云硬盘挂载时的唯一标识。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "云硬盘上绑定的企业项目ID。\n> 说明:\n> \n> 关于企业项目ID的获取及企业项目特性的详细信息,请参见:\"[企业管理用户指南](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0123692049.html)\"。"
+        },
+        "serial_number": {
+          "type": "string",
+          "example": "dswfa16c849565639393393",
+          "description": "云硬盘序列号。\n只有SCSI类型的非双活卷才会返回该字段,用于与虚拟机中的盘做对应关系。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "iops": {
+          "description": "云硬盘的iops信息,云硬盘类型是ESSD2、GPSSD2才存在。",
+          "$ref": "#/definitions/iops"
+        },
+        "throughput": {
+          "description": "云硬盘的吞吐量信息,云硬盘类型是GPSSD2才存在。",
+          "$ref": "#/definitions/throughput"
+        }
+      },
+      "description": "云硬盘详情。"
+    },
+    "Link": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应的快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        }
+      },
+      "description": "云硬盘uri自描述信息。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "iops": {
+      "required": [
+        "frozened",
+        "id",
+        "total_val"
+      ],
+      "properties": {
+        "frozened": {
+          "type": "boolean",
+          "description": "冻结标签。",
+          "default": false,
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "id": {
+          "type": "string",
+          "example": "IOPS-0e312.731a9981-da80-4d3d-87af-92ecdb678e8b",
+          "description": "云硬盘iops标识。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "total_val": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3000,
+          "description": "iops大小。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "Attachment": {
+      "required": [
+        "attached_at",
+        "attachment_id",
+        "device",
+        "host_name",
+        "id",
+        "server_id",
+        "volume_id"
+      ],
+      "properties": {
+        "attached_at": {
+          "type": "string",
+          "description": "挂载的时间信息。\n\n时间格式:UTC YYYY-MM-DDTHH:MM:SS.XXXXXX"
+        },
+        "attachment_id": {
+          "type": "string",
+          "description": "挂载信息对应的ID。"
+        },
+        "device": {
+          "type": "string",
+          "description": "挂载点。"
+        },
+        "host_name": {
+          "type": "string",
+          "description": "云硬盘挂载到的云服务器对应的物理主机的名称。"
+        },
+        "id": {
+          "type": "string",
+          "description": "挂载的资源ID。"
+        },
+        "server_id": {
+          "type": "string",
+          "description": "云硬盘挂载到的云服务器的 ID。"
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘ID。"
+        }
+      },
+      "description": "云硬盘挂载信息。"
+    },
+    "throughput": {
+      "required": [
+        "frozened",
+        "id",
+        "total_val"
+      ],
+      "properties": {
+        "frozened": {
+          "type": "boolean",
+          "description": "冻结标签。",
+          "default": false,
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "id": {
+          "type": "string",
+          "example": "MiBps-7151.731a9981-da80-4d3d-87af-92ecdb678e8b",
+          "description": "云硬盘吞吐量标识。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "total_val": {
+          "type": "integer",
+          "format": "int32",
+          "example": 300,
+          "description": "吞吐量大小。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

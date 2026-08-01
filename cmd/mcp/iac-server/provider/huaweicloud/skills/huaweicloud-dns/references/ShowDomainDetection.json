@@ -1,0 +1,137 @@
+{
+  "name": "ShowDomainDetection",
+  "summary": "查询公网域名的域名诊断",
+  "tags": "公网域名检测",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/zones/{zone_id}/detection": {
+      "get": {
+        "tags": [
+          "公网域名检测"
+        ],
+        "summary": "查询公网域名的域名诊断",
+        "description": "查询公网域名的域名诊断。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "operationId": "ShowDomainDetection",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "**参数解释:**\n待诊断记录集的类型。\n**取值范围:**\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。",
+            "pattern": "|CNAME|TXT|MX"
+          },
+          {
+            "name": "domain_name",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "待诊断记录集的名称。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询公网域名的域名诊断响应。",
+            "examples": {
+              "application/json": {
+                "domain_name": "pop3.example.com.",
+                "type": "TXT",
+                "status": "OK"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowDomainDetectionResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 0
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "ShowDomainDetectionResponseBody": {
+      "properties": {
+        "domain_name": {
+          "type": "string",
+          "description": "待诊断记录集的名称。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n待诊断记录集的类型。\n**取值范围:**\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。",
+          "maxLength": 255
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n域名诊断状态。\n**取值范围:**\n- OK:解析成功\n- FAILED:whois查询失败\n- NOT_REGISTERED:通过whois查询,域名未注册\n- CANNOT_RESOLVE:通过whois查询,域名无法解析\n- NOT_HWDNS:未托管在华为云\n- NO_WEBSITE_RECORD:未配置网站解析记录\n- NO_EMAIL_RECORD:未配置邮箱解析记录\n- NO_DEFAULT_VIEW:未配置默认解析\n- NOT_EFFECT:权威服务器未生效"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

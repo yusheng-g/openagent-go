@@ -1,0 +1,171 @@
+{
+  "name": "KeystoneListAuthDomains",
+  "summary": "查询IAM用户可以访问的账号详情",
+  "tags": "账号管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/auth/domains": {
+      "get": {
+        "tags": [
+          "账号管理"
+        ],
+        "summary": "查询IAM用户可以访问的账号详情",
+        "description": "该接口可以用于查询IAM用户可以用访问的账号详情。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneListAuthDomains",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "domains": [
+                  {
+                    "description": "",
+                    "enabled": true,
+                    "id": "d78cbac186b744899480f25bd022f468",
+                    "links": {
+                      "self": "https://iam.myhuaweicloud.com/v3/domains/d78cbac186b744899480f25bd022f468"
+                    },
+                    "name": "IAMDomain"
+                  }
+                ],
+                "links": {
+                  "self": "https://iam.myhuaweicloud.com/v3/auth/domains"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneListAuthDomainsResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询IAM用户可以访问的账号详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 12,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/auth/domains",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/auth/domains",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Domains": {
+      "required": [
+        "description",
+        "enabled",
+        "id",
+        "links",
+        "name"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否启用账号,true为启用,false为停用,默认为true。"
+        },
+        "id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMDomain",
+          "description": "账号名。"
+        },
+        "links": {
+          "description": "账号的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "账号的描述信息。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneListAuthDomainsResponseBody": {
+      "required": [
+        "domains",
+        "links"
+      ],
+      "properties": {
+        "domains": {
+          "type": "array",
+          "description": "账号信息列表。",
+          "items": {
+            "$ref": "#/definitions/Domains"
+          }
+        },
+        "links": {
+          "description": "资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

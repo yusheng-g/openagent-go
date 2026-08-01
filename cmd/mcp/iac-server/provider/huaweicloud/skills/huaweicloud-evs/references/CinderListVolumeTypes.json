@@ -1,0 +1,231 @@
+{
+  "name": "CinderListVolumeTypes",
+  "summary": "查询云硬盘类型列表",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/types": {
+      "get": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "查询云硬盘类型列表",
+        "description": "查询云硬盘类型列表。",
+        "operationId": "CinderListVolumeTypes",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": false,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "volume_types": [
+                  {
+                    "extra_specs": {
+                      "volume_backend_name": "SAS",
+                      "RESKEY:availability_zones": "az-dc-1,az-dc-2",
+                      "os-vendor-exte nded:sold_out_availability_zones": "az-dc-2"
+                    },
+                    "name": "SAS",
+                    "qos_specs_id": null,
+                    "id": "6c81c680-df58-4512-81e7-ecf66d160638",
+                    "is_public": true,
+                    "description": null
+                  },
+                  {
+                    "extra_specs": {
+                      "volume_backend_name": "SATA",
+                      "RESKEY:availability_zones": "az-dc-1,az-dc-2",
+                      "os-vendor-extended:sold_out_availability_zones": "az-dc-2"
+                    },
+                    "name": "SATA",
+                    "qos_specs_id": "585f29d6-7147-42e7-bfb8-ca214f640f6f",
+                    "is_public": true,
+                    "id": "ea6e3c13-aac5-46e0-b280-745ed272e662",
+                    "description": null
+                  },
+                  {
+                    "extra_specs": {
+                      "volume_backend_name": "SSD",
+                      "RESKEY:availability_zones": "az-dc-1,az-dc-2",
+                      "os-vendor-extended:sold_out_availability_zones": "az-dc-2"
+                    },
+                    "name": "SSD",
+                    "qos_specs_id": "39b0c29a-308b-4f86-b478-5d3d02a43837",
+                    "is_public": true,
+                    "id": "6f2dee9e-82f0-4be3-ad89-bae605a3d24f",
+                    "description": null
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CinderListVolumeTypesResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云硬盘类型列表",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2/{project_id}/types",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2017/1/30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "VolumeTypeExtraSpecs": {
+      "properties": {
+        "RESKEY:availability_zones": {
+          "type": "string",
+          "description": "支持当前云硬盘类型的可用区列表,列表的元素以逗号分隔。"
+        },
+        "availability-zone": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "os-vendor-extended:sold_out_availability_zones": {
+          "type": "string",
+          "description": "当前云硬盘类型已售罄的可用区列表,列表的元素以逗号分隔。"
+        },
+        "volume_backend_name": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "HW:availability_zone": {
+          "type": "string",
+          "description": "预留属性。"
+        }
+      },
+      "description": "云硬盘类型的规格"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "CinderListVolumeTypesResponseBody": {
+      "required": [
+        "volume_types"
+      ],
+      "properties": {
+        "volume_types": {
+          "type": "array",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/VolumeType"
+          }
+        }
+      },
+      "description": ""
+    },
+    "VolumeType": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云硬盘类型的ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘类型名称。"
+        },
+        "extra_specs": {
+          "description": "云硬盘类型的规格,请参见•[extra_specs参数说明](https://support.huaweicloud.com/api-evs/evs_04_2072.html#evs_04_2072__li1957456185414)。",
+          "$ref": "#/definitions/VolumeTypeExtraSpecs"
+        },
+        "description": {
+          "type": "string",
+          "description": "云硬盘类型的描述信息。"
+        },
+        "qos_specs_id": {
+          "type": "string",
+          "description": "预留属性。"
+        },
+        "is_public": {
+          "type": "boolean",
+          "description": "预留属性。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

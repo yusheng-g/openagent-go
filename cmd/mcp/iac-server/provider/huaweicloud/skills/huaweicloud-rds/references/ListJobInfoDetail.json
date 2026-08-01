@@ -1,0 +1,216 @@
+{
+  "name": "ListJobInfoDetail",
+  "summary": "获取指定实例和时间范围的任务信息(SQL Server)",
+  "tags": "任务管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/tasklist/detail": {
+      "get": {
+        "tags": [
+          "任务管理"
+        ],
+        "operationId": "ListJobInfoDetail",
+        "summary": "获取指定实例和时间范围的任务信息(SQL Server)",
+        "description": "获取指定实例和时间范围的任务信息(SQL Server)。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口只可查询任务中心一个月内的异步任务。\n- 目前支持查询的主要异步任务:创建实例(单实例/主备实例)、创建只读实例、单实例转主备实例、主备切换、磁盘扩容,自动备份,手动备份,恢复到新实例,恢复到当前实例,恢复到已有实例。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "type": "string",
+            "description": "开始时间,格式为UTC时间戳。",
+            "required": true,
+            "x-example": 1594233788000
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "string",
+            "description": "结束时间,格式为UTC时间戳。",
+            "required": false,
+            "x-example": 1595443388000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/GetTaskDetailListRsp"
+            },
+            "examples": {
+              "application/json": {
+                "job": {
+                  "id": "d161864e-7f64-49ac-81d1-bf91a4eee31b",
+                  "name": "BackupSnapshotSqlserverInInstance",
+                  "status": "Completed",
+                  "created": "2020-07-15T08:46:10+0000",
+                  "ended": "2020-07-15T08:50:29+0000",
+                  "process": "",
+                  "instance": {
+                    "id": "dc85f4750ff6422ab8e3d30c638804c8in04",
+                    "name": "rds-8d43-0003"
+                  },
+                  "task_detail": {
+                    "\\\"description\\\":\\\"手动备份实测3rds-8d43-0003\\\"": null,
+                    "\\\"instanceId\\\":\\\"dc85f4750ff6422ab8e3d30c638804c8in04\\\"": null,
+                    "\\\"name\\\":\\\"backup-7641\\\"": null
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://192.107.53.132:8001/rds/v3/054b93101a00d3a02fe3c01fb31462ac/instances/dc85f4750ff6422ab8e3d30c638804c8in04/tasklist/detail?start_time=1594233788000&end_time=1595443388000"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "GetTaskDetailListRsp": {
+      "required": [
+        "jobs",
+        "count"
+      ],
+      "properties": {
+        "jobs": {
+          "description": "任务信息。",
+          "required": [
+            "id",
+            "name",
+            "status",
+            "created",
+            "instance"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "任务ID。"
+            },
+            "name": {
+              "type": "string",
+              "description": "任务名称。"
+            },
+            "status": {
+              "type": "string",
+              "description": "任务执行状态。\n\n取值:\n- 值为“Running”,表示任务正在执行。\n- 值为“Completed”,表示任务执行成功。\n- 值为“Failed”,表示任务执行失败。",
+              "enum": [
+                "Running",
+                "Completed",
+                "Failed"
+              ]
+            },
+            "created": {
+              "type": "string",
+              "description": "创建时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+            },
+            "ended": {
+              "type": "string",
+              "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+            },
+            "process": {
+              "type": "string",
+              "description": "任务执行进度。执行中状态才返回执行进度,例如60%,否则返回“”。"
+            },
+            "task_detail": {
+              "type": "string",
+              "description": "任务执行的具体的参数信息,为空则不返回该字段。"
+            },
+            "instance": {
+              "description": "执行任务的实例信息。",
+              "required": [
+                "id",
+                "name"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "实例ID。"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "实例名称。"
+                }
+              }
+            },
+            "entities": {
+              "description": "根据不同的任务,显示不同的内容。",
+              "type": "object"
+            },
+            "fail_reason": {
+              "type": "string",
+              "description": "任务执行失败时的错误信息。"
+            }
+          }
+        },
+        "count": {
+          "type": "integer",
+          "description": "任务数量。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

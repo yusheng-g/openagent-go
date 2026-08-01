@@ -1,0 +1,172 @@
+{
+  "name": "SetDirectcoldaccess",
+  "summary": "设置桶归档对象直读策略",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetDirectcoldaccess",
+        "summary": "设置桶归档对象直读策略",
+        "description": "归档对象直读是指用户可以不用取回归档对象,便能直接对其进行操作。\n\n默认情况下,桶没有开启归档对象直读功能。\n\n本接口主要用来开启或关闭桶的归档对象直读功能。\n\n设置桶的归档对象直读状态为Enabled,开启桶的归档对象直读功能:\n桶内存在归档对象时,不管该归档对象是否已经取回,均可以直接操作该归档对象。\n如果归档对象没有取回,操作该归档对象时会增加单独计费。\n设置桶的归档对象直读状态为Disabled,关闭桶的归档对象直读功能:\n归档对象无法直接操作,需要先取回。\n要正确执行此操作,需要确保执行者有PutDirectColdAccessConfiguration权限。默认情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n\n说明:\n当前归档数据直读功能仅在以下区域开放:华北-北京一、华北-北京四、华东-上海二、华南-广州、西南-贵阳一。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?directcoldaccess",
+        "x-request-examples-1": "PUT /?directcoldaccess HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nDate: Fri, 26 Apr 2019 07:37:36 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:sc2PM13Wlfcoc/YZLK0MwsI2Zpo=\nContent-MD5: h4A//0EKGFKAwJkH231A==\nContent-Length: 92\n\n<DirectColdAccessConfiguration>\n    <Status>Enabled</Status>\n</DirectColdAccessConfiguration>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "description": "按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串。也支持设置Content-SHA256头域,其值为消息体256-bit SHA256值经过base64编码后得到的字符串,Content-MD5和Content-SHA256二选一。\n示例:n58IG6hfM7vqI4K0vnWpog==\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "SetDirectcoldaccessRequestBody",
+            "description": "在此请求中,需要在请求的消息体中配置桶的归档对象直读状态,配置信息以XML格式上传。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetDirectcoldaccessRequestBody"
+            }
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "directcoldaccess",
+            "in": "query",
+            "required": true,
+            "description": "directcoldaccess表示请求桶归档对象直读策略API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SetDirectcoldaccessRequestBody": {
+      "xml": {
+        "name": "DirectColdAccessConfiguration"
+      },
+      "description": "归档对象直读配置的根节点。\n",
+      "required": [
+        "Status"
+      ],
+      "properties": {
+        "Status": {
+          "description": "标识桶的归档对象直读状态。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

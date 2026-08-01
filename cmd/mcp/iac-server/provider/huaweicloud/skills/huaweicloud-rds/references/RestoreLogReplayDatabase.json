@@ -1,0 +1,165 @@
+{
+  "name": "RestoreLogReplayDatabase",
+  "summary": "延迟库只读,恢复库到主实例",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/log-replay/database": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "x-request-examples-url-1": "https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/794c38e5309344818f4b33b86ebce9b4in03/log-replay/database",
+        "x-request-examples-description-1": "延迟库只读,恢复库到主实例",
+        "x-request-examples-text-1": "{\"databases\":[{\"old_name\":\"old\",\"new_name\":\"new\"}]}",
+        "x-request-examples-1": "{\"databases\":[{\"old_name\":\"old\",\"new_name\":\"new\"}]}",
+        "summary": "延迟库只读,恢复库到主实例",
+        "description": "延迟库只读,恢复库到主实例",
+        "operationId": "RestoreLogReplayDatabase",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": true,
+            "description": "语言",
+            "type": "string"
+          },
+          {
+            "name": "RestoreLogReplayDatabaseRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "库回放请求体",
+            "schema": {
+              "$ref": "#/definitions/LogReplayDatabaseReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "命令下发返回任务流ID",
+            "schema": {
+              "$ref": "#/definitions/CommonJobIdResp"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "8465d1fb-20a8-48e6-9c9b-3d1958ecbb9e"
+              }
+            }
+          },
+          "400": {
+            "description": "错误信息",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_code": "DBS.200005",
+                "error_msg": "Parameter error"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "LogReplayDatabaseReq": {
+      "type": "object",
+      "description": "库回放请求体",
+      "required": [
+        "databases"
+      ],
+      "properties": {
+        "databases": {
+          "description": "需要恢复的库名列表",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RestoreInfo"
+          }
+        }
+      }
+    },
+    "CommonJobIdResp": {
+      "type": "object",
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务流id"
+        }
+      }
+    },
+    "RestoreInfo": {
+      "type": "object",
+      "required": [
+        "old_name",
+        "new_name"
+      ],
+      "properties": {
+        "old_name": {
+          "type": "string",
+          "description": "需恢复的原库名称"
+        },
+        "new_name": {
+          "type": "string",
+          "description": "恢复后的新库名称"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

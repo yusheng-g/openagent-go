@@ -1,0 +1,323 @@
+{
+  "name": "UpdateSecurityPolicy",
+  "summary": "更新自定义安全策略",
+  "tags": "安全策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/security-policies/{security_policy_id}": {
+      "put": {
+        "tags": [
+          "安全策略"
+        ],
+        "summary": "更新自定义安全策略",
+        "description": "更新自定义安全策略。",
+        "operationId": "UpdateSecurityPolicy",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateSecurityPolicyRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSecurityPolicyRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "security_policy_id",
+            "in": "path",
+            "description": "**参数解释**:自定义安全策略的ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "7fa73388-06b7-476d-9b0b-64f83de86ed4",
+                "security_policy": {
+                  "id": "c73e0138-9bdc-40fb-951e-6a1598266ccd",
+                  "name": "update_securitypolicy",
+                  "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                  "description": "",
+                  "protocols": [
+                    "TLSv1.2",
+                    "TLSv1.1",
+                    "TLSv1.3"
+                  ],
+                  "ciphers": [
+                    "CAMELLIA128-SHA",
+                    "TLS_CHACHA20_POLY1305_SHA256",
+                    "TLS_AES_128_CCM_SHA256",
+                    "TLS_AES_128_CCM_8_SHA256"
+                  ],
+                  "listeners": [
+                    {
+                      "id": "8e92b7c3-cdae-4039-aa62-c76d09a5950a"
+                    }
+                  ],
+                  "created_at": "2021-03-20T09:48:14Z",
+                  "updated_at": "2021-03-26T01:30:31Z",
+                  "enterprise_project_id": "0"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateSecurityPolicyResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新自定义安全策略",
+        "x-constraint": "- 若更新字段protocols或ciphers,会立即生效到所有设置了该自定义安全策略的监听器,更新其他字段不影响监听器。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "更新自定义安全策略使用的TLS协议和加密套件",
+        "x-request-examples-url-1": "PUT https://{ELB_Endpoint}/v3/7a9941d34fc1497d8d0797429ecfd354/elb/security-policies/c73e0138-9bdc-40fb-951e-6a1598266ccd",
+        "x-request-examples-1": {
+          "security_policy": {
+            "name": "update_securitypolicy",
+            "protocols": [
+              "TLSv1.2",
+              "TLSv1.1",
+              "TLSv1.3"
+            ],
+            "ciphers": [
+              "CAMELLIA128-SHA",
+              "TLS_CHACHA20_POLY1305_SHA256",
+              "TLS_AES_128_CCM_SHA256",
+              "TLS_AES_128_CCM_8_SHA256"
+            ]
+          }
+        },
+        "x-request-examples-text-1": {
+          "security_policy": {
+            "name": "update_securitypolicy",
+            "protocols": [
+              "TLSv1.2",
+              "TLSv1.1",
+              "TLSv1.3"
+            ],
+            "ciphers": [
+              "CAMELLIA128-SHA",
+              "TLS_CHACHA20_POLY1305_SHA256",
+              "TLS_AES_128_CCM_SHA256",
+              "TLS_AES_128_CCM_8_SHA256"
+            ]
+          }
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "SecurityPolicy": {
+      "required": [
+        "id",
+        "project_id",
+        "name",
+        "description",
+        "listeners",
+        "protocols",
+        "ciphers",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的ID。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的名称。\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的描述。\n\n**取值范围**:不涉及"
+        },
+        "listeners": {
+          "description": "**参数解释**:关联的监听器。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          },
+          "type": "array"
+        },
+        "protocols": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的TLS协议列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ciphers": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的加密套件列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        }
+      },
+      "description": "**参数解释**:自定义安全策略信息。"
+    },
+    "UpdateSecurityPolicyResponseBody": {
+      "required": [
+        "request_id",
+        "security_policy"
+      ],
+      "properties": {
+        "security_policy": {
+          "description": "**参数解释**:自定义安全策略。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/SecurityPolicy"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "UpdateSecurityPolicyOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的名称。\n\n**约束限制**:不涉及\n\n**取值范围**:0到255个字符\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的描述信息。\n\n**约束限制**:不涉及\n\n**取值范围**:0到255个字符\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "protocols": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略选择的TLS协议列表。\n\n**约束限制**:不涉及\n\n**取值范围**:TLSv1, TLSv1.1, TLSv1.2, TLSv1.3\n\n**默认取值**:不涉及",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5,
+          "minItems": 1
+        },
+        "ciphers": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的加密套件列表。\n\n**约束限制**:协议和加密套件必须匹配,即ciphers中必须至少有一种与协议匹配的加密套件。\n\n**取值范围**:\nECDHE-RSA-AES256-GCM-SHA384,ECDHE-RSA-AES128-GCM-SHA256,\nECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-ECDSA-AES128-GCM-SHA256,\nAES128-GCM-SHA256,AES256-GCM-SHA384,ECDHE-ECDSA-AES128-SHA256,\nECDHE-RSA-AES128-SHA256,AES128-SHA256,AES256-SHA256,\nECDHE-ECDSA-AES256-SHA384,ECDHE-RSA-AES256-SHA384,\nECDHE-ECDSA-AES128-SHA,ECDHE-RSA-AES128-SHA,ECDHE-RSA-AES256-SHA,\nECDHE-ECDSA-AES256-SHA,AES128-SHA,AES256-SHA,CAMELLIA128-SHA,\nDES-CBC3-SHA,CAMELLIA256-SHA,ECDHE-RSA-CHACHA20-POLY1305,\nECDHE-ECDSA-CHACHA20-POLY1305,TLS_AES_128_GCM_SHA256,\nTLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256,\nTLS_AES_128_CCM_SHA256,TLS_AES_128_CCM_8_SHA256\n\n**默认取值**:不涉及\n\n> 协议与加密套件的匹配关系可参考系统安全策略",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ECDHE-RSA-AES256-GCM-SHA384",
+              "ECDHE-RSA-AES128-GCM-SHA256",
+              "ECDHE-ECDSA-AES256-GCM-SHA384",
+              "ECDHE-ECDSA-AES128-GCM-SHA256",
+              "AES128-GCM-SHA256",
+              "AES256-GCM-SHA384",
+              "ECDHE-ECDSA-AES128-SHA256",
+              "ECDHE-RSA-AES128-SHA256",
+              "AES128-SHA256",
+              "AES256-SHA256",
+              "ECDHE-ECDSA-AES256-SHA384",
+              "ECDHE-RSA-AES256-SHA384",
+              "ECDHE-ECDSA-AES128-SHA",
+              "ECDHE-RSA-AES128-SHA",
+              "ECDHE-RSA-AES256-SHA",
+              "ECDHE-ECDSA-AES256-SHA",
+              "AES128-SHA",
+              "AES256-SHA",
+              "CAMELLIA128-SHA",
+              "DES-CBC3-SHA",
+              "CAMELLIA256-SHA",
+              "ECDHE-RSA-CHACHA20-POLY1305",
+              "ECDHE-ECDSA-CHACHA20-POLY1305",
+              "TLS_AES_128_GCM_SHA256",
+              "TLS_AES_256_GCM_SHA384",
+              "TLS_CHACHA20_POLY1305_SHA256",
+              "TLS_AES_128_CCM_SHA256",
+              "TLS_AES_128_CCM_8_SHA256"
+            ]
+          },
+          "maxItems": 30,
+          "minItems": 1
+        }
+      },
+      "description": "**参数解释**:更新自定义安全策略的请求参数。\n\n**约束限制**:不涉及",
+      "type": "object"
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    },
+    "UpdateSecurityPolicyRequestBody": {
+      "required": [
+        "security_policy"
+      ],
+      "properties": {
+        "security_policy": {
+          "$ref": "#/definitions/UpdateSecurityPolicyOption",
+          "description": "**参数解释**:更新自定义安全策略的请求参数。\n\n**约束限制**:不涉及"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

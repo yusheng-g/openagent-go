@@ -1,0 +1,239 @@
+{
+  "name": "ShowImageCache",
+  "summary": "查询镜像缓存详情",
+  "tags": "镜像缓存管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/imagecaches/{image_cache_id}": {
+      "get": {
+        "tags": [
+          "镜像缓存管理"
+        ],
+        "summary": "查询镜像缓存详情",
+        "description": "查询镜像缓存详情",
+        "operationId": "ShowImageCache",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "type": "string",
+            "x-order": 3,
+            "description": "**参数解释:**\n镜像缓存ID。\n**约束限制:**\n不涉及\n**取值范围:**\n镜像缓存ID。\n**默认取值:**\n不涉及\n",
+            "name": "image_cache_id",
+            "in": "path",
+            "required": true,
+            "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GetImageCacheResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "image_cache": {
+                  "name": "test-imagecache",
+                  "id": "c271e39e-1a6e-4d3d-8fa8-2a36329c68d2",
+                  "created_at": "2024-11-25 06:32:34.923248 +0000 UTC",
+                  "images": [
+                    "centos:latest",
+                    "busybox:latest"
+                  ],
+                  "image_cache_size": 25,
+                  "retention_days": 7,
+                  "building_config": {
+                    "cluster": "c271e39f-1a6e-4d3d-8fa8-2a36329c68d2",
+                    "image_pull_secrets": [
+                      "default:secret1",
+                      "default:secret2",
+                      "kube-system:secret3"
+                    ]
+                  },
+                  "status": "Available"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询镜像缓存详情",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-order": 3,
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ImageCacheDetail": {
+      "required": [
+        "name",
+        "id",
+        "created_at",
+        "images",
+        "image_cache_size",
+        "retention_days",
+        "building_config",
+        "status"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "镜像缓存名称。",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z]([a-z0-9-]*[a-z0-9])?$"
+        },
+        "id": {
+          "type": "string",
+          "description": "镜像缓存ID。",
+          "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date",
+          "description": "镜像缓存创建时间戳。"
+        },
+        "images": {
+          "type": "array",
+          "description": "镜像缓存中的容器镜像列表。",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "maxItems": 20,
+          "minItems": 1
+        },
+        "image_cache_size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "镜像缓存后端对应的存储盘大小,单位GiB。",
+          "default": 20,
+          "minimum": 20,
+          "maximum": 400
+        },
+        "retention_days": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n镜像缓存有效的天数,不设置或值为0表示永久有效。镜像缓存到达有效期后自动过期并删除。\n**约束限制:**\n不涉及\n**取值范围:**\n[0-10000]\n**默认取值:**\n0\n",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "building_config": {
+          "description": "构建镜像缓存的配置信息。",
+          "$ref": "#/definitions/ImageCacheBuildingConfig"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n镜像缓存的状态。\n**约束限制:**\n不涉及\n**取值范围:**\n- Available: 可用状态,表示当前镜像缓存正常可用。\n- Unavailable:不可用,表示镜像缓存状态异常或过期,不可使用。\n- Creating:创建中,表示镜像缓存正在创建中。\n- Deleting:删除中,表示镜像缓存正在删除中。\n- Failed:创建失败,表示镜像缓存创建失败。\n**默认取值:**\n不涉及",
+          "enum": [
+            "Available",
+            "Unavailable",
+            "Creating",
+            "Deleting",
+            "Failed"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "镜像缓存创建失败或异常的错误信息。",
+          "minLength": 0,
+          "maxLength": 10240
+        }
+      },
+      "description": "镜像缓存信息。"
+    },
+    "GetImageCacheResponseBody": {
+      "required": [
+        "image_cache"
+      ],
+      "properties": {
+        "image_cache": {
+          "description": "镜像缓存信息。",
+          "$ref": "#/definitions/ImageCacheDetail"
+        }
+      },
+      "description": "查询镜像缓存-response结构体。"
+    },
+    "ImageCacheBuildingConfig": {
+      "description": "镜像缓存构建配置信息。",
+      "required": [
+        "cluster"
+      ],
+      "properties": {
+        "cluster": {
+          "type": "string",
+          "description": "**参数解释:**\n构建镜像缓存所启动的临时Pod所在的Autopilot集群的UID。\n**约束限制:**\n要求使用的Autopilot集群版本为v1.28.8-r0或v1.31.4-r0以上版本。\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及\n",
+          "example": "8b3b4b2d-e39d-11ef-a9ac-0255ac100113",
+          "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+        },
+        "image_pull_secrets": {
+          "description": "下载所需缓存镜像的访问凭证列表,不填写或无有效凭证时仅支持下载公共镜像。",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "**参数解释:**\n下载缓存镜像的访问凭证,为构建集群下kubernetes.io/dockerconfigjson type类型秘钥,格式为\"{secretNamespace}:{secretName}\"。\n**约束限制:**\n不涉及\n**取值范围:**\n为构建集群下kubernetes.io/dockerconfigjson type类型秘钥,格式为\"{secretNamespace}:{secretName}\"。\n示例:\"default:default-secret\"。\n**默认取值:**\n不涉及\n",
+            "minLength": 3,
+            "maxLength": 317
+          },
+          "maxItems": 20,
+          "minItems": 0,
+          "example": [
+            "default:default-secret",
+            "test:my-secret"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。\n**约束限制:**\n不涉及\n**取值范围:**\n不涉及\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16384,
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式)。\n**约束限制:**\nGET方法不做校验。\n**取值范围:**\n  - application/json\n  - application/json;charset=utf-8\n  - application/x-pem-file\n  - multipart/form-data(注:存在FormData参数时使用)\n\n**默认取值:**\n不涉及\n",
+      "enum": [
+        "application/json",
+        "application/json;charset=utf-8",
+        "application/x-pem-file",
+        "multipart/form-data"
+      ],
+      "required": true,
+      "type": "string",
+      "x-order": 1,
+      "default": "application/json"
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

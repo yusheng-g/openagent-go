@@ -1,0 +1,135 @@
+{
+  "name": "BatchDeleteListeners",
+  "summary": "批量删监听器",
+  "tags": "监听器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/listeners/batch-delete": {
+      "post": {
+        "tags": [
+          "监听器"
+        ],
+        "summary": "批量删监听器",
+        "description": "批量删除监听器。",
+        "operationId": "BatchDeleteListeners",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchDeleteListenersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteListenersRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "job_id": "6b76f5cb-cab8-48e2-919a-0ff55d230051",
+                "listener_ids": [
+                  "5b2513ca-3290-46ad-b723-e47afb83b4d2",
+                  "c2d6bfd6-4eae-4995-8e5d-711fa592744c"
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteListenersResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量删除监听器",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 7,
+        "x-request-examples-description-1": "批量删除监听器",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/{project_id}/elb/listeners/batch-delete",
+        "x-request-examples-1": {
+          "listener_ids": [
+            "5b2513ca-3290-46ad-b723-e47afb83b4d2",
+            "c2d6bfd6-4eae-4995-8e5d-711fa592744c"
+          ]
+        },
+        "x-request-examples-text-1": {
+          "listener_ids": [
+            "5b2513ca-3290-46ad-b723-e47afb83b4d2",
+            "c2d6bfd6-4eae-4995-8e5d-711fa592744c"
+          ]
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "BatchDeleteListenersRequestBody": {
+      "required": [
+        "listener_ids"
+      ],
+      "properties": {
+        "listener_ids": {
+          "description": "**参数解释**:待删除的监听器id列表。\n**约束限制**:一次最多删除10个监听器。\n**取值范围**:不涉及\n**默认取值**:不涉及",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "BatchDeleteListenersResponseBody": {
+      "required": [
+        "listener_ids"
+      ],
+      "properties": {
+        "job_id": {
+          "description": "批量删除任务id",
+          "type": "string"
+        },
+        "listener_ids": {
+          "description": "待删除的监听器id列表。",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

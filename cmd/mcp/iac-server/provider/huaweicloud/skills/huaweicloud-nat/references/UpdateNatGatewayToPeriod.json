@@ -1,0 +1,142 @@
+{
+  "name": "UpdateNatGatewayToPeriod",
+  "summary": "公网NAT网关按需转包",
+  "tags": "公网NAT网关",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/nat_gateways/{nat_gateway_id}/change_to_period": {
+      "post": {
+        "tags": [
+          "公网NAT网关"
+        ],
+        "summary": "公网NAT网关按需转包",
+        "description": "公网NAT网关按需转包。",
+        "operationId": "UpdateNatGatewayToPeriod",
+        "consumes": [],
+        "produces": [],
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-open-region-cloud": "hc,hk",
+        "x-request-examples-url-1": "POST https://{NAT_endpoint}/v2/70505c941b9b4dfd82fd351932328a2f/nat_gateways/e1cacb3c-46a0-4c8e-9c4a-91eb63635f62/change_to_period",
+        "x-request-examples-1": {
+          "prepaid_options": {
+            "period_type": "month",
+            "period_num": 1,
+            "is_auto_renew": false,
+            "is_auto_pay": true
+          }
+        },
+        "x-request-examples-text-1": "{\n  \"prepaid_options\": {\n    \"period_type\": \"month\",\n    \"period_num\": 1,\n    \"is_auto_renew\": false,\n    \"is_auto_pay\": true\n  }\n}",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "nat_gateway_id",
+            "in": "path",
+            "description": "公网NAT网关实例的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "UpdateNatGatewayToPeriodRequestBody",
+            "in": "body",
+            "description": "公网NAT网关按需转包的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateNatGatewayToPeriodRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "公网NAT网关按需转包成功。",
+            "examples": {
+              "application/json": {
+                "order_id": "CS2304211201WYELB"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateNatGatewayToPeriodResponseBody"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdateNatGatewayToPeriodRequestBody": {
+      "properties": {
+        "prepaid_options": {
+          "description": "支付属性",
+          "$ref": "#/definitions/PrepaidOptions",
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    },
+    "PrepaidOptions": {
+      "required": [
+        "period_type",
+        "period_num"
+      ],
+      "properties": {
+        "period_type": {
+          "type": "string",
+          "description": "订购周期类型,当前支持包月和包年:\n- month: 包月\n- year: 包年",
+          "enum": [
+            "month",
+            "year"
+          ],
+          "example": "month"
+        },
+        "period_num": {
+          "type": "integer",
+          "description": "订购周期数,取值会随运营策略变化。\nperiod_type为month时,为[1,9],\nperiod_type为year时,为[1,3]",
+          "minimum": 1,
+          "maximum": 11
+        },
+        "is_auto_renew": {
+          "type": "boolean",
+          "description": "是否自动续订;\ntrue:自动续订\nfalse:不自动续订",
+          "default": false
+        },
+        "is_auto_pay": {
+          "type": "boolean",
+          "description": "下单订购后,是否自动从客户的账户中支付;\ntrue:自动支付\nfalse:不自动支付。",
+          "default": false
+        }
+      }
+    },
+    "UpdateNatGatewayToPeriodResponseBody": {
+      "properties": {
+        "order_id": {
+          "description": "订单ID。",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "description": "按需转包响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

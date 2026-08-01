@@ -1,0 +1,213 @@
+{
+  "name": "KeystoneShowUser",
+  "summary": "查询IAM用户详情",
+  "tags": "IAM用户管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/users/{user_id}": {
+      "get": {
+        "tags": [
+          "IAM用户管理"
+        ],
+        "summary": "查询IAM用户详情",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户详情,或IAM用户查询自己的用户详情。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneShowUser",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户详情:拥有Security Administrator权限的token。\n\nIAM用户查询自己的详情:URL中user_id所对应IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "7116d09f88fa41908676fdd4b039e95b",
+            "x-order": 1
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "待查询的IAM用户ID,获取方式请参见:[获取用户ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "b95b78b67fa045b38104...",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "user": {
+                  "pwd_status": true,
+                  "domain_id": "d78cbac186b744899480f25bd022f468",
+                  "last_project_id": "065a7c66da0010992ff7c0031e5a5e7d",
+                  "name": "IAMUser",
+                  "description": "--",
+                  "password_expires_at": null,
+                  "links": {
+                    "next": null,
+                    "previous": null,
+                    "self": "https://iam.huaweicloud.com/v3/users/07609fb9358010e21f7bc003751c7c32"
+                  },
+                  "id": "7116d09f88fa41908676fdd4b039e95b",
+                  "enabled": true
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneShowUserResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "资源冲突。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询IAM用户详情",
+        "x-constraint": "该接口无法查询IAM用户的手机号、邮箱等信息。如需查询上述信息,请参见:[查询IAM用户详情(推荐)](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=ShowUser)。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 36,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/users/{user_id}",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/users/{user_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneShowUserResponseBody": {
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "description": "IAM用户信息。",
+          "$ref": "#/definitions/KeystoneShowUserResult"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneShowUserResult": {
+      "required": [
+        "domain_id",
+        "enabled",
+        "id",
+        "links",
+        "name",
+        "password_expires_at"
+      ],
+      "properties": {
+        "pwd_status": {
+          "type": "boolean",
+          "example": false,
+          "description": "IAM用户密码状态。true:需要修改密码,false:不需要修改密码。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "IAM用户所属账号ID。"
+        },
+        "last_project_id": {
+          "type": "string",
+          "example": "aa2d97d7e62c4b7da3ffdfc11551f878",
+          "description": "IAM用户退出系统前,在控制台最后访问的项目ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMUser",
+          "description": "IAM用户名。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "IAM用户描述信息。"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "example": "null",
+          "description": "IAM用户密码过期时间(UTC时间),“null”表示密码不过期。"
+        },
+        "links": {
+          "description": "IAM用户的资源链接信息。",
+          "$ref": "#/definitions/Links"
+        },
+        "id": {
+          "type": "string",
+          "example": "076652f08880266a1f0bc003ec005cd2",
+          "description": "IAM用户ID。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": false,
+          "description": "IAM用户是否启用。true表示启用,false表示停用,默认为true。"
+        },
+        "access_mode": {
+          "type": "string",
+          "example": "default",
+          "description": "IAM用户访问方式。\n- default:默认访问模式,编程访问和管理控制台访问。\n- programmatic:编程访问。\n- console:管理控制台访问。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

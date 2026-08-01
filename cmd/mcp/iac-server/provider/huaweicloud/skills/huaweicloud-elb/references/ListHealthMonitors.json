@@ -1,0 +1,492 @@
+{
+  "name": "ListHealthMonitors",
+  "summary": "查询健康检查列表",
+  "tags": "健康检查",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/healthmonitors": {
+      "get": {
+        "x-request-examples-description-1": "查询健康检查列表",
+        "x-apiErrorCodes": "[]",
+        "tags": [
+          "健康检查"
+        ],
+        "summary": "查询健康检查列表",
+        "description": "健康检查列表。",
+        "operationId": "ListHealthMonitors",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:健康检查ID。\n支持多值查询,查询条件格式:*id=xxx&id=xxx****。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6
+          },
+          {
+            "name": "monitor_port",
+            "in": "query",
+            "description": "**参数解释**:健康检查端口号。\n支持多值查询,查询条件格式:***monitor_port=xxx&monitor_port=xxx***。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "domain_name",
+            "in": "query",
+            "description": "**参数解释**:发送健康检查请求的域名。\n支持多值查询,查询条件格式:**domain_name=xxx&domain_name=xxx**。\n\n**约束限制**:不涉及\n\n**取值范围**:以数字或字母开头,只能包含数字、字母、’-’、’.’。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:健康检查名称。\n支持多值查询,查询条件格式:*name=xxx&name=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 9
+          },
+          {
+            "name": "delay",
+            "in": "query",
+            "description": "**参数解释**:健康检查间隔。\n支持多值查询,查询条件格式:*delay=xxx&delay=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:1-50,单位:秒。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 10
+          },
+          {
+            "name": "max_retries",
+            "in": "query",
+            "description": "**参数解释**:健康检查连续成功多少次后,将后端服务器的健康检查状态由OFFLINE判定为ONLINE。\n支持多值查询,查询条件格式:*******max_retries=xxx&max_retries=xxx*******。\n\n**约束限制**:不涉及\n\n**取值范围**:1-10\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 11
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "**参数解释**:健康检查的管理状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true:表示开启健康检查。\n- false表示关闭健康检查。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 12
+          },
+          {
+            "name": "max_retries_down",
+            "in": "query",
+            "description": "**参数解释**:健康检查连续失败多少次后,将后端服务器的健康检查状态由ONLINE判定为OFFLINE。\n支持多值查询,查询条件格式:******max_retries_down=xxx&max_retries_down=xxx******。\n\n**约束限制**:不涉及\n\n**取值范围**:1-10\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 13
+          },
+          {
+            "name": "timeout",
+            "in": "query",
+            "description": "**参数解释**:一次健康检查请求的超时时间。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 14
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "**参数解释**:健康检查请求协议。\n支持多值查询,查询条件格式:*****type=xxx&type=xxx*****。\n\n**约束限制**:不涉及\n\n**取值范围**:TCP、UDP_CONNECT、HTTP、HTTPS、TLS、GRPC。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 15
+          },
+          {
+            "name": "expected_codes",
+            "in": "query",
+            "description": "**参数解释**:期望响应状态码。\n支持多值查询,查询条件格式:****expected_codes=xxx&expected_codes=xxx****。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- 单值:单个返回码,例如200。\n- 列表:多个特定返回码,例如200,202。\n- 区间:一个返回码区间,例如200-204。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 16
+          },
+          {
+            "name": "url_path",
+            "in": "query",
+            "description": "**参数解释**:健康检查测试member健康时发送的http请求路径。\n支持多值查询,查询条件格式:***url_path=xxx&url_path=xxx***。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 17
+          },
+          {
+            "name": "http_method",
+            "in": "query",
+            "description": "**参数解释**:HTTP请求方法。\n支持多值查询,查询条件格式:**http_method=xxx&http_method=xxx**。\n\n**约束限制**:不涉及\n\n**取值范围**:GET、HEAD、POST\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 18
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:资源所属的企业项目ID。\n支持多值查询,查询条件格式:*enterprise_project_id=xxx&enterprise_project_id=xxx*。\n\n**约束限制**:\n- 如果enterprise_project_id不传值,默认查询所有企业项目下的资源,鉴权按照细粒度权限鉴权,必须在用户组下分配elb:healthmonitors:list权限。\n- 如果enterprise_project_id传值,鉴权按照企业项目权限鉴权,分为传入具体eps_id和all_granted_eps两种场景,前者查询指定eps_id的eps下的资源,后者查询的是所有有list权限的eps下的资源。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 19
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "306b2ed05d05341a2157906d60c06718",
+                "healthmonitors": [
+                  {
+                    "name": "my-healthmonitor-1",
+                    "monitor_port": null,
+                    "id": "00b42a6a-0a16-47af-be4e-dc821fc316a3",
+                    "project_id": "0c1503d710984bad92306faea3654dfd",
+                    "domain_name": null,
+                    "delay": 1,
+                    "max_retries": 1,
+                    "max_retries_down": 1,
+                    "pools": [
+                      {
+                        "id": "c73600be-e3af-4d9f-bec2-f7c4ccf84b33"
+                      }
+                    ],
+                    "admin_state_up": true,
+                    "timeout": 1,
+                    "type": "HTTP",
+                    "expected_codes": "200",
+                    "url_path": "/",
+                    "http_method": "HEAD",
+                    "created_at": "2024-08-08T09:00:34Z",
+                    "updated_at": "2024-08-08T09:00:34Z"
+                  },
+                  {
+                    "name": "my-healthmonitor-2",
+                    "monitor_port": null,
+                    "id": "00d4e6b4-587a-479a-a8ab-662b51f70170",
+                    "project_id": "0c1503d710984bad92306faea3654dfd",
+                    "domain_name": null,
+                    "delay": 5,
+                    "max_retries": 3,
+                    "max_retries_down": 3,
+                    "pools": [
+                      {
+                        "id": "e74c1541-e1d5-497c-9af3-3166202ed3f1"
+                      }
+                    ],
+                    "admin_state_up": true,
+                    "timeout": 3,
+                    "type": "TCP",
+                    "expected_codes": "200",
+                    "url_path": "/",
+                    "http_method": "GET",
+                    "created_at": "2024-11-07T13:35:18Z",
+                    "updated_at": "2024-11-07T13:35:18Z"
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "00d4e6b4-587a-479a-a8ab-662b51f70170",
+                  "previous_marker": "00b42a6a-0a16-47af-be4e-dc821fc316a3",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListHealthMonitorsResponseBody"
+            }
+          }
+        },
+        "x-name": "查询健康检查列表",
+        "x-constraint": "- 分页查询使用的参数为marker、limit、page_reverse。\n\n- marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/healthmonitors",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "HealthMonitor": {
+      "required": [
+        "admin_state_up",
+        "delay",
+        "domain_name",
+        "expected_codes",
+        "http_method",
+        "id",
+        "max_retries",
+        "max_retries_down",
+        "monitor_port",
+        "name",
+        "pools",
+        "project_id",
+        "timeout",
+        "type",
+        "url_path"
+      ],
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "健康检查的管理状态。\n\n**取值范围**:\n- true:表示开启健康检查。\n- false表示关闭健康检查。"
+        },
+        "delay": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查间隔。\n\n**取值范围**:1-50,单位:秒。",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "**参数解释**:发送健康检查请求的域名。\n\n**取值范围**:以数字或字母开头,只能包含数字、字母、’-’、’.’。"
+        },
+        "expected_codes": {
+          "type": "string",
+          "description": "**参数解释**:期望响应状态码。\n\n**取值范围**:\n- 单值:单个返回码,例如200。\n- 列表:多个特定返回码,例如200,202。\n- 区间:一个返回码区间,例如200-204。"
+        },
+        "http_method": {
+          "type": "string",
+          "description": "**参数解释**:HTTP请求方法。\n\n**取值范围**:GET、HEAD、POST"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:健康检查ID。\n\n**取值范围**:不涉及"
+        },
+        "max_retries": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续成功多少次后,将后端服务器的健康检查状态由OFFLINE判定为ONLINE。\n\n**取值范围**:1-10",
+          "minimum": 1,
+          "maximum": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "max_retries_down": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查连续失败多少次后,将后端服务器的健康检查状态由ONLINE判定为OFFLINE。\n\n**取值范围**:1-10",
+          "minimum": 1,
+          "maximum": 10,
+          "x-huawei-extraAnnotation": ""
+        },
+        "monitor_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:健康检查端口号。\n\n**取值范围**:1-65535和null,传null表示使用后端服务器端口号。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:健康检查名称。\n\n**取值范围**:不涉及"
+        },
+        "pools": {
+          "type": "array",
+          "description": "**参数解释**:健康检查所在的后端服务器组ID列表。实际只会有一个后端服务器组ID。\n\n**取值范围**:不涉及",
+          "items": {
+            "$ref": "#/definitions/PoolRef"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:健康检查所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:一次健康检查请求的超时时间。\n\n**取值范围**:不涉及",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**: 健康检查请求协议。\n\n**取值范围**:TCP、UDP_CONNECT、HTTP、HTTPS、TLS、GRPC。UDP_CONNECT即UDP协议。"
+        },
+        "url_path": {
+          "type": "string",
+          "description": "**参数解释**:健康检查请求的请求路径。以\"/\"开头,默认为\"/\"。\n\n**取值范围**:支持使用字母、数字和短划线(-)、正斜线(/)、半角句号(.)、百分号(%)、半角问号(?)、井号(#)和and(&)以及扩展字符集_;~!()*[]@$^:',+"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**: 更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        }
+      },
+      "type": "object"
+    },
+    "PoolRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器组ID。\n\n**取值范围**:不涉及",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "**参数解释**:关联的后端服务器组。"
+    },
+    "ListHealthMonitorsResponseBody": {
+      "required": [
+        "healthmonitors",
+        "page_info",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "healthmonitors": {
+          "type": "array",
+          "description": "**参数解释**:健康检查对象。",
+          "items": {
+            "$ref": "#/definitions/HealthMonitor"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

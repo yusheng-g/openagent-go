@@ -1,0 +1,174 @@
+{
+  "name": "ListInstancesSupportFastRestore",
+  "summary": "获取实例是否能使用极速恢复",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/fast-restore": {
+      "post": {
+        "x-request-examples-text-1": {
+          "restore_time": "2023-06-25T11:35:40+0800",
+          "instance_ids": [
+            "14fc6c06d7e842829ee91d11c6b88b3ain01"
+          ]
+        },
+        "x-request-examples-1": {
+          "restore_time": "2023-06-25T11:35:40+0800",
+          "instance_ids": [
+            "14fc6c06d7e842829ee91d11c6b88b3ain01"
+          ]
+        },
+        "x-publishpath": 20230621,
+        "x-request-examples-description-1": "获取实例是否能使用极速恢复",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/5ea83451ed664448a18d5f42b2f505dc/instances/fast-restore",
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListInstancesSupportFastRestore",
+        "summary": "获取实例是否能使用极速恢复",
+        "description": "批量获取实例是否能在库表恢复时使用极速恢复。\n\n- 调用接口前,您需要了解API 认证鉴权。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- 该接口目前仅支持RDS for MySQL引擎",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "required": true,
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "ListInstancesSupportFastRestoreRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ListInstancesSupportFastRestoreRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListInstancesSupportFastRestoreResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "support_fast_restore_list": [
+                  {
+                    "instance_id": "14fc6c06d7e842829ee91d11c6b88b3ain01",
+                    "is_support_fast_table_restore": true,
+                    "is_support_fast_database_restore": true
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-apigateway-ratelimit": "rds_user_policy"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ListInstancesSupportFastRestoreRequestBody": {
+      "required": [
+        "restore_time",
+        "instance_ids"
+      ],
+      "properties": {
+        "restore_time": {
+          "type": "string",
+          "description": "要恢复的时间点,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "example": "2023-06-25T11:35:40+0800"
+        },
+        "instance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "实例id列表。"
+        }
+      }
+    },
+    "SupportFastRestoreList": {
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例id。",
+          "example": "161ddefa425441289661354f0c370c9din01"
+        },
+        "is_support_fast_table_restore": {
+          "type": "boolean",
+          "description": "表级恢复是否支持极速恢复。",
+          "example": true
+        },
+        "is_support_fast_database_restore": {
+          "type": "boolean",
+          "description": "库级恢复是否支持极速恢复。",
+          "example": true
+        }
+      }
+    },
+    "ListInstancesSupportFastRestoreResponseBody": {
+      "properties": {
+        "support_fast_restore_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SupportFastRestoreList"
+          },
+          "description": "实例的极速恢复支持情况。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,183 @@
+{
+  "name": "BatchCreatePublicRecordsetsTask",
+  "summary": "批量创建公网记录集",
+  "tags": "批量操作",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/operation-task/batch-create-recordset": {
+      "post": {
+        "tags": [
+          "批量操作"
+        ],
+        "operationId": "BatchCreatePublicRecordsetsTask",
+        "summary": "批量创建公网记录集",
+        "description": "提交批量创建公网记录集任务,返回任务ID。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "x-constraint": "仅支持公网域名。\n每个任务最多支持10000个记录集。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-enable-auth-anno": {
+          "type": "iam-token"
+        },
+        "x-iam-auth-meta-anno": {
+          "authLevel": "token",
+          "abacAction": "dns:recordset:batchCreatePublicZoneRecordsets",
+          "abacActionAlias": "dns:recordset:batchImportPublicRecordSet"
+        },
+        "x-cts-meta-anno": {
+          "resourceType": "publicRecordSet",
+          "traceName": "batchCreatePublicRecordsetsTask",
+          "operationId": "BatchCreatePublicRecordsetsTask"
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "BatchCreatePublicRecordsetsTaskRequestBody",
+            "in": "body",
+            "description": "批量创建公网记录集请求。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchCreatePublicRecordsetsTaskRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量创建公网记录集响应。",
+            "examples": {
+              "application/json": {
+                "task_id": "97a820bba45f04abba75f9f82525fb11"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchOperationTaskResponseBody"
+            }
+          }
+        },
+        "x-request-examples-description-1": "批量创建公网记录集。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/operation-task/batch-create-recordset",
+        "x-request-examples-1": {
+          "recordsets": [
+            {
+              "zone_name": "example.com.",
+              "name": "www",
+              "type": "A",
+              "line": "default_view",
+              "ttl": 300,
+              "weight": 1,
+              "records": [
+                "192.168.10.1",
+                "192.168.10.2"
+              ],
+              "status": "ENABLE"
+            }
+          ]
+        },
+        "x-order": 7
+      }
+    }
+  },
+  "definitions": {
+    "BatchCreatePublicRecordsetsTaskRequestBody": {
+      "required": [
+        "recordsets"
+      ],
+      "properties": {
+        "recordsets": {
+          "type": "array",
+          "description": "批量创建记录集列表。",
+          "items": {
+            "$ref": "#/definitions/BatchCreatePublicRecordsetsTaskItem"
+          },
+          "minItems": 1,
+          "maxItems": 10000
+        }
+      }
+    },
+    "BatchCreatePublicRecordsetsTaskItem": {
+      "required": [
+        "zone_name",
+        "type",
+        "records"
+      ],
+      "properties": {
+        "zone_name": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该记录的域名。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n主机记录或域名。\n末尾有点则认为是完整域名,如果不包含点,则认为是域名前缀。例如:\n输入\"www\",创建成功后域名显示为\"www.example.com.\"\n输入\"www.example.com.\"(注意域名末尾有点),创建成功后域名显示为\"www.example.com.\"\n输入\"www.example.com\"(注意域名末尾没有点),创建成功后域名显示为\"www.example.com.example.com.\"\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "minLength": 0,
+          "maxLength": 254
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的类型。\n**约束限制:**\n不涉及。\n**取值范围:**\n- A:将域名解析到指定的IPv4地址。\n- AAAA:将域名解析到指定的IPv6地址。\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。\n- SRV:用于记录某台服务器对外提供了哪些服务。\n- NS:指定域名的权威DNS服务器。\n- CAA:指定为域名颁发HTTPS证书的授权CA机构,仅支持公网域名解析。\n\n**默认取值:**\n不涉及。",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "line": {
+          "type": "string",
+          "description": "**参数解释:**\n解析线路ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\ndefault_view。",
+          "pattern": "[0-9a-zA-Z-_]{1,64}",
+          "default": "default_view"
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n**约束限制:**\n不涉及。\n**取值范围:**\n1~2147483647。\n**默认取值:**\n300",
+          "minimum": 1,
+          "maximum": 2147483647,
+          "default": 300
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n解析记录的权重。\n**约束限制:**\nMX记录集不支持权重,创建时会忽略权重字段,如果您的MX记录集有多个值,在一条记录集里写多个值即可。(若存在多条同主机记录、同线路类型的MX记录,会自动合并为一条创建)\n**取值范围:**\n0~1000。\n**默认取值:**\n不涉及。",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "records": {
+          "type": "array",
+          "description": "**参数解释:**\n解析记录的值。不同类型解析记录对应的值的规则不同。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n解析记录的状态。\n**约束限制:**\n不涉及。\n**取值范围:**\n- ENABLE:启用解析\n- DISABLE:暂停解析\n\n**默认取值:**\nENABLE。",
+          "minLength": 1,
+          "maxLength": 10,
+          "default": "ENABLE"
+        }
+      }
+    },
+    "BatchOperationTaskResponseBody": {
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "**参数解释:**\n批量操作任务的ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

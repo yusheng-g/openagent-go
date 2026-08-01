@@ -1,0 +1,145 @@
+{
+  "name": "BatchDeleteAutopilotClusterTags",
+  "summary": "批量删除指定集群的资源标签",
+  "tags": "标签管理(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/projects/{project_id}/clusters/{cluster_id}/tags/delete": {
+      "post": {
+        "tags": [
+          "标签管理(Autopilot)"
+        ],
+        "summary": "批量删除指定集群的资源标签",
+        "description": "该API用于批量删除指定集群的资源标签。\n> - 此接口为幂等接口:删除时,如果删除的标签key不存在,默认处理成功。",
+        "operationId": "BatchDeleteAutopilotClusterTags",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "BatchDeleteClusterTagsRequestBody",
+            "description": "批量删除指定集群资源标签的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteClusterTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "批量删除指定集群的资源标签",
+        "x-order": 2,
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-api-type": "open-api",
+        "x-request-examples-description-1": "批量删除指定集群的资源标签",
+        "x-request-examples-url-1": "POST /autopilot/v3/projects/{project_id}/clusters/{cluster_id}/tags/delete",
+        "x-request-examples-1": {
+          "tags": [
+            {
+              "key": "key1"
+            },
+            {
+              "key": "key2"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResourceDeleteTag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Key值。\n- 不能为空,最多支持128个字符\n- 可用UTF-8格式表示的汉字、字母、数字和空格\n- 支持部分特殊字符:_.:/=+-@\n- 不能以\"\\_sys\\_\"开头",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "description": "CCE资源标签,用于唯一标识待删除的资源标签"
+    },
+    "BatchDeleteClusterTagsRequestBody": {
+      "description": "批量删除指定集群资源标签的请求体",
+      "required": [
+        "tags"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "待删除的集群资源标签列表。",
+          "items": {
+            "$ref": "#/definitions/ResourceDeleteTag"
+          },
+          "maxItems": 20,
+          "minItems": 1
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

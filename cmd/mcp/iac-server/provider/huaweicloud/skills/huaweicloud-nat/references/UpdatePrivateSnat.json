@@ -1,0 +1,297 @@
+{
+  "name": "UpdatePrivateSnat",
+  "summary": "更新SNAT规则",
+  "tags": "私网SNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/snat-rules/{snat_rule_id}": {
+      "put": {
+        "tags": [
+          "私网SNAT规则"
+        ],
+        "summary": "更新SNAT规则",
+        "description": "更新指定的SNAT规则。",
+        "operationId": "UpdatePrivateSnat",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36,
+            "description": "项目的ID。",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10240,
+            "x-order": 2
+          },
+          {
+            "name": "snat_rule_id",
+            "in": "path",
+            "description": "SNAT规则的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "UpdatePrivateSnatRequestBody",
+            "in": "body",
+            "description": "更新SNAT规则的请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateSnatOptionBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新SNAT规则成功。",
+            "examples": {
+              "application/json": {
+                "request_id": "15bd32b2-1464-4817-b559-444d22499f6c",
+                "snat_rule": {
+                  "id": "af4dbb83-7ca0-4ed1-b28b-668c1f9c6b81",
+                  "project_id": "cfa563efb77d4b6d9960781d82530fd8",
+                  "description": "my_snat_rule_update",
+                  "gateway_id": "80da6f26-94eb-4537-97f0-5a56f4d04cfb",
+                  "cidr": "10.1.1.64/30",
+                  "virsubnet_id": "",
+                  "transit_ip_associations": [
+                    {
+                      "transit_ip_id": "bbe7c2e7-3bad-445b-a067-b30acce66053",
+                      "transit_ip_address": "172.20.1.98"
+                    }
+                  ],
+                  "created_at": "2019-10-22T03:31:19",
+                  "updated_at": "2019-10-22T03:39:52",
+                  "status": "ACTIVE"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateSnatResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新SNAT规则",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "SNAT规则更新的请求体。",
+        "x-request-examples-url-1": " https://{Endpoint}/v3/ cfa563efb77d4b6d9960781d82530fd8/private-nat/snat-rules/aef81f7c-1be5-4aad-b6e9-23b2ec3bc395",
+        "x-request-examples-1": {
+          "snat_rule": {
+            "description": "my_snat_rule_update",
+            "transit_ip_ids": [
+              "bbe7c2e7-3bad-445b-a067-b30acce66053"
+            ]
+          }
+        },
+        "x-request-examples-text-1": {
+          "snat_rule": {
+            "description": "my_snat_rule_update",
+            "transit_ip_ids": [
+              "bbe7c2e7-3bad-445b-a067-b30acce66053"
+            ]
+          }
+        },
+        "x-obc": "N",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AssociatedTransitIp": {
+      "properties": {
+        "transit_ip_id": {
+          "type": "string",
+          "description": "中转IP的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "transit_ip_address": {
+          "type": "string",
+          "description": "中转IP地址。",
+          "minLength": 7,
+          "maxLength": 35,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "关联的中转IP。",
+      "type": "object"
+    },
+    "UpdatePrivateSnatOptionBody": {
+      "required": [
+        "snat_rule"
+      ],
+      "properties": {
+        "snat_rule": {
+          "$ref": "#/definitions/UpdatePrivateSnatOption"
+        }
+      },
+      "description": "更新SNAT规则的请求体。"
+    },
+    "UpdatePrivateSnatOption": {
+      "properties": {
+        "transit_ip_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          "example": [
+            "3faa719d-6d18-4ccb-a5c7-33e65a09663e"
+          ],
+          "description": "中转IP的ID的列表。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "example": "snat rule description",
+          "description": "SNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "type": "object",
+      "description": "更新SNAT规则的请求体。"
+    },
+    "UpdatePrivateSnatResponseBody": {
+      "properties": {
+        "request_id": {
+          "description": "请求ID。",
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "snat_rule": {
+          "$ref": "#/definitions/PrivateSnat"
+        }
+      },
+      "description": "更新SNAT规则的响应体。"
+    },
+    "PrivateSnat": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "gateway_id": {
+          "type": "string",
+          "description": "私网NAT网关实例的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "cidr": {
+          "type": "string",
+          "minLength": 9,
+          "maxLength": 18,
+          "description": "功能说明:规则匹配的CIDR。\n取值约束:\n- 与virsubnet_id参数二选一。\n- cidr不能与已有snat规则的网段相同。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "功能说明:规则匹配的子网的ID。\n取值约束:与cidr参数二选一。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "transit_ip_associations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssociatedTransitIp"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "description": "关联的中转IP详情列表。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目id",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT的SNAT规则状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "SNAT规则的响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

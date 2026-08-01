@@ -1,0 +1,249 @@
+{
+  "name": "CreateManualBackup",
+  "summary": "创建手动备份",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/backups": {
+      "post": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "CreateManualBackup",
+        "summary": "创建手动备份",
+        "description": "创建手动备份。",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "CreateManualBackupRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateManualBackupRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateManualBackupResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "backup": {
+                  "id": "2f4ddb93-b901-4b08-93d8-1d2e472f30fe",
+                  "name": "backupDemo",
+                  "description": "This is a description",
+                  "begin_time": "2016-09-12T01:17:05",
+                  "status": "BUILDING",
+                  "type": "manual",
+                  "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin04",
+                  "databases": [
+                    {
+                      "name": "db1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "MySQL/PostgreSQL实例",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/backups",
+        "x-request-examples-1": {
+          "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin01",
+          "name": "backup",
+          "description": "mannual backup"
+        },
+        "x-request-examples-description-2": "Microsoft SQL Server实例",
+        "x-request-examples-url-2": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/backups",
+        "x-request-examples-2": {
+          "instance_id": "d8e6ca5a624745bcb546a227aa3ae1cfin04",
+          "name": "backup",
+          "description": "mannual backup",
+          "databases": [
+            {
+              "name": "db1"
+            },
+            {
+              "name": "db2"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "BackupDatabase": {
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "SqlServer引擎指定备份的数据库。",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "BackupInfo": {
+      "description": "备份信息。",
+      "required": [
+        "id",
+        "instance_id",
+        "name",
+        "begin_time",
+        "status",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "description": "备份ID。",
+          "type": "string"
+        },
+        "instance_id": {
+          "description": "实例ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "备份名称。",
+          "type": "string"
+        },
+        "description": {
+          "description": "备份描述。",
+          "type": "string"
+        },
+        "databases": {
+          "description": "只支持Microsoft SQL Server,局部备份的用户自建数据库名列表,当有此参数时以局部备份为准。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BackupDatabase"
+          }
+        },
+        "begin_time": {
+          "description": "备份开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "status": {
+          "description": "备份状态,取值:\n\n- BUILDING: 备份中。\n- COMPLETED: 备份完成。\n- FAILED:备份失败。\n- DELETING:备份删除中。",
+          "type": "string",
+          "enum": [
+            "BUILDING",
+            "COMPLETED",
+            "FAILED",
+            "DELETING"
+          ]
+        },
+        "type": {
+          "description": "备份类型,取值:\n\n- “auto”: 自动全量备份\n- “manual”: 手动全量备份\n- “fragment”: 差异全量备份\n- “incremental”: 自动增量备份",
+          "type": "string",
+          "enum": [
+            "auto",
+            "manual",
+            "fragment",
+            "incremental"
+          ]
+        }
+      }
+    },
+    "CreateManualBackupResponseBody": {
+      "required": [
+        "backup"
+      ],
+      "properties": {
+        "backup": {
+          "$ref": "#/definitions/BackupInfo"
+        }
+      }
+    },
+    "CreateManualBackupRequestBody": {
+      "required": [
+        "instance_id",
+        "name"
+      ],
+      "properties": {
+        "instance_id": {
+          "description": "实例ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "备份名称,4~64个字符,必须以英文字母开头,区分大小写,可以包含英文字母、数字、中划线或者下划线,不能包含其他特殊字符。",
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 64
+        },
+        "description": {
+          "description": "备份描述,不能包含>!<\"&'=特殊字符,不大于256个字符。",
+          "type": "string",
+          "maxLength": 256
+        },
+        "databases": {
+          "description": "只支持Microsoft SQL Server和RDS for PostgreSQL,局部备份的用户自建数据库名列表,当有此参数时以局部备份为准。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BackupDatabase"
+          }
+        },
+        "backup_database_individually": {
+          "type": "boolean",
+          "description": "是否分库备份,只适用于SQLServer、RDS for PostgreSQL,默认为false"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

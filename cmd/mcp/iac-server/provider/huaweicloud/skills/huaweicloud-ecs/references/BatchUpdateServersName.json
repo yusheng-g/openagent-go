@@ -1,0 +1,177 @@
+{
+  "name": "BatchUpdateServersName",
+  "summary": "批量修改弹性云服务器",
+  "tags": "批量操作",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/server-name": {
+      "put": {
+        "tags": [
+          "批量操作"
+        ],
+        "summary": "批量修改弹性云服务器",
+        "description": "批量修改弹性云服务器信息。\n当前仅支持批量修改云服务器名称,一次最多可以修改1000台。",
+        "operationId": "BatchUpdateServersName",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "BatchUpdateServersNameRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchUpdateServersNameRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "response": [
+                  {
+                    "id": "616fb98f-46ca-475e-917e-2563e5a8cd19"
+                  },
+                  {
+                    "id": "516fb98f-46ca-475e-917e-2563e5a8cd12"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchOperateResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "批量修改弹性云服务器",
+        "x-constraint": "不涉及",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 20,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v1/{project_id}/cloudservers/server-name",
+        "x-request-examples-1": {
+          "name": "Test@123",
+          "dry_run": false,
+          "servers": [
+            {
+              "id": "260a0917-f7df-4b25-93ac-950da6c6b5d6"
+            },
+            {
+              "id": "f6d8df1a-e257-48e2-b617-1dd92ced8c20"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n    \"name\": \"Test@123\",\n    \"dry_run\": false,\n    \"servers\": [\n        {\n            \"id\": \"260a0917-f7df-4b25-93ac-950da6c6b5d6\"\n        },\n        {\n            \"id\": \"f6d8df1a-e257-48e2-b617-1dd92ced8c20\"\n        }\n    ]\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-11-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ServerId": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "616fb98f-46ca-475e-917e-2563e5a86666",
+          "description": "云服务器ID。"
+        }
+      },
+      "description": ""
+    },
+    "BatchUpdateServersNameRequestBody": {
+      "required": [
+        "name",
+        "servers"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Test@123",
+          "description": "弹性云服务器修改后的名称。\n\n规则如下:\n\n只能允许包含中文汉字、大小写字母、数字及 \"-\" 、 \"_\" 、\".\" 等特殊字符,长度限制在64个字符以内。\n\n批量修改弹性云服务器名称时,名不会自动按序增加数字尾缀。例如: 三个ECS的名称为test_0001,test_0002,test_0003,批量修改云服务器名称为develop,则修改后3个云服务器名称为develop,develop,develop。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "dry_run": {
+          "type": "boolean",
+          "example": false,
+          "description": "是否只预检此次请求。\n\n- true:发送检查请求,不会修改云服务器名称。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回正常响应信息。\n- false:发送正常请求,通过检查后并且执行修改云服务器名称的请求。\n\n默认值:false",
+          "x-obc": "",
+          "x-admin": "",
+          "x-internal": ""
+        },
+        "servers": {
+          "type": "array",
+          "description": "待修改的弹性云服务器ID信息。",
+          "items": {
+            "$ref": "#/definitions/ServerId"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "x-obc": "",
+          "x-admin": "",
+          "x-internal": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "BatchOperateResult": {
+      "required": [
+        "response"
+      ],
+      "properties": {
+        "response": {
+          "type": "array",
+          "description": "提交请求成功后返回的响应列表。",
+          "items": {
+            "$ref": "#/definitions/ServerId"
+          }
+        }
+      },
+      "description": "批量操作返回体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

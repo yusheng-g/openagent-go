@@ -1,0 +1,139 @@
+{
+  "name": "UpdateServerBlockDevice",
+  "summary": "修改云服务器挂载的单个磁盘信息",
+  "tags": "磁盘管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/{server_id}/block_device/{volume_id}": {
+      "put": {
+        "tags": [
+          "磁盘管理"
+        ],
+        "summary": "修改云服务器挂载的单个磁盘信息",
+        "description": "修改云服务器云主机挂载的单个磁盘信息。'当前仅支持修改delete_on_termination字段。",
+        "operationId": "UpdateServerBlockDevice",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateServerBlockDeviceReq",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateServerBlockDeviceReq"
+            }
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/server_id"
+          },
+          {
+            "name": "volume_id",
+            "in": "path",
+            "description": "磁盘id,uuid格式",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改云服务器挂载的单个磁盘信息",
+        "x-constraint": "- 不支持修改包年/包月计费模式的磁盘。\n- 不支持修改共享盘。\n- 不支持修改系统盘。",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 98,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v1/{project_id}/cloudservers/{server_id}/block_device/{volume_id}",
+        "x-request-examples-1": {
+          "block_device": [
+            {
+              "delete_on_termination": true
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n\t\"block_device\": {\n\t\t\"delete_on_termination\": true\n\t}\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2020-10-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateServerBlockDeviceReq": {
+      "required": [
+        "block_device"
+      ],
+      "properties": {
+        "block_device": {
+          "description": "待更新的挂载信息。",
+          "$ref": "#/definitions/UpdateServerBlockDeviceOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "UpdateServerBlockDeviceOption": {
+      "required": [
+        "delete_on_termination"
+      ],
+      "properties": {
+        "delete_on_termination": {
+          "type": "boolean",
+          "description": "云硬盘随实例释放策略。\n-  true:云硬盘随实例释放。 \n-  false:云硬盘不随实例释放。\n\n> 说明\n>\n> 不支持修改包年/包月计费模式的磁盘。\n> 不支持修改共享盘。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "server_id": {
+      "name": "server_id",
+      "in": "path",
+      "description": "云服务器ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

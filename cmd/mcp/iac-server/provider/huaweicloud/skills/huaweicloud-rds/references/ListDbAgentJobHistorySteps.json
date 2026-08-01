@@ -1,0 +1,181 @@
+{
+  "name": "ListDbAgentJobHistorySteps",
+  "summary": "查询数据库代理作业执行历史步骤",
+  "tags": "发布订阅(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/db-jobs/histories/{history_id}/steps": {
+      "get": {
+        "tags": [
+          "发布订阅(SQL Server)"
+        ],
+        "operationId": "ListDbAgentJobHistorySteps",
+        "summary": "查询数据库代理作业执行历史步骤",
+        "description": "查询数据库代理作业执行历史步骤。",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "history_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "作业执行历史ID"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数。默认为10,不能为负数,最小值为1,最大值为100。",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/ListDbAgentJobHistoryStepsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "steps": [
+                  {
+                    "step_id": "1",
+                    "step_name": "Verify that automation is enabled.",
+                    "run_status": "succeeded",
+                    "run_time": "2023-01-05T08:00:00+0000",
+                    "run_duration": "00:00:25",
+                    "message": "Executed as user: NT SERVICE\\\\SQLSERVERAGENT. The step succeeded."
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/1aa833000a124455a6801e83cca37e6ein04/db-jobs/histories/10957/steps"
+      }
+    }
+  },
+  "definitions": {
+    "ListDbAgentJobHistoryStepsResult": {
+      "description": "数据库代理作业执行历史步骤。",
+      "properties": {
+        "step_id": {
+          "description": "步骤id。",
+          "type": "string",
+          "example": "1"
+        },
+        "step_name": {
+          "description": "步骤名。",
+          "type": "string",
+          "example": "Verify that automation is enabled."
+        },
+        "run_status": {
+          "description": "作业执行状态。取值如下:\n\nfailed:失败。\nsucceeded:成功。\nretrying:重试中。\ncanceled:已取消。\nin_progress:正在运行。",
+          "type": "string",
+          "example": "succeeded"
+        },
+        "run_time": {
+          "description": "作业执行开始时间。格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string",
+          "example": "2023-01-05T08:00:00+0000"
+        },
+        "run_duration": {
+          "description": "作业执行时长。格式为hh:mm:ss",
+          "type": "string",
+          "example": "00:00:25"
+        },
+        "message": {
+          "description": "执行信息。",
+          "type": "string",
+          "example": "Executed as user: NT SERVICE\\SQLSERVERAGENT. The step succeeded."
+        }
+      }
+    },
+    "ListDbAgentJobHistoryStepsResponseBody": {
+      "description": "查询数据库代理作业执行历史步骤响应信息。",
+      "properties": {
+        "steps": {
+          "description": "执行历史步骤列表。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListDbAgentJobHistoryStepsResult"
+          }
+        },
+        "total_count": {
+          "description": "执行历史步骤总数。",
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

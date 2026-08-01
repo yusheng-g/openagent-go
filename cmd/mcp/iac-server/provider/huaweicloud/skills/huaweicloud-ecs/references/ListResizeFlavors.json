@@ -1,0 +1,545 @@
+{
+  "name": "ListResizeFlavors",
+  "summary": "查询云服务器规格变更支持列表",
+  "tags": "规格管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/resize_flavors": {
+      "get": {
+        "tags": [
+          "规格管理"
+        ],
+        "summary": "查询云服务器规格变更支持列表",
+        "description": "变更规格时,部分规格的云服务器之间不能互相变更。您可以通过本接口,通过指定弹性云服务器规格,查询该规格可以变更的规格列表。",
+        "operationId": "ListResizeFlavors",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "instance_uuid",
+            "in": "query",
+            "description": "进行规格切换的云服务器ID,UUID格式。(instance_uuid,source_flavor_id and source_flavor_name 不能都为空)",
+            "required": false,
+            "type": "string",
+            "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67",
+            "x-order": 2
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "单页面可显示的flavor条数最大值,默认是1000。",
+            "required": false,
+            "type": "integer",
+            "default": 1000,
+            "format": "int32",
+            "x-example": 100,
+            "x-order": 3,
+            "x-obc": "",
+            "x-admin": "",
+            "x-internal": ""
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "以单页最后一条flavor的ID作为分页标记。",
+            "required": false,
+            "type": "string",
+            "x-example": "c3.xlarge.2",
+            "x-order": 4
+          },
+          {
+            "name": "sort_dir",
+            "in": "query",
+            "description": "升序/降序排序,默认值为:asc。\n\n取值范围:\n\n- asc:表示升序。\n- desc:表示降序",
+            "required": false,
+            "type": "string",
+            "default": "asc",
+            "x-example": "asc",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "x-order": 6
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "description": "排序字段。默认值为“flavorid”。\n\nkey的取值范围:\n\n- flavorid:表示规格ID。\n- name:表示规格名称。\n- memory_mb:表示内存大小。\n- vcpus:表示CPU大小。\n- root_gb:表示系统盘大小。",
+            "required": false,
+            "type": "string",
+            "default": "flavorid",
+            "x-example": "flavorid",
+            "enum": [
+              "flavorid",
+              "sort_key",
+              "name",
+              "memory_mb",
+              "vcpus",
+              "root_gb"
+            ],
+            "x-order": 7
+          },
+          {
+            "name": "source_flavor_id",
+            "in": "query",
+            "description": "进行规格切换的云服务器源规格ID。(instance_uuid,source_flavor_id and source_flavor_name 不能都为空)",
+            "required": false,
+            "type": "string",
+            "x-example": "s3.xlarge.2",
+            "x-order": 8
+          },
+          {
+            "name": "source_flavor_name",
+            "in": "query",
+            "description": "进行规格切换的云服务器源规格名称。(instance_uuid,source_flavor_id and source_flavor_name 不能都为空)",
+            "required": false,
+            "type": "string",
+            "x-example": "s3.xlarge.2",
+            "x-order": 9
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "flavors": [
+                  {
+                    "OS-FLV-DISABLED:disabled": false,
+                    "disk": 1,
+                    "OS-FLV-EXT-DATA:ephemeral": 0,
+                    "os-flavor-access:is_public": true,
+                    "id": "1",
+                    "links": [
+                      {
+                        "href": "http://openstack.example.com/v2/6f70656e737461636b20342065766572/flavors/1",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "http://openstack.example.com/6f70656e737461636b20342065766572/flavors/1",
+                        "rel": "bookmark"
+                      }
+                    ],
+                    "name": "m1.tiny",
+                    "ram": 512,
+                    "swap": "",
+                    "vcpus": 1,
+                    "rxtx_factor": 1.0,
+                    "extra_specs": {
+                      "keys1": "value1",
+                      "keys2": "value2"
+                    }
+                  },
+                  {
+                    "OS-FLV-DISABLED:disabled": false,
+                    "disk": 20,
+                    "OS-FLV-EXT-DATA:ephemeral": 0,
+                    "os-flavor-access:is_public": true,
+                    "id": "2",
+                    "links": [
+                      {
+                        "href": "http://openstack.example.com/v2/6f70656e737461636b20342065766572/flavors/2",
+                        "rel": "self"
+                      },
+                      {
+                        "href": "http://openstack.example.com/6f70656e737461636b20342065766572/flavors/2",
+                        "rel": "bookmark"
+                      }
+                    ],
+                    "name": "m1.small",
+                    "ram": 2048,
+                    "swap": "",
+                    "vcpus": 1,
+                    "rxtx_factor": 1.0,
+                    "extra_specs": {
+                      "keys1": "value1",
+                      "keys2": "value2"
+                    }
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListResizeFlavorsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询云服务器规格变更支持列表",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 38,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1/{project_id}/cloudservers/resize_flavors?source_flavor_id=c3.xlarge.2",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1/{project_id}/cloudservers/resize_flavors?source_flavor_id=c3.xlarge.2",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "FlavorLink": {
+      "required": [
+        "href",
+        "rel",
+        "type"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应快捷链接。"
+        },
+        "rel": {
+          "type": "string",
+          "description": "快捷链接标记名称。"
+        },
+        "type": {
+          "type": "string",
+          "description": "快捷链接类型,当前接口未使用,缺省值为null。"
+        }
+      },
+      "description": "规格相关快捷链接地址。"
+    },
+    "ListResizeFlavorsResponseBody": {
+      "required": [
+        "flavors"
+      ],
+      "properties": {
+        "flavors": {
+          "type": "array",
+          "description": "云服务器规格列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ListResizeFlavorsResult"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "FlavorExtraSpec": {
+      "properties": {
+        "ecs:performancetype": {
+          "type": "string",
+          "example": "normal",
+          "description": "云服务器规格的分类:\n\n- normal:通用型\n- entry:通用入门型\n- cpuv1:计算I型\n- cpuv2:计算II型\n- computingv3:通用计算增强型\n- kunpeng_computing:鲲鹏通用计算增强型\n- kunpeng_highmem:鲲鹏内存优化型\n- highmem:内存优化型\n- saphana:大内存型\n- diskintensive:磁盘增强型\n- highio:超高I/O型\n- ultracpu:超高性能计算型\n- gpu:GPU加速型\n- fpga:FPGA加速型\n- ascend:AI加速型\n\n> 说明:\n\n- 早期注册的规格该字段为hws:performancetype。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "hw:numa_nodes": {
+          "type": "string",
+          "description": "主机的物理cpu数量。"
+        },
+        "resource_type": {
+          "type": "string",
+          "description": "资源类型。resource_type是为了区分云服务器的物理主机类型。"
+        },
+        "hpet_support": {
+          "type": "string",
+          "description": "弹性运服务器高精度时钟是否开启,开启为true,否则为false。(该字段是否返回根据云服务器规格而定)"
+        },
+        "instance_vnic:type": {
+          "type": "string",
+          "description": "网卡类型,值固定为“enhanced”,表示使用增强型网络的资源创建云服务器。"
+        },
+        "instance_vnic:instance_bandwidth": {
+          "type": "string",
+          "description": "最大带宽,单位Mbps,最大值为10000。"
+        },
+        "instance_vnic:max_count": {
+          "type": "string",
+          "description": "最大网卡个数,最大为4。"
+        },
+        "quota:local_disk": {
+          "type": "string",
+          "description": "值格式为{type}:{count}:{size}:{safeFormat},其中:\n\n- type指磁盘类型,当前只支持hdd。\n- count指本地磁盘数量,目前支持d1类型:3/6/12/24,d2类型:2/4/8/12/16/24,d3类型:2/4/8/12/16/24/28。\n- size指单个磁盘容量,单位GB,目前只支持1675(实际磁盘大小为1800,格式化后可用大小为1675)。\n- safeFormat指云服务器本地磁盘是否安全格式化,目前仅支持d1类型:FALSE,d2/d3类型:True。\n\n> 说明:\n\n- 磁盘增强型特有字段。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "quota:nvme_ssd": {
+          "type": "string",
+          "description": "值格式为{type}:{spec}:{size}:{safeFormat},其中:\n\n- type指主机上配备的nvme ssd的单卡容量大小,当前只支持1.6T/3.2T。\n- spec指nvme ssd的规格,包括large/small。large表示大规格,small表示小规格。目前仅支持i3类型:large。\n- size指guest使用的盘的容量大小,单位为GB。在spec值为large的情况下,此项即为host单卡大小。在spec值为small的情况下,此为1/4规格或者1/2规格。\n- safeFormat指云服务器本地磁盘是否安全格式化,目前仅支持i3类型:True。\n\n> 说明:\n\n- 超高I/O型特有字段。"
+        },
+        "extra_spec:io:persistent_grant": {
+          "type": "string",
+          "description": "是否支持持久化,值为true。\n\n代表云服务器访问存储的方式为持久化授权。 \n\n> 说明:\n\n- 密集存储D1型特有字段。"
+        },
+        "ecs:generation": {
+          "type": "string",
+          "description": "弹性云服务器类型的代数。\n\n- s1:通用型I代\n- s2:通用型II代\n- s3:通用型\n- m1:内存优化型I代\n- m2:内存优化型II代\n- m3:内存优化型\n- h1:高性能计算型I代\n- h2:高性能计算型II代\n- h3:高性能计算型\n- hi3:超高性能计算型\n- d1:密集存储型I代\n- d2:密集存储型II代\n- d3:磁盘增强型\n- g1:GPU加速型I代\n- g2:GPU加速型II代\n- f1:FPGA高性能型\n- f2:FPGA通用型\n- c3:通用计算增强型\n- e3:大内存型\n- i3:超高I/O型"
+        },
+        "ecs:virtualization_env_types": {
+          "type": "string",
+          "description": "虚拟化类型。\n\n- 如果值为“FusionCompute”,表示弹性云服务器使用基于XEN的虚拟化技术。\n- 如果值为“CloudCompute”,表示弹性云服务器使用基于KVM的虚拟化技术。"
+        },
+        "pci_passthrough:enable_gpu": {
+          "type": "string",
+          "description": "显卡是否直通。\n\n值为“true”,表示GPU直通。",
+          "x-open-region-cloud": "hc,ocb,cmcc,dt,ctc"
+        },
+        "pci_passthrough:gpu_specs": {
+          "type": "string",
+          "description": "G1型和G2型云服务器应用的技术,包括GPU虚拟化和GPU直通。\n\n- 如果该规格的云服务器使用GPU虚拟化技术,且GPU卡的型号为M60-1Q,参数值可设置为“m60_1q:virt:1”。\n- 如果该规格的云服务器使用GPU直通技术,且GPU卡的型号为M60,参数值可设置为“m60:direct_graphics:1”。",
+          "x-open-region-cloud": "hc,dt"
+        },
+        "pci_passthrough:alias": {
+          "type": "string",
+          "description": "P1型v本地直通GPU的型号和数量,参数值可设置为“nvidia-p100:1”,表示使用该规格创建的弹性云服务器将占用1张NVIDIA P100显卡。",
+          "x-open-region-cloud": "hc,ocb,cmcc,dt,ctc"
+        },
+        "cond:operation:status": {
+          "type": "string",
+          "description": "此参数是Region级配置,某个AZ没有在cond:operation:az参数中配置时默认使用此参数的取值。不配置或无此参数时等同于“normal”。取值范围:\n\n- normal:正常商用\n- abandon:下线(即不显示)\n- sellout:售罄\n- obt:公测\n- promotion:推荐(等同normal,也是商用)"
+        },
+        "cond:operation:az": {
+          "type": "string",
+          "description": "此参数是AZ级配置,某个AZ没有在此参数中配置时默认使用cond:operation:status参数的取值。此参数的配置格式“az(xx)”。()内为某个AZ的flavor状态,()内必须要填有状态,不填为无效配置。状态的取值范围与cond:operation:status参数相同。\n\n例如:flavor在某个region的az0正常商用,az1售罄,az2公测,az3正常商用,其他az显示下线,可配置为:\n\n- “cond:operation:status”设置为“abandon”\n- “cond:operation:az”设置为“az0(normal), az1(sellout), az2(obt), az3(normal)”\n\n> 说明:\n\n- 如果flavor在某个AZ下的状态与cond:operation:status配置状态不同,必须配置该参数。"
+        },
+        "quota:max_rate": {
+          "type": "string",
+          "description": "最大带宽\n\n- 单位Mbps,显示为Gbps时除以1000"
+        },
+        "quota:min_rate": {
+          "type": "string",
+          "description": "基准带宽\n\n- 单位Mbps,显示为Gbps时除以1000"
+        },
+        "quota:max_pps": {
+          "type": "string",
+          "description": "内网最大收发包能力\n\n- 单位个,显示为xx万时除以10000"
+        },
+        "cond:operation:charge": {
+          "type": "string",
+          "description": "计费类型\n\n- 计费场景,不配置时都支持\n- period,包周期\n- demand,按需"
+        },
+        "cond:operation:charge:stop": {
+          "type": "string",
+          "description": "关机是否收费\n\n- 关机是否计费,默认免费:\n- charge\n- free",
+          "default": "free"
+        },
+        "cond:spot:operation:az": {
+          "type": "string",
+          "description": "计费类型\n\n- 计费场景,不配置时都支持\n- period,包周期\n- demand,按需"
+        },
+        "cond:operation:roles": {
+          "type": "string",
+          "description": "允许的角色\n匹配的用户标签(roles的op_gatexxx标签)。不设置时所有用户可见"
+        },
+        "cond:spot:operation:status": {
+          "type": "string",
+          "description": "Flavor在竞价销售模式下的状态\n\n- 不配置时等同abandon\n- normal,正常商用\n- abandon,下线\n- sellout,售罄\n- obt,公测,未申请时提示申请(暂不支持)\n- private,私有,只给特定用户显示(暂不支持)\n- test,试用/免费(暂不支持)\n- promotion,推荐"
+        },
+        "cond:network": {
+          "type": "string",
+          "description": "网络约束\n支持网络特性,不配置时以UI配置为准。"
+        },
+        "cond:storage": {
+          "type": "string",
+          "description": "存储约束\n\n- 支持磁盘特性,不配置时以UI配置为准。\n- scsi,支持scsi\n- localdisk,支持本地盘\n- ib,支持ib"
+        },
+        "cond:storage:type": {
+          "type": "string",
+          "description": "存储约束\n\n- 支持磁盘特性,不配置时以UI配置为准。"
+        },
+        "cond:compute:live_resizable": {
+          "type": "string",
+          "description": "计算约束\n\n- true,支持在线扩容。\n- false或不存在该字段,不支持在线扩容。"
+        },
+        "cond:compute": {
+          "type": "string",
+          "description": "计算约束\n\n- autorecovery,自动恢复特性。\n- 不存在该字段,不支持自动恢复。"
+        },
+        "info:gpu:name": {
+          "type": "string",
+          "description": ""
+        },
+        "info:cpu:name": {
+          "type": "string",
+          "description": ""
+        },
+        "quota:gpu": {
+          "type": "string",
+          "description": ""
+        },
+        "quota:vif_max_num": {
+          "type": "string",
+          "description": "最多支持的弹性网卡个数"
+        },
+        "quota:sub_network_interface_max_num": {
+          "type": "string",
+          "description": "最多支持的辅助弹性网卡个数"
+        },
+        "ecs:instance_architecture": {
+          "type": "string",
+          "description": "该规格对应的CPU架构,且仅鲲鹏实例架构规格返回该字段\n\n- 取值为arm64表示CPU架构为鲲鹏计算。"
+        },
+        "network_interface:traffic_mirroring_supported": {
+          "type": "string",
+          "description": "该规格是否支持流量镜像。"
+        },
+        "security:enclave_supported": {
+          "type": "string",
+          "description": "该规格是否支持QingTian Enclave。"
+        },
+        "info:gpus": {
+          "type": "string",
+          "description": "该规格的GPU卡信息。\n\nname:GPU名称\nmemory_mb:GPU显存大小\ncount:GPU显卡数量\nalias_prefix:GPU显卡内部别名"
+        },
+        "info:asic_accelerators": {
+          "type": "string",
+          "description": "该规格的加速器信息。\n\nname:加速器名称\nmemory_mb:加速器显存大小\ncount:加速器显卡数量\nalias_prefix:加速器显卡内部别名"
+        },
+        "info:features": {
+          "type": "string",
+          "description": "规格特性"
+        }
+      },
+      "description": "云服务器规格的扩展字段。"
+    },
+    "ListResizeFlavorsResult": {
+      "required": [
+        "OS-FLV-DISABLED:disabled",
+        "OS-FLV-EXT-DATA:ephemeral",
+        "disk",
+        "extra_specs",
+        "id",
+        "links",
+        "name",
+        "os-flavor-access:is_public",
+        "ram",
+        "rxtx_cap",
+        "rxtx_factor",
+        "rxtx_quota",
+        "swap",
+        "vcpus",
+        "instance_quota"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "c3.15xlarge.2",
+          "description": "云服务器规格的ID。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "name": {
+          "type": "string",
+          "example": "c3.15xlarge.2",
+          "description": "云服务器规格的名称。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "vcpus": {
+          "type": "string",
+          "example": "60",
+          "description": "云服务器规格对应的CPU核数。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "ram": {
+          "type": "integer",
+          "format": "int32",
+          "example": 131072,
+          "description": "云服务器规格对应的内存大小,单位为MB。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "disk": {
+          "type": "string",
+          "description": "云服务器规格对应要求的系统盘大小。\n\n当前未使用该参数,缺省值为0。",
+          "default": "0",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "swap": {
+          "type": "string",
+          "description": "云服务器规格对应要求的交换分区大小。\n\n当前未使用该参数,缺省值为\"\"。"
+        },
+        "OS-FLV-EXT-DATA:ephemeral": {
+          "type": "integer",
+          "format": "int32",
+          "description": "扩展属性,临时盘大小。\n\n当前未使用该参数,缺省值为0"
+        },
+        "OS-FLV-DISABLED:disabled": {
+          "type": "boolean",
+          "example": false,
+          "description": "扩展属性,该云服务器规格是否禁用。\n\n当前未使用该参数,缺省值为false。",
+          "default": false
+        },
+        "rxtx_factor": {
+          "type": "number",
+          "format": "float",
+          "description": "云服务器可使用网络带宽与网络硬件带宽的比例。\n\n当前未使用该参数,缺省值为1.0。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "rxtx_quota": {
+          "type": "string",
+          "description": "云服务器可使用网络带宽的软限制。\n\n当前未使用该参数,缺省值为null。"
+        },
+        "rxtx_cap": {
+          "type": "string",
+          "description": "\t\n云服务器可使用网络带宽的硬限制。\n\n当前未使用该参数,缺省值为null。"
+        },
+        "os-flavor-access:is_public": {
+          "type": "boolean",
+          "description": "扩展属性,flavor是否给所有租户使用。\n\n- true:表示给所有租户使用。\n- false:表示给指定租户使用。\n\n缺省值为true。",
+          "default": true
+        },
+        "links": {
+          "type": "array",
+          "description": "规格相关快捷链接地址。",
+          "items": {
+            "$ref": "#/definitions/FlavorLink"
+          }
+        },
+        "extra_specs": {
+          "description": "云服务器规格的扩展字段。",
+          "$ref": "#/definitions/FlavorExtraSpec",
+          "x-huawei-extraAnnotation": ""
+        },
+        "instance_quota": {
+          "type": "object",
+          "description": "预留属性。"
+        }
+      },
+      "description": "云服务器规格。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

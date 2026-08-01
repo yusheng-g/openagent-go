@@ -1,0 +1,193 @@
+{
+  "name": "BatchProtectScalingInstances",
+  "summary": "批量设置实例保护",
+  "tags": "弹性伸缩实例管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_group_instance/{scaling_group_id}/action": {
+      "post": {
+        "tags": [
+          "弹性伸缩实例管理"
+        ],
+        "summary": "批量设置实例保护",
+        "description": "批量移出伸缩组中的实例或批量添加伸缩组外的实例。批量对伸缩组中的实例设置或取消其实例保护属性。批量将伸缩组中的实例转入或移出备用状态。",
+        "operationId": "BatchProtectScalingInstances",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchProtectInstancesOption"
+            },
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求正常"
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-support-sdk": "Y",
+        "x-name": "批量操作实例",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 3,
+        "x-request-examples-url-1": "POST /autoscaling-api/v1/{project_id}/scaling_group_instance/{scaling_group_id}/action",
+        "x-request-examples-1": "POST /autoscaling-api/v1/{project_id}/scaling_group_instance/{scaling_group_id}/action{  \"action\": \"PROTECT\",  \"instances_id\": [  \"instance_id_1\",  \"instance_id_2\" ]}",
+        "x-request-examples-text-1": "POST /autoscaling-api/v1/{project_id}/scaling_group_instance/{scaling_group_id}/action{  \"action\": \"PROTECT\",  \"instances_id\": [  \"instance_id_1\",  \"instance_id_2\" ]}",
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-is-registered": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "26",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "260",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "BatchProtectInstancesOption": {
+      "required": [
+        "action",
+        "instances_id"
+      ],
+      "properties": {
+        "instances_id": {
+          "type": "array",
+          "example": [
+            "instance_id_1",
+            "instance_id_2"
+          ],
+          "description": "云服务器ID。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "instance_delete": {
+          "type": "string",
+          "example": "yes",
+          "description": "从伸缩组中移出实例时,是否删除云服务器。默认为no;可选值为yes或no。只有action为REMOVE时,这个字段才生效。",
+          "enum": [
+            "yes",
+            "no"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "description": "批量操作实例action标识:添加:ADD  移除: REMOVE  设置实例保护: PROTECT  取消实例保护: UNPROTECT;转入备用状态:ENTER_STANDBY 移出备用状态:EXIT_STANDBY",
+          "enum": [
+            "PROTECT"
+          ]
+        },
+        "instance_append": {
+          "type": "string",
+          "description": "将实例移入备用状态时,是否补充新的云服务器。取值如下:no:不补充新的实例,默认情况为no。yes:补充新的实例。只有action为ENTER_STANDBY时,这个字段才生效。",
+          "enum": [
+            "no",
+            "yes"
+          ]
+        }
+      },
+      "description": "批量设置实例保护"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

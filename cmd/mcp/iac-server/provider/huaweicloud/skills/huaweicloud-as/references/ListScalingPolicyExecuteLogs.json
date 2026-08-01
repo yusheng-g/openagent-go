@@ -1,0 +1,407 @@
+{
+  "name": "ListScalingPolicyExecuteLogs",
+  "summary": "查询策略执行日志",
+  "tags": "伸缩策略日志管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_policy_execute_log/{scaling_policy_id}": {
+      "get": {
+        "tags": [
+          "伸缩策略日志管理"
+        ],
+        "summary": "查询策略执行日志",
+        "description": "根据输入条件过滤查询策略执行的历史记录。查询结果分页显示。可根据日志ID,伸缩资源类型,伸缩资源ID,策略执行类型,查询额起始,查询截止时间,查询起始行号,查询记录数进行条件过滤查询。若不加过滤条件默认查询最多20条策略执行日志信息。",
+        "operationId": "ListScalingPolicyExecuteLogs",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "scaling_policy_id",
+            "in": "path",
+            "description": "伸缩策略ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "log_id",
+            "in": "query",
+            "description": "日志ID。",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 4,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "scaling_resource_type",
+            "in": "query",
+            "description": "伸缩资源类型:伸缩组:SCALING_GROUP。带宽:BANDWIDTH",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SCALING_GROUP",
+              "BANDWIDTH"
+            ],
+            "x-order": 5,
+            "x-example": "SCALING_GROUP"
+          },
+          {
+            "name": "scaling_resource_id",
+            "in": "query",
+            "description": "伸缩资源ID。",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 6,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "execute_type",
+            "in": "query",
+            "description": "策略执行类型:SCHEDULED:自动触发(定时)。RECURRENCE:自动触发(周期)。ALARM:自动触发(告警)。MANUAL:手动触发。",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "RECURRENCE",
+              "ALARM",
+              "MANUAL"
+            ],
+            "x-order": 7,
+            "x-example": "SCHEDULED"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "description": "查询的起始时间,格式是“yyyy-MM-ddThh:mm:ssZ”。",
+            "required": false,
+            "type": "string",
+            "x-order": 8,
+            "x-example": "2019-03-18T16:00:11Z"
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "description": "查询的截止时间,格式是“yyyy-MM-ddThh:mm:ssZ”。",
+            "required": false,
+            "type": "string",
+            "x-order": 9,
+            "x-example": "2019-03-18T16:00:11Z"
+          },
+          {
+            "name": "start_number",
+            "in": "query",
+            "description": "查询的起始行号,默认为0。",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "x-order": 10
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询记录数,默认20,最大100。",
+            "required": false,
+            "type": "integer",
+            "default": 20,
+            "maximum": 100,
+            "x-order": 11,
+            "x-example": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "schema": {
+              "$ref": "#/definitions/PolicyExecuteLogs"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-text-1": "本示例展示了查询ID为05545d3d-ccf9-4bca-ae4f-1e5e73ca0bf6的伸缩策略执行日志信息。",
+        "x-request-examples-1": "本示例展示了查询ID为05545d3d-ccf9-4bca-ae4f-1e5e73ca0bf6的伸缩策略执行日志信息。",
+        "x-support-sdk": "Y",
+        "x-name": "查询策略执行日志",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 1,
+        "x-request-examples-url-1": "GET https://{Endpoint}/autoscaling-api/v1/edcb94a885a84ed3a3fdf8ea4d2741da/scaling_policy_execute_log/05545d3d-ccf9-4bca-ae4f-1e5e73ca0bf6",
+        "x-flow_control_group": "as",
+        "x-tenant_flow_time": 1,
+        "x-hk": "Y",
+        "x-first_open_time": "2018-09-30",
+        "x-tenant_flow_value": 78,
+        "x-source": "SelfDeveloped",
+        "x-timeout": "10s",
+        "x-hybridcloud": 1,
+        "x-tlf": "N",
+        "x-is_calling": "Y",
+        "x-obc": "N",
+        "x-multi_tenant_flow_time": 1,
+        "x-ctc": "N",
+        "x-hc": "Y",
+        "x-multi_tenant_flow_value": 780,
+        "x-otc": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "JobRecords": {
+      "properties": {
+        "job_name": {
+          "type": "string",
+          "description": "任务名称"
+        },
+        "record_type": {
+          "type": "string",
+          "description": "记录类型。API:接口调用类型。MEG:消息类型。",
+          "enum": [
+            "API",
+            "MEG"
+          ]
+        },
+        "record_time": {
+          "type": "string",
+          "description": "记录时间。"
+        },
+        "request": {
+          "type": "string",
+          "description": "请求体,仅当record_type为API时有效"
+        },
+        "response": {
+          "type": "string",
+          "description": "返回体,仅当record_type为API时有效"
+        },
+        "code": {
+          "type": "string",
+          "description": "返回码,仅当record_type为API时有效"
+        },
+        "message": {
+          "type": "string",
+          "description": "消息,仅当record_type为MEG时有效"
+        },
+        "job_status": {
+          "type": "string",
+          "description": "job执行状态:SUCCESS:成功。FAIL:失败。",
+          "enum": [
+            "SUCCESS",
+            "FAIL"
+          ]
+        }
+      },
+      "description": "策略执行动作包含的具体任务"
+    },
+    "EipMetaData": {
+      "properties": {
+        "metadata_bandwidth_share_type": {
+          "type": "string",
+          "description": "伸缩带宽策略中带宽对应的共享类型。"
+        },
+        "metadata_eip_id": {
+          "type": "string",
+          "description": "伸缩带宽策略中带宽对应的EIP的ID。"
+        },
+        "metadataeip_address": {
+          "type": "string",
+          "description": "伸缩带宽策略中带宽对应的EIP地址。"
+        }
+      },
+      "description": "用户自定义键值对"
+    },
+    "PolicyExecuteLogs": {
+      "properties": {
+        "total_number": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "总记录数。",
+          "minimum": 0,
+          "maximum": 32768
+        },
+        "start_number": {
+          "type": "integer",
+          "example": 0,
+          "description": "查询的起始行号。",
+          "minimum": 0,
+          "maximum": 32768
+        },
+        "limit": {
+          "type": "integer",
+          "example": 10,
+          "description": "查询记录数。",
+          "minimum": 0,
+          "maximum": 32768
+        },
+        "scaling_policy_execute_log": {
+          "type": "array",
+          "description": "伸缩策略执行日志列表。",
+          "items": {
+            "$ref": "#/definitions/ScalingPolicyExecuteLogList"
+          }
+        }
+      },
+      "description": "请求正常"
+    },
+    "ScalingPolicyExecuteLogList": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "策略执行状态:SUCCESS:成功。FAIL:失败。EXECUTING:执行中",
+          "enum": [
+            "SUCCESS",
+            "FAIL",
+            "EXECUTING"
+          ]
+        },
+        "failed_reason": {
+          "type": "string",
+          "description": "策略执行失败原因。"
+        },
+        "execute_type": {
+          "type": "string",
+          "description": "策略执行类型:SCHEDULE:自动触发(定时)。RECURRENCE:自动触发(周期)。ALARM:自动警告(告警)。MANUAL:手动触发",
+          "enum": [
+            "SCHEDULE",
+            "RECURRENCE",
+            "ALARM",
+            "MANUAL"
+          ]
+        },
+        "execute_time": {
+          "type": "string",
+          "description": "策略执行时间,遵循UTC时间。"
+        },
+        "id": {
+          "type": "string",
+          "description": "策略执行日志ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "租户id。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_policy_id": {
+          "type": "string",
+          "description": "伸缩策略ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_resource_type": {
+          "type": "string",
+          "description": "伸缩资源类型:伸缩组:SCALING_GROUP 带宽:BANDWIDTH",
+          "enum": [
+            "SCALING_GROUP",
+            "BANDWIDTH"
+          ]
+        },
+        "scaling_resource_id": {
+          "type": "string",
+          "description": "伸缩资源ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "old_value": {
+          "type": "string",
+          "description": "伸缩原始值。"
+        },
+        "desire_value": {
+          "type": "string",
+          "description": "伸缩目标值。"
+        },
+        "limit_value": {
+          "type": "string",
+          "description": "操作限制。当scaling_resource_type为BANDWIDTH时,且operation不为SET时,limit_value生效,单位为Mbit/s。此时,当operation为ADD时,limit_value表示最高带宽限制;当operation为REDUCE时,limit_value表示最低带宽限制。"
+        },
+        "type": {
+          "type": "string",
+          "description": "策略执行任务类型。ADD:添加。REMOVE:减少。SET:设置为",
+          "enum": [
+            "ADD",
+            "REMOVE",
+            "SET"
+          ]
+        },
+        "job_records": {
+          "type": "array",
+          "description": "策略执行动作包含的具体任务",
+          "items": {
+            "$ref": "#/definitions/JobRecords"
+          }
+        },
+        "meta_data": {
+          "$ref": "#/definitions/EipMetaData"
+        }
+      },
+      "description": "伸缩策略执行日志列表"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,267 @@
+{
+  "name": "ListPtrRecords",
+  "summary": "查询弹性公网IP的反向解析记录列表",
+  "tags": "反向解析管理(v2)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/reverse/floatingips": {
+      "get": {
+        "tags": [
+          "反向解析管理(v2)"
+        ],
+        "operationId": "ListPtrRecords",
+        "summary": "查询弹性公网IP的反向解析记录列表",
+        "description": "查询弹性公网IP的反向解析记录列表。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "required": false,
+            "description": "分页查询起始的资源ID,为空时为查询第一页。\n\n默认值为空。",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "分页查询时配置每页返回的资源个数。\n\n取值范围:0~500\n\n取值一般为10,20,50。默认值为500。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "分页查询起始偏移量,表示从偏移量的下一个资源开始查询。\n\n取值范围:0~2147483647\n\n默认值为0。\n\n当设置marker不为空时,以marker为分页起始标识,offset不生效。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "required": false,
+            "description": "反向解析关联的企业项目ID,长度不超过36个字符。",
+            "type": "string"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "description": "资源标签。\n\n取值格式:key1,value1|key2,value2\n\n多个标签之间用“|”分开,每个标签的键值用英文逗号“,”相隔。",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "**参数解释:**\n资源状态。\n**约束限制:**\n不涉及。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- ERROR:失败\n\n**默认取值:**\n不涉及。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询反向解析列表响应。",
+            "schema": {
+              "$ref": "#/definitions/ListPtrResp"
+            },
+            "examples": {
+              "application/json": {
+                "links": {
+                  "self": "https://Endpoint/v2/reverse/floatingips",
+                  "next": "https://Endpoint/v2/zones?id=&limit=10&marker=region_id:c5504932-bf23-4171-b655-b87a6bc59334"
+                },
+                "metadata": {
+                  "total_count": 1
+                },
+                "floatingips": [
+                  {
+                    "id": "region_id:c5504932-bf23-4171-b655-b87a6bc59334",
+                    "ptrdname": "www.example.com.",
+                    "description": "Description for this PTR record",
+                    "address": "10.154.52.138",
+                    "action": "NONE",
+                    "ttl": 300,
+                    "status": "ACTIVE",
+                    "links": {
+                      "self": "https://Endpoint/v2/reverse/floatingips/region_id:c5504932-bf23-4171-b655-b87a6bc59334"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 1
+      }
+    }
+  },
+  "definitions": {
+    "metadata": {
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "description": "**参数解释:**\n满足查询条件的资源总数,不受分页(即limit、offset参数)影响。\n**取值范围:**\n不涉及。",
+          "format": "int32",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n返回满足过滤条件的资源总数。\n**取值范围:**\n不涉及。"
+    },
+    "tag": {
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释:**\n标签键。\n**取值范围:**\n- 不能为空。\n- 对于同一资源键的取值唯一。\n- 长度不超过128个字符。\n- 取值可以包含任意语种字母、数字、空格,以及_ . : = + - @特殊字符,但首尾不能含有空格,不能以_sys_开头。"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释:**\n标签值。\n**取值范围:**\n- 可以为空。\n- 长度不超过255个字符。\n- 取值可以包含任意语种字母、数字、空格,以及_ . : / = + - @特殊字符。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "ListPtrResp": {
+      "properties": {
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "metadata": {
+          "description": "返回满足过滤条件的资源总数。",
+          "$ref": "#/definitions/metadata"
+        },
+        "floatingips": {
+          "type": "array",
+          "description": "弹性公网IP的反向解析记录ID列表信息。",
+          "items": {
+            "$ref": "#/definitions/ListPtrRecordsFloatingResp"
+          }
+        }
+      }
+    },
+    "ListPtrRecordsFloatingResp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "反向解析记录的ID,格式形如{region}:{floatingip_id}。"
+        },
+        "ptrdname": {
+          "type": "string",
+          "description": "反向解析记录对应的域名。"
+        },
+        "description": {
+          "type": "string",
+          "description": "对反向解析记录的描述。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "反向解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。",
+          "format": "int32"
+        },
+        "address": {
+          "type": "string",
+          "description": "弹性公网IP的IP地址。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- ERROR:失败"
+        },
+        "action": {
+          "type": "string",
+          "description": "对该资源的当前操作。  取值范围:CREATE,UPDATE,DELETE,NONE。 CREATE:表示创建,UPDATE:表示更新,DELETE:表示删除,NONE:表示无操作"
+        },
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "tags": {
+          "$ref": "#/definitions/tagArray"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "反向解析关联的企业项目ID,长度不超过36个字符。"
+        }
+      }
+    },
+    "tagArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/tag"
+      },
+      "description": "**参数解释:**\n资源标签。\n**取值范围:**\n不涉及。"
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

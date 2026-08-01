@@ -1,0 +1,219 @@
+{
+  "name": "ListOrderDiscounts",
+  "summary": "查询订单可用折扣",
+  "tags": "管理包年/包月订单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/customer-orders/order-discounts": {
+      "get": {
+        "summary": "查询订单可用折扣",
+        "description": "客户在伙伴销售平台支付待支付订单时,查询可使用的折扣信息。",
+        "tags": [
+          "管理包年/包月订单(客户)"
+        ],
+        "operationId": "ListOrderDiscounts",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用,不允许使用合作伙伴AK/SK或者Token调用。因为目前合作伙伴不能自己买产品,所以没有自己的订单。该接口只允许使用客户AK/SK或者Token调用,不允许使用合作伙伴AK/SK或者Token调用。该接口既可以使用合作伙伴AK/SK或者Token调用,也可以使用客户Token调用。用合作伙伴自身的AK/SK或者Token调用的情况下,只能查询伙伴的转售类客户的订单可用优惠券。该接口只允许使用客户AK/SK或者Token调用。调试您可以在API Explorer中直接运行调试该接口。",
+        "x-externalURL": "/v2/orders/customer-orders/order-discounts",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-11-04",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": true,
+            "description": "订单ID。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询订单可用折扣响应",
+            "schema": {
+              "$ref": "#/definitions/ListOrderDiscountsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "discounts": [
+                  {
+                    "discount_id": "PDP2011260815047721TYT48G0BA02EI",
+                    "discount_value": "0.9",
+                    "discount_type": 0,
+                    "orders": [
+                      {
+                        "order_id": "CS2011091132EMKL9",
+                        "order_line_items": [
+                          {
+                            "order_line_item_ids": [
+                              "CS2011091132EMKL9-000002"
+                            ],
+                            "discount_mode": 0,
+                            "discount_amount": null,
+                            "discount_ratio": 0.9
+                          },
+                          {
+                            "order_line_item_ids": [
+                              "CS2011091132EMKL9-000001"
+                            ],
+                            "discount_mode": 0,
+                            "discount_amount": null,
+                            "discount_ratio": 0.9
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理包年/包月订单(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/orders/customer-orders/order-discounts?order_id=CS2011091132EMKL9"
+      }
+    }
+  },
+  "definitions": {
+    "OrderLineItemV3": {
+      "required": [
+        "order_line_item_ids",
+        "discount_mode",
+        "discount_amount",
+        "discount_ratio"
+      ],
+      "properties": {
+        "order_line_item_ids": {
+          "description": "可使用相同折扣的订单项合并后的订单项ID列表。 相同产品、相同规格(对于线性产品)、相同最终价格(例如,严选产品改价)的订单项将进行合并。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "example": ""
+        },
+        "discount_mode": {
+          "description": "订单可用折扣的模式 。 0:折扣1:一口价2:满减",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "discount_amount": {
+          "description": "订单可用的折扣金额(即减免金额)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "discount_ratio": {
+          "description": "订单可用的折扣比例。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        }
+      }
+    },
+    "ListOrderDiscountsRsp": {
+      "required": [
+        "discounts"
+      ],
+      "properties": {
+        "discounts": {
+          "description": "可用的折扣列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiscountInfoV3"
+          }
+        }
+      }
+    },
+    "DiscountInfoV3": {
+      "required": [
+        "discount_id",
+        "discount_value",
+        "discount_type",
+        "orders"
+      ],
+      "properties": {
+        "discount_id": {
+          "type": "string",
+          "description": "订单的可用折扣ID。 支付订单时,输入该参数的值,即可使用折扣。",
+          "example": ""
+        },
+        "discount_value": {
+          "type": "string",
+          "description": "折扣率或者满减值,如果折扣模式是一口价,这个值为空。",
+          "example": ""
+        },
+        "discount_type": {
+          "description": "折扣类型,取值为 0:促销折扣1:合同折扣2:商务优惠3:合作伙伴授予折扣609:订单调价折扣",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "orders": {
+          "description": "可使用折扣的订单列表。 具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderV3"
+          }
+        }
+      }
+    },
+    "OrderV3": {
+      "required": [
+        "order_id",
+        "order_line_items"
+      ],
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "可使用折扣的订单ID。",
+          "example": ""
+        },
+        "order_line_items": {
+          "description": "可使用折扣的订单项列表,具体参见表4。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderLineItemV3"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

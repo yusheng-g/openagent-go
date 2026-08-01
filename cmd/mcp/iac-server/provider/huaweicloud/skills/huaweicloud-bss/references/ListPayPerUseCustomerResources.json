@@ -1,0 +1,371 @@
+{
+  "name": "ListPayPerUseCustomerResources",
+  "summary": "查询客户包年/包月资源列表",
+  "tags": "管理包年/包月订单(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/suscriptions/resources/query": {
+      "post": {
+        "summary": "查询客户包年/包月资源列表",
+        "description": "功能描述:伙伴/客户在伙伴/客户自建平台查询某个或所有的包年/包月资源",
+        "tags": [
+          "管理包年/包月订单(公共)"
+        ],
+        "operationId": "ListPayPerUseCustomerResources",
+        "x-constraint": "该接口既可以使用合作伙伴AK/SK或者Token调用,也可以使用客户AK/SK或者Token调用。该接口只能查询开通成功的资源。",
+        "x-externalURL": "/v2/orders/suscriptions/resources/query",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 60,
+        "x-lastAnalysisDate": "2020-05-19",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询客户包年/包月资源列表请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QueryResourcesReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/orders/suscriptions/resources/query",
+        "x-request-examples-1": {
+          "resource_ids": [
+            "0A063A********BC8548E65D0089A905"
+          ],
+          "order_id": "CS1905251035OA***",
+          "only_main_resource": 1,
+          "status_list": [
+            2
+          ],
+          "offset": 0,
+          "limit": 10,
+          "expire_time_begin": "2021-09-01T08:05:01Z",
+          "expire_time_end": "2021-09-03T08:05:01Z"
+        },
+        "responses": {
+          "200": {
+            "description": "查询客户包年/包月资源列表响应",
+            "schema": {
+              "$ref": "#/definitions/QueryResourcesV2Rsp"
+            },
+            "examples": {
+              "application/json": {
+                "data": [
+                  {
+                    "id": "01154-54600027-0",
+                    "resource_id": "0A063A11905F42BC8548E65D0089A905",
+                    "resource_name": "0A063A11905F42BC8548E65D0089A905name",
+                    "region_code": "cn-south-1",
+                    "service_type_code": "hws.service.type.ebs",
+                    "resource_type_code": "hws.resource.type.volume",
+                    "resource_spec_code": "SSD",
+                    "project_id": "1dd89a5fe99e4cca80edca61e737477a",
+                    "product_id": "2fd338aca5ae4a01aac81deaa900e441",
+                    "parent_resource_id": "9ad02e1ad3394d1bb3da48890fbc4c06",
+                    "is_main_resource": 1,
+                    "status": 2,
+                    "effective_time": "2020-05-03T09:11:10Z",
+                    "expire_time": "2020-06-03T09:11:10Z",
+                    "expire_policy": 0,
+                    "product_spec_desc": "超高IO|100.0GB",
+                    "spec_size": 100.0,
+                    "spec_size_measure_id": 17,
+                    "update_time": "2020-06-03T09:11:10Z",
+                    "enterprise_project": {
+                      "id": "0",
+                      "name": "default"
+                    }
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:parameter error输入参数校验失败|"
+          }
+        },
+        "x-category": "管理包年/包月订单(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryResourcesReq": {
+      "properties": {
+        "resource_ids": {
+          "description": "资源ID列表。 查询指定资源ID的资源(当only_main_resource=0时,查询指定资源及其附属资源)。最大支持50个ID同时作为条件查询。 此参数不携带或携带值为空列表时,不作为筛选条件,返回其他条件匹配的记录。不支持携带值为null。  说明: 资源ID是指开通资源以后,云服务针对该资源分配的标志,譬如云主机ECS的资源ID是server_id。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 50,
+          "x-maxLength": 50,
+          "x-minLength": 0
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单号。查询指定订单下的资源。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件,返回其他条件匹配的记录。  说明: 使用特殊字符进行查询的时候,请注意进行URL编码转换,如“%”的转码应为“%25”。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "CS1905251035OA1AF"
+        },
+        "only_main_resource": {
+          "description": "是否只查询主资源,该参数对于请求参数是子资源ID的时候无效,如果resource_ids是子资源ID,只能查询自己。 0:查询主资源及附属资源。1:只查询主资源。 默认值为0。  说明: 主资源是指有关联的几个资源中,处于主导位置的资源。 对于ECS而言,虚拟机VM是主资源,磁盘EVS是辅资源。对于VPC而言,共享带宽的情况下,带宽为主资源,对应的从资源为弹性IP(可能包含多个IP);独享带宽的情况下,弹性IP为主资源,对应的从资源为带宽。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1",
+          "maximum": 1,
+          "minimum": 0,
+          "default": 0
+        },
+        "status_list": {
+          "description": "资源状态。 查询指定状态的资源。多个状态以英文逗号分隔。 2:使用中3:已关闭4:已冻结5:已过期 此参数不携带或携带值为空列表时,不作为筛选条件,返回所有状态的资源列表。",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 0,
+          "maxItems": 10,
+          "x-maxLength": 10,
+          "x-minLength": 0
+        },
+        "offset": {
+          "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0",
+          "maximum": 2147483646,
+          "minimum": 0
+        },
+        "limit": {
+          "description": "每次查询的条数。默认值为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "10",
+          "maximum": 500,
+          "minimum": 1
+        },
+        "expire_time_begin": {
+          "type": "string",
+          "description": "查询指定时间段内失效的资源列表,时间段的起始时间,UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件,返回其他条件匹配的记录。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2020-01-25T15:59:59Z"
+        },
+        "expire_time_end": {
+          "type": "string",
+          "description": "查询指定时间段内失效的资源列表,时间段的结束时间,UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 此参数不携带或携带值为空串或携带值为null时,不作为筛选条件,返回其他条件匹配的记录。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2020-01-25T15:59:59Z"
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。 此参数不携带、携带值为null,不作为筛选条件。此参数不允许为空串,有参数校验。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "hws.service.type.obs"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID,非必填,范围限制:0-64,伙伴查询子客户包年/包月资源列表时必须携带该字段。除此之外,此参数不做处理。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "0930b12c4******1f5720"
+        }
+      }
+    },
+    "QueryResourcesV2Rsp": {
+      "properties": {
+        "data": {
+          "description": "资源列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrderInstanceV2"
+          }
+        },
+        "total_count": {
+          "description": "总记录数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        }
+      }
+    },
+    "OrderInstanceV2": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "标识要开通资源的内部ID,资源开通以后生成的ID为resource_id。",
+          "example": "01154-119700002-0"
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID。",
+          "example": "189b9baa70174c19aba0c6bd4a556a7c"
+        },
+        "resource_name": {
+          "type": "string",
+          "description": "资源实例名。",
+          "example": "hws.service.type.ebsname"
+        },
+        "region_code": {
+          "type": "string",
+          "description": "云服务区编码,例如:“cn-north-1”。具体请参见地区和终端节点对应云服务的“区域”列的值。",
+          "example": "cn-north-1"
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": "hws.service.type.obs"
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用查询资源类型列表接口获取。",
+          "example": "hws.resource.type.volume"
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "resource_spec_code": {
+          "type": "string",
+          "description": "云服务产品的资源规格。如果是VM的资源规格,则需要在规格后面添加“.win”或“.linux”,例如“s2.small.1.linux”。",
+          "example": "SSD"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "资源项目ID。",
+          "example": "06c8c464ef80d3542f7dc01686442708"
+        },
+        "product_id": {
+          "type": "string",
+          "description": "产品ID。",
+          "example": "a0a3c2afd42f4e63a6ac3bbda5630d9a"
+        },
+        "parent_resource_id": {
+          "type": "string",
+          "description": "父资源ID。",
+          "example": "189b9baa70174c19aba0c6bd4a556a7c"
+        },
+        "is_main_resource": {
+          "description": "是否是主资源。 0:非主资源1:主资源",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "status": {
+          "description": "资源状态。状态说明请参见资源状态说明。 2:使用中3:已关闭(页面不展示这个状态)4:已冻结5:已过期",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "2"
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "资源生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2019-12-25T07:32:04Z"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "资源过期时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2020-01-25T15:59:59Z"
+        },
+        "expire_policy": {
+          "description": "资源到期后的扣费策略: 0:到期进入宽限期1:到期转按需2:到期后自动删除(从生效中直接删除)3:到期后自动续费4:到期后冻结5:到期后删除(从保留期删除)  说明: 只有“3”表示该资源是自动续订,其他情况下,都是非自动续订下的到期策略。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "0"
+        },
+        "product_spec_desc": {
+          "type": "string",
+          "description": "产品规格描述",
+          "example": "超高IO|100.0GB",
+          "maxLength": 512,
+          "minLength": 0
+        },
+        "spec_size": {
+          "description": "线性大小",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 100.99
+        },
+        "spec_size_measure_id": {
+          "description": "线性大小单位",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 17
+        },
+        "update_time": {
+          "type": "string",
+          "description": "|参数名称:资源更新时间。| |参数约束及描述:资源更新时间。UTC时间,格式:yyyy-MM-ddTHH:mm:ssZ,如“2019-12-25T07:32:04Z”。|",
+          "example": "2019-12-25T07:32:04Z"
+        },
+        "enterprise_project": {
+          "description": "|参数名称:企业项目信息。| |参数约束及描述: 企业项目信息。具体请参见表 EnterpriseProject。|",
+          "$ref": "#/definitions/EnterpriseProject"
+        }
+      }
+    },
+    "EnterpriseProject": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "description": "|参数名称:企业项目id| |参数约束及描述:最大长度256|",
+          "example": ""
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "description": "|参数名称:企业项目名称| |参数约束及描述:最大长度256|"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

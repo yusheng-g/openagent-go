@@ -1,0 +1,190 @@
+{
+  "name": "ListStoredValueCards",
+  "summary": "查询储值卡列表",
+  "tags": "管理账户(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/promotions/benefits/stored-value-cards": {
+      "get": {
+        "summary": "查询储值卡列表",
+        "description": "客户可以查询已购买的储值卡列表。",
+        "tags": [
+          "管理账户(客户)"
+        ],
+        "operationId": "ListStoredValueCards",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口可以使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/promotions/benefits/stored-value-cards",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2022-03-01",
+        "x-readOnly": true,
+        "x-delayTime": "2500ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "description": "状态:1:可使用2:已用完",
+            "maximum": 2,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "card_id",
+            "in": "query",
+            "required": false,
+            "description": "储值卡ID。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": "0"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询的储值卡的数量,默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": "10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询储值卡列表响应",
+            "schema": {
+              "$ref": "#/definitions/ListStoredValueCardsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "stored_value_cards": [
+                  {
+                    "card_id": "userSVCId145022729",
+                    "card_name": "华为云储值卡10000元",
+                    "status": 1,
+                    "face_value": "10000.00",
+                    "balance": "10000.00",
+                    "effective_time": "2021-12-13T01:34:52Z",
+                    "expire_time": "2022-07-01T01:34:52Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理账户(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/promotions/benefits/stored-value-cards?status=1&card_id=userSVCId2148682091&offset=0&limit=100"
+      }
+    }
+  },
+  "definitions": {
+    "UserStoredValueCard": {
+      "properties": {
+        "card_id": {
+          "type": "string",
+          "description": "储值卡ID。",
+          "example": ""
+        },
+        "card_name": {
+          "type": "string",
+          "description": "储值卡名称。",
+          "example": ""
+        },
+        "status": {
+          "description": "状态: 1:可使用 2:已用完",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "face_value": {
+          "type": "string",
+          "description": "储值卡面值。",
+          "example": ""
+        },
+        "balance": {
+          "type": "string",
+          "description": "储值卡余额。",
+          "example": ""
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        }
+      }
+    },
+    "ListStoredValueCardsRsp": {
+      "properties": {
+        "total_count": {
+          "description": "符合查询条件的总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "stored_value_cards": {
+          "description": "优惠券记录。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserStoredValueCard"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

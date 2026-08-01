@@ -1,0 +1,299 @@
+{
+  "name": "CreateScalingPolicy",
+  "summary": "创建弹性伸缩策略",
+  "tags": "弹性伸缩策略管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_policy": {
+      "post": {
+        "tags": [
+          "弹性伸缩策略管理"
+        ],
+        "summary": "创建弹性伸缩策略",
+        "description": "创建弹性伸缩策略。伸缩策略定义了伸缩组内实例的扩张和收缩操作。如果执行伸缩策略造成伸缩组期望实例数与伸缩组内实例数不符,弹性伸缩会自动调整实例资源,以匹配期望实例数。当前伸缩策略支持告警触发策略,周期触发策略,定时触发策略。在策略执行具体动作中,可设置实例变化的个数,或根据当前实例的百分比数进行伸缩。",
+        "operationId": "CreateScalingPolicy",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "租户标识",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "Token认证",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateScalingPolicyOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常。",
+            "examples": {
+              "application/json": {
+                "scaling_policy_id": "0h327883-324n-4dzd-9c61-68d03ee191dd"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ScalingPolicyId"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了创建一个名称为as-policy-7a75的周期策略,该策略的生效时间为2015-12-14T03:34Z到2015-12-27T03:34Z,每天16:00在ID为5bc3aa02-b83e-454c-aba1-4d2095c68f8b的伸缩组中增加一个实例。",
+        "x-support-sdk": "Y",
+        "x-name": "创建弹性伸缩策略",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 1,
+        "x-request-examples-url-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_policy",
+        "x-request-examples-1": {
+          "scaling_policy_name": "as-policy-7a75",
+          "scaling_policy_action": {
+            "operation": "ADD",
+            "instance_number": 1
+          },
+          "cool_down_time": 900,
+          "scheduled_policy": {
+            "launch_time": "16:00",
+            "recurrence_type": "Daily",
+            "start_time": "2015-12-14T03:34Z",
+            "end_time": "2015-12-27T03:34Z"
+          },
+          "scaling_policy_type": "RECURRENCE",
+          "scaling_group_id": "5bc3aa02-b83e-454c-aba1-4d2095c68f8b"
+        },
+        "x-request-examples-text-1": {
+          "scaling_policy_name": "as-policy-7a75",
+          "scaling_policy_action": {
+            "operation": "ADD",
+            "instance_number": 1
+          },
+          "cool_down_time": 900,
+          "scheduled_policy": {
+            "launch_time": "16:00",
+            "recurrence_type": "Daily",
+            "start_time": "2015-12-14T03:34Z",
+            "end_time": "2015-12-27T03:34Z"
+          },
+          "scaling_policy_type": "RECURRENCE",
+          "scaling_group_id": "5bc3aa02-b83e-454c-aba1-4d2095c68f8b"
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "52",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "520",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "ScalingPolicyId": {
+      "properties": {
+        "scaling_policy_id": {
+          "type": "string",
+          "example": "0h327883-324n-4dzd-9c61-68d03ee191dd",
+          "description": "伸缩策略ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "创建伸缩策略"
+    },
+    "CreateScalingPolicyOption": {
+      "required": [
+        "scaling_group_id",
+        "scaling_policy_name",
+        "scaling_policy_type"
+      ],
+      "properties": {
+        "scaling_policy_name": {
+          "type": "string",
+          "description": "策略名称(1-64字符),可以用中文、字母、数字、下划线、中划线的组合。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "scaling_group_id": {
+          "type": "string",
+          "description": "伸缩组ID,通过查询弹性伸缩组列表获取,详见查询弹性伸缩组列表。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_policy_type": {
+          "type": "string",
+          "description": "策略类型。告警策略:ALARM(与alarm_id对应);定时策略:SCHEDULED(与scheduled_policy对应);周期策略:RECURRENCE(与scheduled_policy对应)",
+          "enum": [
+            "ALARM",
+            "SCHEDULED",
+            "RECURRENCE"
+          ]
+        },
+        "alarm_id": {
+          "type": "string",
+          "description": "告警ID,即告警规则的ID,当scaling_policy_type为ALARM时该项必选,此时scheduled_policy不生效。创建告警策略成功后,会自动为该告警ID对应的告警规则的alarm_actions字段增加类型为autoscaling的告警触发动作。告警ID通过查询云监控告警规则列表获取,详见《云监控API参考》的“查询告警规则列表”。"
+        },
+        "scheduled_policy": {
+          "description": "定时、周期任务策略,当scaling_policy_type为SCHEDULED或RECURRENCE时该项必选,此时alarm_id不生效。",
+          "$ref": "#/definitions/ScheduledPolicy"
+        },
+        "scaling_policy_action": {
+          "description": "策略执行具体动作",
+          "$ref": "#/definitions/ScalingPolicyActionV1"
+        },
+        "cool_down_time": {
+          "type": "integer",
+          "description": "冷却时间,取值范围0-86400,默认为300,单位是秒。",
+          "maximum": 86400
+        }
+      },
+      "description": "创建伸缩策略"
+    },
+    "ScheduledPolicy": {
+      "required": [
+        "launch_time"
+      ],
+      "properties": {
+        "launch_time": {
+          "type": "string",
+          "description": "触发时间,遵循UTC时间。如果scaling_policy_type为SCHEDULED,则格式为:YYYY-MM-DDThh:mmZ。如果scaling_policy_type为RECURRENCE,则格式为:hh:mm。"
+        },
+        "recurrence_type": {
+          "type": "string",
+          "description": "周期触发类型,scaling_policy_type为RECURRENCE时该项必选。Daily:每天执行一次。Weekly:每周指定天执行一次。Monthly:每月指定天执行一次。",
+          "enum": [
+            "Daily",
+            "Weekly",
+            "Monthly"
+          ]
+        },
+        "recurrence_value": {
+          "type": "string",
+          "description": "周期触发任务数值,scaling_policy_type为RECURRENCE时该项必选。类型为Daily时,该字段为null,表示每天执行类型为Weekly时,该字段取值范围为1-7,1表示星期日,以此类推,以”,”分割,例如:1,3,5。类型为Monthly时,该字段取值范围为1-31,分别表示每月的日期,以“,”分割,例如:1,10,13,28。说明:- 当recurrence_type类型为Daily时,recurrence_value参数不生效。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "start_time": {
+          "type": "string",
+          "description": "周期策略重复执行开始时间,遵循UTC时间。默认为当前时间,格式为:YYYY-MM-DDThh:mZ"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "周期策略重复执行结束时间,遵循UTC时间,scaling_policy_type为RECURRENCE时该项必选。当为周期类型策略时,不得早于当前时间和开始时间。格式为:YYYY-MM-DDThh:mmZ"
+        }
+      },
+      "description": "定时、周期任务策略"
+    },
+    "ScalingPolicyActionV1": {
+      "properties": {
+        "operation": {
+          "type": "string",
+          "example": "ADD",
+          "description": "操作选项。ADD:添加实例。REMOVE/REDUCE:移除实例。SET:设置实例数为",
+          "enum": [
+            "ADD",
+            "REMOVE",
+            "REDUCE",
+            "SET"
+          ]
+        },
+        "instance_number": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "操作实例个数,默认为1。当配额为默认配额时,取值范围如下:\n\noperation为SET时,取值范围为:0~300。\noperation为ADD或REMOVE/REDUCE时,取值范围为:1~300。\n说明:\n配置参数时,instance_number和instance_percentage参数只能选其中一个进行配置。"
+        },
+        "instance_percentage": {
+          "type": "integer",
+          "description": "操作实例百分比,将伸缩组容量增加、减少或设置为伸缩组当前实例个数的百分比。操作为ADD或REMOVE/REDUCE时取值范围为1到20000的整数,操作为SET时取值范围为0到20000的整数。当instance_number和instance_percentage参数均无配置时,则操作实例个数为1。配置参数时,instance_number和instance_percentage参数只能选其中一个进行配置。",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "description": "策略执行具体动作"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

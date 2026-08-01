@@ -1,0 +1,238 @@
+{
+  "name": "SetBucketObsCompressPolicy",
+  "summary": "设置桶在线解压策略",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketObsCompressPolicy",
+        "summary": "设置桶在线解压策略",
+        "description": "本接口用于为指定桶配置ZIP文件解压策略。接口是幂等的,若桶上已存在相同策略内容,则返回成功,status code返回值为200;否则status code返回值为201。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?obscompresspolicy",
+        "x-request-examples-1": "PUT /?obscompresspolicy HTTP/1.1\nHost: bucketname.obs.cn-north-4.myhuaweicloud.com\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:sc2PM13Wlfcoc/YZLK0MwsI2Zpo=\nContent-Type: application/json\nContent-Length: 497\nDate: Tue, 21 Jul 2020 15:38:30 GMT\n\n{\n  \"rules\": [{\n    \"id\": \"ruleid\",\n    \"project\": \"your project id\",\n    \"agency\": \"testagency\",\n    \"events\": [\"ObjectCreated:*\"],\n    \"prefix\": \"decompress\",\n    \"suffix\": \".zip\",\n    \"overwrite\": 0,\n    \"decompresspath\": \"after-decompress/\"\n                \"policytype\": \"decompress\"\n  }]\n}\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "in": "body",
+            "name": "SetBucketObsCompressPolicyRequestBody",
+            "description": "策略规则数组。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketObsCompressPolicyRequestBody"
+            }
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "obscompresspolicy",
+            "in": "query",
+            "required": true,
+            "description": "obscompresspolicy表示请求桶在线解压策略API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "SetBucketObsCompressPolicyRequestBody": {
+      "type": "object",
+      "required": [
+        "rules"
+      ],
+      "properties": {
+        "rules": {
+          "description": "策略规则数组。\n说明:\n请保证解压策略名称、解压路径、IAM委托名称长度之和不超过800。\n",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "required": [
+              "id",
+              "project",
+              "agency",
+              "events",
+              "suffix",
+              "overwrite",
+              "policytype"
+            ],
+            "properties": {
+              "id": {
+                "description": "解压策略名称。当前桶上配置的解压规则的唯一标识。\n\n取值范围:[1, 256],满足“^[a-zA-Z0-9_-]{1, 256}$”,既长度为1~256个字符。只能由大写或小写的英文字母、数字、下划线(_)和连字符(-)组成。例如:event_0001。\n",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "example": "ruleid"
+              },
+              "project": {
+                "description": "项目ID。\n",
+                "type": "string",
+                "example": "your project id"
+              },
+              "agency": {
+                "description": "委托名。客户通过委托赋予OBS服务查询用户桶内指定对象是否存在以及向用户桶内上传对象的权限。\n",
+                "type": "string",
+                "example": "testagency"
+              },
+              "events": {
+                "description": "触发事件类型。\n\n支持:\n[\"ObjectCreated:*\"]\n[\"ObjectCreated:Put\"]\n[\"ObjectCreated:Post\"]\n[\"ObjectCreated:Copy\"]\n[\"ObjectCreated:CompleteMultipartUpload\"]\n",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "ObjectCreated:*"
+                ]
+              },
+              "prefix": {
+                "description": "匹配规则前缀。\n",
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 1023,
+                "example": "decompress"
+              },
+              "suffix": {
+                "description": "匹配规则后缀。\n",
+                "type": "string",
+                "enum": [
+                  ".zip"
+                ]
+              },
+              "overwrite": {
+                "description": "解压后同名文件的处理方式。\n\n取值范围:0:不覆盖跳过,1:不覆盖,以文件的CRC32值重命名,2:覆盖。\n",
+                "type": "integer",
+                "format": "int32",
+                "enum": [
+                  0,
+                  1,
+                  2
+                ]
+              },
+              "decompresspath": {
+                "description": "文件解压后存放的路径,不为空时必须以“/”结尾。\n",
+                "minLength": 0,
+                "maxLength": 800,
+                "type": "string",
+                "example": "after-decompress/"
+              },
+              "policytype": {
+                "description": "文件解压策略类型。\n",
+                "type": "string",
+                "enum": [
+                  "decompress"
+                ]
+              }
+            }
+          },
+          "type": "array"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

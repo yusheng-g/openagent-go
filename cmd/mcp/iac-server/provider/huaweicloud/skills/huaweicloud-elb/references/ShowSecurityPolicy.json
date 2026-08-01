@@ -1,0 +1,210 @@
+{
+  "name": "ShowSecurityPolicy",
+  "summary": "查询自定义安全策略详情",
+  "tags": "安全策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/security-policies/{security_policy_id}": {
+      "get": {
+        "tags": [
+          "安全策略"
+        ],
+        "summary": "查询自定义安全策略详情",
+        "description": "查询自定义安全策略详情。",
+        "operationId": "ShowSecurityPolicy",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "security_policy_id",
+            "in": "path",
+            "description": "**参数解释**:自定义安全策略的ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "security_policy": {
+                  "id": "c73e0138-9bdc-40fb-951e-6a1598266ccd",
+                  "name": "update_securitypolicy",
+                  "project_id": "7a9941d34fc1497d8d0797429ecfd354",
+                  "description": "",
+                  "protocols": [
+                    "TLSv1",
+                    "TLSv1.1",
+                    "TLSv1.2",
+                    "TLSv1.3"
+                  ],
+                  "ciphers": [
+                    "AES128-SHA",
+                    "AES256-GCM-SHA384",
+                    "ECDHE-ECDSA-AES128-GCM-SHA256",
+                    "ECDHE-RSA-AES256-GCM-SHA384",
+                    "ECDHE-RSA-AES256-SHA",
+                    "TLS_AES_128_GCM_SHA256",
+                    "TLS_AES_256_GCM_SHA384",
+                    "TLS_CHACHA20_POLY1305_SHA256",
+                    "TLS_AES_128_CCM_SHA256",
+                    "TLS_AES_128_CCM_8_SHA256"
+                  ],
+                  "listeners": [
+                    {
+                      "id": "8e92b7c3-cdae-4039-aa62-c76d09a5950a"
+                    }
+                  ],
+                  "created_at": "2021-03-20T09:48:14Z",
+                  "updated_at": "2021-03-20T12:45:50Z",
+                  "enterprise_project_id": "0"
+                },
+                "request_id": "dab5d1de-c115-4623-b21d-363478fa0af4"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowSecurityPolicyResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询自定义安全策略详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "查询自定义安全策略详情",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/7a9941d34fc1497d8d0797429ecfd354/elb/security-policies/c73e0138-9bdc-40fb-951e-6a1598266ccd",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ShowSecurityPolicyResponseBody": {
+      "required": [
+        "request_id",
+        "security_policy"
+      ],
+      "properties": {
+        "security_policy": {
+          "$ref": "#/definitions/SecurityPolicy"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "SecurityPolicy": {
+      "required": [
+        "id",
+        "project_id",
+        "name",
+        "description",
+        "listeners",
+        "protocols",
+        "ciphers",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的ID。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的名称。\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的描述。\n\n**取值范围**:不涉及"
+        },
+        "listeners": {
+          "description": "**参数解释**:关联的监听器。",
+          "items": {
+            "$ref": "#/definitions/ListenerRef"
+          },
+          "type": "array"
+        },
+        "protocols": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的TLS协议列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ciphers": {
+          "type": "array",
+          "description": "**参数解释**:自定义安全策略的加密套件列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。\n\n**取值范围**:\n- \"0\":表示资源属于default企业项目。\n- UUID格式的字符串,表示非默认企业项目。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。"
+        }
+      },
+      "description": "**参数解释**:自定义安全策略信息。"
+    },
+    "ListenerRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:关联的监听器。\n\n**默认取值**:不涉及",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

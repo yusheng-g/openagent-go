@@ -1,0 +1,160 @@
+{
+  "name": "ListInstancesInfoDiagnosis",
+  "summary": "获取指定诊断项的诊断结果",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/diagnosis/info": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ListInstancesInfoDiagnosis",
+        "summary": "获取指定诊断项的诊断结果",
+        "description": "获取指定诊断项的诊断结果",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "project id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "engine",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "引擎类型",
+            "enum": [
+              "mysql",
+              "postgresql",
+              "sqlserver"
+            ]
+          },
+          {
+            "name": "diagnosis",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "诊断项",
+            "enum": [
+              "high_pressure",
+              "lock_wait",
+              "insufficient_capacity",
+              "slow_sql_frequency",
+              "disk_performance_cap",
+              "mem_overrun",
+              "age_exceed",
+              "connections_exceed"
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "offset",
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "limit",
+            "default": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "instances diagnosis info",
+            "schema": {
+              "$ref": "#/definitions/ListInstancesInfoDiagnosisResponseBody"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "DiagnosisInstancesInfoResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "实例id"
+        }
+      }
+    },
+    "ListInstancesInfoDiagnosisResponseBody": {
+      "type": "object",
+      "description": "diagnosis info",
+      "properties": {
+        "diagnosis": {
+          "type": "string",
+          "description": "诊断项",
+          "enum": [
+            "high_pressure",
+            "lock_wait",
+            "insufficient_capacity",
+            "slow_sql_frequency",
+            "disk_performance_cap",
+            "mem_overrun",
+            "age_exceed",
+            "connections_exceed"
+          ]
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "实例数量"
+        },
+        "instances": {
+          "type": "array",
+          "description": "实例信息",
+          "items": {
+            "$ref": "#/definitions/DiagnosisInstancesInfoResult"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,606 @@
+{
+  "name": "ShowTopObjects",
+  "summary": "查询top对象",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/ops/top/objects": {
+      "get": {
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-file": 20251014,
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/5a7a69c429aa41b8a565c9a4995afea0/instances/a7cd8ced1bcd4de88770dbda1f24f0f7in04/ops/top/objects?top=1&order=total_worker_time&database_name=test",
+        "tags": [
+          "实例管理"
+        ],
+        "description": "查询top对象",
+        "summary": "查询top对象",
+        "operationId": "ShowTopObjects",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "required": false,
+            "description": "top行数",
+            "type": "integer"
+          },
+          {
+            "name": "database_name",
+            "in": "query",
+            "required": false,
+            "description": "数据库名",
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "排序规则",
+            "type": "string"
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ],
+            "required": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "索引位置,偏移量。从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询记录数。默认为1000,不能为负数,最小值为1,最大值为1000。",
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/TopObjectsResponse"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "TopObject": {
+      "description": "top对象详情",
+      "required": [
+        "row_id",
+        "database_name",
+        "schema_name"
+      ],
+      "properties": {
+        "row_id": {
+          "description": "id",
+          "type": "string",
+          "example": "1"
+        },
+        "database_name": {
+          "description": "数据库名",
+          "type": "string",
+          "example": "test"
+        },
+        "schema_name": {
+          "description": "模式",
+          "type": "string",
+          "example": "dbo"
+        },
+        "object_name": {
+          "description": "对象名",
+          "type": "string",
+          "example": "name"
+        },
+        "object_id": {
+          "description": "对象id",
+          "type": "string",
+          "example": "869578136"
+        },
+        "object_type": {
+          "description": "对象类型",
+          "type": "string",
+          "example": "SQL_STORED_PROCEDURE"
+        },
+        "sql_statement": {
+          "description": "sql文本",
+          "type": "string",
+          "example": "SELECT TOP (1000) *  FROM [test].[dbo].[test0103a]"
+        },
+        "execution_count": {
+          "description": "执行次数",
+          "type": "string",
+          "example": "2"
+        },
+        "plan_generation_num": {
+          "description": "获取执行计划次数",
+          "type": "string",
+          "example": "2"
+        },
+        "last_execution_time": {
+          "description": "最近执行时间",
+          "type": "string",
+          "example": "2025-10-13 19:53:59"
+        },
+        "avg_worker_time": {
+          "description": "平均cpu耗时(单位为毫秒)",
+          "type": "string",
+          "example": "1"
+        },
+        "total_worker_time": {
+          "description": "总cpu耗时(单位为毫秒)",
+          "type": "string",
+          "example": "1"
+        },
+        "last_worker_time": {
+          "description": "最近cpu耗时(单位为毫秒)",
+          "type": "string",
+          "example": "1"
+        },
+        "min_worker_time": {
+          "description": "最小cpu耗时(单位为毫秒)",
+          "type": "string",
+          "example": "1"
+        },
+        "max_worker_time": {
+          "description": "最大cpu耗时(单位为毫秒)",
+          "type": "string",
+          "example": "1"
+        },
+        "avg_logical_reads": {
+          "description": "平均逻辑读",
+          "type": "string",
+          "example": "100"
+        },
+        "total_logical_reads": {
+          "description": "总共逻辑读",
+          "type": "string",
+          "example": "100"
+        },
+        "last_logical_reads": {
+          "description": "最近逻辑读",
+          "type": "string",
+          "example": "100"
+        },
+        "min_logical_reads": {
+          "description": "最小逻辑读",
+          "type": "string",
+          "example": "100"
+        },
+        "max_logical_reads": {
+          "description": "最大逻辑读",
+          "type": "string",
+          "example": "100"
+        },
+        "avg_logical_writes": {
+          "description": "平均逻辑写",
+          "type": "string",
+          "example": "100"
+        },
+        "total_logical_writes": {
+          "description": "总共逻辑写",
+          "type": "string",
+          "example": "100"
+        },
+        "last_logical_writes": {
+          "description": "最近逻辑写",
+          "type": "string",
+          "example": "100"
+        },
+        "min_logical_writes": {
+          "description": "最小逻辑写",
+          "type": "string",
+          "example": "100"
+        },
+        "max_logical_writes": {
+          "description": "最大逻辑写",
+          "type": "string",
+          "example": "100"
+        },
+        "avg_logical_io": {
+          "description": "平均逻辑io",
+          "type": "string",
+          "example": "100"
+        },
+        "total_logical_io": {
+          "description": "总共逻辑io",
+          "type": "string",
+          "example": "100"
+        },
+        "last_logical_io": {
+          "description": "最近逻辑io",
+          "type": "string",
+          "example": "100"
+        },
+        "min_logical_io": {
+          "description": "最小逻辑io",
+          "type": "string",
+          "example": "100"
+        },
+        "max_logical_io": {
+          "description": "最大逻辑io",
+          "type": "string",
+          "example": "100"
+        },
+        "avg_physical_reads": {
+          "description": "平均物理读",
+          "type": "string",
+          "example": "100"
+        },
+        "total_physical_reads": {
+          "description": "总共物理读",
+          "type": "string",
+          "example": "100"
+        },
+        "last_physical_reads": {
+          "description": "最近物理读",
+          "type": "string",
+          "example": "100"
+        },
+        "min_physical_reads": {
+          "description": "最小物理读",
+          "type": "string",
+          "example": "100"
+        },
+        "max_physical_reads": {
+          "description": "最大物理读",
+          "type": "string",
+          "example": "100"
+        },
+        "avg_elapsed_time": {
+          "description": "平均执行耗时",
+          "type": "string",
+          "example": "100"
+        },
+        "total_elapsed_time": {
+          "description": "总共执行耗时",
+          "type": "string",
+          "example": "100"
+        },
+        "last_elapsed_time": {
+          "description": "最近执行耗时",
+          "type": "string",
+          "example": "100"
+        },
+        "min_elapsed_time": {
+          "description": "最小执行耗时",
+          "type": "string",
+          "example": "100"
+        },
+        "max_elapsed_time": {
+          "description": "最大执行耗时",
+          "type": "string",
+          "example": "100"
+        },
+        "avg_rows": {
+          "description": "平均返回行",
+          "type": "string",
+          "example": "5"
+        },
+        "total_rows": {
+          "description": "总返回行",
+          "type": "string",
+          "example": "5"
+        },
+        "last_rows": {
+          "description": "最近返回行",
+          "type": "string",
+          "example": "5"
+        },
+        "min_rows": {
+          "description": "最小返回行",
+          "type": "string",
+          "example": "5"
+        },
+        "max_rows": {
+          "description": "最大返回行",
+          "type": "string",
+          "example": "5"
+        }
+      }
+    },
+    "TopObjectOverview": {
+      "description": "top对象总览",
+      "properties": {
+        "avg_cpu_time": {
+          "description": "平均cpu耗时(单位为毫秒)",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "avg_cpu_time_percentage": {
+          "description": "平均cpu耗时百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "avg_execution_time": {
+          "description": "平均执行耗时(单位为毫秒)",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "avg_execution_time_percentage": {
+          "description": "平均执行耗时百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "avg_logical_io": {
+          "description": "平均逻辑io",
+          "type": "number",
+          "format": "double",
+          "example": 1000
+        },
+        "avg_logical_io_percentage": {
+          "description": "平均逻辑io百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "avg_logical_reads": {
+          "description": "平均逻辑读",
+          "type": "number",
+          "format": "double",
+          "example": 1000
+        },
+        "avg_logical_reads_percentage": {
+          "description": "平均逻辑读百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "avg_logical_writes": {
+          "description": "平均逻辑写",
+          "type": "number",
+          "format": "double",
+          "example": 1000
+        },
+        "avg_logical_writes_percentage": {
+          "description": "平均逻辑写百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "avg_physical_reads": {
+          "description": "平均物理读",
+          "type": "number",
+          "format": "double",
+          "example": 1000
+        },
+        "avg_physical_reads_percentage": {
+          "description": "平均物理读百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "avg_rows": {
+          "description": "平均返回行",
+          "type": "number",
+          "format": "double",
+          "example": 500
+        },
+        "avg_rows_percentage": {
+          "description": "平均返回行百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "database_name": {
+          "description": "数据库名",
+          "type": "string",
+          "example": "test"
+        },
+        "object_id": {
+          "description": "对象id",
+          "type": "string",
+          "example": "456"
+        },
+        "object_name": {
+          "description": "对象名称",
+          "type": "string",
+          "example": "cc"
+        },
+        "row_id": {
+          "description": "id",
+          "type": "string",
+          "example": "1"
+        },
+        "object_type": {
+          "description": "对象类型",
+          "type": "string",
+          "example": "SQL_STORED_PROCEDURE"
+        },
+        "schema_name": {
+          "description": "模式",
+          "type": "string",
+          "example": "dbo"
+        },
+        "total_cpu_time": {
+          "description": "总cpu耗时(单位为毫秒)",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "total_cpu_time_percentage": {
+          "description": "总cpu耗时百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "total_execution_time": {
+          "description": "总执行耗时(单位为毫秒)",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "total_execution_time_percentage": {
+          "description": "总执行耗时百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "total_execution_count": {
+          "description": "总执行次数",
+          "type": "number",
+          "format": "double",
+          "example": 2
+        },
+        "total_logical_io": {
+          "description": "总逻辑io",
+          "type": "number",
+          "format": "double",
+          "example": 200
+        },
+        "total_logical_io_percentage": {
+          "description": "总逻辑io百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "total_logical_reads": {
+          "description": "总逻辑读",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "total_logical_reads_percentage": {
+          "description": "总逻辑读百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "total_logical_writes": {
+          "description": "总逻辑写",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "total_logical_writes_percentage": {
+          "description": "总逻辑写百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "total_physical_reads": {
+          "description": "总物理读",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "total_physical_reads_percentage": {
+          "description": "总物理读百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        },
+        "total_rows": {
+          "description": "总返回行",
+          "type": "number",
+          "format": "double",
+          "example": 100
+        },
+        "total_rows_percentage": {
+          "description": "总返回行百分比",
+          "type": "number",
+          "format": "double",
+          "example": 0.5
+        }
+      }
+    },
+    "TopObjectsResponse": {
+      "description": "topObjects详情",
+      "properties": {
+        "cur_time": {
+          "description": "更新时间",
+          "type": "integer",
+          "format": "int64"
+        },
+        "top_object_list": {
+          "description": "明细",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopObject"
+          }
+        },
+        "top_object_overview_list": {
+          "description": "总览",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopObjectOverview"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

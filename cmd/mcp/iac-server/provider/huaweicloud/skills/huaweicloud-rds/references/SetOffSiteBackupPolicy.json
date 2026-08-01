@@ -1,0 +1,199 @@
+{
+  "name": "SetOffSiteBackupPolicy",
+  "summary": "设置跨区域备份策略",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/backups/offsite-policy": {
+      "put": {
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "SetOffSiteBackupPolicy",
+        "x-support-sdk": "Y",
+        "summary": "设置跨区域备份策略",
+        "x-constraint": "- 仅支持设置MySQL和SQL Server的跨区域备份策略。\n- 如果实例已开启跨区域备份策略,调用接口设置跨区域备份策略,仅会更改保留天数,其他参数设置无效。\n- MySQL自动全量备份和自动增量备份保留天数必须保持一致。\n- MySQL自动增量备份必须在开启自动全量备份后才能开启。\n- MySQL自动全量备份和自动增量备份都开启后,关闭时请按顺序依次关闭自动增量备份、自动全量备份。",
+        "description": "设置跨区域备份策略。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "SetOffSiteBackupPolicyRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetOffSiteBackupPolicyRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CommonResp"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "更新跨区域自动全量备份策略",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/backups/offsite-policy",
+        "x-request-examples-1": {
+          "policy_para": {
+            "backup_type": "auto",
+            "keep_days": 7,
+            "destination_region": "cn-guangzhou-1",
+            "destination_project_id": "0503fd7f7580d3262fc5c001170fbab9"
+          }
+        },
+        "x-request-examples-description-2": "更新跨区域自动增量备份策略",
+        "x-request-examples-url-2": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/backups/offsite-policy",
+        "x-request-examples-2": {
+          "policy_para": {
+            "backup_type": "incremental",
+            "keep_days": 7,
+            "destination_region": "cn-guangzhou-1",
+            "destination_project_id": "0503fd7f7580d3262fc5c001170fbab9"
+          }
+        },
+        "x-request-examples-description-3": "同时更新跨区域自动全量和增量备份策略",
+        "x-request-examples-url-3": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/backups/offsite-policy",
+        "x-request-examples-3": {
+          "policy_para": {
+            "backup_type": "all",
+            "keep_days": 7,
+            "destination_region": "cn-guangzhou-1",
+            "destination_project_id": "0503fd7f7580d3262fc5c001170fbab9"
+          }
+        },
+        "x-request-examples-description-4": "关闭跨区域自动全量备份策略",
+        "x-request-examples-url-4": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/backups/offsite-policy",
+        "x-request-examples-4": {
+          "policy_para": {
+            "backup_type": "auto",
+            "keep_days": 0,
+            "destination_region": "cn-guangzhou-1",
+            "destination_project_id": "0503fd7f7580d3262fc5c001170fbab9"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "CommonResp": {
+      "type": "object",
+      "required": [
+        "resp"
+      ],
+      "properties": {
+        "resp": {
+          "type": "string",
+          "description": "响应结果"
+        }
+      }
+    },
+    "SetOffSiteBackupPolicyRequestBody": {
+      "required": [
+        "policy_para"
+      ],
+      "properties": {
+        "policy_para": {
+          "type": "object",
+          "$ref": "#/definitions/OffSiteBackupPolicy",
+          "description": "备份策略对象,包括备份类型、备份保留天数、目标区域ID和目标project ID。"
+        }
+      }
+    },
+    "OffSiteBackupPolicy": {
+      "description": "备份策略对象,包括备份类型、备份保留天数、目标区域ID和目标project ID。",
+      "required": [
+        "backup_type",
+        "keep_days",
+        "destination_region",
+        "destination_project_id"
+      ],
+      "properties": {
+        "backup_type": {
+          "description": "指定备份的类型。\n\nSQL Server仅支持设置为“all”。\n\n取值如下:\n\n- auto:自动全量备份。\n- incremental:自动增量备份。\n- all:同时设置所有备份类型。\n  - MySQL:同时设置自动全量和自动增量备份。\n  - SQL Server:同时设置自动全量、自动增量备份和手动备份。",
+          "type": "string"
+        },
+        "keep_days": {
+          "description": "备份文件可以保存的天数。",
+          "type": "integer"
+        },
+        "destination_region": {
+          "type": "string",
+          "description": "设置跨区域备份策略的目标区域ID。"
+        },
+        "destination_project_id": {
+          "type": "string",
+          "description": "设置跨区域备份策略的目标project ID。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

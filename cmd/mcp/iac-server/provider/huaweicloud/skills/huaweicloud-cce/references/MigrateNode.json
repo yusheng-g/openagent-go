@@ -1,0 +1,370 @@
+{
+  "name": "MigrateNode",
+  "summary": "节点迁移",
+  "tags": "节点管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/operation/migrateto/{target_cluster_id}": {
+      "put": {
+        "tags": [
+          "节点管理"
+        ],
+        "summary": "节点迁移",
+        "description": "该API用于在指定集群下迁移节点到另一集群。\n\n>集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。",
+        "x-constraint": "- 仅支持在同一VPC、同一项目下的不同集群间进行迁移。\n- CCE Turbo集群和CCE Standard集群间不支持互迁。\n- DEC集群和非DEC集群间不支持互迁。\n- 开启IPv6开关和未开启IPv6开关的集群间不支持互迁。\n- 只支持迁移到目标集群的默认节点池内。\n- \n- CCE Turbo集群下弹性云服务器-物理机类型节点不支持迁移。",
+        "operationId": "MigrateNode",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_path_target_cluster_id"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "MigrateNodesTask",
+            "description": "迁移节点的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MigrateNodesTask"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示在指定集群下迁移节点至另一集群的作业下发成功。",
+            "examples": {
+              "application/json": {
+                "spec": {
+                  "os": "EulerOS 2.5",
+                  "login": {
+                    "sshKey": "KeyPair-001"
+                  },
+                  "runtime": {
+                    "name": "docker"
+                  },
+                  "nodes": [
+                    {
+                      "uid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    },
+                    {
+                      "uid": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+                    }
+                  ],
+                  "serverConfig": {
+                    "rootVolume": {
+                      "cmkID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    }
+                  }
+                },
+                "status": {
+                  "jobID": "2ec9b78d-9368-46f3-8f29-d1a95622a568"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/MigrateNodesTask"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "迁移节点",
+        "x-scope": "Commercial",
+        "x-request-examples-description-1": "迁移一个节点到另一个集群中,且节点操作系统为EulerOS 2.5。",
+        "x-request-examples-url-1": "PUT /api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/operation/migrateto/{target_cluster_id}",
+        "x-request-examples-1": {
+          "spec": {
+            "os": "EulerOS 2.5",
+            "login": {
+              "sshKey": "KeyPair-001"
+            },
+            "nodes": [
+              {
+                "uid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              },
+              {
+                "uid": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+              }
+            ]
+          }
+        },
+        "x-request-examples-description-2": "迁移一个节点到另一个集群中,且节点操作系统为EulerOS 2.5,并指定用户镜像ID。",
+        "x-request-examples-url-2": "PUT /api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/operation/migrateto/{target_cluster_id}",
+        "x-request-examples-2": {
+          "spec": {
+            "os": "EulerOS 2.5",
+            "extendParam": {
+              "alpha.cce/NodeImageID": "cc697ad7-9563-11e8-8ea7-0255ac106311"
+            },
+            "login": {
+              "sshKey": "KeyPair-001"
+            },
+            "nodes": [
+              {
+                "uid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              },
+              {
+                "uid": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+              }
+            ]
+          }
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,hk_g42,hcso,hcs,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "MigrateVolumeSpec": {
+      "description": "服务器重装云硬盘配置",
+      "properties": {
+        "cmkID": {
+          "type": "string",
+          "description": "**参数解释**:\n用户主密钥ID。\n> 获取密钥ID的方法请参考:[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html)\n\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n默认为空,表示云硬盘不加密。"
+        }
+      }
+    },
+    "TaskStatus": {
+      "properties": {
+        "jobID": {
+          "type": "string",
+          "description": "**参数解释**:\n任务ID,供调用者查询任务进度。获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "MigrateNodesTask": {
+      "required": [
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI类型\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nMigrateNodesTask"
+        },
+        "spec": {
+          "description": "**参数解释**:\n配置信息\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/MigrateNodesSpec"
+        },
+        "status": {
+          "readOnly": true,
+          "description": "**参数解释**:\n任务状态\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/TaskStatus"
+        }
+      }
+    },
+    "Runtime": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "容器运行时,默认场景:\n- v1.25以下集群:默认为\"docker\"\n- v1.25及以上集群,随操作系统变化,默认的容器运行时不同:操作系统为EulerOS 2.5、EulerOS 2.8的节点默认为\"docker\",其余操作系统的节点默认为\"containerd\"",
+          "enum": [
+            "docker",
+            "containerd"
+          ]
+        },
+        "runtimeClass": {
+          "type": "string",
+          "description": "**参数解释**:\n容器运行时子类别。\n**约束限制**:\n仅CCE Turbo集群下弹性云服务器-物理机类型节点且上级运行时为containerd场景支持使用安全运行时。\n**取值范围**:\n- runc: 普通运行时。\n- kata: 安全运行时,需配套c6、c7系列弹性云服务器-物理机,支持的操作系统为EulerOS 2.10。\n- kuasar-vmm: 安全运行时v2,支持kc2、ki2、c7、ac8h系列弹性服务器-物理机,配套操作系统为HCE 2.0,集群版本需为v1.28.15-r70、v1.29.15-r30、v1.30.14-r30、v1.31.10-r30、v1.32.6-r30、v1.33.5-r20或以上版本。\n\n**默认取值**:\nrunc",
+          "enum": [
+            "runc",
+            "kata",
+            "kuasar-vmm"
+          ]
+        }
+      }
+    },
+    "MigrateServerConfig": {
+      "description": "节点迁移场景服务器配置",
+      "properties": {
+        "rootVolume": {
+          "description": "**参数解释**:\n系统盘重装配置\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/MigrateVolumeSpec"
+        }
+      }
+    },
+    "NodeItem": {
+      "required": [
+        "uid"
+      ],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n节点ID,节点ID获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "Login": {
+      "properties": {
+        "sshKey": {
+          "type": "string",
+          "description": "选择密钥对方式登录时的密钥对名称。"
+        },
+        "userPassword": {
+          "description": "选择密码方式登录时的帐号密码信息,之后可通过此帐号密码登录节点。",
+          "$ref": "#/definitions/UserPassword",
+          "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs"
+        },
+        "removeUserPassword": {
+          "type": "boolean",
+          "description": "**参数解释**:\n更新节点池时,移除当前节点池密码方式登录的配置\n**约束限制**:\n仅更新节点池场景支持该参数,设置为true时不允许设置userPassword\n**取值范围**:\n不涉及\n**默认取值**:\nfalse"
+        },
+        "removeSSHKey": {
+          "type": "boolean",
+          "description": "**参数解释**:\n更新节点池时,移除当前节点池密钥对方式登录的配置\n**约束限制**:\n仅更新节点池场景支持该参数,设置为true时不允许设置sshKey\n**取值范围**:\n不涉及\n**默认取值**:\nfalse"
+        }
+      }
+    },
+    "MigrateNodeExtendParam": {
+      "properties": {
+        "maxPods": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n节点最大允许创建的实例数(Pod),该数量包含系统默认实例。\n该设置的目的为防止节点因管理过多实例而负载过重,请根据您的业务需要进行设置。\n节点可以创建多少个Pod,受多个参数影响,具体请参见[节点可创建的最大Pod数量说明](maxPods.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n取值范围为16~256。\n**默认取值**:\n不涉及",
+          "maximum": 256,
+          "minimum": 16
+        },
+        "DockerLVMConfigOverride": {
+          "type": "string",
+          "description": "**参数解释**:\nDocker数据盘配置项。\n\n待迁移节点的磁盘类型须和创建时一致(即“DockerLVMConfigOverride”参数中“diskType”字段的值须和创建时一致),请确保单次接口调用时批量选择的节点磁盘类型一致。\n\n默认配置示例如下:\n\n```\n\"DockerLVMConfigOverride\":\"dockerThinpool=vgpaas/90%VG;kubernetesLV=vgpaas/10%VG;diskType=evs;lvType=linear\"\n```\n\n**约束限制**:\n不涉及\n**取值范围**:\n包含如下字段:\n  - userLV(可选):用户空间的大小,示例格式:vgpaas/20%VG\n  - userPath(可选):用户空间挂载路径,示例格式:/home/wqt-test\n  - diskType:磁盘类型,目前只有evs、hdd和ssd三种格式\n  - lvType:逻辑卷的类型,目前支持linear和striped两种,示例格式:striped\n  - dockerThinpool:Docker盘的空间大小,示例格式:vgpaas/60%VG\n  - kubernetesLV:Kubelet空间大小,示例格式:vgpaas/20%VG\n\n**默认取值**:\n不涉及"
+        },
+        "alpha.cce/preInstall": {
+          "type": "string",
+          "description": "**参数解释**:\n安装前执行脚本。\n**约束限制**:\n安装前/后执行脚本统一计算字符,转码后的字符总数不能超过10240。\n输入的值需要经过Base64编码,方法如下:\n  ```\n  echo -n \"待编码内容\" | base64\n  ```\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "maxLength": 10240
+        },
+        "alpha.cce/postInstall": {
+          "type": "string",
+          "description": "**参数解释**:\n安装后执行脚本。\n**约束限制**:\n安装前/后执行脚本统一计算字符,转码后的字符总数不能超过10240。\n输入的值需要经过Base64编码,方法如下:\n  ```\n  echo -n \"待编码内容\" | base64\n  ```\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "maxLength": 10240
+        },
+        "alpha.cce/NodeImageID": {
+          "type": "string",
+          "description": "**参数解释**:\n指定待切换目标操作系统所使用的用户镜像ID。\n> 当指定“alpha.cce/NodeImageID”参数时,“os”参数必须和用户自定义镜像的操作系统一致。\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "MigrateNodesSpec": {
+      "required": [
+        "os",
+        "nodes"
+      ],
+      "properties": {
+        "os": {
+          "type": "string",
+          "description": "**参数解释**:\n操作系统类型,须精确到版本号。例:Huawei Cloud EulerOS 2.0。具体支持的操作系统请参见[节点操作系统说明](node-os.xml)。\n**约束限制**:\n当指定“alpha.cce/NodeImageID”参数时,“os”参数必须和用户自定义镜像的操作系统一致。\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "extendParam": {
+          "description": "**参数解释**:\n迁移节点时的扩展参数\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/MigrateNodeExtendParam"
+        },
+        "login": {
+          "description": "**参数解释**:\n节点的登录方式。密钥对和密码登录方式二者必选其一。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/Login"
+        },
+        "runtime": {
+          "description": "**参数解释**:\n容器运行时\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/Runtime"
+        },
+        "serverConfig": {
+          "description": "**参数解释**:\n服务器配置\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/MigrateServerConfig"
+        },
+        "nodes": {
+          "type": "array",
+          "description": "**参数解释**:\n待操作节点列表,当前最多支持同时迁移200个节点。\n**约束限制**:\n不涉及",
+          "items": {
+            "$ref": "#/definitions/NodeItem"
+          }
+        }
+      }
+    },
+    "UserPassword": {
+      "required": [
+        "password"
+      ],
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "登录帐号,默认为“root”",
+          "default": "root"
+        },
+        "password": {
+          "type": "string",
+          "description": "登录密码,若创建节点通过用户名密码方式,即使用该字段,则响应体中该字段作屏蔽展示。\n密码复杂度要求:\n- 长度为8-26位。\n- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?~#*)中的三种。\n- 密码不能包含用户名或用户名的逆序。\n创建节点时password字段需要加盐加密,具体方法请参见[创建节点时password字段加盐加密](add-salt.xml)。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_target_cluster_id": {
+      "name": "target_cluster_id",
+      "in": "path",
+      "description": "**参数解释**:\n集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 6
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

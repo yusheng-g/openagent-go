@@ -1,0 +1,668 @@
+{
+  "name": "BatchCreateLoadBalancers",
+  "summary": "批量创建负载均衡器",
+  "tags": "负载均衡器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/loadbalancers/batch-create": {
+      "post": {
+        "tags": [
+          "负载均衡器"
+        ],
+        "summary": "批量创建负载均衡器",
+        "description": "批量创建独享型或者共享型负载均衡器,包括按需及包周期计费负载均衡器。\n\n\n- 若要创建内网IPv4负载均衡器,则需要传入vip_subnet_cidr_id。\n- 若要创建公网IPv4负载均衡器,则需要传入publicip,以及传入vpc_id和vip_subnet_cidr_id这两个参数中的一个。\n- 若要绑定有已有公网IPv4地址,则需要传入publicip_ids,以及传入vpc_id和vip_subnet_cidr_id这两个参数中的一个。\n- 若要创建内网双栈负载均衡器,则需要传入ipv6_vip_virsubnet_id。\n- 若要创建公网双栈负载均衡器,则需要传入ipv6_vip_virsubnet_id和ipv6_bandwidth。\n- 若要创建网络型负载均衡器,则需要传入l4_flavor_id(网络型规格ID);若要创建应用型负载均衡器,则需要传入l7_flavor_id(应用型规格ID);若要创建网络型+应用型负载均衡器,则需要传入l4_flavor_id和l7_flavor_id。\n- 如果批量创建的负载均衡器数量大于1,则不支持绑定已有的公网IP,且不支持指定ipv4和ipv6地址。即number大于1时,不支持传入publicip_ids,vip_address和ipv6_vip_address字段。\n- 若要创建包周期负载均衡器,则需要传入prepaid_options,否则创建按需计费负载均衡器。\n- 按需计费分为固定规格计费和弹性规格计费,根据创建时所选规格的类型决定计费方式。具体规格说明见创建LB请求参数l4_flavor_id和l7_flavor_id。\n- 异步接口,返回体中包含需要批量创建的负载均衡的ID列表和批量创建负载均衡器的job ID,可以通过job ID查询当前批量创建负载均衡器的进度。\n- 批量创建独享型和共享型实例时,请求体传参规则有所不同,具体见请求体说明中各个参数的解释。",
+        "operationId": "BatchCreateLoadBalancers",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchCreateLoadBalancersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchCreateLoadBalancersRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "maxLength": 4096,
+            "minLength": 0,
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 0,
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "批量创建负载均衡器正常返回",
+            "x-response-examples-tags-1": "hws",
+            "x-response-examples-1": {
+              "application/json": {
+                "job_id": "060576798a80d5762fafc01a9b5eedc7",
+                "loadbalancer_ids": [
+                  "de7946ba-3b77-4119-8338-acc25eb05611",
+                  "ba27f70b-b52f-4a77-9220-fd15726e50bd"
+                ],
+                "request_id": "bf29597181cb81b30d19f1a0115a157d",
+                "order_id": "CS2209271603H7TW4"
+              }
+            },
+            "x-response-examples-tags-2": "hws_hk,ocb,ctc,hcs,g42,tm,cmcc,hk_g42,hws_ocb,hk_vdf,fcs",
+            "x-response-examples-2": {
+              "application/json": {
+                "job_id": "060576798a80d5762fafc01a9b5eedc7",
+                "loadbalancer_ids": [
+                  "de7946ba-3b77-4119-8338-acc25eb05611",
+                  "ba27f70b-b52f-4a77-9220-fd15726e50bd"
+                ],
+                "request_id": "bf29597181cb81b30d19f1a0115a157d"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchCreateLoadBalancerResponseBody"
+            }
+          }
+        },
+        "x-name": "创建负载均衡器",
+        "x-constraint": "- vpc_id 或 vip_subnet_cidr_id 或 ipv6_vip_virsubnet_id 不能同时为空。\n- number大于1时,不支持传入publicip_ids,vip_address和ipv6_vip_address字段。\n- ip_target_enable参数表示是否启用IP类型后端转发能力,启用IP类型后端转发的负载均衡器关联的member和VIP可以在不同VPC下,未启用IP类型后端转发的负载均衡器关联的member和VIP必须在同一个VPC下。\n- admin_state_up参数的值必须是true。\n- provider参数的值必须是vlb。\n- elb_virsubnet_ids参数对应的网络类型支持双栈或者只支持ipv4。网络类型为只支持ipv4时,ipv6_vip_virsubnet_id参数需要为空。\n- 只能通过ELB Console控制台来解绑EIP,在ELB列表查询页面选择操作列中的更多按钮->解绑EIP。\n- 创建LB时不能同时设置publicip_ids和publicip,只能选择绑定已有公网IP或者选择新建公网IP,或者都不设置这两个字段。\n- 若要绑定已有带宽,则需要设置共享带宽ID,不支持绑定独享带宽。若需要新建独享带宽,则带宽信息中charge_mode、share_type和size字段是必须的。\n- 不支持绑定已有未使用的内网IPv4、内网IPv6或公网IPv6地址。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "示例1 : 批量创建3个独享型按需私网IPv4负载均衡器",
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/060576798a80d5762fafc01a9b5eedc7/elb/loadbalancers/batch-create",
+        "x-request-examples-1": {
+          "loadbalancer": {
+            "name": "loadbalancer",
+            "description": "simple batch create lb",
+            "vip_subnet_cidr_id": "1992ec06-f364-4ae3-b936-6a8cc24633b7",
+            "admin_state_up": true,
+            "availability_zone_list": [
+              "AZ1"
+            ],
+            "number": 3
+          }
+        },
+        "x-request-examples-text-1": {
+          "loadbalancer": {
+            "name": "loadbalancer",
+            "description": "simple batch create lb",
+            "vip_subnet_cidr_id": "1992ec06-f364-4ae3-b936-6a8cc24633b7",
+            "admin_state_up": true,
+            "availability_zone_list": [
+              "AZ1"
+            ],
+            "number": 3
+          }
+        },
+        "x-request-examples-description-2": "示例2 : 批量创建2个独享型包周期公网IPv4负载均衡器",
+        "x-request-examples-tags-2": "hws",
+        "x-request-examples-url-2": "POST https://{ELB_Endpoint}/v3/060576782980d5762f9ec014dd2f1148/elb/loadbalancers/batch-create",
+        "x-request-examples-2": {
+          "loadbalancer": {
+            "vip_subnet_cidr_id": "e6e9271d-aef4-48f0-a93a-ccc7b09032c1",
+            "availability_zone_list": [
+              "AZ1"
+            ],
+            "admin_state_up": true,
+            "publicip": {
+              "network_type": "5_bgp",
+              "bandwidth": {
+                "size": 2,
+                "share_type": "PER",
+                "charge_mode": "bandwidth",
+                "name": "bandwidth_test"
+              }
+            },
+            "name": "elb_eip-test",
+            "number": 3,
+            "prepaid_options": {
+              "period_type": "month",
+              "period_num": 3,
+              "auto_pay": true,
+              "auto_renew": false
+            }
+          }
+        },
+        "x-request-examples-text-2": {
+          "loadbalancer": {
+            "vip_subnet_cidr_id": "e6e9271d-aef4-48f0-a93a-ccc7b09032c1",
+            "availability_zone_list": [
+              "AZ1"
+            ],
+            "admin_state_up": true,
+            "publicip": {
+              "network_type": "5_bgp",
+              "bandwidth": {
+                "size": 2,
+                "share_type": "PER",
+                "charge_mode": "bandwidth",
+                "name": "bandwidth_test"
+              }
+            },
+            "name": "elb_eip-test",
+            "number": 3,
+            "prepaid_options": {
+              "period_type": "month",
+              "period_num": 3,
+              "auto_pay": true,
+              "auto_renew": false
+            }
+          }
+        },
+        "x-request-examples-description-3": "示例3 : 批量创建3个共享型私网IPv4负载均衡器",
+        "x-request-examples-url-3": "POST https://{ELB_Endpoint}/v3/060576798a80d5762fafc01a9b5eedc7/elb/loadbalancers/batch-create",
+        "x-request-examples-3": {
+          "loadbalancer": {
+            "name": "loadbalancer",
+            "description": "simple batch create lb",
+            "availability_zone_list": [
+              "AZ1"
+            ],
+            "vip_subnet_cidr_id": "1992ec06-f364-4ae3-b936-6a8cc24633b7",
+            "admin_state_up": true,
+            "guaranteed": false,
+            "number": 3
+          }
+        },
+        "x-request-examples-text-3": {
+          "loadbalancer": {
+            "name": "loadbalancer",
+            "description": "simple batch create lb",
+            "availability_zone_list": [
+              "AZ1"
+            ],
+            "vip_subnet_cidr_id": "1992ec06-f364-4ae3-b936-6a8cc24633b7",
+            "admin_state_up": true,
+            "guaranteed": false,
+            "number": 3
+          }
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:标签键。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:标签值。\n\n**取值范围**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "**参数解释**:资源标签。",
+      "type": "object"
+    },
+    "CreateLoadBalancerBandwidthOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:带宽名称。\n\n**约束限制**:\n\n- 如果选用的是独享带宽,share_type是PER,该字段是必选。\n- 如果使用的是共享带宽,参数bandwidth对象的id有值,该字段被忽略。\n\n**取值范围**:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "[\\一-\\龥A-Za-z0-9_.-]+"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:带宽大小。\n\n**约束限制**:\n- 当id字段为null时,size是必须的。\n- 调整带宽时的最小单位会根据带宽范围不同存在差异。\n  + 小于等于300Mbit/s: 默认最小单位为1Mbit/s。\n  + 300Mbit/s~1000Mbit/s: 默认最小单位为50Mbit/s。\n  + 大于1000Mbit/s: 默认最小单位为500Mbit/s。\n\n**取值范围**:默认1Mbit/s~2000Mbit/s(具体范围以各区域配置为准,请参见控制台对应页面显示)。\n\n**默认取值**:不涉及",
+          "minimum": 0,
+          "maximum": 99999
+        },
+        "charge_mode": {
+          "type": "string",
+          "description": "**参数解释**:计费模式。\n\n**约束限制**:当id字段为null时,charge_mode是必须的。\n\n\n**取值范围**:\n - bandwidth:按带宽计费。\n - traffic: 按流量计费。\n **默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36,
+          "enum": [
+            "bandwidth",
+            "traffic"
+          ]
+        },
+        "share_type": {
+          "type": "string",
+          "description": "**参数解释**:带宽类型。\n\n**约束限制**:\n- 当id字段为null时,share_type是必须的。当id不为null时,该字段被忽略。\n- 该字段为WHOLE时,必须指定带宽ID。\n- IPv6的EIP不支持WHOLE类型带宽。\n\n**取值范围**:\n- PER:独享带宽。\n- WHOLE:共享带宽。\n\n**默认取值**:不涉及",
+          "enum": [
+            "PER",
+            "WHOLE"
+          ]
+        },
+        "billing_info": {
+          "type": "string",
+          "description": "**参数解释**:资源计费信息。\n\n**约束限制**:\n如果billing_info不为空,说明是包周期计费的带宽,否则为按需计费的带宽。\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:共享带宽ID。使用已存在的共享带宽。\n\n**约束限制**:必须是已存在共享带宽ID。在预付费的情况下,不填该字段。该字段取空字符串时,会被忽略。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "**参数解释**:带宽信息。\n\n**约束限制**:不涉及",
+      "type": "object"
+    },
+    "CreateLoadbalancerAutoscalingOption": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "**参数解释**:负载均衡器实例弹性扩缩容开关。\n\n**约束限制**:网关型LB不支持该字段。\n\n**取值范围**:\n- true:开启。\n- false:关闭。\n\n **默认取值**:不涉及",
+          "default": false
+        },
+        "min_l7_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:实例弹性扩缩容的最小七层规格ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "required": [
+        "enable"
+      ],
+      "type": "object"
+    },
+    "BatchCreateLoadBalancersRequestBody": {
+      "required": [
+        "loadbalancer"
+      ],
+      "properties": {
+        "loadbalancer": {
+          "$ref": "#/definitions/BatchCreateLoadBalancerOption",
+          "description": "**参数解释**:负载均衡器对象。\n\n**约束限制**:不涉及"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "BatchCreateLoadBalancerResponseBody": {
+      "properties": {
+        "loadbalancer_ids": {
+          "type": "array",
+          "description": "**参数解释**:批创负载均衡器ID(UUID)的列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 10,
+          "minItems": 1
+        },
+        "job_id": {
+          "type": "string",
+          "description": "**参数解释**:批量创建负载均衡器的job ID。\n\n**取值范围**:不涉及",
+          "maxItems": 10,
+          "minItems": 1
+        },
+        "order_id": {
+          "type": "string",
+          "description": "**参数解释**:订单号(只有批量创建包周期实例的场景返回该字段)\n\n**取值范围**:不涉及",
+          "minLength": 0,
+          "maxLength": 36,
+          "x-open-region-cloud": "hc"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。",
+          "minLength": 0,
+          "maxLength": 36
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "required": [
+        "request_id"
+      ]
+    },
+    "BatchCreateLoadBalancerOption": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器ID(UUID)。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n不支持该字段,请勿使用。",
+          "minLength": 0,
+          "maxLength": 36
+        },
+        "ids": {
+          "type": "array",
+          "description": "**参数解释**:批创负载均衡器ID的列表(UUID)。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n不支持该字段,请勿使用。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "[0-9a-fA-F]{32}"
+        },
+        "number": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:批量创建负载均衡器的数量。\n\n**约束限制**:不涉及\n\n**取值范围**:1-10\n\n**默认取值**:1",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的名称。\n- 当批创负载均衡器数量为1时,负载均衡器的名字即为该传入的值。\n- 当批创负载均衡器数量大于1时,负载均衡器的名字在传入的name后加上4位后缀。例如:批量创建3个负载均衡器,传入name为\"elb-test\",则三个负载均衡器名字分别为:\"elb-test-0001\",\"elb-test-0002\",\"elb-test-0003\"\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的描述。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "vip_address": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的IPv4私网IP。该地址必须包含在所在子网的IPv4网段内,且未被占用。\n\n**约束限制**:\n- 传入vip_address时必须传入vip_subnet_cidr_id。\n- 不传入vip_address,但传入vip_subnet_cidr_id,则自动分配IPv4私网IP。\n- 不传入vip_address,且不传vip_subnet_cidr_id,则不分配私网IP,vip_address=null。\n- 当批量创建的number数量大于1时不支持传入该字段,返回400。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "vip_subnet_cidr_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器所在子网的IPv4子网ID。若需要创建带IPv4私网IP的LB,该字段必须传入。\n可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的neutron_subnet_id得到。\n\n**约束限制**:\n- vpc_id, vip_subnet_cidr_id, ipv6_vip_virsubnet_id不能同时为空,且需要在同一个vpc下。\n- 若同时传入vpc_id和vip_subnet_cidr_id,则vip_subnet_cidr_id对应的子网必须属于vpc_id对应的VPC。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "ipv6_vip_virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器所在子网的IPv6网络ID。\n可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的neutron_network_id得到。\n\n**约束限制**:\n- vpc_id,vip_subnet_cidr_id,ipv6_vip_virsubnet_id不能同时为空,且需要在同一个vpc下。\n- 需要对应的子网开启IPv6。\n- 批量创建共享型实例时,该字段不允许指定。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "provider": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器的生产者名称。固定为vlb。\n\n**约束限制**:批量创建共享型实例时,该字段不允许指定。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "l4_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:网络型规格ID。\n可以通过GET https://{ELB_Endpoint}/v3/{project_id}/elb/flavors?type=L4 响应参数中的id得到。\n\n**约束限制**:\n- 当l4_flavor_id和l7_flavor_id都不传的时,会使用默认flavor\n(默认flavor根据不同局点有所不同,具体以实际值为准)。\n- 当传入的规格类型为L4,表示该实例为固定规格实例,按规格计费。\n- 当传入的规格类型为L4_elastic_max,表示该实例为弹性实例,按LCU计费。\n- 批量创建共享型实例时,该字段不允许指定。\n- 网关型LB不支持指定l4_flavor_id。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "l7_flavor_id": {
+          "type": "string",
+          "description": "**参数解释**:应用型规格ID。\n可以通过GET https://{ELB_Endpoint}/v3/{project_id}/elb/flavors?type=L7 响应参数中的id得到。\n\n**约束限制**:\n- 当l4_flavor_id和l7_flavor_id都不传的时,会使用默认flavor\n(默认flavor根据不同局点有所不同,具体以实际值为准)。\n- 当传入的规格类型为L7,表示该实例为固定规格实例,按规格计费。\n- 当传入的规格类型为L7_elastic_max,表示该实例为弹性实例,按LCU计费。\n- 批量创建共享型实例时,该字段不允许指定。\n- 网关型LB不支持指定l7_flavor_id。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "guaranteed": {
+          "type": "boolean",
+          "description": "**参数解释**:批量创建的是否是独享型负载均衡器。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true:独享型。\n- false:共享型。\n\n**默认取值**:true"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器所在的VPC ID。\n可以通过GET https://{VPC_Endpoint}/v1/{project_id}/vpcs 响应参数中的id得到。\n\n**约束限制**:\n- vpc_id,vip_subnet_cidr_id,ipv6_vip_virsubnet_id不能同时为空,且需要在同一个vpc下。\n- 批量创建共享型实例时,该字段不允许指定。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "availability_zone_list": {
+          "type": "array",
+          "description": "**参数解释**:可用区列表。\n可通过GET https://{ELB_Endpoint}/v3/{project_id}/elb/availability-zones 接口来查询可用区集合列表。创建负载均衡器时,从查询结果选择某一个可用区集合,并从中选择一个或多个可用区。\n\n**约束限制**:\n- 批量创建共享型实例时,该字段不允许指定。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:资源所属的企业项目ID。创建时不传则资源属于default企业项目,返回enterprise_project_id=\"0\"。\n\n**约束限制**:不能传入空字符串\"\"、\"0\"或不存在的企业项目ID。\n\n**取值范围**:不涉及\n\n**默认取值**:\"0\""
+        },
+        "tags": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡的标签列表。示例:\"tags\":[{\"key\":\"my_tag\",\"value\":\"my_tag_value\"}]\n\n**约束限制**:不涉及",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:负载均衡器的启用状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true :启用。\n- false:停用。\n\n**默认取值**:true。"
+        },
+        "billing_info": {
+          "type": "string",
+          "description": "**参数解释**:资源账单信息。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- 空:按需计费。\n- 非空:包周期计费,格式为:order_id:product_id:region_id:project_id。如:CS2107161019CDJZZ:OFFI569702121789763584:az1:057ef081eb00d2732fd1c01a9be75e6f\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 1024,
+          "x-open-region-cloud": "hc"
+        },
+        "ipv6_bandwidth": {
+          "$ref": "#/definitions/BandwidthRef",
+          "description": "**参数解释**:带宽对象ID。\n\n**约束限制**:\n- 仅在创建或更新公网负载均衡器时有效。\n- 若选择创建新EIP并指定共享带宽时,此EIP会被分进共享带宽里面。"
+        },
+        "bandwidth": {
+          "$ref": "#/definitions/BandwidthRef",
+          "description": "**参数解释**:带宽对象ID。\n\n**约束限制**:\n- 仅在创建或更新公网负载均衡器时有效。\n- 若选择创建新EIP并指定共享带宽时,此EIP会被分进共享带宽里面。"
+        },
+        "publicip_ids": {
+          "type": "array",
+          "description": "**参数解释**:负载均衡器绑定的公网IP ID。只支持绑定数组中的第一个EIP,其他将被忽略。\n当批量创建的number数量大于1时不支持传入该字段,返回400。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "items": {
+            "type": "string"
+          },
+          "x-admin": "False"
+        },
+        "publicip": {
+          "description": "**参数解释**:创建ELB时,新建公网IP请求参数。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/CreateLoadBalancerPublicIpOption"
+        },
+        "elb_virsubnet_ids": {
+          "type": "array",
+          "description": "**参数解释**:下联面子网的网络ID列表。\n可以通过GET https://{VPC_Endpoint}/v1/{project_id}/subnets 响应参数中的neutron_network_id得到。\n若不指定该字段,则按如下规则选择下联面网络:\n1. 如果ELB实例开启ipv6,则选择ipv6_vip_virsubnet_id子网对应的网络ID。\n2. 如果ELB实例没有开启ipv6,开启ipv4,则选择vip_subnet_cidr_id子网对应的网络ID。\n3. 如果ELB实例没有选择私网,只开启公网,则会在当前负载均衡器所在的VPC中任意选一个子网,优选可用IP多的网络。\n4. 批量创建共享型实例的场景,该字段不允许指定。\n若指定多个下联面子网,则按顺序优先使用第一个子网来为负载均衡器下联面端口分配ip地址。\n\n**约束限制**:下联面子网必须属于该LB所在的VPC。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ip_target_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否启用IP类型后端转发。\n开启IP类型后端转发后,后端服务器组不仅支持添加云上VPC内的服务器,还支持添加其他VPC、其他公有云、云下数据中心的服务器。\n\n**约束限制**:\n- 开启后不能关闭。\n- 使用共享VPC的实例使用此特性时,需确保共享资源所有者已开通VPC对等连接,否则通信异常。\n- 仅独享型负载均衡器支持该特性。\n- 网关型LB不支持该特性。\n\n**取值范围**:\n- true:开启。\n- false:不开启。\n\n**默认取值**:false"
+        },
+        "deletion_protection_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否开启删除保护。\n\n**约束限制**:批量创建共享型实例的场景,该字段不允许指定。\n\n**取值范围**:false 不开启,true 开启。\n\n**默认取值**:false\n\n\n\n\n> 退场时需要先关闭所有资源的删除保护开关。"
+        },
+        "prepaid_options": {
+          "$ref": "#/definitions/PrepaidCreateOption",
+          "description": "**参数解释**:创建负载均衡器实例的预付费计费配置。若传入该结构体,则创建预付费类型的负载均衡器实例。\n\n**约束限制**:不涉及",
+          "x-open-region-cloud": "hc"
+        },
+        "autoscaling": {
+          "$ref": "#/definitions/CreateLoadbalancerAutoscalingOption",
+          "description": "**参数解释**:弹性扩缩容配置信息。负载均衡器开启弹性扩缩容后,可根据负载情况自动调整负载均衡器的规格。\n\n**约束限制**:\n- 仅当项目白名单放开后该字段才有效\n- 开启弹性扩缩容后,l4_flavor_id和l7_flavor_id表示该LB实例弹性规格的上限。\n\n\n\n> 该字段已经废弃,但仍然保留兼容性支持,建议不要使用该字段。如果传入该字段,创建的弹性实例将会有保底规格并产生对应保底规格的费用。"
+        },
+        "waf_failure_action": {
+          "type": "string",
+          "description": "**参数解释**:WAF故障时的流量处理策略。\n\n**约束限制**:只有绑定了waf的LB实例,该字段才会生效。\n\n**取值范围**:\n- discard:丢弃\n- forward: 转发到后端\n\n**默认取值**:forward",
+          "default": "discard",
+          "enum": [
+            "discard",
+            "forward"
+          ],
+          "minLength": 0,
+          "maxLength": 36,
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "**参数解释**:修改保护状态。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- nonProtection: 不保护。\n- consoleProtection: 控制台修改保护。\n\n**默认取值**:nonProtection",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ],
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "**参数解释**:设置保护的原因。作为protection_status的转态设置的原因。\n\n**约束限制**:仅当protection_status为consoleProtection时有效。\n\n**取值范围**:除<和>外通用Unicode字符集字符,最大255个字符。\n\n**默认取值**:不涉及",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk"
+        },
+        "charge_mode": {
+          "type": "string",
+          "description": "**参数解释**:创建实例采用的计费模式。\n\n**约束限制**:批量创建共享型实例时,该字段不允许指定。\n\n**取值范围**:\n- flavor:按实例规格收费。\n- lcu:按使用量收费。\n\n**默认取值**:flavor",
+          "enum": [
+            "flavor",
+            "lcu"
+          ],
+          "maxLength": 255,
+          "minLength": 1,
+          "x-open-region-cloud": "hc"
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:双栈类型负载均衡器的IPv6地址。\n\n**约束限制**:\n- 当批量创建的number数量大于1时不支持传入该字段,返回400。\n- 批量创建共享型实例的场景,该字段不允许指定。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      },
+      "description": "创建负载均衡器参数。",
+      "required": [
+        "availability_zone_list"
+      ],
+      "type": "object"
+    },
+    "Extension": {
+      "properties": {
+        "ep_id": {
+          "type": "string",
+          "description": "**参数解释**:EP ID.\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "ep_service_id": {
+          "type": "string",
+          "description": "**参数解释**:EP Service ID.\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      }
+    },
+    "BandwidthRef": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:共享带宽的ID。",
+          "x-admin": "False"
+        }
+      },
+      "description": "**参数解释**:共享带宽的ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+    },
+    "PrepaidCreateOption": {
+      "required": [
+        "period_type"
+      ],
+      "properties": {
+        "period_type": {
+          "type": "string",
+          "description": "**参数解释**:预付费实例的订购周期类型,当前支持月和年。\n\n**约束限制**:不涉及\n\n**取值范围**:\n - month:月\n - year:年\n**默认取值**:不涉及",
+          "enum": [
+            "month",
+            "year"
+          ]
+        },
+        "period_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:预付费实例的订购周期数。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- period_type为month时,为[1,9]。\n- period_type为year时,为[1,3]。\n\n**默认取值**:不涉及",
+          "minimum": 1,
+          "maximum": 9,
+          "default": 1
+        },
+        "auto_renew": {
+          "type": "boolean",
+          "description": "**参数解释**:自动续订开关。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true:开启自动续订。\n- false:关闭自动续订。\n\n**默认取值**:不涉及",
+          "default": false
+        },
+        "auto_pay": {
+          "type": "boolean",
+          "description": "**参数解释**:自动支付开关。下单订购后,是否自动从客户的账户中支付。\n\n**约束限制**:开启自动支付时,只能使用账户的现金支付;如果要使用代金券,请选择关闭自动支付,然后在用户费用中心,选择代金券支付。\n\n**取值范围**:\n - true:开启自动支付。\n - false:关闭自动支付。\n\n**默认取值**:不涉及",
+          "default": false
+        }
+      },
+      "type": "object"
+    },
+    "ProxyProtocolExtension": {
+      "required": [
+        "extension"
+      ],
+      "properties": {
+        "vip_address": {
+          "type": "string",
+          "description": "**参数解释**:ipv4 vip地址。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "ipv6_vip_address": {
+          "type": "string",
+          "description": "**参数解释**:ipv6 vip地址。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "extension": {
+          "description": "**参数解释**:pp 扩展。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/Extension"
+        }
+      }
+    },
+    "CreateLoadBalancerPublicIpOption": {
+      "required": [
+        "network_type",
+        "bandwidth"
+      ],
+      "properties": {
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:IP版本。\n\n**约束限制**:不涉及\n\n**取值范围**:\n - 4:表示IPv4。\n - 6:表示IPv6。\n\n**默认取值**:4",
+          "default": 4
+        },
+        "network_type": {
+          "type": "string",
+          "description": "**参数解释**:弹性公网IP的网络类型,默认5_bgp,更多请参考弹性公网ip创建。\n\n**约束限制**:华南-深圳局点该参数取值只能为5_gray。\n\n\n**取值范围**:5_bgp - 全动态BGP。\n\n**默认取值**:5_bgp",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "billing_info": {
+          "type": "string",
+          "description": "**参数解释**:计费订单信息。\n\n**约束限制**:\n- 空:按需计费。\n- 非空:包周期计费。格式:order_id:product_id:region_id:project_id\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:弹性公网IP的描述信息。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "bandwidth": {
+          "$ref": "#/definitions/CreateLoadBalancerBandwidthOption",
+          "description": "**参数解释**:带宽信息。\n\n**约束限制**:不涉及"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

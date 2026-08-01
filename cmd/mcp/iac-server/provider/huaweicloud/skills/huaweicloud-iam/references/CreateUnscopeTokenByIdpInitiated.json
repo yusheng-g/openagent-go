@@ -1,0 +1,299 @@
+{
+  "name": "CreateUnscopeTokenByIdpInitiated",
+  "summary": "获取联邦认证unscoped token(IdP initiated)",
+  "tags": "联邦身份认证管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-FEDERATION/tokens": {
+      "post": {
+        "tags": [
+          "联邦身份认证管理"
+        ],
+        "summary": "获取联邦认证unscoped token(IdP initiated)",
+        "description": "该接口可以用于通过IdP initiated的联邦认证方式获取unscoped token。\n\nUnscoped token不能用来鉴权,若联邦用户需要使用token进行鉴权,请参考[获取联邦认证scoped token](https://support.huaweicloud.com/api-iam/iam_13_0604.html)获取scoped token。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。\n> - 该接口支持在命令行侧调用,需要客户端使用IdP initiated的联邦认证方式获取SAMLResponse,并采用浏览器提交表单数据的方式,获取unscoped token。",
+        "operationId": "CreateUnscopeTokenByIdpInitiated",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Idp-Id",
+            "in": "header",
+            "description": "身份提供商ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "test_local_idp",
+            "x-order": 1
+          },
+          {
+            "name": "SAMLResponse",
+            "in": "formData",
+            "description": "在IdP认证成功后返回的响应体。详情请参见:[获取联邦认证unscoped token(IdP initiated)](https://support.huaweicloud.com/api-iam/iam_02_0003.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "SAMLResponse=PD94bWwgdmVyc2lvbj0iMS4wIiBl4WXZ1OGNmYmRzWk1ZeWlLKy96anpEbm1rT2FrVVBrUmlSWEpLYUt5NzJtUmtoRFBCNjgwVQpzalU3R2hKNHE4ZG48L3hlbmM6Q2lwaGVyVmFsdWU%2BPC94ZW5jOkNpcGhlckRhdGE%2BPC94ZW5jOkVuY3J5cHRlZERhdGE%2BPC9zYW1sMjpFbmNyeXB0ZWRBc3NlcnRpb24%2BPC9zYW1sMnA6UmVzcG9uc2U%2B",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。",
+            "examples": {
+              "application/json": {
+                "token": {
+                  "expires_at": "2020-02-13T14:21:34.042000Z",
+                  "methods": [
+                    "mapped"
+                  ],
+                  "issued_at": "2020-02-12T14:21:34.042000Z",
+                  "user": {
+                    "OS-FEDERATION": {
+                      "identity_provider": {
+                        "id": "ACME"
+                      },
+                      "protocol": {
+                        "id": "saml"
+                      },
+                      "groups": [
+                        {
+                          "id": "06aa22601502cec4a23ac0084a74038f",
+                          "name": "admin"
+                        }
+                      ]
+                    },
+                    "domain": {
+                      "name": "IAMDomain",
+                      "id": "06ba0970a097acc0f36c0086bb6cfe0"
+                    },
+                    "name": "FederationUser",
+                    "id": "LdUTYSC7zmJVIic3yaCbLBXDxPAdDxLg"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Subject-Token": {
+                "type": "string",
+                "description": "签名后的unscoped token。",
+                "x-example": "MIIatAYJKoZIhvcNAQcCoIIapTCCGqECAQExDTALB..."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUnscopeTokenByIDPInitiatedResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取联邦认证unscoped token(IdP initiated)",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 102,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3.0/OS-FEDERATION/tokens",
+        "x-request-examples-1": "SAMLResponse=PD94b...",
+        "x-request-examples-text-1": "SAMLResponse=PD94b...",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TokenUserOsfederation": {
+      "required": [
+        "groups",
+        "identity_provider",
+        "protocol"
+      ],
+      "properties": {
+        "groups": {
+          "type": "array",
+          "description": "用户组信息列表。",
+          "items": {
+            "$ref": "#/definitions/OsfederationGroups"
+          }
+        },
+        "identity_provider": {
+          "description": "身份提供商信息。",
+          "$ref": "#/definitions/OsfederationIdentityprovider"
+        },
+        "protocol": {
+          "example": "fdec73ffea524aa1b373e40...",
+          "description": "协议信息。",
+          "$ref": "#/definitions/OsfederationProtocol"
+        }
+      },
+      "description": ""
+    },
+    "OsfederationIdentityprovider": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "exampleidentityprovider",
+          "description": "身份提供商ID。"
+        }
+      },
+      "description": ""
+    },
+    "OsfederationProtocol": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "saml",
+          "description": "协议ID。"
+        }
+      },
+      "description": ""
+    },
+    "UnscopedTokenUser": {
+      "required": [
+        "OS-FEDERATION",
+        "domain",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "domain": {
+          "description": "用户所属账号信息。",
+          "$ref": "#/definitions/TokenDomainResult"
+        },
+        "id": {
+          "type": "string",
+          "example": "QNSzD0bycqUXE4hiRNfyFcWfoOs8z6gT",
+          "description": "用户ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "FederationUser",
+          "description": "用户名称。"
+        },
+        "OS-FEDERATION": {
+          "example": "2016-11-06T15:32:17.000000",
+          "description": "联邦身份认证信息。",
+          "$ref": "#/definitions/TokenUserOsfederation"
+        }
+      },
+      "description": ""
+    },
+    "IdpToken": {
+      "required": [
+        "expires_at",
+        "issued_at",
+        "methods",
+        "user"
+      ],
+      "properties": {
+        "issued_at": {
+          "type": "string",
+          "example": "2018-03-12T03:00:01.168000Z",
+          "description": "token产生时间。"
+        },
+        "expires_at": {
+          "type": "string",
+          "example": "2018-03-13T03:00:01.168000Z",
+          "description": "token到期时间。"
+        },
+        "methods": {
+          "type": "array",
+          "description": "获取token的方式。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "user": {
+          "description": "获取token的用户信息。",
+          "$ref": "#/definitions/UnscopedTokenUser"
+        }
+      },
+      "description": ""
+    },
+    "OsfederationGroups": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "b40189e26ea44f959877621b4b298db5",
+          "description": "用户组ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "admin",
+          "description": "用户组名称。"
+        }
+      },
+      "description": ""
+    },
+    "CreateUnscopeTokenByIDPInitiatedResponseBody": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "description": "联邦认证的unscoped token信息。",
+          "$ref": "#/definitions/IdpToken"
+        }
+      },
+      "description": ""
+    },
+    "TokenDomainResult": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "exampledomain",
+          "description": "用户所属账号名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "e31ac82d778b4d128cb6fed37fd72cdb",
+          "description": "用户所属账号ID。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

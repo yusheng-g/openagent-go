@@ -1,0 +1,164 @@
+{
+  "name": "CreateMemberHealthCheckJob",
+  "summary": "创建后端服务器检测任务",
+  "tags": "后端服务器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/members/{member_id}/health-check": {
+      "post": {
+        "x-request-examples-description-1": "创建后端服务器检测任务",
+        "x-request-examples-text-1": {
+          "member_check": {
+            "listener_id": "b445cc43-02d7-4863-9481-283b7fb1c222",
+            "subject": "all"
+          }
+        },
+        "x-request-examples-1": {
+          "member_check": {
+            "listener_id": "b445cc43-02d7-4863-9481-283b7fb1c222",
+            "subject": "all"
+          }
+        },
+        "tags": [
+          "后端服务器"
+        ],
+        "summary": "创建后端服务器检测任务",
+        "description": "创建后端服务器检测任务。包括后端服务器的配置、ACL规则和安全组规则检查。",
+        "operationId": "CreateMemberHealthCheckJob",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateMemberHealthCheckJobRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateMemberHealthCheckJobRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "member_id",
+            "in": "path",
+            "description": "**参数解释**:后端服务器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "member_check": {
+                  "job_id": "919221ce-0011-4558-81ca-2866e6e68a27"
+                },
+                "request_id": "9869f52f-b740-4075-bb29-6dd0008a1f1d"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateMemberHealthCheckJobResponseBody"
+            }
+          }
+        },
+        "x-name": "创建后端服务器检测任务",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 9,
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/0c1503d710984bad92306faea3654dfd/elb/members/02272819-5655-4c6b-892b-105604f6aea0/health-check",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "CreateMemberHealthCheckJobRequestBody": {
+      "type": "object",
+      "description": "**参数解释**:创建后端服务器检测任务请求body体。",
+      "properties": {
+        "member_check": {
+          "$ref": "#/definitions/CreateMemberHealthCheckJobOption"
+        }
+      }
+    },
+    "CreateMemberHealthCheckJobResponseBody": {
+      "type": "object",
+      "description": "**参数解释**:创建后端服务器检测任务的响应body体。",
+      "properties": {
+        "member_check": {
+          "$ref": "#/definitions/MemberCheckJob"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        }
+      },
+      "required": [
+        "member_check",
+        "request_id"
+      ]
+    },
+    "MemberCheckJob": {
+      "type": "object",
+      "description": "**参数解释**:后端服务器检测任务信息。",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "example": "919221ce-0011-4558-81ca-2866e6e68a27",
+          "description": "**参数解释**:任务ID,根据该任务ID可以查询到任务执行结果。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "CreateMemberHealthCheckJobOption": {
+      "type": "object",
+      "description": "**参数解释**:创建后端服务器检测任务请求参数。",
+      "required": [
+        "listener_id",
+        "subject"
+      ],
+      "properties": {
+        "listener_id": {
+          "type": "string",
+          "example": "b445cc43-02d7-4863-9481-283b7fb1c222",
+          "description": "**参数解释**:后端服务器所关联的监听器,查询在该监听器下后端服务器的状态。\n\n**取值范围**:不涉及"
+        },
+        "subject": {
+          "type": "string",
+          "example": "all",
+          "description": "参数法解释:检查项。\n\n**取值范围**:\n- securityGroup:安全组检查。\n- networkAcl:子网ACL配置检查。\n- config:健康检查端口配置检查。\n- all:所有检查项。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

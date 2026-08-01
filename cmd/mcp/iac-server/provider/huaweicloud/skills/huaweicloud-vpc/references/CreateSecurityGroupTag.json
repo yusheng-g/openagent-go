@@ -1,0 +1,196 @@
+{
+  "name": "CreateSecurityGroupTag",
+  "summary": "创建安全组资源标签",
+  "tags": "安全组资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/{project_id}/security-groups/{security_group_id}/tags": {
+      "post": {
+        "tags": [
+          "安全组资源标签管理"
+        ],
+        "summary": "创建安全组资源标签",
+        "description": "给指定安全组资源实例增加标签信息。\n此接口为幂等接口:创建时,如果创建的标签已经存在(key相同),则覆盖。",
+        "operationId": "CreateSecurityGroupTag",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "b433fedb577940bfa59abff86482ed1a",
+            "x-order": 2
+          },
+          {
+            "name": "security_group_id",
+            "in": "path",
+            "description": "安全组资源ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+            "x-order": 3
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "in": "body",
+            "name": "CreateSecurityGroupTagRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateSecurityGroupTagRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "正常返回"
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "x-name": "创建安全组资源标签",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "创建安全组资源标签",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/{project_id}/security-groups/{security_group_id}/tags",
+        "x-request-examples-1": {
+          "tag": {
+            "key": "key1",
+            "value": "value1"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"tag\": {\n        \"key\": \"key1\",\n        \"value\": \"value1\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2018-3-30",
+        "x-open-region-cloud": "hc,hk,g42,hk_g42",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 0,
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "minLength": 0,
+          "maxLength": 43,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": ""
+    },
+    "CreateSecurityGroupTagRequestBody": {
+      "required": [
+        "tag"
+      ],
+      "properties": {
+        "tag": {
+          "description": "创建安全组资源标签请求体",
+          "$ref": "#/definitions/ResourceTag"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

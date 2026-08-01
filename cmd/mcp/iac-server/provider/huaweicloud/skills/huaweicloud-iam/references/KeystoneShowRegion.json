@@ -1,0 +1,215 @@
+{
+  "name": "KeystoneShowRegion",
+  "summary": "查询区域详情",
+  "tags": "区域管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/regions/{region_id}": {
+      "get": {
+        "tags": [
+          "区域管理"
+        ],
+        "summary": "查询区域详情",
+        "description": "该接口可以用于查询区域详情。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneShowRegion",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "IAM用户token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "region_id",
+            "in": "path",
+            "description": "待查询的区域ID。可以使用[查询区域列表](https://support.huaweicloud.com/api-iam/iam_05_0001.html)接口获取,控制台获取方法请参见:[获取区域ID](https://console.huaweicloud.com/iam/?agencyId=d15f57bd355d4514bd9618bd648dd432®ion=cn-east-2&locale=zh-cn#/iam/projects)",
+            "required": true,
+            "type": "string",
+            "x-example": "la-south-2",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "region": {
+                  "parent_region_id": null,
+                  "description": "",
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/regions/la-south-2"
+                  },
+                  "type": "public",
+                  "id": "la-south-2",
+                  "locales": {
+                    "pt-br": "AL-Santiago",
+                    "zh-cn": "拉美-圣地亚哥",
+                    "en-us": "LA-Santiago",
+                    "es-us": "AL-Santiago de Chile1",
+                    "es-es": "LA-Santiago"
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneShowRegionResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询区域详情",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 80,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/regions/{region_id}",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/regions/{region_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "RegionLocales": {
+      "required": [
+        "en-us",
+        "zh-cn"
+      ],
+      "properties": {
+        "zh-cn": {
+          "type": "string",
+          "example": "拉美-圣地亚哥",
+          "description": "区域的中文名称。"
+        },
+        "en-us": {
+          "type": "string",
+          "example": "LA-Santiago",
+          "description": "区域的英文名称。"
+        },
+        "pt-br": {
+          "type": "string",
+          "example": "AL-Santiago",
+          "description": "区域的葡萄牙语名称。"
+        },
+        "es-us": {
+          "type": "string",
+          "example": "AL-Santiago de Chile1",
+          "description": "区域的美国西班牙语名称。"
+        },
+        "es-es": {
+          "type": "string",
+          "example": "LA-Santiago",
+          "description": "区域的西班牙语名称。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneShowRegionResponseBody": {
+      "required": [
+        "region"
+      ],
+      "properties": {
+        "region": {
+          "description": "区域信息。",
+          "$ref": "#/definitions/Region"
+        }
+      },
+      "description": ""
+    },
+    "Region": {
+      "required": [
+        "description",
+        "id",
+        "links",
+        "locales",
+        "parent_region_id",
+        "type"
+      ],
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "区域描述信息。"
+        },
+        "parent_region_id": {
+          "type": "string",
+          "example": "null",
+          "description": "null."
+        },
+        "links": {
+          "description": "区域的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "locales": {
+          "description": "区域名。",
+          "$ref": "#/definitions/RegionLocales"
+        },
+        "id": {
+          "type": "string",
+          "example": "1500365963661574434",
+          "description": "区域ID。"
+        },
+        "type": {
+          "type": "string",
+          "example": "public",
+          "description": "区域类型。"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,278 @@
+{
+  "name": "GetBucketWebsite",
+  "summary": "获取桶的网站配置",
+  "tags": "静态网站托管",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "静态网站托管"
+        ],
+        "operationId": "GetBucketWebsite",
+        "summary": "获取桶的网站配置",
+        "description": "获取该桶设置的网站配置信息。\n\n要正确执行此操作,需要确保执行者有GetBucketWebsite执行权限。默认情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?website",
+        "x-request-examples-1": "GET /?website HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 03:41:54 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:Yxt1Ru+feHE0S94R7dcBp+hfLnI=\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "website",
+            "in": "query",
+            "required": true,
+            "description": "website表示请求桶的网站配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: BF2600000164363442EC03A8CA3DD7F5\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSFbGOmlN0BVp1kbwN3har8jbVvtKEKN\nContent-Type: application/xml\nDate: WED, 01 Jul 2015 03:41:54 GMT\nContent-Length: 250\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<WebsiteConfiguration xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n\n  <RedirectAllRequestsTo>\n    <HostName>www.huaweicloud.com</HostName>\n  </RedirectAllRequestsTo>\n</WebsiteConfiguration>\n"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetBucketWebsiteResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|NoSuchWebsiteConfiguration|桶的Website配置不存在。|404 Not Found|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetBucketWebsiteResponseBody": {
+      "properties": {
+        "WebsiteConfiguration": {
+          "$ref": "#/definitions/SetBucketWebsiteRequestBody"
+        }
+      }
+    },
+    "IndexDocument": {
+      "description": "Suff元素。\n",
+      "required": [
+        "Suffix"
+      ],
+      "properties": {
+        "Suffix": {
+          "description": "Suffix元素被追加在对文件夹的请求的末尾(例如:Suffix配置的是“index.html”,请求的是“samplebucket/images/”,返回的数据将是“samplebucket”桶内名为“images/index.html”的对象的内容)。Suffix元素不能为空或者包含“/”字符。\n",
+          "type": "string"
+        }
+      }
+    },
+    "RedirectAllRequestsTo": {
+      "description": "描述所有请求的重定向行为,如果这个节点出现,所有其他的兄弟节点都不能出现。\n",
+      "required": [
+        "HostName"
+      ],
+      "properties": {
+        "HostName": {
+          "description": "描述重定向的站点名。\n",
+          "type": "string"
+        },
+        "Protocol": {
+          "description": "描述重定向请求时使用的协议(http,https),默认使用http协议。\n",
+          "type": "string"
+        }
+      }
+    },
+    "Redirect": {
+      "description": "重定向信息的元素。可以重定向到另一个站点、另一个页面或使用另一个协议。当事件或错误发生时,可以指定不同的返回码。\n",
+      "properties": {
+        "Protocol": {
+          "description": "描述重定向请求时使用的协议。\n\n类型:字符串\n\n父节点:Redirect\n\n可选值:http、https\n\n条件:有其他兄弟节点存在时非必选\n",
+          "type": "string",
+          "enum": [
+            "http",
+            "https"
+          ]
+        },
+        "HostName": {
+          "description": "描述重定向请求时使用的站点名。\n\n类型:字符串\n\n父节点:Redirect\n\n条件:有其他兄弟节点存在时非必选\n",
+          "type": "string"
+        },
+        "ReplaceKeyPrefixWith": {
+          "description": "描述重定向请求时使用的对象名前缀。\n\n例如:\n\n想把所有对docs(目录下的对象)的请求重定向到documents(目录下的对象),可以将Condition中的KeyPrefixEquals设置为docs,Redirect中的ReplaceKeyPrefixWith设置为documents。\n类型:字符串\n\n父节点:Redirect\n\n条件:有其他兄弟节点存在时非必选,不可与ReplaceKeyWith同时存在\n",
+          "type": "string"
+        },
+        "ReplaceKeyWith": {
+          "description": "描述重定向请求时使用的对象名。例如:重定向请求到error.html。\n\n类型:字符串\n\n父节点:Redirect\n\n条件:有其他兄弟节点存在时非必选,不可与ReplaceKeyPrefixWith同时存在\n",
+          "type": "string"
+        },
+        "HttpRedirectCode": {
+          "description": "描述响应中的HTTP状态码。\n\n类型:字符串\n\n父节点:Redirect\n\n条件:有其他兄弟节点存在时非必选\n",
+          "type": "string"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "Condition": {
+      "description": "描述重定向规则匹配的条件的元素。\n",
+      "properties": {
+        "KeyPrefixEquals": {
+          "description": "描述当重定向生效时对象名的前缀。\n\n例如:\n\n重定向ExamplePage.html对象的请求,KeyPrefixEquals设为ExamplePage.html。\n类型:字符串\n\n父节点:Condition\n\n条件:父节点Condition存在,并且兄弟节点HttpErrorCodeReturnedEquals不存在。如果设定了两个条件,只有都匹配时,Redirect才生效。\n",
+          "type": "string"
+        },
+        "HttpErrorCodeReturnedEquals": {
+          "description": "描述Redirect生效时的HTTP错误码。当发生错误时,如果错误码等于这个值,那么Redirect生效。\n\n例如:\n\n当返回的http错误码为404时重定向到NotFound.html,可以将Condition中的HttpErrorCodeReturnedEquals设置为404,Redirect中的ReplaceKeyWith设置为NotFound.html。\n类型:字符串\n\n父节点:Condition\n\n条件:父节点Condition存在,并且兄弟节点KeyPrefixEquals不存在。如果设定了多个条件,需要同时匹配所有的条件,Redirect才可生效。\n",
+          "type": "string"
+        }
+      }
+    },
+    "RoutingRules": {
+      "description": "Routing元素。\n",
+      "required": [
+        "RoutingRule"
+      ],
+      "properties": {
+        "RoutingRule": {
+          "$ref": "#/definitions/RoutingRule"
+        }
+      }
+    },
+    "SetBucketWebsiteRequestBody": {
+      "xml": {
+        "name": "WebsiteConfiguration"
+      },
+      "description": "网站配置的根节点。\n",
+      "required": [
+        "RedirectAllRequestsTo",
+        "IndexDocument"
+      ],
+      "properties": {
+        "RedirectAllRequestsTo": {
+          "$ref": "#/definitions/RedirectAllRequestsTo"
+        },
+        "IndexDocument": {
+          "$ref": "#/definitions/IndexDocument"
+        },
+        "ErrorDocument": {
+          "$ref": "#/definitions/ErrorDocument"
+        },
+        "RoutingRules": {
+          "$ref": "#/definitions/RoutingRules"
+        }
+      }
+    },
+    "ErrorDocument": {
+      "description": "Key元素。\n",
+      "properties": {
+        "Key": {
+          "description": "当4XX错误出现时使用的对象的名称。这个元素指定了当错误出现时返回的页面。\n",
+          "type": "string"
+        }
+      }
+    },
+    "RoutingRule": {
+      "description": "重定向规则的元素。一条重定向规则包含一个Condition和一个Redirect,当Condition匹配时,Redirect生效。\n元素中至少要有一个RoutingRule元素\n",
+      "required": [
+        "Redirect"
+      ],
+      "properties": {
+        "Condition": {
+          "$ref": "#/definitions/Condition"
+        },
+        "Redirect": {
+          "$ref": "#/definitions/Redirect"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

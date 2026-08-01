@@ -1,0 +1,216 @@
+{
+  "name": "BatchDeleteMembers",
+  "summary": "批量删除后端服务器",
+  "tags": "后端服务器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/pools/{pool_id}/members/batch-delete": {
+      "post": {
+        "x-request-examples-description-1": "根据ID批量删除后端服务器。",
+        "x-request-examples-description-2": "根据IP和port批量删除后端服务器",
+        "x-request-examples-url-2": "POST https://{ELB_Endpoint}/v3/04dd36f964000fe22f9ac00bc85b1a1d/elb/pools/04a9bc65-b75b-478d-b4d6-e693bb61dd35/members/batch-delete",
+        "x-request-examples-text-2": {
+          "members": [
+            {
+              "address": "192.168.0.48",
+              "protocol_port": 8080
+            },
+            {
+              "address": "192.168.0.49",
+              "protocol_port": 8080
+            }
+          ]
+        },
+        "x-request-examples-2": {
+          "members": [
+            {
+              "address": "192.168.0.48",
+              "protocol_port": 8080
+            },
+            {
+              "address": "192.168.0.49",
+              "protocol_port": 8080
+            }
+          ]
+        },
+        "x-request-examples-text-1": {
+          "members": [
+            {
+              "id": "141a8dea-b3f9-4fed-a1e2-30678f53de0b"
+            },
+            {
+              "id": "14d0a82b-fcc2-4ce8-aac8-96d86a7973e4"
+            }
+          ]
+        },
+        "x-request-examples-1": {
+          "members": [
+            {
+              "id": "141a8dea-b3f9-4fed-a1e2-30678f53de0b"
+            },
+            {
+              "id": "14d0a82b-fcc2-4ce8-aac8-96d86a7973e4"
+            }
+          ]
+        },
+        "tags": [
+          "后端服务器"
+        ],
+        "summary": "批量删除后端服务器",
+        "description": "在指定pool下批量删除后端服务器。一次最多添加200个。",
+        "operationId": "BatchDeleteMembers",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "BatchDeleteMembersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteMembersRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "pool_id",
+            "in": "path",
+            "description": "**参数解释**:后端服务器组ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "request_id": "db97a1d3c5ee386729dc00e4df1d5708",
+                "members": [
+                  {
+                    "id": "141a8dea-b3f9-4fed-a1e2-30678f53de0b",
+                    "ret_status": "not found"
+                  },
+                  {
+                    "id": "14d0a82b-fcc2-4ce8-aac8-96d86a7973e4",
+                    "ret_status": "successful"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteMembersResponseBody"
+            }
+          }
+        },
+        "x-name": "批量删除后端服务器",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 8,
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v3/04dd36f964000fe22f9ac00bc85b1a1d/elb/pools/04a9bc65-b75b-478d-b4d6-e693bb61dd35/members/batch-delete",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "BatchDeleteMembersOption": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:需要删除的后端服务器ID。\n\n**约束限制**:\n- 若传入id则不能传其他参数,否则报错。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n> 此处并非ECS服务器的ID,而是ELB为绑定的后端服务器自动生成的member ID。"
+        },
+        "address": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器IP地址。\n\n**约束限制**:\n- address和protocol_port必须同时传入。\n- 不能同时传入ID字段。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:后端服务器端口。\n\n**约束限制**:\n- address和protocol_port必须同时传入。\n- 不能同时传入ID字段。\n- 可以传0,用于删除端口透传pool下的member。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        }
+      }
+    },
+    "BatchDeleteMembersState": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:后端服务器ID。\n\n**取值范围**:不涉及\n\n> 此处并非ECS服务器的ID,而是ELB为绑定的后端服务器自动生成的member ID。"
+        },
+        "ret_status": {
+          "type": "string",
+          "description": "**参数解释**:当前后端服务器删除结果状态。\n\n**取值范围**:\n- successful:删除成功。\n- not found:member不存在。"
+        }
+      },
+      "required": [
+        "id",
+        "ret_status"
+      ]
+    },
+    "BatchDeleteMembersRequestBody": {
+      "properties": {
+        "members": {
+          "items": {
+            "$ref": "#/definitions/BatchDeleteMembersOption"
+          },
+          "description": "**参数解释**:批量删除后端服务器请求body。\n\n**约束限制**:不涉及",
+          "type": "array"
+        }
+      },
+      "description": "This is a auto create Body Object",
+      "required": [
+        "members"
+      ]
+    },
+    "BatchDeleteMembersResponseBody": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "members": {
+          "type": "array",
+          "description": "**参数解释**:后端服务器对象列表。",
+          "items": {
+            "$ref": "#/definitions/BatchDeleteMembersState"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "required": [
+        "request_id",
+        "members"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

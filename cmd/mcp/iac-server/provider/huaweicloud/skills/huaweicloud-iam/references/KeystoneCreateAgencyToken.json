@@ -1,0 +1,731 @@
+{
+  "name": "KeystoneCreateAgencyToken",
+  "summary": "获取委托Token",
+  "tags": "Token管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/auth/tokens": {
+      "post": {
+        "tags": [
+          "Token管理"
+        ],
+        "summary": "获取委托Token",
+        "description": "该接口可以用于获取委托方的token。\n\n例如:A账号希望B账号管理自己的某些资源,所以A账号创建了委托给B账号,则A账号为委托方,B账号为被委托方。那么B账号可以通过该接口获取委托token。B账号仅能使用该token管理A账号的委托资源,不能管理自己账号中的资源。如果B账号需要管理自己账号中的资源,则需要获取自己的用户token。\n\ntoken是系统颁发给用户的访问令牌,承载用户的身份、权限等信息。调用IAM以及其他云服务的接口时,可以使用本接口获取的token进行鉴权。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。如果使用全局区域的Endpoint调用,该token可以在所有区域使用;如果使用非全局区域的Endpoint调用,则该token仅在该区域生效,不能跨区域使用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。\n\n> - token的有效期为24小时,建议进行缓存,避免频繁调用。",
+        "operationId": "KeystoneCreateAgencyToken",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "被委托方B账号中的IAM用户B具有Agent Operator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "nocatalog",
+            "in": "query",
+            "description": "如果设置该参数,返回的响应体中将不显示catalog信息。任何非空字符串都将解释为true,并使该字段生效。",
+            "required": false,
+            "type": "string",
+            "x-example": "true",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "KeystoneCreateAgencyTokenRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateAgencyTokenRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功。\n\n示例1:由被委托方B(账号名为IAMDomainB)中的IAM用户B(用户名IAMUserB,请求头中的X-Auth-Token字段需要填写IAMUserB的用户token,且该token需要具有Agent Operator权限),获取委托方A(账号名为IAMDomainA)创建的委托名为IAMAgency,作用范围为委托方A整个账号的token。\n\n示例2:由被委托方B(账号名为IAMDomainB)中的IAM用户B(用户名IAMUserB,请求头中的X-Auth-Token字段需要填写IAMUserB的用户token,且该token需要具有Agent Operator权限),获取委托方A(账号名为IAMDomainA)创建的委托名为IAMAgency,作用范围为委托方A的项目“cn-north-1”,且返回的响应体中将不显示catalog信息的token。",
+            "examples": {
+              "application/json": {
+                "token": {
+                  "expires_at": "2020-01-05T05:05:17.429000Z",
+                  "methods": [
+                    "assume_role"
+                  ],
+                  "catalog": [
+                    {
+                      "endpoints": [
+                        {
+                          "id": "33e1cbdd86d34e89a63cf8ad16a5f49f",
+                          "interface": "public",
+                          "region": "*",
+                          "region_id": "*",
+                          "url": "https://iam.myhuaweicloud.com/v3.0"
+                        }
+                      ],
+                      "id": "100a6a3477f1495286579b819d399e36",
+                      "name": "iam",
+                      "type": "iam"
+                    }
+                  ],
+                  "domain": {
+                    "id": "d78cbac186b744899480f25bd022f468",
+                    "name": "IAMDomainA"
+                  },
+                  "roles": [
+                    {
+                      "id": "0",
+                      "name": "op_gated_eip_ipv6"
+                    },
+                    {
+                      "id": "0",
+                      "name": "op_gated_rds_mcs"
+                    }
+                  ],
+                  "issued_at": "2020-01-04T05:05:17.429000Z",
+                  "user": {
+                    "domain": {
+                      "id": "d78cbac186b744899480f25bd022f468",
+                      "name": "IAMDomainA"
+                    },
+                    "id": "0760a9e2a60026664f1fc0031f9f205e",
+                    "name": "IAMDomainA/IAMAgency"
+                  },
+                  "assumed_by": {
+                    "user": {
+                      "domain": {
+                        "id": "a2cd82a33fb043dc9304bf72a0f38f00",
+                        "name": "IAMDomainB"
+                      },
+                      "id": "0760a0bdee8026601f44c006524b17a9",
+                      "name": "IAMUserB",
+                      "password_expires_at": ""
+                    }
+                  }
+                }
+              },
+              "application/json-1": {
+                "token": {
+                  "expires_at": "2020-01-05T06:49:28.094000Z",
+                  "methods": [
+                    "assume_role"
+                  ],
+                  "catalog": [],
+                  "roles": [
+                    {
+                      "id": "0",
+                      "name": "op_gated_eip_ipv6"
+                    },
+                    {
+                      "id": "0",
+                      "name": "op_gated_rds_mcs"
+                    }
+                  ],
+                  "project": {
+                    "domain": {
+                      "id": "d78cbac186b744899480f25bd022f468",
+                      "name": "IAMDomainA"
+                    },
+                    "id": "aa2d97d7e62c4b7da3ffdfc11551f878",
+                    "name": "cn-north-1"
+                  },
+                  "issued_at": "2020-01-04T06:49:28.094000Z",
+                  "user": {
+                    "domain": {
+                      "id": "d78cbac186b744899480f25bd022f468",
+                      "name": "IAMDomainA"
+                    },
+                    "id": "0760a9e2a60026664f1fc0031f9f205e",
+                    "name": "IAMDomainA/IAMAgency"
+                  },
+                  "assumed_by": {
+                    "user": {
+                      "domain": {
+                        "id": "a2cd82a33fb043dc9304bf72a0f38f00",
+                        "name": "IAMDomainB"
+                      },
+                      "id": "0760a0bdee8026601f44c006524b17a9",
+                      "name": "IAMUserB",
+                      "password_expires_at": ""
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Subject-Token": {
+                "type": "string",
+                "description": "签名后的token。",
+                "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCA38CAQExDTALBglghkgBZQMEAgEwgXXXXX..."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneCreateAgencyTokenResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "The request body is invalid",
+                  "title": "Bad Request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "The X-Auth-Token is invalid!",
+                  "title": "Unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。\n- 可能原因:被委托方B中用户B的用户token(即X-Auth-Token填写的token)缺少Agent Operator权限,请添加权限。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 403,
+                  "message": "You have no right to do this action",
+                  "title": "Forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "获取委托Token",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "由被委托方B(账号名为IAMDomainB)中的IAM用户B(用户名IAMUserB,请求头中的X-Auth-Token字段需要填写IAMUserB的用户token,且该token需要具有Agent Operator权限),获取委托方A(账号名为IAMDomainA)创建的委托名为IAMAgency,作用范围为委托方A整个账号的token。",
+        "x-request-examples-url-1": "POST https://iam.myhuaweicloud.com/v3/auth/tokens",
+        "x-request-examples-1": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "assume_role"
+              ],
+              "assume_role": {
+                "domain_name": "IAMDomainA",
+                "agency_name": "IAMAgency"
+              }
+            },
+            "scope": {
+              "domain": {
+                "name": "IAMDomainA"
+              }
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"assume_role\"\n            ],\n            \"assume_role\": {\n                \"domain_name\": \"IAMDomainA\",\n                \"agnecy_name\": \"IAMAgency\"\n            }\n        },\n        \"scope\": {\n            \"domain\": {\n                \"name\": \"IAMDomainA\"\n            }\n        }\n    }\n}",
+        "x-request-examples-description-2": "由被委托方B(账号名为IAMDomainB)中的IAM用户B(用户名IAMUserB,请求头中的X-Auth-Token字段需要填写IAMUserB的用户token,且该token需要具有Agent Operator权限),获取委托方A(账号名为IAMDomainA)创建的委托名为IAMAgency,作用范围为委托方A的项目“cn-north-1”,且返回的响应体中将不显示catalog信息的token。",
+        "x-request-examples-url-2": "POST https://iam.myhuaweicloud.com/v3/auth/tokens?nocatalog=true",
+        "x-request-examples-2": {
+          "auth": {
+            "identity": {
+              "methods": [
+                "assume_role"
+              ],
+              "assume_role": {
+                "domain_name": "IAMDomainA",
+                "agency_name": "IAMAgency"
+              }
+            },
+            "scope": {
+              "project": {
+                "name": "cn-north-1"
+              }
+            }
+          }
+        },
+        "x-request-examples-text-2": "{\n    \"auth\": {\n        \"identity\": {\n            \"methods\": [\n                \"assume_role\"\n            ],\n            \"assume_role\": {\n                \"domain_name\": \"IAMDomainA\",\n                \"agency_name\": \"IAMAgency\"\n            }\n        },\n        \"scope\": {\n            \"project\": {\n                \"name\": \"cn-north-1\"\n            }\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AgencyTokenScope": {
+      "properties": {
+        "domain": {
+          "description": "委托方A的domain信息。表示获取的token可以跨区域使用,domain支持id和name,填写任一即可。",
+          "$ref": "#/definitions/AgencyTokenScopeDomain"
+        },
+        "project": {
+          "description": "委托方A的项目信息,表示获取的token仅能访问指定项目下的资源,project支持id和name,填写任一即可。",
+          "$ref": "#/definitions/AgencyTokenScopeProject"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenScopeProject": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "aa2d97d7e62c4b7da3ffdfc11551f878",
+          "description": "委托方A项目的ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。"
+        },
+        "name": {
+          "type": "string",
+          "example": "cn-north-1",
+          "description": "委托方A项目的名称,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenIdentity": {
+      "required": [
+        "assume_role",
+        "methods"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "description": "token的获取方式,该字段内容为[\"assume_role\"]。",
+          "items": {
+            "type": "string",
+            "enum": [
+              "assume_role"
+            ]
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "assume_role": {
+          "description": "assume_role的具体信息。",
+          "$ref": "#/definitions/AgencyTokenAssumerole"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenResult": {
+      "required": [
+        "assumed_by",
+        "expires_at",
+        "issued_at",
+        "methods",
+        "roles",
+        "user"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "description": "获取token的方式。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expires_at": {
+          "type": "string",
+          "example": "2020-01-04T09:08:49.965000Z",
+          "description": "token到期时间。"
+        },
+        "issued_at": {
+          "type": "string",
+          "example": "2020-01-03T09:08:49.965000Z",
+          "description": "token下发时间。"
+        },
+        "assumed_by": {
+          "description": "被委托方B的相关信息。  ",
+          "$ref": "#/definitions/AgencyAssumedby"
+        },
+        "catalog": {
+          "type": "array",
+          "description": "服务目录信息。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/TokenCatalog"
+          }
+        },
+        "domain": {
+          "description": "委托方A的账号信息。如果获取token时请求体中scope参数设置为domain,则返回该字段。  ",
+          "$ref": "#/definitions/AgencyTokenDomain"
+        },
+        "project": {
+          "description": "委托方A的项目信息。如果获取token时请求体中scope参数设置为project,则返回该字段。",
+          "$ref": "#/definitions/AgencyTokenProject"
+        },
+        "roles": {
+          "type": "array",
+          "description": "委托token的权限信息。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/TokenRole"
+          }
+        },
+        "user": {
+          "description": "委托方A所创建的委托的信息。 ",
+          "$ref": "#/definitions/AgencyTokenUser"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateAgencyTokenResponseBody": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "description": "token信息列表。",
+          "$ref": "#/definitions/AgencyTokenResult"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenDomain": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMDomainA",
+          "description": "委托方A的账号名称。"
+        },
+        "id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "委托方A的账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenCatalogEndpoint": {
+      "required": [
+        "id",
+        "interface",
+        "region",
+        "region_id",
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3",
+          "description": "终端节点的URL。"
+        },
+        "region": {
+          "type": "string",
+          "example": "*",
+          "description": "终端节点所属区域。"
+        },
+        "region_id": {
+          "type": "string",
+          "example": "*",
+          "description": "终端节点所属区域ID。"
+        },
+        "interface": {
+          "type": "string",
+          "example": "public",
+          "description": "接口类型,描述接口在该终端节点的可见性。值为“public”,表示该接口为公开接口。"
+        },
+        "id": {
+          "type": "string",
+          "example": "089d4a381d574308a703122d3ae738e9",
+          "description": "终端节点ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenRole": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "te_admin",
+          "description": "权限名称。"
+        },
+        "id": {
+          "type": "string",
+          "description": "权限ID。默认显示为0,非真实权限ID。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenAuth": {
+      "required": [
+        "identity",
+        "scope"
+      ],
+      "properties": {
+        "identity": {
+          "description": "认证参数。  ",
+          "$ref": "#/definitions/AgencyTokenIdentity"
+        },
+        "scope": {
+          "description": "token的使用范围,需要填写委托方A的project或domain,填写其中任一即可。\n> 使用全局区域的Endpoint调用该接口时,推荐您将scope设置为domain,该token可以跨区域使用,如果将scope设置为project,该token仅能在指定的project中使用,不能跨区域使用。",
+          "$ref": "#/definitions/AgencyTokenScope"
+        }
+      },
+      "description": ""
+    },
+    "AgencyAssumedby": {
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "description": "被委托方B中IAM用户的用户信息。",
+          "$ref": "#/definitions/AgencyAssumedbyUser"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneCreateAgencyTokenRequestBody": {
+      "required": [
+        "auth"
+      ],
+      "properties": {
+        "auth": {
+          "description": "认证信息。",
+          "$ref": "#/definitions/AgencyTokenAuth"
+        }
+      },
+      "description": ""
+    },
+    "TokenCatalog": {
+      "required": [
+        "endpoints",
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "identity",
+          "description": "该接口所属服务。"
+        },
+        "id": {
+          "type": "string",
+          "example": "1331e5cff2a74d76b03da1225910e31d",
+          "description": "服务ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "iam",
+          "description": "服务名称。"
+        },
+        "endpoints": {
+          "type": "array",
+          "description": "终端节点。",
+          "items": {
+            "$ref": "#/definitions/TokenCatalogEndpoint",
+            "default": {
+              "value": "{}",
+              "type": "object"
+            }
+          }
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenProjectDomain": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMDomainA",
+          "description": "委托方A的账号名称。"
+        },
+        "id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "委托方A的账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenScopeDomain": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "委托方A的账号ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMDomain",
+          "description": "委托方A的账号名,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenAssumerole": {
+      "required": [
+        "agency_name"
+      ],
+      "properties": {
+        "domain_id": {
+          "type": "string",
+          "example": "1331e5cff2a74d76b03da1225910e31d",
+          "description": "委托方A的账号ID。“domain_id”与“domain_name”至少填写一个。"
+        },
+        "domain_name": {
+          "type": "string",
+          "example": "IAMDomainA",
+          "description": "委托方A的账号名称。“domain_id”与“domain_name”至少填写一个。"
+        },
+        "agency_name": {
+          "type": "string",
+          "example": "IAMAgency",
+          "description": "委托方A创建的委托的名称。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenUser": {
+      "required": [
+        "domain",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMDomainA/IAMAgency",
+          "description": "委托方A账号名/委托名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "0760a9e2a60026664f1fc0031f9f205e",
+          "description": "委托ID。"
+        },
+        "domain": {
+          "description": "委托方A的账号信息。",
+          "$ref": "#/definitions/AgencyTokenUserDomain"
+        }
+      },
+      "description": ""
+    },
+    "AgencyAssumedbyUser": {
+      "required": [
+        "domain",
+        "id",
+        "name",
+        "password_expires_at"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMUserB",
+          "description": "被委托方B中IAM用户的用户名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "0760a0bdee8026601f44c006524b17a9",
+          "description": "被委托方B中IAM用户的用户ID。"
+        },
+        "domain": {
+          "description": "被委托方B的账号信息。",
+          "$ref": "#/definitions/AgencyAssumedbyUserDomain"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "example": "2020-03-10T03:16:46.000000Z",
+          "description": "被委托方B中IAM用户的密码过期时间(UTC时间),“”表示密码不过期。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenUserDomain": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "委托方A的账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMDomainA",
+          "description": "委托方A的账号名称。"
+        }
+      },
+      "description": ""
+    },
+    "AgencyTokenProject": {
+      "required": [
+        "domain",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "cn-north-1",
+          "description": "委托方A的项目名称。"
+        },
+        "id": {
+          "type": "string",
+          "example": "4d417c8c53fe4531acde41522d1b2866",
+          "description": "委托方A的项目ID。"
+        },
+        "domain": {
+          "description": "委托方A的账号信息。",
+          "$ref": "#/definitions/AgencyTokenProjectDomain"
+        }
+      },
+      "description": ""
+    },
+    "AgencyAssumedbyUserDomain": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMDomainB",
+          "description": "被委托方B的账号名称。"
+        },
+        "id": {
+          "type": "string",
+          "example": "a2cd82a33fb043dc9304bf72a0f38f00",
+          "description": "被委托方B的账号ID。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

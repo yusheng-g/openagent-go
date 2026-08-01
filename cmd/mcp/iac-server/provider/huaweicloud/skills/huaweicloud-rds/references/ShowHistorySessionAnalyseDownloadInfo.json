@@ -1,0 +1,154 @@
+{
+  "name": "ShowHistorySessionAnalyseDownloadInfo",
+  "summary": "查询历史会话分析的下载信息",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/history-session-analyse-upload": {
+      "get": {
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/e28979107ed04d3b8b2f1b819b8d2be3in03/history-session-analyse-upload?type=top_sql",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "查询历史会话分析的下载信息",
+        "description": "查询历史会话分析的下载信息",
+        "operationId": "ShowHistorySessionAnalyseDownloadInfo",
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "description": "类型。\nsession    表示下载历史会话\nwait_event    表示下载历史等待事件\ntop_sql    表示下载历史top sql",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "响应体",
+            "schema": {
+              "$ref": "#/definitions/ListHistorySessionAnalyseDownloadInfoRsp"
+            },
+            "examples": {
+              "application/json": {
+                "list": [
+                  {
+                    "status": "SUCCESS",
+                    "workflow_id": "705bbb2d-b568-42ee-8ad7-f9b43f6780f1",
+                    "file_name": "a8e531baf4804b0a840e1b98cd146caf_topSql_download_1_20251209115539926.zip",
+                    "file_size": "225.0",
+                    "file_link": "xxx",
+                    "file_link_expiration_time": 1765281653734,
+                    "start_time": 1764869600000,
+                    "end_time": 1765249216000
+                  }
+                ],
+                "count": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DownloadInfo": {
+      "type": "object",
+      "description": "下载信息",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "description": "参数解释:\n任务ID。\n取值范围:\n不涉及。"
+        },
+        "file_name": {
+          "type": "string",
+          "description": "参数解释:\n生成的下载文件名。\n取值范围:\n不涉及。"
+        },
+        "status": {
+          "type": "string",
+          "description": "参数解释:\n当前链接的生成状态。\n取值范围:\n不涉及。"
+        },
+        "file_size": {
+          "type": "string",
+          "description": "参数解释:\n文件大小。单位Byte\n取值范围:\n不涉及。"
+        },
+        "file_link": {
+          "type": "string",
+          "description": "参数解释:\n下载链接。\n取值范围:\n不涉及。"
+        },
+        "file_link_expiration_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "下载链接过期时间"
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "参数解释:\n开始时间。\n格式为UTC时间戳。\n取值范围:\n不涉及。"
+        },
+        "end_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "参数解释:\n结束时间。\n格式为UTC时间戳。\n取值范围:\n不涉及。"
+        }
+      }
+    },
+    "ListHistorySessionAnalyseDownloadInfoRsp": {
+      "type": "object",
+      "description": "响应体",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "记录个数"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DownloadInfo"
+          },
+          "description": "下载信息"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

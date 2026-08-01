@@ -1,0 +1,320 @@
+{
+  "name": "ShowVpc",
+  "summary": "查询VPC",
+  "tags": "VPC",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/vpcs/{vpc_id}": {
+      "get": {
+        "tags": [
+          "VPC"
+        ],
+        "summary": "查询VPC",
+        "description": "查询虚拟私有云。",
+        "operationId": "ShowVpc",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "vpc_id",
+            "in": "path",
+            "description": "虚拟私有云ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-example": "99d9d709-8478-4b46-9f3f-2206b1023fd3",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "vpc": {
+                  "id": "99d9d709-8478-4b46-9f3f-2206b1023fd3",
+                  "name": "vpc",
+                  "description": "test",
+                  "cidr": "192.168.0.0/16",
+                  "status": "OK",
+                  "enterprise_project_id": "0",
+                  "routes": []
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/VpcResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询VPC",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "查询vpc详情",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v1/{project_id}/vpcs/{vpc_id}",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v1/{project_id}/vpcs/{vpc_id}",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Vpc": {
+      "required": [
+        "block_service_endpoint_states",
+        "cidr",
+        "created_at",
+        "description",
+        "enable_network_address_usage_metrics",
+        "enterprise_project_id",
+        "id",
+        "name",
+        "routes",
+        "status",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:虚拟私有云ID\n取值范围:带\"-\"的UUID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:虚拟私有云名称\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)\n约束:如果名称不为空,则同一个租户下的名称不能重复",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "功能说明:虚拟私有云下可用子网的范围\n取值范围:\n- 10.0.0.0/8~10.255.255.240/28\n- 172.16.0.0/12 ~ 172.31.255.240/28\n- 192.168.0.0/16 ~ 192.168.255.240/28\n不指定cidr时,默认值为空\n约束:必须是ipv4 cidr格式,例如:192.168.0.0/16",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:虚拟私有云的描述\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "routes": {
+          "type": "array",
+          "description": "功能说明:路由信息列表,详情参见route对象",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Route"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:虚拟私有云的状态\n取值范围:\n- CREATING:创建中\n- OK:创建成功",
+          "enum": [
+            "CREATING",
+            "OK",
+            "ERROR"
+          ],
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "功能说明:企业项目ID。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。",
+          "maxLength": 36,
+          "x-admin": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "b433fedb577940bfa59abff86482ed1a",
+          "description": "项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "block_service_endpoint_states": {
+          "type": "string",
+          "description": "功能说明:默认情况下,VPC中的资源可以通过内网访问服务终结点。开启该项后,VPC将无法通过内网访问服务终结点,请谨慎操作。\n无法访问以下云服务:容器镜像服务SWR、云日志服务LTS、企业主机安全HSS、应用运维管理AOM、应用性能管理APM、对象存储服务OBS、API网关APIG。\n取值范围:\noff:代表禁用。\non:代表开启。",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "enable_network_address_usage_metrics": {
+          "type": "boolean",
+          "description": "功能说明:是否开启VPC内所有子网的IPv4地址使用量指标监控。\n取值范围:\ntrue:开启\nfalse:不开启",
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": ""
+    },
+    "Route": {
+      "properties": {
+        "destination": {
+          "type": "string",
+          "description": "功能说明:路由目的地\n取值范围:IP地址段\n约束:仅支持配置默认路由,且其取值只能是0.0.0.0/0",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "nexthop": {
+          "type": "string",
+          "description": "功能说明:路由下一跳IP地址\n取值范围:ipv4地址格式\n约束:nexthop仅支持所关联的子网范围内IP地址",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "VpcResponseBody": {
+      "required": [
+        "vpc"
+      ],
+      "properties": {
+        "vpc": {
+          "description": "vpc对象",
+          "$ref": "#/definitions/Vpc",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

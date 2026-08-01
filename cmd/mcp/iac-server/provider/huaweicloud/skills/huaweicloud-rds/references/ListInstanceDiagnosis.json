@@ -1,0 +1,113 @@
+{
+  "name": "ListInstanceDiagnosis",
+  "summary": "获取诊断后的实例数量",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/diagnosis": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ListInstanceDiagnosis",
+        "summary": "获取诊断后的实例数量",
+        "description": "获取诊断后的实例数量",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "project id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "engine",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "引擎类型",
+            "enum": [
+              "mysql",
+              "postgresql",
+              "sqlserver"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "instances diagnosis info",
+            "schema": {
+              "$ref": "#/definitions/ListInstancesDiagnosisResponseBody"
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ListInstancesDiagnosisResponseBody": {
+      "type": "object",
+      "description": "diagnosis info",
+      "properties": {
+        "diagnosis": {
+          "description": "diagnosis info",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DiagnosisItemResult"
+          }
+        }
+      }
+    },
+    "DiagnosisItemResult": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "诊断项"
+        },
+        "count": {
+          "type": "integer",
+          "description": "实例数量"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

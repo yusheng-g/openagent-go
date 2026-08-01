@@ -1,0 +1,114 @@
+{
+  "name": "ListApiVersionNew",
+  "summary": "查询API版本列表",
+  "tags": "查询API版本",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "查询API版本"
+        ],
+        "operationId": "ListApiVersionNew",
+        "x-support-sdk": "Y",
+        "summary": "查询API版本列表",
+        "description": "查询API版本列表。",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListApiVersionResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "versions": [
+                  {
+                    "id": "v3",
+                    "links": [],
+                    "status": "CURRENT",
+                    "updated": "2019-01-15T12:00:00Z"
+                  },
+                  {
+                    "id": "v1",
+                    "links": [],
+                    "status": "DEPRECATED",
+                    "updated": "2017-02-07T17:34:02Z"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/"
+      }
+    }
+  },
+  "definitions": {
+    "ListApiVersionResponseBody": {
+      "properties": {
+        "versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ApiVersion"
+          },
+          "description": "API版本详细信息列表。"
+        }
+      }
+    },
+    "LinksInfoResponse": {
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "对应该API的URL"
+        },
+        "rel": {
+          "type": "string",
+          "description": "取值为“self”,表示href为本地链接。"
+        }
+      }
+    },
+    "ApiVersion": {
+      "description": "API版本详细信息列表。",
+      "required": [
+        "id",
+        "links",
+        "status",
+        "updated"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "API版本号,如v1、v3。",
+          "example": "v3"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LinksInfoResponse"
+          },
+          "description": "对应API的链接信息,v1、v3版本该字段为空。",
+          "example": []
+        },
+        "status": {
+          "type": "string",
+          "description": "版本状态。\n取值“CURRENT”,表示该版本为主推版本。\n取值“DEPRECATED”,表示为废弃版本,存在后续删除的可能。",
+          "example": "CURRENT"
+        },
+        "updated": {
+          "type": "string",
+          "description": "版本更新时间。\n格式为“yyyy-mm-dd Thh:mm:ssZ”。\n其中,T指某个时间的开始;Z指UTC时间。",
+          "example": "2019-01-15T12:00:00Z"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

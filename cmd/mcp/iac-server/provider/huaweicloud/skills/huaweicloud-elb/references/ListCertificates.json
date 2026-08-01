@@ -1,0 +1,362 @@
+{
+  "name": "ListCertificates",
+  "summary": "查询SSL证书列表",
+  "tags": "SSL证书管理",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/certificates": {
+      "get": {
+        "tags": [
+          "SSL证书管理"
+        ],
+        "summary": "查询SSL证书列表",
+        "description": "查询SSL证书。支持过滤查询和分页查询。",
+        "operationId": "ListCertificates",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页返回的个数。\n取值范围:0~intmax。",
+            "required": false,
+            "type": "integer",
+            "minimum": 0,
+            "format": "int32",
+            "x-example": 100,
+            "x-order": 1
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询起始的证书id,为空时为查询第一页。\n仅当和limit一起使用时生效",
+            "required": false,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "分页的顺序,true表示从后往前分页,false表示从前往后分页,默认为false。\n仅当和limit一起使用时生效。",
+            "required": false,
+            "type": "string",
+            "x-order": 3,
+            "x-admin": ""
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "当前用户的项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "SSL证书ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 5
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "SSL证书的名称。",
+            "required": false,
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0,
+            "x-order": 6
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "证书描述SSL证书描述。",
+            "required": false,
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0,
+            "x-order": 7
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "SSL证书的类型。默认值:server;取值范围:server:服务端证书;client:客户端证书;",
+            "required": false,
+            "type": "string",
+            "x-order": 8
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "服务端证书所签的域名。\n取值:总长度为0-1024。\n\n普通域名由若干字符串组成,字符串间以\".\"分割,单个字符串长度不超过63个字符,只能包含英文字母、数字或\"-\",且必须以字母或数字开头和结尾。\n\n泛域名仅允许首段为\"*\",其他取值限制与普通域名一致。如:*.domain.com,但不能是:*my.domain.com\n\n\n该字段仅type为server时有效。",
+            "required": false,
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0,
+            "x-order": 9
+          },
+          {
+            "name": "private_key",
+            "in": "query",
+            "description": "PEM格式的服务端私有密钥。",
+            "required": false,
+            "type": "string",
+            "x-order": 10
+          },
+          {
+            "name": "certificate",
+            "in": "query",
+            "description": "PEM格式的服务端公有密钥或者用于认证客户端证书的CA证书,由type字段区分。",
+            "required": false,
+            "type": "string",
+            "x-order": 11
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 12
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "description": "参数解释: 证书来源 \n约束限制: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”。 \n取值范围: 无 \n默认取值: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”; 其他情况下默认为空。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255
+          },
+          {
+            "name": "protection_status",
+            "in": "query",
+            "required": false,
+            "description": "参数解释: 修改保护状态 \n约束限制: 无 \n取值范围: \n- nonProtection: 不保护 \n- consoleProtection: 控制台修改保护 \n默认取值: nonProtection",
+            "type": "string",
+            "enum": [
+              "nonProtection",
+              "consoleProtection"
+            ]
+          },
+          {
+            "name": "protection_reason",
+            "in": "query",
+            "required": false,
+            "description": "参数解释: 设置修改保护的原因 \n约束限制: 仅当protection_status为consoleProtection时有效 \n取值范围: 无 \n默认取值: 空",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "certificates": [
+                  {
+                    "certificate": "MIICwjCCAaoCAQAwTzELMAkGA1UEBhMCY24xCzAJBgNVBAgMAmdkMQswCQYDVQQH\n\nDAJ6czELMAkGA1UECgwCaHcxCzAJBgNVBAsMAnpyMQwwCgYDVQQDDANlbGIwggEi\n\nMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4QP+k8uSHLy0GdfvtoExR3U5/\n\n/TcvwQx26/Yno+//UuEak/D/nbpyji2z3WuicerDxQW8YE05uRKHJf8zCLyrIyZN\n\nMM2AfD8ItFiad5U+gNEwTC3xZu3v0gxfLRDtLrDeECcwbE4vSDt+UEJimg7inu35\n\n9ATGaFVqFVCmh+0Uqi6HDXuvVyb2sWygOqg+OFp1P2MuLvirbp0ItmYSA48Kc0Bx\n\ncH2TEPrkk7NodETvoTAPJfvZYrzDMAi2fybZH++bsoxyG1e+Q18i3dQdrZo0bohC\n\n4aB/3znaK701yElP1vngvn4enGXXcZnpaZVIlbBoF1myPBj3U7LkvZb97JJhAgMB\n\nAAGgLjAVBgkqhkiG9w0BCQIxCAwGaHVhd2VpMBUGCSqGSIb3DQEJBzEIDAZodWF3\n\nZWkwDQYJKoZIhvcNAQELBQADggEBADUqR2rPc/TpjZ34G7QSPWDM7SWCbu3iSwsp\n\nFu45+E6qaLXESIEHtJZg9EHzyAP7QCzK7at/QK5RsAdhj9lc8MDfW3AbGEwKNK5d\n\nl6WDN7A3nI7HGcW0nKgGcW4fEo6Gyljxo8eUsR82HGo64pfWHbnjZYIRt06FF2pC\n\nOqJV6aM84og8bheIweuP6KB2Vjc6WvAQxCOfesYhBYXv8PYrqTSVHk0Cb/Yu0q3B\n\naOfl2pAZHc6JkvKSWZ7QigW7WO2CVrXEcn6Nf1Gn6pjxEti6TVyuvUi2DJ9Gb8U3\n\nWF6hEFN4xaagLHcc5XhIVXK/xheT48G+Oh2BfUwy7mWwKbqrrN0=",
+                    "create_time": "2017-02-25 09:35:27",
+                    "description": "description for certificate",
+                    "domain": "www.elb.com",
+                    "id": "23ef9aad4ecb463580476d324a6c71af",
+                    "name": "https_certificate",
+                    "private_key": "-----BEGIN RSA PRIVATE KEY----- Proc-Type: 4,ENCRYPTED DEK-Info: AES-256-CBC,****** -----END RSA PRIVATE KEY-----",
+                    "type": "server",
+                    "update_time": "2017-02-25 09:35:27"
+                  }
+                ],
+                "instance_num": 1
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListCertificateResp"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询SSL证书列表",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-1": "GET https://{Endpoint}/v2/a31d2bdcf7604c0faaddb058e1e08819/elb/certificates",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v2/a31d2bdcf7604c0faaddb058e1e08819/elb/certificates",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-11-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ocb,ctc,ct",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListCertificateResp": {
+      "required": [
+        "certificates",
+        "instance_num"
+      ],
+      "properties": {
+        "certificates": {
+          "type": "array",
+          "description": "SSL证书列表对象",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/CertificateResp"
+          }
+        },
+        "instance_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "证书的个数"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "CertificateResp": {
+      "required": [
+        "id",
+        "tenant_id",
+        "admin_state_up",
+        "name",
+        "description",
+        "type",
+        "domain",
+        "private_key",
+        "certificate",
+        "expire_time",
+        "create_time",
+        "update_time"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SSL证书id"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "SSL证书所在的项目ID",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "SSL证书的管理状态;暂不支持"
+        },
+        "name": {
+          "type": "string",
+          "description": "SSL证书的名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "SSL证书的描述。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "type": {
+          "type": "string",
+          "description": "SSL证书的类型。分为服务器证书(server)和CA证书(client)。",
+          "enum": [
+            "server",
+            "client"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "description": "服务器证书所签域名。该字段仅type为server时有效。"
+        },
+        "private_key": {
+          "type": "string",
+          "description": "服务器证书的私钥。仅type为server时有效。type为server时必选。"
+        },
+        "certificate": {
+          "type": "string",
+          "description": "当type为server时,表示服务器证书的公钥;当type为client时,表示用于认证客户端证书的CA证书。"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "SSL证书的过期时间。\nUTC时间,格式为:yyyy-MM-dd HH:mm:ss ,如2020-05-28 08:30:09"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "SSL证书的创建时间。\nUTC时间,格式为:yyyy-MM-dd HH:mm:ss ,如2020-05-28 08:30:09"
+        },
+        "update_time": {
+          "type": "string",
+          "description": "SSL证书的更新时间。\nUTC时间,格式为:yyyy-MM-dd HH:mm:ss ,如2020-05-28 08:30:09"
+        },
+        "source": {
+          "type": "string",
+          "description": "参数解释: 证书来源 \n约束限制: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”。 \n取值范围: 无 \n默认取值: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”; 其他情况下默认为空。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "参数解释: 修改保护状态 \n约束限制: 无 \n取值范围: \n- nonProtection: 不保护 \n- consoleProtection: 控制台修改保护 \n默认取值: nonProtection",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ]
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "参数解释: 设置修改保护的原因 约束限制: 仅当protection_status为consoleProtection时有效 取值范围: 无 默认取值: 空",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "证书信息",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

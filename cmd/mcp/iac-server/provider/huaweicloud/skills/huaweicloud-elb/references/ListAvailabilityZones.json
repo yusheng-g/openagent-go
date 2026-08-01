@@ -1,0 +1,207 @@
+{
+  "name": "ListAvailabilityZones",
+  "summary": "查询可用区列表",
+  "tags": "可用区",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/availability-zones": {
+      "get": {
+        "tags": [
+          "可用区"
+        ],
+        "summary": "查询可用区列表",
+        "description": "返回租户创建LB时可使用的可用区集合列表情况。\n\n- 默认情况下,会返回一个可用区集合。\n在(如创建LB)设置可用区时,填写的可用区必须包含在可用区集合中、为这个可用区集合的子集。\n\n- 如果传入了loadbalancer_id,则返回该负载均衡器所在集群的可用区集合\n\n- 特殊场景下,部分客户要求负载均衡只能创建在指定可用区集合中,此时会返回客户定制的可用区集合。\n返回可用区集合可能为一个也可能为多个,比如列表有两个可用区集合\\[az1,az2\\],\\[az2,az3\\]。\n在创建负载均衡器时,可以选择创建在多个可用区,但所选的多个可用区必须同属于其中一个可用区集合,\n如可以选az2和az3,但不能选择az1和az3。你可以选择多个可用区,只要这些可用区在一个子集中",
+        "operationId": "ListAvailabilityZones",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "public_border_group",
+            "in": "query",
+            "description": "**参数解释**:公网边界组。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "query",
+            "description": "**参数解释**:负载均衡器ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "availability_zones": [
+                  [
+                    {
+                      "state": "ACTIVE",
+                      "code": "az1",
+                      "protocol": [
+                        "L4",
+                        "L7"
+                      ],
+                      "public_border_group": "center",
+                      "spec_code": null,
+                      "category": 0
+                    },
+                    {
+                      "state": "ACTIVE",
+                      "code": "az2",
+                      "protocol": [
+                        "L4"
+                      ],
+                      "public_border_group": "center",
+                      "spec_code": null,
+                      "category": 0
+                    },
+                    {
+                      "state": "ACTIVE",
+                      "code": "az3",
+                      "protocol": [
+                        "L7"
+                      ],
+                      "public_border_group": "center",
+                      "spec_code": null,
+                      "category": 0
+                    },
+                    {
+                      "state": "ACTIVE",
+                      "code": "homezone.az0",
+                      "protocol": [
+                        "L4"
+                      ],
+                      "public_border_group": "homezone.azg",
+                      "spec_code": null,
+                      "category": 21
+                    }
+                  ]
+                ],
+                "request_id": "0d799435-259e-459f-b2bc-0beee06f6a77"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListAvailabilityZonesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询可用区列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 11,
+        "x-request-examples-description-1": "查询负载均衡可用区列表",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/060576782980d5762f9ec014dd2f1148/elb/availability-zones",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "None",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "AvailabilityZone": {
+      "required": [
+        "code",
+        "state",
+        "protocol",
+        "public_border_group",
+        "category"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "**参数解释**:可用区唯一编码。\n\n**取值范围**:不涉及",
+          "x-huawei-extraAnnotation": ""
+        },
+        "state": {
+          "type": "string",
+          "description": "**参数解释**:可用区状态。\n\n**取值范围**:ACTIVE。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "protocol": {
+          "type": "array",
+          "description": "**参数解释**:未售罄的LB规格类别。\n\n**取值范围**:L4 表示网络型LB未售罄;L7 表示应用型LB未售罄。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "public_border_group": {
+          "type": "string",
+          "description": "**参数解释**:公网边界组。\n\n**取值范围**:\n- center:表示中心站点的公网边界组\n- 边缘站点名称:表示边缘站点的公网边界组",
+          "x-huawei-extraAnnotation": ""
+        },
+        "category": {
+          "type": "integer",
+          "description": "**参数解释**:可用区子类型编码。该字段主要用于区分在边缘场景下,边缘AZ的类型。\n\n**取值范围**:0表示center,21表示homezone,41表示IES。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "spec_code": {
+          "type": "string",
+          "description": "**参数解释**:可用区的产品编码,用于控制台购买ELB前查询定价,仅边缘场景有效。\n\n**取值范围**:不涉及",
+          "x-open-region-cloud": "hc,hk,dt"
+        }
+      },
+      "description": "**参数解释**:可用区信息。"
+    },
+    "ListAvailabilityZonesResponseBody": {
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "availability_zones": {
+          "type": "array",
+          "description": "**参数解释**:返回创建LB时可使用的可用区集合列表。如:[[az1,az2],[az2,az3]] ,则在创建LB时,只能从其中的一个子列表中选择一个或多个可用区,不能跨列表选择。在上述例子中,不能选择az1和az3。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AvailabilityZone"
+            }
+          }
+        }
+      },
+      "description": "This is a auto create Response Object",
+      "required": [
+        "request_id",
+        "availability_zones"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

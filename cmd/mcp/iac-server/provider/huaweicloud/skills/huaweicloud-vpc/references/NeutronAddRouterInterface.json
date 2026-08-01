@@ -1,0 +1,264 @@
+{
+  "name": "NeutronAddRouterInterface",
+  "summary": "路由器添加接口",
+  "tags": "OpenStack - 路由器",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/routers/{router_id}/add_router_interface": {
+      "put": {
+        "tags": [
+          "OpenStack - 路由器"
+        ],
+        "summary": "路由器添加接口",
+        "description": "添加路由器接口。",
+        "operationId": "NeutronAddRouterInterface",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "router_id",
+            "in": "path",
+            "description": "路由器ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "AddRouterInterface",
+            "description": "路由器添加接口请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RouterInterfaceRequestBody"
+            },
+            "x-order": 3,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "subnet_id": "ab78be2d-782f-42a5-aa72-35879f6890ff",
+                "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
+                "project_id": "6fbe9263116a4b68818cf1edce16bc4f",
+                "port_id": "40e86635-b2a3-45de-a7c8-3cced5b7e755",
+                "id": "5b8e885c-1347-4ac2-baf9-2249c8ed1270"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/RouterInterfaceResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "路由器添加接口",
+        "x-constraint": "使用端口的时候,端口上有且只有一个IP地址。\n使用子网的时候,子网上必须配置gatewayIP地址。\n“provider:network_type”为“geneve”的网络不可以添加路由器。\n一个子网只能添加一个路由器.",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 97,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v2.0/routers/{router_id}/add_router_interface",
+        "x-request-examples-1": {
+          "subnet_id": "ab78be2d-782f-42a5-aa72-35879f6890ff"
+        },
+        "x-request-examples-text-1": "{\n\t\"subnet_id\": \"ab78be2d-782f-42a5-aa72-35879f6890ff\"\n}",
+        "x-request-examples-description-2": "",
+        "x-request-examples-url-2": "PUT https://{Endpoint}/v2.0/routers/{router_id}/add_router_interface",
+        "x-request-examples-2": {
+          "port_id": "cc88ad2d-983c-42a5-aa72-46879d7890ee"
+        },
+        "x-request-examples-text-2": "{\n\t\"port_id\": \"cc88ad2d-983c-42a5-aa72-46879d7890ee\"\n}",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "Native",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "RouterInterfaceResponseBody": {
+      "required": [
+        "port_id",
+        "project_id",
+        "subnet_id",
+        "tenant_id"
+      ],
+      "properties": {
+        "port_id": {
+          "type": "string",
+          "description": "路由器添加的端口对应的ID",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "路由器添加的子网对应的ID",
+          "enum": [
+            "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "f83fc91f92384777851e2262a898667a",
+          "description": "项目ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "project_id": {
+          "type": "string",
+          "example": "f83fc91f92384777851e2262a898667a",
+          "description": "项目ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "id": {
+          "type": "string",
+          "description": "路由器的ID",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "RouterInterfaceRequestBody": {
+      "properties": {
+        "port_id": {
+          "type": "string",
+          "description": "功能说明:路由器添加(或删除)接口请求参数port对应的id\n约束:\n - 使用端口的时候,端口上有且只有一个IP地址\n - subnet_id与port_id其中之一必须指定",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "功能说明:路由器添加(或删除)接口请求参数subnet对应的id\n约束:\n - 使用子网的时候,子网上必须配置gatewayIP地址\n - \"provider:network_type\"为\"geneve\"的网络不可以添加路由器\n - subnet_id与port_id其中之一必须指定。",
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

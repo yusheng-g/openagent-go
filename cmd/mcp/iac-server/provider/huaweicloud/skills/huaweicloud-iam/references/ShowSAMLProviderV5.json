@@ -1,0 +1,203 @@
+{
+  "name": "ShowSAMLProviderV5",
+  "summary": "查询指定SAML提供商",
+  "tags": "SAML身份提供商管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/saml-providers/{provider_id}": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "tags": [
+          "SAMLIdentityProvider"
+        ],
+        "summary": "查询指定SAML提供商",
+        "description": "该接口可以用于查询 SAML 2.0 的身份提供商 (IdP) 详情。",
+        "operationId": "ShowSAMLProviderV5",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProviderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "saml_provider"
+                  ],
+                  "properties": {
+                    "saml_provider": {
+                      "type": "object",
+                      "required": [
+                        "provider_id",
+                        "name",
+                        "description",
+                        "urn",
+                        "saml_metadata_document",
+                        "assertion_encryption_mode",
+                        "private_keys",
+                        "tags",
+                        "created_at",
+                        "expires_at"
+                      ],
+                      "properties": {
+                        "provider_id": {
+                          "type": "string",
+                          "description": "**参数解释**:\nSAML 身份提供商的ID。\n\n**取值范围**:\n字符串长度在 1 到 64 之间,并且只能包含:字母、数字、中划线(-)。",
+                          "pattern": "^[a-zA-Z0-9-]{1,64}$",
+                          "x-api-type": "open-api"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "**参数解释**:\nSAML 身份提供商的名称。\n\n**取值范围**:\n字符串长度在 1 到 64 之间,并且只能包含:字母、数字、下划线(_)、中划线(-)。",
+                          "pattern": "^[a-zA-Z0-9_\\-]{1,64}$",
+                          "minLength": 1,
+                          "maxLength": 64,
+                          "x-api-type": "open-api"
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "**参数解释**:\n身份提供商描述。\n\n**取值范围**:\n字符串长度在 0 到 255 之间,不能包含特定字符\"@\"、\"#\"、\"%\"、\"&\"、\"<\"、\">\"、\"\\\"、\"$\"、\"^\"和\"*\"的字符串。",
+                          "maxLength": 255,
+                          "pattern": "^[^@#%&<>\\\\\\$\\^\\*]*$"
+                        },
+                        "urn": {
+                          "type": "string",
+                          "minLength": 16,
+                          "maxLength": 1500,
+                          "pattern": "^[A-Za-z0-9/=_:-]+$",
+                          "description": "**参数解释**:\n统一资源名称。\n\n**取值范围**:\n字符串长度在 16 到 1500 之间,可以包含:字母、数字、斜杠(/)、等号(=)、下划线(_)、冒号(:)、中划线(-)"
+                        },
+                        "saml_metadata_document": {
+                          "type": "string",
+                          "description": "**参数解释**:\n支持 SAML 2.0 的身份提供商 (IdP) 的 XML 文档。\n\n**取值范围**:\n长度范围为[1000,512000]。",
+                          "minLength": 1000,
+                          "maxLength": 512000,
+                          "x-api-type": "open-api"
+                        },
+                        "assertion_encryption_mode": {
+                          "type": "string",
+                          "description": "**参数解释**:\n指定 SAML 身份提供商的加密设置。\n\n**取值范围**:\n取值范围为[Required,Allowed]。",
+                          "x-api-type": "open-api",
+                          "enum": [
+                            "Required",
+                            "Allowed"
+                          ]
+                        },
+                        "private_keys": {
+                          "type": "array",
+                          "description": "**参数解释**:\n解密 SAML 断言的私钥。\n\n**取值范围**:\n不涉及。",
+                          "maxItems": 2,
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "key_id",
+                              "timestamp"
+                            ],
+                            "properties": {
+                              "key_id": {
+                                "type": "string",
+                                "description": "**参数解释**:\n解密 SAML 断言私钥的 ID。\n\n**取值范围**:\n不涉及。",
+                                "pattern": "[A-Z0-9]+",
+                                "minLength": 22,
+                                "maxLength": 64,
+                                "x-api-type": "open-api"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "**参数解释**:\n上传解密 SAML 断言私钥的时间,符合 ISO 8601 格式。\n\n**取值范围**:\n不涉及。",
+                                "x-api-type": "open-api"
+                              }
+                            }
+                          },
+                          "x-api-type": "open-api"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "**参数解释**:\n自定义标签信息。\n\n**取值范围**:\n不涉及。",
+                            "required": [
+                              "tag_key",
+                              "tag_value"
+                            ],
+                            "properties": {
+                              "tag_key": {
+                                "type": "string",
+                                "pattern": "^(?!\\s)(?!_sys_)[\\p{L}\\p{Z}\\p{N}_.:=+\\-@]*(?<!\\s)$",
+                                "minLength": 1,
+                                "maxLength": 64,
+                                "description": "**参数解释**:\n标签键。\n\n**取值范围**:\n字符串长度在 1 到 64 之间,可以包含任意语种字母、数字、空格以及\"_\"、\".\"、\":\"、\"=\"、\"+\"、\"-\"、\"@\"符号;首尾不能包含空格,且不能以\"_sys_\"开头。"
+                              },
+                              "tag_value": {
+                                "type": "string",
+                                "pattern": "^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*$",
+                                "minLength": 0,
+                                "maxLength": 128,
+                                "description": "**参数解释**:\n标签值。\n\n**取值范围**:\n字符串长度在 0 到 128 之间,可以包含任意语种字母、数字、空格以及\"_\"、\".\"、\":\"、\"/\"、\"=\"、\"+\"、\"-\"、\"@\"符号,可以为空字符串。"
+                              }
+                            }
+                          },
+                          "description": "**参数解释**:\n自定义标签列表。\n\n**取值范围**:\n数组长度不涉及。",
+                          "x-api-type": "open-api"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "**参数解释**:\nSAML 身份提供商创建时间。\n\n**取值范围**:\n不涉及。",
+                          "x-api-type": "open-api"
+                        },
+                        "expires_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "**参数解释**:\nSAML 身份提供商过期时间。\n\n**取值范围**:\n不涉及。",
+                          "x-api-type": "open-api"
+                        }
+                      },
+                      "description": "**参数解释**:\nSAML 提供商。\n\n**取值范围**:\n不涉及。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,140 @@
+{
+  "name": "AttachEip",
+  "summary": "绑定和解绑弹性公网IP",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/public-ip": {
+      "put": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "AttachEip",
+        "summary": "绑定和解绑弹性公网IP",
+        "description": "绑定和解绑弹性公网IP。",
+        "x-support-sdk": "Y",
+        "x-constraint": "实例在创建、变更规格、恢复、重启或冻结状态下不能绑定和解绑弹性公网IP。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "BindEipRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BindEipRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "04efe8e2-9255-44ae-a98b-d87cae411890"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "绑定公网IP",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/public-ip",
+        "x-request-examples-1": {
+          "public_ip": "10.145.51.214",
+          "public_ip_id": "8403e9cd-a7fa-4288-8b15-c7ceac1etest",
+          "is_bind": true
+        },
+        "x-request-examples-description-2": "解绑公网IP",
+        "x-request-examples-url-2": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/public-ip",
+        "x-request-examples-2": {
+          "is_bind": false
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "BindEipRequest": {
+      "required": [
+        "is_bind"
+      ],
+      "properties": {
+        "public_ip": {
+          "type": "string",
+          "description": "待绑定的弹性公网IP地址,仅允许使用标准的IP地址格式。is_bind为true时必选"
+        },
+        "public_ip_id": {
+          "type": "string",
+          "description": "弹性公网IP对应的ID,仅允许使用标准的UUID格式。is_bind为true时必选"
+        },
+        "is_bind": {
+          "type": "boolean",
+          "description": "- true,绑定弹性公网IP。\n- false,解绑弹性公网IP。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

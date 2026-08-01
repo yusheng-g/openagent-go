@@ -1,0 +1,503 @@
+{
+  "name": "CreateSubscription",
+  "summary": "创建订阅",
+  "tags": "发布订阅(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/replication/subscriptions": {
+      "post": {
+        "tags": [
+          "发布订阅(SQL Server)"
+        ],
+        "operationId": "CreateSubscription",
+        "summary": "创建订阅",
+        "description": "创建订阅",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-file": 20250222,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "CreateSubscriptionRequestBody",
+            "description": "创建订阅请求体。",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateSubscriptionRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/ReplicationJobResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "7be09cc4-c269-4f3a-9539-aaf2b40d79a0"
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/1aa833000a124455a6801e83cca37e6ein04/replication/subscriptions",
+        "x-request-examples-text-1": {
+          "current_publication_id": "37af1c72-af84-460c-bf93-be6913e4ad1b",
+          "subscriptions": [
+            {
+              "subscription_database": "sub_database",
+              "subscription_type": "push",
+              "publication_subscription": {
+                "subscription_instance_id": "d2bd5708ad624988a54e02fd5fa0c705in04"
+              },
+              "job_schedule": {
+                "id": "8c01f1e3-3e09-4d2d-a5d9-8f754fc0277f",
+                "frequency": {
+                  "freq_type": "daily",
+                  "freq_interval": 1
+                },
+                "daily_frequency": {
+                  "freq_subday_type": "once",
+                  "active_start_time": "02:00:00"
+                },
+                "duration": {
+                  "active_start_date": "1970-01-02",
+                  "active_end_date": "2099-12-31"
+                }
+              }
+            },
+            {
+              "subscription_database": "sub_local_database",
+              "subscription_type": "push",
+              "publication_subscription": {
+                "user_info": {
+                  "server_ip": "192.168.0.1",
+                  "server_port": "1433",
+                  "server_name": "local-instance-0102",
+                  "login_user_name": "my_user",
+                  "login_user_password": "my_password"
+                }
+              },
+              "job_schedule": {
+                "id": "8c01f1e3-3e09-4d2d-a5d9-8f754fc0277f",
+                "frequency": {
+                  "freq_type": "daily",
+                  "freq_interval": 1
+                },
+                "daily_frequency": {
+                  "freq_subday_type": "once",
+                  "active_start_time": "02:00:00"
+                },
+                "duration": {
+                  "active_start_date": "1970-01-02",
+                  "active_end_date": "2099-12-31"
+                }
+              }
+            }
+          ]
+        },
+        "x-request-examples-url-2": "POST https://{endpoint}/v3/0483b6b16e954cb88930a360d2c4e663/instances/d2bd5708ad624988a54e02fd5fa0c705in04/replication/subscriptions",
+        "x-request-examples-text-2": {
+          "subscriptions": [
+            {
+              "subscription_database": "sub_database",
+              "subscription_type": "push",
+              "local_subscription": {
+                "publication_id": "37af1c72-af84-460c-bf93-be6913e4ad1b"
+              },
+              "job_schedule": {
+                "id": "8c01f1e3-3e09-4d2d-a5d9-8f754fc0277f",
+                "frequency": {
+                  "freq_type": "daily",
+                  "freq_interval": 1
+                },
+                "daily_frequency": {
+                  "freq_subday_type": "once",
+                  "active_start_time": "02:00:00"
+                },
+                "duration": {
+                  "active_start_date": "1970-01-02",
+                  "active_end_date": "2099-12-31"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "OperateUsedJobSchedule": {
+      "description": "策略信息。",
+      "properties": {
+        "id": {
+          "description": "策略id。",
+          "type": "string",
+          "example": "7be09cc4-c269-4f3a-9539-aaf2b40d79a0"
+        },
+        "job_schedule_type": {
+          "description": "计划类型。默认值recurring。\n\nautomatically:SQL Server代理启动时自动启动。\ncpu_idle:CPU空闲时启动。\nrecurring:重复执行。\none_time:执行一次。",
+          "type": "string"
+        },
+        "one_time_occurrence": {
+          "description": "执行一次执行时间。",
+          "$ref": "#/definitions/JobScheduleOneTimeOccurrenceInfo"
+        },
+        "frequency": {
+          "description": "策略间隔周期(仅当策略id为空时必填)。",
+          "$ref": "#/definitions/JobScheduleFrequencyInfo"
+        },
+        "daily_frequency": {
+          "description": "策略每日频率(仅当策略id为空时必填)。",
+          "$ref": "#/definitions/JobScheduleDailyFrequencyInfo"
+        },
+        "duration": {
+          "description": "策略有效期(仅当策略id为空时必填)。",
+          "$ref": "#/definitions/JobScheduleDurationInfo"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "JobScheduleOneTimeOccurrenceInfo": {
+      "description": "执行一次执行时间。",
+      "properties": {
+        "active_start_date": {
+          "description": "执行日期 yyyy-MM-dd。取值范围1990-01-01至2099-12-31",
+          "type": "string",
+          "example": "2023-01-01"
+        },
+        "active_start_time": {
+          "description": "执行时间。HH:mm:ss",
+          "type": "string",
+          "example": "01:00:59"
+        }
+      }
+    },
+    "CreateSubscriptionInfo": {
+      "description": "订阅详情",
+      "required": [
+        "subscription_database",
+        "subscription_type",
+        "initialize_at",
+        "job_schedule"
+      ],
+      "properties": {
+        "subscription_database": {
+          "description": "订阅数据库名。",
+          "type": "string"
+        },
+        "subscription_type": {
+          "description": "订阅方式,push:推送。",
+          "type": "string"
+        },
+        "initialize_at": {
+          "type": "string",
+          "description": "初始化类型:不初始化(do_not)、立即初始化(immediate)、首次同步初始化(at_first_sync)。"
+        },
+        "initialize_info": {
+          "description": "初始化信息。",
+          "properties": {
+            "file_source": {
+              "type": "string",
+              "description": "初始化使用的文件源,仅支持OBS或BACKUP。"
+            },
+            "backup_id": {
+              "type": "string",
+              "description": "使用备份文件初始化的备份文件ID。"
+            },
+            "bucket_name": {
+              "type": "string",
+              "description": "使用OBS内备份文件恢复的bucket名称。"
+            },
+            "file_path": {
+              "type": "string",
+              "description": "OBS桶内备份文件的路径。"
+            },
+            "file_name": {
+              "type": "string",
+              "description": "OBS桶内备份文件的名称。"
+            },
+            "overwrite_restore": {
+              "type": "boolean",
+              "description": "是否使用备份文件对订阅库进行覆盖还原。"
+            }
+          }
+        },
+        "independent_agent": {
+          "description": "独立的分发代理。\n\ntrue:使用。\nfalse:不使用。",
+          "type": "boolean",
+          "default": true
+        },
+        "job_schedule": {
+          "description": "同步策略。",
+          "$ref": "#/definitions/OperateUsedJobSchedule"
+        },
+        "bak_file_name": {
+          "description": "备份文件名称。若该值不为空,则订阅初始化方式为通过备份文件初始化。",
+          "type": "string"
+        },
+        "bak_bucket_name": {
+          "description": "备份文件所在的obs桶名。\n若bak_file_name为空,该参数无效。\n若该值为空,则备份文件来源为rds的备份文件。\n若该值不为空,则备份文件来源为用户obs桶。",
+          "type": "string"
+        },
+        "publication_subscription": {
+          "description": "发布的订阅信息。给发布创建订阅时必传。",
+          "$ref": "#/definitions/CreateSubscription4PublicationInfo"
+        },
+        "local_subscription": {
+          "description": "本地订阅信息。创建本地订阅时必传。",
+          "$ref": "#/definitions/CreateSubscription4InstanceInfo"
+        }
+      },
+      "type": "object"
+    },
+    "CreateSubscription4PublicationInfo": {
+      "description": "给发布创建订阅时需要的参数。",
+      "required": [
+        "subscription_instance_id"
+      ],
+      "properties": {
+        "subscription_instance_id": {
+          "description": "订阅服务器来源为云上实例时的订阅实例id。",
+          "type": "string"
+        },
+        "user_info": {
+          "description": "订阅服务器为非云上实例时的登录信息(仅当订阅实例id为空时生效)。",
+          "$ref": "#/definitions/ReplicationUserInfo"
+        }
+      },
+      "type": "object"
+    },
+    "JobScheduleDurationInfo": {
+      "description": "策略有效期。",
+      "properties": {
+        "active_start_date": {
+          "description": "第一次执行日期 yyyy-MM-dd。取值范围1990-01-01至2099-12-31",
+          "type": "string",
+          "example": "2023-01-01"
+        },
+        "active_end_date": {
+          "description": "最后一次执行日期。默认不会结束 yyyy-MM-dd",
+          "type": "string",
+          "example": "2099-12-31"
+        }
+      }
+    },
+    "ReplicationJobResponse": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务id。",
+          "example": "7be09cc4-c269-4f3a-9539-aaf2b40d79a0"
+        }
+      },
+      "required": [
+        "job_id"
+      ]
+    },
+    "CreateSubscriptionRequestBody": {
+      "description": "创建发布详情。",
+      "required": [
+        "subscriptions"
+      ],
+      "properties": {
+        "subscriptions": {
+          "description": "订阅详情。一次最多创建十个订阅。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CreateSubscriptionInfo"
+          }
+        },
+        "current_publication_id": {
+          "description": "给发布创建订阅时的发布id。给发布创建订阅时必传,不传时则为创建本地订阅。",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "JobScheduleDailyFrequencyInfo": {
+      "description": "策略每日频率。",
+      "properties": {
+        "freq_subday_type": {
+          "description": "每日频率类型 once:每日一次, multiple:每日多次。",
+          "type": "string",
+          "example": "once"
+        },
+        "active_start_time": {
+          "description": "每日第一次执行时间。每日频率类型为每日一次时,则只执行这一次。 HH:mm:ss",
+          "type": "string",
+          "example": "01:00:59"
+        },
+        "active_end_time": {
+          "description": "最后一次执行时间。每日执行多次时该参数必传,每日执行一次时不生效。 HH:mm:ss",
+          "type": "string",
+          "example": "23:59:59"
+        },
+        "freq_subday_interval": {
+          "description": "执行间隔。每日执行多次时该参数必传,每日执行一次时不生效。取值范围1至99",
+          "type": "integer",
+          "example": "10"
+        },
+        "freq_interval_unit": {
+          "description": "执行间隔的单位。每日执行多次时该参数必传,每日执行一次时不生效。 second:秒, minute:分, hour:时",
+          "type": "string",
+          "example": "minute"
+        }
+      }
+    },
+    "ReplicationUserInfo": {
+      "description": "发布订阅用户登录信息。",
+      "required": [
+        "server_ip",
+        "server_port",
+        "server_name",
+        "login_user_name",
+        "login_user_password"
+      ],
+      "properties": {
+        "server_ip": {
+          "description": "服务器ip。",
+          "type": "string",
+          "example": "192.168.0.1"
+        },
+        "server_port": {
+          "description": "端口号。",
+          "type": "integer",
+          "example": "1433"
+        },
+        "server_name": {
+          "description": "服务器名称。",
+          "type": "string",
+          "example": "MSSQL-DAF72D40\\MSSQL2017STD"
+        },
+        "login_user_name": {
+          "description": "登录名。",
+          "type": "string",
+          "example": "rdsuser"
+        },
+        "login_user_password": {
+          "description": "登录密码。要求密码长度在5~64位之间。",
+          "type": "string",
+          "example": "password"
+        }
+      }
+    },
+    "CreateSubscription4InstanceInfo": {
+      "description": "直接创建订阅时需要的参数。",
+      "required": [
+        "publication_id"
+      ],
+      "properties": {
+        "publication_id": {
+          "description": "直接创建订阅时,服务器来源为云上实例的发布id。",
+          "type": "string"
+        },
+        "publication_name": {
+          "description": "直接创建订阅时,服务器来源为云上实例的发布名称。",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "JobScheduleFrequencyInfo": {
+      "description": "策略间隔周期。",
+      "properties": {
+        "freq_type": {
+          "description": "策略频率类型 daily:按天, weekly:按周, monthly_day:按月、每月按天, monthly_week:按月、每月按周。",
+          "type": "string",
+          "example": "daily"
+        },
+        "freq_interval": {
+          "description": "执行间隔。取值范围1至99。",
+          "type": "integer",
+          "example": "5"
+        },
+        "freq_interval_weekly": {
+          "description": "频率类型为按周时该参数必传,不为按周时不生效。\n每周执行哪几天。参数值:Monday,Tuesday ... Sunday",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "Monday"
+          }
+        },
+        "freq_interval_day_monthly": {
+          "description": "频率类型为按月、每月按天时该参数必传,不为按月、每月按天时时不生效。\n每月执行的日期。取值范围1-31。",
+          "type": "integer",
+          "example": "31"
+        },
+        "freq_interval_monthly": {
+          "description": "频率类型为按月、每月按周时该参数必传,不为按月、每月按周时时不生效。\n每周执行哪几天。 Sunday, Monday,Tuesday ... Saturday, day, weekday, weekend",
+          "type": "string",
+          "example": "weekday"
+        },
+        "freq_relative_interval_monthly": {
+          "description": "频率类型为按月、每月按周时该参数必传,不为按月、每月按周时时不生效。\n每月在哪周执行。 first, second, third, fourth, last",
+          "type": "string",
+          "example": "fourth"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

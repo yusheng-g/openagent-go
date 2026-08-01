@@ -1,0 +1,196 @@
+{
+  "name": "DeleteScalingTagInfo",
+  "summary": "删除标签",
+  "tags": "标签管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/{resource_type}/{resource_id}/tags/action": {
+      "post": {
+        "tags": [
+          "标签管理"
+        ],
+        "summary": "删除标签",
+        "description": "创建或删除指定资源的标签。每个伸缩组最多添加10个标签。",
+        "operationId": "DeleteScalingTagInfo",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "resource_type",
+            "in": "path",
+            "description": "资源类型,枚举类:scaling_group_tag。scaling_group_tag表示资源类型为伸缩组。",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "scaling_group_tag"
+            ],
+            "x-order": 3
+          },
+          {
+            "name": "resource_id",
+            "in": "path",
+            "description": "资源ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteTagsOption"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求正常"
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-support-sdk": "Y",
+        "x-hybridcloud": true,
+        "x-name": "创建或删除标签",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 3,
+        "x-request-examples-url-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group_tag/e5d27f5c-dd76-4a61-b4bc-a67c5686719a/tags/action",
+        "x-request-examples-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group_tag/e5d27f5c-dd76-4a61-b4bc-a67c5686719a/tags/action  {    \"tags\":[      {        \"key\": \"ENV15\",         \"value\": \"ENV15\"      },      {        \"key\": \"ENV151\",         \"value\": \"ENV151\"       }      ],    \"action\": \"delete\"     }",
+        "x-request-examples-text-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group_tag/e5d27f5c-dd76-4a61-b4bc-a67c5686719a/tags/action  {    \"tags\":[      {        \"key\": \"ENV15\",         \"value\": \"ENV15\"      },      {        \"key\": \"ENV151\",         \"value\": \"ENV151\"       }      ],    \"action\": \"delete\"     }",
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-is-registered": "Y",
+        "x-first_open_time": "2018-09-30",
+        "x-tenant_flow_value": "78",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "N",
+        "x-is_calling": "Y",
+        "x-obc": "N",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "N",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "780",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "TagsSingleValue": {
+      "type": "object",
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "资源标签键。最大长度36个unicode字符。key不能为空。(搜索时不对此参数做校验)。最多为10个,不能为空或者空字符串。且不能重复。"
+        },
+        "value": {
+          "type": "string",
+          "description": "资源标签值列表,每个值最大长度43个unicode字符,每个key下最多为10个,同一个key中values不能重复。\n\n“*”为系统保留字符,如果value是以“*”开头表示按照“*”后面的值全模糊匹配。不能只传入“*”。\n如果values为空列表但不可缺省,则表示any_value(查询任意value)。value之间为或的关系。"
+        }
+      },
+      "description": "资源标签键"
+    },
+    "DeleteTagsOption": {
+      "required": [
+        "action",
+        "tags"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "标签列表。action为delete时,tags结构体不能缺失,key不能为空,或者空字符串。",
+          "items": {
+            "$ref": "#/definitions/TagsSingleValue"
+          }
+        },
+        "action": {
+          "type": "string",
+          "description": "操作标识(区分大小写):delete:删除。create:创建。若已经存在相同的key值则会覆盖对应的value值。",
+          "enum": [
+            "delete"
+          ]
+        }
+      },
+      "description": "标签列表"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

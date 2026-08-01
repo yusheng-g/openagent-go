@@ -1,0 +1,337 @@
+{
+  "name": "ListOrderCouponsByOrderId",
+  "summary": "查询订单可用优惠券",
+  "tags": "管理包年/包月订单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/customer-orders/order-coupons": {
+      "get": {
+        "summary": "查询订单可用优惠券",
+        "description": "客户在伙伴销售平台支付待支付订单时,查询可使用的优惠券列表。",
+        "tags": [
+          "管理包年/包月订单(客户)"
+        ],
+        "operationId": "ListOrderCouponsByOrderId",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/orders/customer-orders/order-coupons",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-09",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": true,
+            "description": "订单ID。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "CS170926155954NO7",
+            "x-allowNull": false
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/orders/customer-orders/order-coupons?order_id=CS170926155954NO7",
+        "responses": {
+          "200": {
+            "description": "查询订单可用优惠券响应",
+            "schema": {
+              "$ref": "#/definitions/QueryCustomerOrdersCouponsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "count": 1,
+                "user_coupons": [
+                  {
+                    "coupon_id": "CP1*****4VC8",
+                    "coupon_code": "",
+                    "status": "2",
+                    "coupon_type": "301",
+                    "measure_id": "1",
+                    "face_value": "100",
+                    "effective_time": "2021-04-29T15:59:59Z",
+                    "expire_time": "2021-04-30T15:59:59Z",
+                    "plan_name": "华为云产品代金券",
+                    "plan_desc": "",
+                    "use_limits": [
+                      {
+                        "use_limiti_info_id": "",
+                        "limit_key": "simultaneousUseWithDiscountCoupon",
+                        "value1": "1",
+                        "value2": "",
+                        "value_unit": "",
+                        "limit_type": "",
+                        "promotion_plan_id": ""
+                      }
+                    ],
+                    "active_time": "2020-04-24T12:16:55Z",
+                    "last_used_time": "",
+                    "create_time": "2020-04-24T12:16:55Z",
+                    "coupon_version": 2,
+                    "balance": 10.0,
+                    "used_by_order_id": "",
+                    "coupon_usage": "null",
+                    "coupon_group": 1
+                  }
+                ],
+                "coupon_max_use_quantity": [
+                  {
+                    "coupon_type": 1,
+                    "coupon_group": 0,
+                    "use_quantity_value": 3
+                  },
+                  {
+                    "coupon_type": 1,
+                    "coupon_group": 3,
+                    "use_quantity_value": 4
+                  },
+                  {
+                    "coupon_type": 1,
+                    "coupon_group": 1,
+                    "use_quantity_value": 2
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理包年/包月订单(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryCustomerOrdersCouponsRsp": {
+      "properties": {
+        "count": {
+          "description": "查询总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "user_coupons": {
+          "description": "可用的优惠券列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CouponInfoV2"
+          }
+        },
+        "coupon_max_use_quantity": {
+          "description": "优惠券使用的最大数量。 具体请参见表4。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CouponMaxUseQuantity"
+          }
+        }
+      }
+    },
+    "CouponInfoV2": {
+      "properties": {
+        "coupon_id": {
+          "type": "string",
+          "description": "优惠券实例ID。",
+          "example": "CP1*****4VC8"
+        },
+        "coupon_code": {
+          "type": "string",
+          "description": "优惠券编码。",
+          "example": ""
+        },
+        "status": {
+          "description": "优惠券状态: 1:未激活2:待使用",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "2"
+        },
+        "coupon_type": {
+          "description": "优惠券类型。 1:代金券2:折扣券3:产品券4:现金券",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "301"
+        },
+        "measure_id": {
+          "description": "面额单位: 1:元。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "face_value": {
+          "description": "面值。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": "100"
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        },
+        "plan_name": {
+          "type": "string",
+          "description": "促销计划名称。",
+          "example": ""
+        },
+        "plan_desc": {
+          "type": "string",
+          "description": "促销计划描述。",
+          "example": ""
+        },
+        "use_limits": {
+          "description": "优惠券限制。 具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LimitInfoV2"
+          }
+        },
+        "active_time": {
+          "type": "string",
+          "description": "激活时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        },
+        "last_used_time": {
+          "type": "string",
+          "description": "上一次使用时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": ""
+        },
+        "coupon_version": {
+          "description": "优惠券版本。 1:老版本(包含三种:代金券、折扣券和奖金券)2:新版本(只有代金券)",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "balance": {
+          "description": "余额。",
+          "type": "number",
+          "format": "double",
+          "x-allowNull": true,
+          "example": "100"
+        },
+        "used_by_order_id": {
+          "type": "string",
+          "description": "使用优惠券的订单ID。表示有订单正在使用这个优惠券,优惠券已被锁定,只有锁定优惠券的订单才能使用这个优惠券,其他订单不能使用该优惠券。",
+          "example": ""
+        },
+        "coupon_usage": {
+          "type": "string",
+          "description": "优惠券用途。",
+          "example": ""
+        },
+        "coupon_group": {
+          "description": "优惠券分组。 1:云商店发放的券2:华为云券-1024-专用代金券3:华为云券-使用限制-抵扣硬件的券0:华为云服务券(排除上述取值之外的券)",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        }
+      }
+    },
+    "LimitInfoV2": {
+      "properties": {
+        "use_limiti_info_id": {
+          "type": "string",
+          "description": "使用限制ID,主键。",
+          "example": ""
+        },
+        "limit_key": {
+          "type": "string",
+          "description": "折扣限制,key的取值请参考表5。",
+          "example": ""
+        },
+        "value1": {
+          "type": "string",
+          "description": "value1。",
+          "example": ""
+        },
+        "value2": {
+          "type": "string",
+          "description": "value2。",
+          "example": ""
+        },
+        "value_unit": {
+          "type": "string",
+          "description": "value单位。",
+          "example": ""
+        },
+        "limit_type": {
+          "type": "string",
+          "description": "限制类型。",
+          "example": ""
+        },
+        "promotion_plan_id": {
+          "type": "string",
+          "description": "促销计划ID。",
+          "example": ""
+        }
+      }
+    },
+    "CouponMaxUseQuantity": {
+      "properties": {
+        "coupon_type": {
+          "description": "优惠券类型。 1:代金券2:折扣券3:产品券4:现金券",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "coupon_group": {
+          "description": "优惠券分组。 1:云商店发放的券2:华为云券-1024-专用代金券3:华为云券-使用限制-抵扣硬件的券0:华为云服务券(排除上述取值之外的券)",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        },
+        "use_quantity_value": {
+          "description": "优惠券使用数量。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

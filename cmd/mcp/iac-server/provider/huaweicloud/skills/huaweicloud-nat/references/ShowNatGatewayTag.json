@@ -1,0 +1,174 @@
+{
+  "name": "ShowNatGatewayTag",
+  "summary": "查询公网NAT网关资源标签",
+  "tags": "公网NAT网关标签",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/nat_gateways/{nat_gateway_id}/tags": {
+      "get": {
+        "tags": [
+          "公网NAT网关标签"
+        ],
+        "summary": "查询公网NAT网关资源标签",
+        "description": "- 查询指定公网NAT网关实例的标签信息。\n- 标签管理服务需要使用该接口查询指定公网NAT网关实例的全部标签数据。",
+        "operationId": "ShowNatGatewayTag",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "nat_gateway_id",
+            "in": "path",
+            "description": "公网NAT网关ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询操作成功。",
+            "examples": {
+              "application/json": {
+                "tags": [
+                  {
+                    "key": "key1",
+                    "value": "value1"
+                  },
+                  {
+                    "key": "key2",
+                    "value": "value2"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowNatTagsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询公网NAT网关资源标签",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-url-1": "GET  https://{Endpoint}/v3/9ad601814ac94c80bf7bb9073ded66fc/nat_gateways/fe1a4cf0-27fe-4b97-a9b1-2c67c127f0e0/tags",
+        "x-obc": "Y",
+        "x-api-type": "open-api",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "400",
+            "httpStatus": "400",
+            "errorMessage": "",
+            "errorDescription": "Bad Request",
+            "solution": "",
+            "errorDescriptionEn": "Bad Request",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "401",
+            "httpStatus": "401",
+            "errorMessage": "",
+            "errorDescription": "Unauthorized",
+            "solution": "",
+            "errorDescriptionEn": "Unauthorized",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "403",
+            "httpStatus": "403",
+            "errorMessage": "",
+            "errorDescription": "Forbidden",
+            "solution": "",
+            "errorDescriptionEn": "Forbidden",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "404",
+            "httpStatus": "404",
+            "errorMessage": "",
+            "errorDescription": "Not Found",
+            "solution": "",
+            "errorDescriptionEn": "Not Found",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "500",
+            "httpStatus": "500",
+            "errorMessage": "",
+            "errorDescription": "Internal Server Error",
+            "solution": "",
+            "errorDescriptionEn": "Internal Server Error",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "TagBody": {
+      "description": "TagBody字段数据结构说明",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。不能包含非打印字符ASCII(0-31),“=”,“*”,“<”,“>”,“\\”,“,”,“|”,“/”"
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符,可以为空字符串。不能包含非打印字符ASCII(0-31),“=”,“*”,“<”,“>”,“\\”,“,”,“|”,“/”"
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "ShowNatTagsResponseBody": {
+      "required": [
+        "tags"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "标签列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/TagBody"
+          },
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "响应参数"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

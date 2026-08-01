@@ -1,0 +1,135 @@
+{
+  "name": "UpdateDnsName",
+  "summary": "修改域名",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/modify-dns": {
+      "put": {
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "UpdateDnsName",
+        "summary": "修改域名",
+        "description": "修改域名",
+        "x-support-sdk": "Y",
+        "x-constraint": "该接口仅支持MySQL引擎和PostgreSQL引擎。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "08fd4e669e00d57d2ffec01352c7cb77"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "488b11be6ddb4481a168e4f4af7a7114in03"
+          },
+          {
+            "name": "ModifyDnsNameRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ModifyDnsNameRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "修改域名",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/08fd4e669e00d57d2ffec01352c7cb77/instances/488b11be6ddb4481a168e4f4af7a7114in03/modify-dns",
+        "x-request-examples-1": {
+          "dns_name": "pgdatabasednstest"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JobId": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID。",
+          "example": "6ad4eb1f-73bd-4876-aa31-aa9a1e41c4bc"
+        }
+      }
+    },
+    "ModifyDnsNameRequestBody": {
+      "required": [
+        "dns_name"
+      ],
+      "properties": {
+        "dns_name": {
+          "description": "新域名的前缀,校验规则是^[0-9a-zA-Z]{8,64}$",
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

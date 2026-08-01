@@ -1,0 +1,457 @@
+{
+  "name": "GetAuthorizationSchemaV5",
+  "summary": "查询指定服务授权概要",
+  "tags": "授权概要查询",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/authorization-schemas/services/{service_code}": {
+      "get": {
+        "tags": [
+          "AuthorizationSchema"
+        ],
+        "operationId": "GetAuthorizationSchemaV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "查询指定服务授权概要",
+        "description": "该接口可以用于查询指定云服务的授权概要。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ServiceCode"
+          }
+        ],
+        "x-request-examples-description-1": "查询指定云服务的授权概要。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v5/authorization-schemas/services/{service_code}",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationSchema"
+                },
+                "example": {
+                  "version": "v1",
+                  "actions": [
+                    {
+                      "name": "sts:agencies:assume",
+                      "access_level": "write",
+                      "permission_only": false,
+                      "description": {
+                        "en_US": "Grants permission to obtain a set of temporary security credentials that you can use to access resources that you might not normally have access to.",
+                        "zh_CN": "授予权限以获取一组可用来访问您通常无法访问的资源的临时安全凭证。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:agency:<agency-name-with-path>",
+                          "required": true,
+                          "condition_keys": [
+                            "g:ResourceTag/<tag-key>"
+                          ]
+                        }
+                      ],
+                      "condition_keys": [
+                        "sts:ExternalId",
+                        "sts:SourceIdentity",
+                        "sts:TransitiveTagKeys",
+                        "sts:AgencySessionName",
+                        "g:RequestTag/<tag-key>",
+                        "g:TagKeys",
+                        "g:SourceAccount",
+                        "g:SourceUrn",
+                        "saml:namequalifier",
+                        "saml:sub",
+                        "saml:sub_type"
+                      ]
+                    },
+                    {
+                      "name": "sts:agencies:assumeWithSAML",
+                      "access_level": "write",
+                      "permission_only": false,
+                      "description": {
+                        "en_US": "Grants permission to obtain a set of temporary security credentials for users who have been authenticated via a SAML authentication response.",
+                        "zh_CN": "授予权限为通过 SAML 身份验证响应验证的用户获取一组临时安全凭证。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:agency:<agency-name-with-path>",
+                          "required": true,
+                          "condition_keys": [
+                            "g:ResourceTag/<tag-key>"
+                          ]
+                        }
+                      ],
+                      "condition_keys": [
+                        "saml:namequalifier",
+                        "saml:sub",
+                        "saml:sub_type",
+                        "saml:aud",
+                        "saml:iss",
+                        "g:TagKeys",
+                        "g:RequestTag/<tag-key>",
+                        "sts:TransitiveTagKeys",
+                        "sts:SourceIdentity",
+                        "sts:AgencySessionName"
+                      ]
+                    },
+                    {
+                      "name": "sts:agencies:assumeWithOIDC",
+                      "access_level": "write",
+                      "permission_only": false,
+                      "description": {
+                        "en_US": "Grants permission to obtain a set of temporary security credentials for users who have been authenticated with a OIDC provider token.",
+                        "zh_CN": "授予权限为通过 OIDC 身份提供商令牌验证的用户获取一组临时安全凭证。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:agency:<agency-name-with-path>",
+                          "required": true,
+                          "condition_keys": [
+                            "g:ResourceTag/<tag-key>"
+                          ]
+                        }
+                      ],
+                      "condition_keys": [
+                        "oidc:amr",
+                        "oidc:aud",
+                        "oidc:sub",
+                        "oidc:iss",
+                        "g:TagKeys",
+                        "g:RequestTag/<tag-key>",
+                        "sts:TransitiveTagKeys",
+                        "sts:SourceIdentity",
+                        "sts:AgencySessionName"
+                      ]
+                    },
+                    {
+                      "name": "sts::setContext",
+                      "access_level": "write",
+                      "permission_only": true,
+                      "description": {
+                        "en_US": "Grants permission to set trusted context on a STS session.",
+                        "zh_CN": "授予权限以设置STS会话的可信上下文。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:agency:<agency-name-with-path>",
+                          "required": true,
+                          "condition_keys": [
+                            "g:ResourceTag/<tag-key>"
+                          ]
+                        }
+                      ],
+                      "condition_keys": [
+                        "sts:RequestContextProviders",
+                        "sts:RequestContext/<context-key>"
+                      ]
+                    },
+                    {
+                      "name": "sts::createContextAssertion",
+                      "access_level": "write",
+                      "permission_only": false,
+                      "description": {
+                        "en_US": "Grants permission to create a context assertion.",
+                        "zh_CN": "授予权限以创建可信上下文断言。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:contextProvider:<provider-name>",
+                          "required": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "sts::decodeAuthorizationMessage",
+                      "access_level": "write",
+                      "permission_only": false,
+                      "description": {
+                        "en_US": "Grants permission to decode additional information about the authorization status of a request from an encoded message returned in response to a request.",
+                        "zh_CN": "授予权限以从为响应请求而返回的编码消息中解码有关请求授权状态的其他信息。"
+                      }
+                    },
+                    {
+                      "name": "sts::setSourceIdentity",
+                      "access_level": "write",
+                      "permission_only": true,
+                      "description": {
+                        "en_US": "Grants permission to set a source identity on a STS session.",
+                        "zh_CN": "授予在 STS 会话上设置源身份的权限。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:agency:<agency-name-with-path>",
+                          "required": true,
+                          "condition_keys": [
+                            "g:ResourceTag/<tag-key>"
+                          ]
+                        }
+                      ],
+                      "condition_keys": [
+                        "sts:SourceIdentity"
+                      ]
+                    },
+                    {
+                      "name": "sts::tagSession",
+                      "access_level": "tagging",
+                      "permission_only": true,
+                      "description": {
+                        "en_US": "Grants permission to add tags to a STS session.",
+                        "zh_CN": "授予权限以将标签添加至 STS 会话。"
+                      },
+                      "resources": [
+                        {
+                          "urn_template": "iam::<account-id>:agency:<agency-name-with-path>",
+                          "required": true,
+                          "condition_keys": [
+                            "g:ResourceTag/<tag-key>"
+                          ]
+                        }
+                      ],
+                      "condition_keys": [
+                        "sts:TransitiveTagKeys",
+                        "g:RequestTag/<tag-key>",
+                        "g:TagKeys"
+                      ]
+                    },
+                    {
+                      "name": "sts::createServiceBearerToken",
+                      "access_level": "write",
+                      "permission_only": true,
+                      "description": {
+                        "en_US": "Grants permission to get the service bearer token.",
+                        "zh_CN": "授予权限获取一个绑定至某服务的 Bearer Token。"
+                      },
+                      "condition_keys": [
+                        "sts:DurationTime",
+                        "sts:ServiceName"
+                      ]
+                    }
+                  ],
+                  "resources": [
+                    {
+                      "type_name": "assumed-agency",
+                      "urn_template": "sts::<account-id>:assumed-agency:<agency-name>/<session-name>"
+                    }
+                  ],
+                  "conditions": [
+                    {
+                      "key": "sts:RequestContextProviders",
+                      "value_type": "string",
+                      "multi_valued": true,
+                      "description": {
+                        "en_US": "Filters access by the context provider URNs.",
+                        "zh_CN": "按上下文提供者 URN 筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:RequestContext/<context-key>",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the session context key-value pairs embedded in the signed context assertion.",
+                        "zh_CN": "按嵌入在已签名上下文断言中的上下文键值对来筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:ExternalId",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the external ID that is passed in the request.",
+                        "zh_CN": "按您代入另一个账户中的角色时所需的唯一标识符筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:SourceIdentity",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the source identity that is passed in the request.",
+                        "zh_CN": "按照在请求中传递的源身份筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:TransitiveTagKeys",
+                      "value_type": "string",
+                      "multi_valued": true,
+                      "description": {
+                        "en_US": "Filters access by the transitive tag keys that are passed in the request.",
+                        "zh_CN": "按照在请求中传递的可传递标签键筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:AgencySessionName",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the agency session name required when you assume an agency.",
+                        "zh_CN": "按您代入角色时所需的角色会话名称筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:DurationTime",
+                      "value_type": "numeric",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the duration times when you create a bearer token.",
+                        "zh_CN": "按照创建 Bearer Token 的持续时间筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "sts:ServiceName",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the service name when you create a bearer token.",
+                        "zh_CN": "按照创建 Bearer Token 的服务名筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "saml:namequalifier",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the hash value of the issuer, account ID, and friendly name.",
+                        "zh_CN": "按照颁发者、账号 ID 和友好名称的哈希值筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "saml:sub",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the subject of the claim (the SAML user ID).",
+                        "zh_CN": "按照声明的主体筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "saml:sub_type",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the value persistent, transient, or the full Format URI.",
+                        "zh_CN": "按照 persistent、transient 值或完整格式 URI 筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "saml:aud",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the endpoint URL to which SAML assertions are presented.",
+                        "zh_CN": "按照提供 SAML 断言的终端节点 URL 筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "saml:iss",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by on the issuer, which is represented by a URN.",
+                        "zh_CN": "按照以 URN 表示的颁发者筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "oidc:amr",
+                      "value_type": "string",
+                      "multi_valued": true,
+                      "description": {
+                        "en_US": "Filters access by the amr claim.",
+                        "zh_CN": "按照 amr 声明筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "oidc:aud",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the azp claim if it is present; otherwise, filters by the aud claim.",
+                        "zh_CN": "若 azp 声明存在,按照 azp 筛选访问权限;若 azp 声明不存在,则按照 aud 声明筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "oidc:sub",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the sub claim.",
+                        "zh_CN": "按照 sub 声明筛选访问权限。"
+                      }
+                    },
+                    {
+                      "key": "oidc:iss",
+                      "value_type": "string",
+                      "multi_valued": false,
+                      "description": {
+                        "en_US": "Filters access by the iss claim.",
+                        "zh_CN": "按照 iss 声明筛选访问权限。"
+                      }
+                    }
+                  ],
+                  "operations": [
+                    {
+                      "operation_id": "AssumeAgency",
+                      "operation_action": "sts:agencies:assume",
+                      "dependent_actions": [
+                        "sts::tagSession",
+                        "sts::setSourceIdentity"
+                      ]
+                    },
+                    {
+                      "operation_id": "AssumeAgencyWithSAML",
+                      "operation_action": "sts:agencies:assumeWithSAML",
+                      "dependent_actions": [
+                        "sts::tagSession",
+                        "sts::setSourceIdentity"
+                      ]
+                    },
+                    {
+                      "operation_id": "AssumeAgencyWithOIDC",
+                      "operation_action": "sts:agencies:assumeWithOIDC",
+                      "dependent_actions": [
+                        "sts::tagSession",
+                        "sts::setSourceIdentity"
+                      ]
+                    },
+                    {
+                      "operation_id": "DecodeAuthorizationMessage",
+                      "operation_action": "sts::decodeAuthorizationMessage"
+                    },
+                    {
+                      "operation_id": "CreateContextAssertion",
+                      "operation_action": "sts::createContextAssertion"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

@@ -60,7 +60,12 @@ func (s *Server) AddTool(tool openagent.Tool) error {
 	// Adapter: MCP ToolHandler → openagent Tool.Execute.
 	// The handler receives raw JSON arguments, passes them to Execute,
 	// and wraps the result in MCP TextContent.
+	//
+	// If the client supplied a progressToken, a [ProgressFunc] is built from
+	// the server session and injected into the context so the tool can stream
+	// progress notifications back to the client during long-running calls.
 	handler := func(ctx context.Context, req *mcpsdk.CallToolRequest) (*mcpsdk.CallToolResult, error) {
+		ctx = withProgress(ctx, req)
 		output, err := tool.Execute(ctx, req.Params.Arguments)
 		if err != nil {
 			return &mcpsdk.CallToolResult{
@@ -79,6 +84,25 @@ func (s *Server) AddTool(tool openagent.Tool) error {
 
 	s.inner.AddTool(mcpTool, handler)
 	return nil
+}
+
+// withProgress builds a [openagent.ProgressFunc] from the MCP server session
+// and the client-supplied progress token, then injects it into ctx.
+// If no token is present, ctx is returned unchanged (ProgressFunc will be nil).
+func withProgress(ctx context.Context, req *mcpsdk.CallToolRequest) context.Context {
+	token := req.Params.GetProgressToken()
+	if token == nil {
+		return ctx
+	}
+	ss := req.Session
+	return openagent.WithProgress(ctx, func(message string, progress, total float64) {
+		_ = ss.NotifyProgress(ctx, &mcpsdk.ProgressNotificationParams{
+			ProgressToken: token,
+			Message:       message,
+			Progress:      progress,
+			Total:         total,
+		})
+	})
 }
 
 // AddTools registers multiple openagent.Tool instances.
@@ -103,6 +127,7 @@ func (s *Server) AddToolWithSchema(tool openagent.Tool, inputSchema json.RawMess
 	}
 
 	handler := func(ctx context.Context, req *mcpsdk.CallToolRequest) (*mcpsdk.CallToolResult, error) {
+		ctx = withProgress(ctx, req)
 		output, err := tool.Execute(ctx, req.Params.Arguments)
 		if err != nil {
 			return &mcpsdk.CallToolResult{

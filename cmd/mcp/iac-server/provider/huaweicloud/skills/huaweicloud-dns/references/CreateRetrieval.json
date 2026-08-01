@@ -1,0 +1,166 @@
+{
+  "name": "CreateRetrieval",
+  "summary": "创建公网域名找回",
+  "tags": "公网域名管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/retrieval": {
+      "post": {
+        "tags": [
+          "公网域名管理"
+        ],
+        "x-request-examples-description-1": "创建公网域名找回请求。",
+        "x-request-examples-url-1": "POST https://{endpoint}//v2/retrieval",
+        "x-request-examples-1": {
+          "zone_name": "example.com"
+        },
+        "operationId": "CreateRetrieval",
+        "summary": "创建公网域名找回",
+        "description": "创建公网域名找回请求。\n\n**公网域名为全局资源,请选择“华北-北京四(cn-north-4)”区域调用。**\n****",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "CreateRetrievalRequestBody",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateRetrievalRequestBody"
+            },
+            "description": "创建公网域名找回请求。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "创建公网域名找回响应。",
+            "schema": {
+              "$ref": "#/definitions/RetrievalResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "id": "a86dba5800434cc6a1bb69d5e86f3ca3",
+                "zone_name": "example.com.",
+                "record": {
+                  "host": "huaweiyunRetrieval",
+                  "value": "a86dba5800434cc6a1bb69d5e86f3ca3"
+                },
+                "status": "PENDING",
+                "created_at": "2016-11-17T11:56:03.439",
+                "updated_at": "2016-11-17T11:56:03.439"
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 7
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "CreateRetrievalRequestBody": {
+      "properties": {
+        "zone_name": {
+          "type": "string",
+          "description": "公网域名。"
+        }
+      }
+    },
+    "RecordInfo": {
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "**参数解释:**\n解析记录的主机记录。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释:**\n解析记录的记录值。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    },
+    "RetrievalResponseBody": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "找回请求ID。"
+        },
+        "zone_name": {
+          "type": "string",
+          "description": "域名。"
+        },
+        "record": {
+          "$ref": "#/definitions/RecordInfo",
+          "description": "解析记录信息。"
+        },
+        "status": {
+          "type": "string",
+          "description": "找回状态。\n\n取值范围:\n\nPENDING:处理中\nVERIFIED:已验证\nCREATED:已找回\nEXPIRED:已失效"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

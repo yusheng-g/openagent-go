@@ -1,0 +1,235 @@
+{
+  "name": "ShowIntelligentKillSessionStatistic",
+  "summary": "查询一键kill会话实时统计信息",
+  "tags": "RDS",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/ops/intelligent-kill-session/statistic": {
+      "get": {
+        "x-request-examples-url-1": "/rds/v3/54623db08b174c858ba779d2aa7923a3/instances/aa650a108f034e83b24486fd1ff7be2fin01/ops/intelligent-kill-session/statistic",
+        "x-request-examples-description-1": "下发查询一键kill会话实时统计信息",
+        "tags": [
+          "RDS"
+        ],
+        "operationId": "ShowIntelligentKillSessionStatistic",
+        "summary": "查询一键kill会话实时统计信息",
+        "description": "查询一键kill会话实时统计信息",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apigateway-ratelimit": "rds_user_policy_100",
+        "x-constraint": "- 该接口仅支持mysql\n- 使用该接口前请联系客服申请获取相应权限",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n租户在某一Region下的项目ID。\n\n获取方法请参见获取项目ID。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n不涉及。\n\n**默认取值**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释**:\n\n实例ID,此参数是实例的唯一标识。\n\n**约束限制**:\n\n不涉及。",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "**参数解释**:\n\n用户Token。\n\n**约束限制**:\n\n不涉及。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 20000
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "**参数解释**:\n\n请求语言类型。\n\n**约束限制**:\n\n不涉及。\n\n**取值范围**:\n\n- en-us\n- zh-cn\n**默认取值**:\n\nen-us。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          },
+          {
+            "name": "node_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:\n\n节点ID。\n\n**约束限制**:\n\n只有当实例为集群版时该参数有效。",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ShowIntelligentKillSessionStatisticResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "statistics": [
+                  {
+                    "keyword": "SELECT~FROM~table~WHERE~id",
+                    "raw_sql_text": "select *from db1",
+                    "ids": [
+                      123,
+                      124,
+                      125,
+                      126
+                    ],
+                    "count": 4,
+                    "total_time": 14,
+                    "avg_time": 3.5,
+                    "max_time": 5,
+                    "strategy": "top3_count",
+                    "advice_concurrency": "5",
+                    "type": "kill"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/ErrorRsp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "IntelligentKillSessionStatistic": {
+      "type": "object",
+      "description": "实时统计信息",
+      "properties": {
+        "keyword": {
+          "type": "string",
+          "description": "**参数解释**:\n\n该类统计维度下提取到的限流关键字。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "raw_sql_text": {
+          "description": "**参数解释**:\n\n随机选取符合sql限流关键字的用户某条sql样例。\n\n**约束限制**:\n\n不涉及。",
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000000
+        },
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64",
+            "maximum": 4294967295,
+            "minimum": 0
+          },
+          "description": "**参数解释**:\n\n符合该统计维度的线程id。\n\n**约束限制**:\n\n不涉及。",
+          "minItems": 0,
+          "maxItems": 1000
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n符合该统计维度的线程id总数量。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "total_time": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n符合该统计维度的线程总执行时间。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 10000000000000
+        },
+        "avg_time": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n符合该统计维度的线程平均执行时间。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 10000000000000
+        },
+        "max_time": {
+          "type": "number",
+          "format": "double",
+          "description": "**参数解释**:\n\n符合该统计维度的线程最大执行时间。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 10000000000000
+        },
+        "strategy": {
+          "type": "string",
+          "description": "**参数解释**:\n\n统计维度。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "advice_concurrency": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n\n推荐最大并发数。type为\"kill\"时该参数没有返回值。\n\n**约束限制**:\n\n不涉及。",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:\n\n该条维度数据的类型。\"kill\"表示当前统计时刻下一键kill会话下发后会kill该类会话;\"limit\"表示当前统计时刻下勾选\"同步开启sql限流和添加规则\"时会添加的规则。\n\n**约束限制**:\n\n不涉及。",
+          "minLength": 0,
+          "maxLength": 36
+        }
+      }
+    },
+    "ShowIntelligentKillSessionStatisticResponseBody": {
+      "type": "object",
+      "description": "查询一键kill会话实时统计信息返回体",
+      "properties": {
+        "statistics": {
+          "description": "**参数解释**:\n\n不同维度下的统计信息。\n\n**约束限制**:\n\n不涉及。",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/IntelligentKillSessionStatistic"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "ErrorRsp": {
+      "description": "失败时返回的对象。",
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "error_msg": {
+          "description": "错误描述。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,275 @@
+{
+  "name": "UpdateUserInformation",
+  "summary": "修改IAM用户信息(推荐)",
+  "tags": "IAM用户管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-USER/users/{user_id}/info": {
+      "put": {
+        "tags": [
+          "IAM用户管理"
+        ],
+        "summary": "修改IAM用户信息(推荐)",
+        "description": "该接口可以用于IAM用户修改自己的用户信息。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "UpdateUserInformation",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "URL中user_id所对应IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "待修改信息的IAM用户ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "2c1c6c54e59141b889c99e6fada5f19f",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "UpdateUserInformationRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserInformationRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "修改成功。"
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "409": {
+            "description": "资源冲突。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "修改IAM用户信息(推荐)",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 34,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://iam.myhuaweicloud.com/v3.0/OS-USER/users/{user_id}/info",
+        "x-request-examples-1": {
+          "user": {
+            "email": "IAMEmail@huawei.com",
+            "mobile": "0086-12345678910"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"user\": {\n        \"email\": \"IAMEmail@huawei.com\",\n        \"mobile\": \"0086-12345678910\"\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "1100",
+            "httpStatus": "400",
+            "errorMessage": "缺失必选参数。",
+            "errorDescription": "缺失必选参数。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1101",
+            "httpStatus": "400",
+            "errorMessage": "用户名校验失败。",
+            "errorDescription": "用户名校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1102",
+            "httpStatus": "400",
+            "errorMessage": "邮箱校验失败。",
+            "errorDescription": "邮箱校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1103",
+            "httpStatus": "400",
+            "errorMessage": "密码校验失败。",
+            "errorDescription": "密码校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1104",
+            "httpStatus": "400",
+            "errorMessage": "手机号校验失败。",
+            "errorDescription": "手机号校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1105",
+            "httpStatus": "400",
+            "errorMessage": "xuser_type必须与xdomain_type相同。",
+            "errorDescription": "xuser_type必须与xdomain_type相同。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1106",
+            "httpStatus": "400",
+            "errorMessage": "国家码、手机号必须同时存在。",
+            "errorDescription": "国家码、手机号必须同时存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1107",
+            "httpStatus": "400",
+            "errorMessage": "账号管理员不能被删除。",
+            "errorDescription": "账号管理员不能被删除。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1108",
+            "httpStatus": "400",
+            "errorMessage": "新密码不能与原密码相同。",
+            "errorDescription": "新密码不能与原密码相同。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1109",
+            "httpStatus": "400",
+            "errorMessage": "用户名已存在。",
+            "errorDescription": "用户名已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1110",
+            "httpStatus": "400",
+            "errorMessage": "邮箱已存在。",
+            "errorDescription": "邮箱已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1111",
+            "httpStatus": "400",
+            "errorMessage": "手机号已存在。",
+            "errorDescription": "手机号已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1113",
+            "httpStatus": "400",
+            "errorMessage": "xuser_id、xuser_type已存在。",
+            "errorDescription": "xuser_id、xuser_type已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1115",
+            "httpStatus": "400",
+            "errorMessage": "IAM用户数量达到最大限制。",
+            "errorDescription": "IAM用户数量达到最大限制。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1117",
+            "httpStatus": "400",
+            "errorMessage": "用户描述校验失败。",
+            "errorDescription": "用户描述校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "UpdateUserInformationOption": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "IAMEmail@huawei.com",
+          "description": "IAM用户的新邮箱,符合邮箱格式,长度小于等于255字符。"
+        },
+        "mobile": {
+          "type": "string",
+          "example": "0086-12345678910",
+          "description": "IAM用户的国家码+新手机号,手机号为纯数字,长度小于等于32字符。"
+        }
+      },
+      "description": ""
+    },
+    "UpdateUserInformationRequestBody": {
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "description": "IAM用户信息。",
+          "$ref": "#/definitions/UpdateUserInformationOption"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

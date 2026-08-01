@@ -1,0 +1,194 @@
+{
+  "name": "DeleteVolumeInRecycle",
+  "summary": "删除回收站中单个云硬盘",
+  "tags": "回收站管理",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/recycle-bin-volumes/{volume_id}": {
+      "delete": {
+        "tags": [
+          "回收站管理"
+        ],
+        "summary": "删除回收站中单个云硬盘",
+        "description": "删除回收站中单个云硬盘。",
+        "operationId": "DeleteVolumeInRecycle",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n**约束限制**\n不涉及。\n**取值范围**\n不涉及。\n**默认取值**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**\n项目ID。获取方法请参见[获取项目ID](evs_04_0046.xml)。 \n**约束限制**\n不涉及。\n**取值范围**\n不涉及。        \n**默认取值**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "volume_id",
+            "in": "path",
+            "description": "**参数解释**\n云硬盘ID。\n可通过[查询所有云硬盘详情](evs_04_2006.xml)获取云硬盘ID。\n**约束限制**\n不涉及。\n**取值范围**\n不涉及。\n**默认取值**\n不涉及。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          }
+        ],
+        "deprecated": false,
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-name": "删除回收站中单个云硬盘",
+        "x-constraint": "",
+        "x-scope": "TechnicalPreview",
+        "x-order": 33,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "DELETE https://evs.cn-north-1.myhuaweicloud.com/v3/490e121341fc481d95f946ef844cb06a/recycle-bin-volumes/55b4c5a7-a82e-4881-9463-f8fbf8730d4f",
+        "x-request-examples-text-1": "DELETE https://evs.cn-north-1.myhuaweicloud.com/v3/490e121341fc481d95f946ef844cb06a/recycle-bin-volumes/55b4c5a7-a82e-4881-9463-f8fbf8730d4f",
+        "x-source": "SelfDeveloped",
+        "x-fusioncloud": "N",
+        "x-first-open-time": "20190130",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "EVS.1002",
+            "httpStatus": "400",
+            "errorDescription": "invalid volume id!",
+            "solution": "请检查请求的磁盘ID是否正确。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.0003",
+            "httpStatus": "403",
+            "errorDescription": "invalid token roles!",
+            "solution": "请检查用户是否已被授予相应的权限。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.1027",
+            "httpStatus": "403",
+            "errorDescription": "user role is not allowed for this action!",
+            "solution": "请检查用户是否已被授予相应的权限。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.2056",
+            "httpStatus": "403",
+            "errorDescription": "Policy doesn't allow %s to be performed.",
+            "solution": "请配置相关的API授权项。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.2106",
+            "httpStatus": "403",
+            "errorDescription": "Can not use the recycle bin",
+            "solution": "请检查是否已启用回收站功能。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.2144",
+            "httpStatus": "403",
+            "errorDescription": "Your account is frozen and resources cannot be used.",
+            "solution": "请先检查账号是否存在以下几种情况,若不存在,请联系技术支持。\n账号是否已完成实名认证。\n账号是否处于欠费状态。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.2145",
+            "httpStatus": "403",
+            "errorDescription": "Your account is suspended and resources cannot be used.",
+            "solution": "请先检查账号是否存在以下几种情况,若不存在,请联系技术支持。\n账号是否已完善支付方式。\n账号是否已完成实名认证。\n账号是否处于欠费状态。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          },
+          {
+            "errorCode": "EVS.2036",
+            "httpStatus": "500",
+            "errorDescription": "the result of decode token is null!",
+            "solution": "请获取新的token并进行重试。",
+            "errorDescriptionEn": "",
+            "solutionEn": "",
+            "parentId": "ibe9e1c8321a41a5a8f3b4d886dea500"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "**参数解释**\n出现错误时,返回的错误码。错误码和其对应的含义请参考[错误码说明](evs_04_0038.xml)。\n**取值范围**\n不涉及。",
+          "$ref": "#/definitions/Error"
+        }
+      }
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

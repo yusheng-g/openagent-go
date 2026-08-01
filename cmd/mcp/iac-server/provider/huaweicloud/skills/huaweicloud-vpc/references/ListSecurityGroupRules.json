@@ -1,0 +1,391 @@
+{
+  "name": "ListSecurityGroupRules",
+  "summary": "查询安全组规则列表",
+  "tags": "安全组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/security-group-rules": {
+      "get": {
+        "tags": [
+          "安全组"
+        ],
+        "summary": "查询安全组规则列表",
+        "description": "查询安全组规则列表。",
+        "operationId": "ListSecurityGroupRules",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "功能说明:分页查询起始的资源ID,为空时查询第一页",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 3,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页返回的个数",
+            "required": false,
+            "type": "integer",
+            "default": 2000,
+            "format": "int32",
+            "x-order": 4,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "security_group_id",
+            "in": "query",
+            "description": "安全组ID",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "791870bd-36a7-4d9b-b015-a78e9b06af08",
+            "x-order": 5,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "remote_ip_prefix",
+            "in": "query",
+            "description": "功能说明:远端IP地址\n取值范围:cidr格式",
+            "required": false,
+            "type": "string",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,tm"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "security_group_rules": [
+                  {
+                    "direction": "egress",
+                    "ethertype": "IPv6",
+                    "id": "3c0e45ff-adaf-4124-b083-bf390e5482ff",
+                    "description": "",
+                    "port_range_max": null,
+                    "port_range_min": null,
+                    "protocol": null,
+                    "remote_group_id": null,
+                    "remote_ip_prefix": null,
+                    "remote_address_group_id": null,
+                    "security_group_id": "85cc3048-abc3-43cc-89b3-377341426ac5",
+                    "tenant_id": "e4f50856753b4dc6afee5fa6b9b6c550"
+                  },
+                  {
+                    "direction": "egress",
+                    "ethertype": "IPv4",
+                    "id": "93aa42e5-80db-4581-9391-3a608bd0e448",
+                    "description": "",
+                    "port_range_max": null,
+                    "port_range_min": null,
+                    "protocol": null,
+                    "remote_group_id": null,
+                    "remote_ip_prefix": null,
+                    "remote_address_group_id": null,
+                    "security_group_id": "85cc3048-abc3-43cc-89b3-377341426ac5",
+                    "tenant_id": "e4f50856753b4dc6afee5fa6b9b6c550"
+                  },
+                  {
+                    "direction": "ingress",
+                    "ethertype": "IPv6",
+                    "id": "c0b09f00-1d49-4e64-a0a7-8a186d928138",
+                    "description": "",
+                    "port_range_max": null,
+                    "port_range_min": null,
+                    "protocol": null,
+                    "remote_group_id": "85cc3048-abc3-43cc-89b3-377341426ac5",
+                    "remote_ip_prefix": null,
+                    "remote_address_group_id": null,
+                    "security_group_id": "85cc3048-abc3-43cc-89b3-377341426ac5",
+                    "tenant_id": "e4f50856753b4dc6afee5fa6b9b6c550"
+                  },
+                  {
+                    "direction": "ingress",
+                    "ethertype": "IPv4",
+                    "id": "f7d45c89-008e-4bab-88ad-d6811724c51c",
+                    "description": "",
+                    "port_range_max": null,
+                    "port_range_min": null,
+                    "protocol": null,
+                    "remote_group_id": "85cc3048-abc3-43cc-89b3-377341426ac5",
+                    "remote_ip_prefix": null,
+                    "remote_address_group_id": null,
+                    "security_group_id": "85cc3048-abc3-43cc-89b3-377341426ac5",
+                    "tenant_id": "e4f50856753b4dc6afee5fa6b9b6c550"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListSecurityGroupRulesResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询安全组规则列表",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 29,
+        "x-request-examples-description-1": "查询某个安全组下的安全组规则",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v1/{project_id}/security-group-rules?security_group_id={security_group_id}",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v1/{project_id}/security-group-rules?security_group_id={security_group_id}",
+        "x-request-examples-description-2": "查询安全组规则列表",
+        "x-request-examples-url-2": "",
+        "x-request-examples-2": "GET https://{Endpoint}/v1/{project_id}/security-group-rules",
+        "x-request-examples-text-2": "GET https://{Endpoint}/v1/{project_id}/security-group-rules",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016-6-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "ListSecurityGroupRulesResponseBody": {
+      "required": [
+        "security_group_rules"
+      ],
+      "properties": {
+        "security_group_rules": {
+          "type": "array",
+          "description": "安全组规则对象列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/SecurityGroupRule"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "SecurityGroupRule": {
+      "required": [
+        "description",
+        "direction",
+        "ethertype",
+        "id",
+        "port_range_max",
+        "port_range_min",
+        "protocol",
+        "remote_address_group_id",
+        "remote_group_id",
+        "remote_ip_prefix",
+        "security_group_id",
+        "tenant_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "安全组规则ID",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:安全组规则描述\n取值范围:0-255个字符,支持数字、字母、中文字符",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "security_group_id": {
+          "type": "string",
+          "description": "安全组ID",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "direction": {
+          "type": "string",
+          "description": "功能说明:出入控制方向\n取值范围:\n- egress:出方向\n- ingress:入方向",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "ethertype": {
+          "type": "string",
+          "description": "功能说明:IP协议类型\n取值范围:IPv4,IPv6",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:协议类型\n取值范围:tcp、udp、icmp或IP协议编号(0~255)\n约束:为空表示支持所有协议",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "port_range_min": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:起始端口值\n取值范围:1~65535\n约束:不能大于port_range_max的值,为空表示所有端口,如果协议是icmp类型,取值范围请参见 [安全组规则icmp协议名称对应关系表](https://support.huaweicloud.com/api-vpc/vpc_api_0009.html)",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "port_range_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:结束端口值\n取值范围:1~65535\n约束:取值不能小于port_range_min的值,为空表示所有端口,如果协议是icmp类型,取值范围请参见 [安全组规则icmp协议名称对应关系表](https://support.huaweicloud.com/api-vpc/vpc_api_0009.html)",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "remote_ip_prefix": {
+          "type": "string",
+          "description": "功能说明:远端IP地址,当direction是egress时为虚拟机访问端的地址,当direction是ingress时为访问虚拟机的地址\n取值范围:IP地址,或者cidr格式\n约束:和remote_group_id,remote_address_group_id互斥",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "remote_group_id": {
+          "type": "string",
+          "description": "功能说明:对端安全组ID\n约束:和remote_ip_prefix,remote_address_group_id互斥",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "remote_address_group_id": {
+          "type": "string",
+          "description": "功能说明:远端IP地址组ID\n约束:和remote_ip_prefix,remote_group_id互斥",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "安全组所属项目ID",
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

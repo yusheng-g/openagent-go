@@ -1,0 +1,294 @@
+{
+  "name": "ListScalingInstances",
+  "summary": "查询弹性伸缩组中的实例列表",
+  "tags": "弹性伸缩实例管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_group_instance/{scaling_group_id}/list": {
+      "get": {
+        "tags": [
+          "弹性伸缩实例管理"
+        ],
+        "summary": "查询弹性伸缩组中的实例列表",
+        "description": "根据输入条件过滤查询弹性伸缩组中实例信息。查询结果分页显示。可根据实例在伸缩组中的生命周期状态,实例健康状态,实例保护状态,起始行号,记录条数进行条件过滤查询。若不加过滤条件默认查询组内最多20条实例信息",
+        "operationId": "ListScalingInstances",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "life_cycle_state",
+            "in": "query",
+            "description": "实例在伸缩组中的生命周期状态:INSERVICE: 正在使用。PENDING:正在加入伸缩组。REMOVING:正在移出伸缩组。PENDING_WAIT:正在加入伸缩组:等待。REMOVING_WAIT:正在移出伸缩组:等待。",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "INSERVICE",
+              "PENDING",
+              "REMOVING",
+              "PENDING_WAIT",
+              "REMOVING_WAIT",
+              "STANDBY",
+              "ENTERING_STANDBY"
+            ],
+            "x-order": 4,
+            "x-example": "REMOVING_WAIT"
+          },
+          {
+            "name": "health_status",
+            "in": "query",
+            "description": "实例健康状态:INITIALIZING:初始化。NORMAL:正常。ERROR:异常",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "INITIALIZING",
+              "NORMAL",
+              "ERROR"
+            ],
+            "x-order": 5,
+            "x-example": "INITIALIZING"
+          },
+          {
+            "name": "protect_from_scaling_down",
+            "in": "query",
+            "description": "实例保护状态:true:已设置实例保护。false:未设置实例保护。",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "x-order": 6,
+            "x-example": "true"
+          },
+          {
+            "name": "start_number",
+            "in": "query",
+            "description": "查询的起始行号,默认为0。",
+            "required": false,
+            "type": "integer",
+            "default": 0,
+            "format": "int32",
+            "x-order": 7
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "查询的记录条数,默认为20。",
+            "required": false,
+            "type": "integer",
+            "default": 20,
+            "format": "int32",
+            "x-order": 8,
+            "x-example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "schema": {
+              "$ref": "#/definitions/ScalingInstances"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了查询ID为e5d27f5c-dd76-4a61-b4bc-a67c5686719a的伸缩组下已启用且处于健康状态的实例。",
+        "x-support-sdk": "Y",
+        "x-name": "查询弹性伸缩组中的实例列表",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 1,
+        "x-request-examples-url-1": "GET https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_group_instance/e5d27f5c-dd76-4a61-b4bc-a67c5686719a/list?life_cycle_state=INSERVICE&health_status=NORMAL",
+        "x-flow_control_group": "as",
+        "x-tenant_flow_time": 1,
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": 78,
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": 1,
+        "x-ctc": "Y",
+        "x-hc": "Y",
+        "x-multi_tenant_flow_value": 780,
+        "x-otc": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ScalingInstances": {
+      "properties": {
+        "total_number": {
+          "type": "integer",
+          "format": "int32",
+          "example": 2,
+          "description": "总记录数。"
+        },
+        "start_number": {
+          "type": "integer",
+          "format": "int32",
+          "example": 0,
+          "description": "查询的起始行号。"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "example": 20,
+          "description": "伸缩组实例详情。"
+        },
+        "scaling_group_instances": {
+          "type": "array",
+          "description": "伸缩组实例详情。",
+          "items": {
+            "$ref": "#/definitions/ScalingGroupInstance"
+          }
+        }
+      },
+      "description": "请求正常"
+    },
+    "ScalingGroupInstance": {
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "实例ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "instance_name": {
+          "type": "string",
+          "description": "实例名称。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "scaling_group_id": {
+          "type": "string",
+          "description": "实例所在伸缩组ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_group_name": {
+          "type": "string",
+          "description": "实例所在伸缩组名称。"
+        },
+        "life_cycle_state": {
+          "type": "string",
+          "description": "实例在伸缩组中的生命周期状态:\n\n- INSERVICE:已启用\n- PENDING:正在加入伸缩组\n- PENDING_WAIT:等待(正在加入伸缩组)\n- REMOVING:正在移出伸缩组\n- REMOVING_WAIT:等待(正在移出伸缩组)\n- STANDBY:已备用\n- ENTERING_STANDBY:进入备用状态",
+          "enum": [
+            "INSERVICE",
+            "PENDING",
+            "REMOVING",
+            "PENDING_WAIT",
+            "REMOVING_WAIT"
+          ]
+        },
+        "health_status": {
+          "type": "string",
+          "description": "实例健康状态:INITAILIZING:初始化;NORMAL:正常;ERROR:错误。",
+          "enum": [
+            "NORMAL",
+            "ERROR",
+            "INITAILIZING"
+          ]
+        },
+        "scaling_configuration_name": {
+          "type": "string",
+          "description": "伸缩配置名称。如果返回为空,表示伸缩配置已经被删除。如果返回MANNUAL_ADD,表示实例为手动加入。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "scaling_configuration_id": {
+          "type": "string",
+          "description": "伸缩配置ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "create_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "实例加入伸缩组的时间,遵循UTC时间。"
+        },
+        "protect_from_scaling_down": {
+          "type": "boolean",
+          "description": "实例的实例保护属性。"
+        }
+      },
+      "description": "伸缩组实例详情"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

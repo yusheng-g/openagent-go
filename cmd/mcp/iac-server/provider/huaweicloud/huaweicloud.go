@@ -1,48 +1,36 @@
 // Package huaweicloud implements provider.CloudProvider for HuaweiCloud.
 //
-// Catalog and pricing are NOT hardcoded — they are injected via
-// WithCatalog/WithPricing with real SDK/API-backed implementations.
-// Without injection, CatalogProvider()/PricingProvider() return nil
-// and the server LLM should query cloud APIs via tool calls instead.
+// Skills (terraform deployment guide + examples, pricing guide, troubleshoot
+// guide) are embedded at compile time via go:embed (see embed.go). iac-server
+// extracts them to disk at startup for the standard skill loader and
+// read/grep/ls tools.
 //
-// Templates are NOT provided here — they come from skills.
+// Catalog is queried via terraform data sources at plan time.
+// Pricing is queried by the server LLM via http_request (BSS API, auto-signed)
+// with WebSearch/WebFetch as a fallback.
 package huaweicloud
 
 import (
+	"io/fs"
 	"os"
 
+	openagent "github.com/yusheng-g/openagent-go"
 	"github.com/yusheng-g/openagent-go/cmd/mcp/iac-server/provider"
 )
 
 // HuaweiCloud implements provider.CloudProvider.
 type HuaweiCloud struct {
-	region  string
-	catalog provider.CatalogProvider // injectable; nil = not available
-	pricing provider.PricingProvider // injectable; nil = not available
+	region string
 }
 
 // New creates a HuaweiCloud provider for the given region.
 // Credentials are read from the environment on demand via Env().
-// Catalog and pricing are nil by default — inject real implementations
-// via WithCatalog/WithPricing.
 func New(region string) *HuaweiCloud {
 	return &HuaweiCloud{region: region}
 }
 
-// WithCatalog injects a CatalogProvider implementation (e.g. SDK-backed).
-// Without this, CatalogProvider() returns nil.
-func (h *HuaweiCloud) WithCatalog(c provider.CatalogProvider) *HuaweiCloud {
-	h.catalog = c
-	return h
-}
-
-// WithPricing injects a PricingProvider implementation (e.g. SDK-backed).
-// Without this, PricingProvider() returns nil.
-// Never inject a static/hardcoded pricing provider — wrong pricing is dangerous.
-func (h *HuaweiCloud) WithPricing(p provider.PricingProvider) *HuaweiCloud {
-	h.pricing = p
-	return h
-}
+// Compile-time interface check.
+var _ provider.CloudProvider = (*HuaweiCloud)(nil)
 
 // Name returns the cloud identifier.
 func (h *HuaweiCloud) Name() string { return "huaweicloud" }
@@ -51,19 +39,27 @@ func (h *HuaweiCloud) Name() string { return "huaweicloud" }
 // Reads from the process environment at call time so secrets never
 // persist in the struct.
 func (h *HuaweiCloud) Env() map[string]string {
-	return map[string]string{
+	env := map[string]string{
 		"HW_ACCESS_KEY": os.Getenv("HW_ACCESS_KEY"),
 		"HW_SECRET_KEY": os.Getenv("HW_SECRET_KEY"),
 		"HW_REGION":     h.region,
 	}
+	if t := os.Getenv("HW_SECURITY_TOKEN"); t != "" {
+		env["HW_SECURITY_TOKEN"] = t
+	}
+	return env
 }
 
-// CatalogProvider returns the catalog implementation, or nil if not injected.
-func (h *HuaweiCloud) CatalogProvider() provider.CatalogProvider {
-	return h.catalog
-}
+// Skills returns the embedded skills directory.
+func (h *HuaweiCloud) Skills() fs.FS { return Skills() }
 
-// PricingProvider returns the pricing implementation, or nil if not injected.
-func (h *HuaweiCloud) PricingProvider() provider.PricingProvider {
-	return h.pricing
+// HTTPRequest returns an http_request tool configured with HuaweiCloud
+// credentials from the environment. The tool handles SDK-HMAC-SHA256
+// signing automatically — the LLM never sees AK/SK.
+func (h *HuaweiCloud) HTTPRequest() openagent.Tool {
+	return NewHTTPRequest(
+		os.Getenv("HW_ACCESS_KEY"),
+		os.Getenv("HW_SECRET_KEY"),
+		os.Getenv("HW_SECURITY_TOKEN"), // temporary credentials; empty for permanent AK/SK
+	)
 }

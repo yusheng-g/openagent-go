@@ -1,0 +1,127 @@
+{
+  "name": "ReclaimToPartnerAccount",
+  "summary": "回收客户账户余额",
+  "tags": "管理客户账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/partner-accounts/reclaim": {
+      "post": {
+        "summary": "回收客户账户余额",
+        "description": "当客户不再使用华为云产品时,合作伙伴可以回收代售类客户账户余额。\n\n伙伴登录伙伴中心回收代售类客户账户余额请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0072435147.html)。",
+        "tags": [
+          "管理客户账户(伙伴)"
+        ],
+        "operationId": "ReclaimToPartnerAccount",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/accounts/partner-accounts/reclaim",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-06-08",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "回收客户账户余额请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReclaimToPartnerAccountBalancesReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/accounts/partner-accounts/reclaim",
+        "x-request-examples-1": {
+          "customer_id": "06f9fb4f24002f0b0f40c00327c28d00",
+          "amount": 1
+        },
+        "responses": {
+          "200": {
+            "description": "回收客户账户余额响应",
+            "schema": {
+              "$ref": "#/definitions/ReclaimToPartnerAccountBalancesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "trans_id": "RE2007030833010000eb"
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:请求参数非法||CBC.99005001:非合作伙伴。||CBC.99000035:合作伙伴的客户不存在。||CBC.99005003:余额不足。||CBC.99000000:无对该客户的操作权限。||CBC.99005021:推荐模式下不能给客户调账和回收。||CBC.99000037:您没有操作该二级经销商的权限。|"
+          }
+        },
+        "x-category": "管理客户账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ReclaimToPartnerAccountBalancesReq": {
+      "required": [
+        "customer_id",
+        "amount"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        },
+        "amount": {
+          "description": "回收的金额。 单位:元。取值大于0且精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "maximum": 2147483647,
+          "minimum": 0,
+          "x-allowNull": false,
+          "example": "100.00"
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。云经销商(二级经销商)回收云经销商(二级经销商)的子客户账户余额时,需携带此参数;除此之外,该参数不做处理;否则只能回收自己的子客户账户余额。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "",
+          "x-site": "HC"
+        }
+      }
+    },
+    "ReclaimToPartnerAccountBalancesRsp": {
+      "properties": {
+        "trans_id": {
+          "type": "string",
+          "description": "事务流水ID,只有成功响应才会返回。",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

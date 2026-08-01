@@ -1,0 +1,297 @@
+{
+  "name": "CreateBucket",
+  "summary": "创建桶",
+  "tags": "桶的基础操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的基础操作"
+        ],
+        "operationId": "CreateBucket",
+        "summary": "创建桶",
+        "description": "创建桶是指按照用户指定的桶名创建一个新桶的操作。\n\n说明:\n默认情况下,一个用户可以拥有的桶的数量不能超过100个。\n用户删除桶后,需要等待30分钟才能创建同名桶和并行文件系统。\nOBS支持在创建桶时指定桶的AZ类型,您可以开启或关闭多AZ。关闭多AZ时,桶内数据默认存储在单个AZ内;开启多AZ时,桶内数据冗余存储在多个AZ内,可靠性更高。旧桶AZ类型默认为单AZ。\n新创建桶的桶名在OBS中必须是唯一的。如果是同一个用户重复创建同一区域的同名桶时返回成功。除此以外的其他场景重复创建同名桶返回桶已存在。用户可以在请求消息头中加入x-obs-acl等参数,设置要创建桶的权限控制策略。\n\n#### 存储类型 ####\n允许用户创建不同默认存储类型的桶。发送创桶请求时携带头域“x-obs-storage-class”来指定桶的默认存储类型。桶内对象的存储类型与桶默认存储类型保持一致。存储类型有4种:STANDARD(标准存储)、WARM(低频访问存储)、COLD(归档存储)、DEEP_ARCHIVE(深度归档)。如果没有携带此头域 ,则创建的桶为标准存储类型。\n\n当往桶内上传对象时,如果没有指定对象的存储类别(参考PUT上传),则该对象的存储类型取桶的默认存储类型。\n\nOBS标准存储拥有低访问时延和较高的吞吐量,因而适用于有大量热点文件需要频繁访问数据的业务场景,例如:大数据、移动应用、热点视频、社交图片等场景。\nOBS低频访问存储适用于不频繁访问(少于每月一次访问)但在需要时也要求快速访问数据的业务场景,例如:文件同步/共享、企业备份等场景。与标准存储相比,低频访问存储有相同的数据持久性、吞吐量以及访问时延,且成本较低,但是可用性略低于标准存储。\nOBS归档存储适用于很少访问(平均一年访问一次)数据的业务场景,例如:数据归档、长期备份等场景。归档存储安全、持久且成本极低,可以用来替代磁带库。为了保持成本低廉,数据取回时间可能长达数分钟到数小时不等。\n",
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "PUT / HTTP/1.1 ",
+        "x-request-examples-description-1": "在指定location上创建桶名为bucketname的3az桶。",
+        "x-request-examples-1": "PUT / HTTP/1.1\nHost: bucketname.obs.cn-north-4.myhuaweicloud.com\nContent-Length: length\nDate: date\nAuthorization: authorization\nx-obs-az-redundancy:3az\n<CreateBucketConfiguration xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n    <Location>cn-north-4</Location>\n</CreateBucketConfiguration>",
+        "parameters": [
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "考虑到桶名会作为访问域名的一部分,需要参与域名解析,因此桶名需要满足DNS域名规范。OBS系统在接受创桶请求时,会对桶名进行严格的检查,具体规则如下:\n需全局唯一,不能与已有的任何桶名称重复,包括其他用户创建的桶。用户删除桶后,立即创建同名桶或并行文件系统会创建失败,需要等待30分钟才能创建。\n长度范围为3到63个字符,支持小写字母、数字、中划线(-)、英文句号(.)。\n禁止两个英文句号(.)相邻,禁止英文句号(.)和中划线(-)相邻,禁止以英文句号(.)和中划线(-)开头或结尾。\n禁止使用IP地址。\n须知:\n当使用HTTPS协议访问OBS系统时,由于SSL的通配符证书仅匹配不包含\".\"的桶。这将导致桶名包含\".\"的桶在访问OBS系统时,客户端会提示证书校验存在风险,比如浏览器安全提示会呈现红色告警。因此如非必要,请尽量不要在桶名中包含\".\"。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "in": "body",
+            "name": "CreateBucketRequestBody",
+            "required": false,
+            "description": "创建桶",
+            "schema": {
+              "$ref": "#/definitions/CreateBucketRequestBody"
+            }
+          },
+          {
+            "name": "x-obs-acl",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时,可以加上此消息头设置桶的权限控制策略,使用的策略为预定义的常用策略,包括:private、public-read、public-read-write、public-read-delivered、public-read-write-delivered、bucket-owner-full-control(各策略详细说明见ACL章节的“使用头域设置ACL”)。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时可以带上此头域来指定桶加密配置的加密模式。\n示例:x-obs-server-side-encryption: kms\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-data-encryption",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时带上此头域来指定服务端加密配置的加密算法。\n示例:x-obs-server-side-data-encryption: AES256\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-kms-key-id",
+            "in": "header",
+            "required": false,
+            "description": "当加密方式为SSE-KMS且使用指定密钥加密时,需输入密钥ID。密钥ID获取方法请参见查看密钥。\n约束限制:\n当您设置了x-obs-server-side-encryption头域且赋值为“kms”,即选择kms加密方式时,才能使用该头域指定加密密钥。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-server-side-encryption-bucket-key-enabled",
+            "in": "header",
+            "required": false,
+            "description": "SSE-KMS桶密钥功能开关。\n约束限制:\n当您设置本头域为“true”时,必须同时设置本接口的另一个头域x-obs-server-side-encryption-kms-key-id以指定密钥ID。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-sse-kms-key-project-id",
+            "in": "header",
+            "required": false,
+            "description": "SSE-KMS加密方式下KMS主密钥所属的项目ID(非企业项目ID)。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-bucket-object-lock-enabled",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时可以带上此消息头来开启WORM开关。\n示例:x-obs-bucket-object-lock-enabled:true\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-edge-location",
+            "in": "header",
+            "required": false,
+            "description": "如果是要在智能边缘云站点上创建桶,需要携带此头域,头域值为智能边缘云站点的AZ ID。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-storage-class",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时,可以加上此消息头设置桶的默认存储类型,默认存储类型有4种:STANDARD(标准存储)、WARM(低频访问存储)、COLD(归档存储)、DEEP_ARCHIVE(深度归档)。如果没有指定此头域,则创建的桶为标准存储类型。\n",
+            "type": "string",
+            "enum": [
+              "STANDARD",
+              "WARM",
+              "COLD",
+              "DEEP_ARCHIVE"
+            ]
+          },
+          {
+            "name": "x-obs-grant-read",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有READ权限。允许列举桶内对象、列举桶中多段任务、列举桶中多版本对象、获取桶元数据。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-write",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有WRITE权限。允许创建、删除、覆盖桶内所有对象,允许初始化段、上传段、拷贝段、合并段、取消多段上传任务。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-read-acp",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有READ_ACP权限。允许读桶的ACL信息。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-write-acp",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有WRITE_ACP权限,允许修改桶的ACL信息。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-full-control",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有FULL_CONTROL权限。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-read-delivered",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有READ权限,并且在默认情况下,该READ权限将传递给桶内所有对象。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-grant-full-control-delivered",
+            "in": "header",
+            "required": false,
+            "description": "授权给指定domain下的所有用户有FULL_CONTROL权限,并且在默认情况下,该FULL_CONTROL权限将传递给桶内所有对象。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-az-redundancy",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时带上此消息头设置桶的存储类型为多AZ。不携带时默认为单AZ。用户携带该头域指定新创的桶的存储类型为多AZ,存在一种情况是当该区域如果不支持多AZ存储,则该桶的存储类型仍为单AZ。\n",
+            "type": "string",
+            "enum": [
+              "3az"
+            ]
+          },
+          {
+            "name": "x-obs-fs-file-interface",
+            "in": "header",
+            "required": false,
+            "description": "创建桶时可以带上此消息头以创建并行文件系统。\n",
+            "type": "string",
+            "enum": [
+              "Enabled"
+            ]
+          },
+          {
+            "name": "x-obs-epid",
+            "in": "header",
+            "required": false,
+            "description": "企业项目id,开通企业项目的用户可以从企业项目服务获取,格式为uuid,默认项目传“0”或者不带该头域,未开通企业项目的用户可以不带该头域。\n",
+            "type": "string"
+          },
+          {
+            "name": "x-obs-ies-location",
+            "in": "header",
+            "required": false,
+            "description": "如果是要创建在IES站点上,则指定IES站点的AZ ID。此参数和x-obs-cluster-type不可共存。\n",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateBucketRequestBody": {
+      "xml": {
+        "name": "CreateBucketConfiguration"
+      },
+      "properties": {
+        "Location": {
+          "type": "string",
+          "description": "指定Bucket在哪个区域被创建。\n使用华北-北京一的终端节点创桶时\n不携带Location,桶将默认创建在华北-北京一(cn-north-1)\n在Location中指定其它区域,例如华北-北京四(cn-north-4),桶将创建在指定区域\n使用华北-北京一以外其它区域的终端节点创桶时,必须携带Location,并且Location只能指定为该终端节点对应的区域。\n例如使用obs.cn-north-4.myhuaweicloud.com终端节点创桶时,必须指定Location为cn-north-4。\n\n有关OBS区域和终端节点的更多信息,请参考[地区和终端节点](https://developer.huaweicloud.com/endpoint?OBS)。\n"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

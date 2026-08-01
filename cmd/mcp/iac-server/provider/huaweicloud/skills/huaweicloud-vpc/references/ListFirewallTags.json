@@ -1,0 +1,268 @@
+{
+  "name": "ListFirewallTags",
+  "summary": "查询ACL项目标签",
+  "tags": "网络ACL资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/firewalls/tags": {
+      "get": {
+        "tags": [
+          "网络ACL资源标签管理"
+        ],
+        "summary": "查询ACL项目标签",
+        "description": "查询租户在指定Project中实例类型的所有资源标签集合",
+        "operationId": "ListFirewallTags",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:查询记录数\n取值范围:1-1000\n约束:默认为1000",
+            "required": false,
+            "maximum": 1000,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "default": 1000,
+            "x-order": 3
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "功能说明:索引位置, 从第一条数据偏移offset条数据后开始查询\n约束:默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 0,
+            "x-order": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回",
+            "examples": {
+              "application/json": {
+                "request_id": "65ae533b-f32c-49df-9b5d-e55eda8f2c25",
+                "tags": [
+                  {
+                    "key": "key1",
+                    "values": [
+                      "value1",
+                      "value2"
+                    ]
+                  },
+                  {
+                    "key": "key2",
+                    "values": [
+                      "value2"
+                    ]
+                  },
+                  {
+                    "key": "key3",
+                    "values": [
+                      "value3"
+                    ]
+                  },
+                  {
+                    "key": "key4",
+                    "values": [
+                      "value4"
+                    ]
+                  },
+                  {
+                    "key": "key5",
+                    "values": [
+                      "value5"
+                    ]
+                  },
+                  {
+                    "key": "keyyyy",
+                    "values": [
+                      "value2"
+                    ]
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ProjectTagRespBody"
+            }
+          },
+          "400": {
+            "description": "参数非法",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "鉴权失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "资源未找到",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "系统异常",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "x-name": "查询ACL项目标签",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "查询网络ACL项目标签。",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/{project_id}/firewalls/tags",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-api-type": "inner-public-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ProjectTagRespBody": {
+      "required": [
+        "request_id",
+        "tags",
+        "total_count"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "tag对象列表",
+          "items": {
+            "$ref": "#/definitions/ListTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "资源数量",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "ListTag": {
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:key不能为空",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "values": {
+          "type": "array",
+          "description": "功能描述:标签值列表。\n如果values为空列表,则表示any_value(查询任意value)。value之间为或的关系。",
+          "items": {
+            "type": "string",
+            "description": "",
+            "maxLength": 255
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

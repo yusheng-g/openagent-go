@@ -1,0 +1,110 @@
+{
+  "name": "AcceptScheduledEvent",
+  "summary": "接受并授权执行计划事件操作",
+  "tags": "计划事件",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instance-scheduled-events/{id}/actions/accept": {
+      "post": {
+        "tags": [
+          "计划事件"
+        ],
+        "summary": "接受并授权执行计划事件操作",
+        "operationId": "AcceptScheduledEvent",
+        "x-huawei-security": {
+          "policyCheck": {
+            "adminRule": "rule:context_is_admin",
+            "authRule": "rule:all_admins_or_owner or rule:normal_admin_user_t"
+          },
+          "pdpKey": "ecs:instanceScheduledEvents:accept"
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "resource id",
+            "required": true,
+            "type": "string",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          },
+          {
+            "in": "body",
+            "name": "ScheduledEventAcceptBody",
+            "description": "修改计划事件计划执行开始时间",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScheduledEventAcceptBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "headers": {
+              "X-Request-Id": {
+                "type": "string",
+                "description": "请求id"
+              }
+            }
+          }
+        },
+        "x-name": "接受并授权执行计划事件操作",
+        "x-constraint": "无",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 105,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/{project_id}/instance-scheduled-events/{id}/actions/accept",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2025-6-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ScheduledEventAcceptBody": {
+      "properties": {
+        "not_before": {
+          "type": "string",
+          "description": "计划执行开始时间"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

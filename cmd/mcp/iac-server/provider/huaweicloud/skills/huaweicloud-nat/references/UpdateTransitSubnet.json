@@ -1,0 +1,316 @@
+{
+  "name": "UpdateTransitSubnet",
+  "summary": "更新中转子网",
+  "tags": "中转子网",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/transit-subnets/{transit_subnet_id}": {
+      "put": {
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/70505c941b9b4dfd82fd351932328a2f/private-nat/transit-subnets/48b55781-306c-4a90-9cc0-d376337fae4f",
+        "x-request-examples-description-1": "更新中转子网的名字和描述。",
+        "x-request-examples-text-1": {
+          "transit_subnet": {
+            "name": "transit-subnet_t2",
+            "description": "transit-subnet-description2"
+          }
+        },
+        "x-request-examples-1": {
+          "transit_subnet": {
+            "name": "transit-subnet_t2",
+            "description": "transit-subnet-description2"
+          }
+        },
+        "x-name": "更新中转子网",
+        "x-api-type": "open-api",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-obc": "N",
+        "x-hybridcloud": false,
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-apiexplorer-hide": "false",
+        "tags": [
+          "中转子网"
+        ],
+        "summary": "更新中转子网",
+        "description": "更新指定的中转子网。",
+        "operationId": "UpdateTransitSubnet",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "transit_subnet_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "中转子网ID。",
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "UpdateTransitSubnetRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "更新中转子网请求体。",
+            "schema": {
+              "$ref": "#/definitions/UpdateTransitSubnetRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10240
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "更新中转子网成功。",
+            "schema": {
+              "$ref": "#/definitions/UpdateTransitSubnetResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "request_id": "9882046a9b96f1405472e36d797e33dc",
+                "transit_subnet": {
+                  "id": "48b55781-306c-4a90-9cc0-d376337fae4f",
+                  "name": "transit-subnet_t1",
+                  "description": "transit-subnet-description",
+                  "virsubnet_project_id": "aea5011c0bc2454d8645a560345da810",
+                  "project_id": "aea5011c0bc2454d8645a560345da810",
+                  "vpc_id": "f9169a4f-5f0a-41ce-b2a3-834c15b038c2",
+                  "virsubnet_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                  "cidr": "192.168.1.0/24",
+                  "type": "VPC",
+                  "status": "ACTIVE",
+                  "ip_count": 0,
+                  "created_at": "2021-07-01T09:15:54Z",
+                  "updated_at": "2021-04-01T09:15:54Z",
+                  "tags": [
+                    {
+                      "key": "key1",
+                      "value": "value1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "description": "",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。key不能为空。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "x-huawei-extraAnnotation": ""
+    },
+    "UpdateTransitSubnetResponseBody": {
+      "description": "更新中转子网响应体",
+      "required": [
+        "transit_subnet",
+        "request_id"
+      ],
+      "properties": {
+        "transit_subnet": {
+          "$ref": "#/definitions/TransitSubnet"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      }
+    },
+    "TransitSubnet": {
+      "description": "中转子网的响应体",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "virsubnet_project_id",
+        "project_id",
+        "vpc_id",
+        "virsubnet_id",
+        "cidr",
+        "type",
+        "status",
+        "ip_count",
+        "created_at",
+        "updated_at",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "中转子网的ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "name": {
+          "type": "string",
+          "description": "中转子网的名称",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "description": {
+          "type": "string",
+          "description": "中转子网的描述",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "virsubnet_project_id": {
+          "type": "string",
+          "description": "中转子网的子网所属的项目ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "中转子网的子网所属VPC的ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "中转子网的子网ID",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "cidr": {
+          "type": "string",
+          "description": "中转子网的子网网段",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "type": {
+          "type": "string",
+          "description": "中转子网类型。取值范围:VPC",
+          "enum": [
+            "VPC"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "description": "中转子网状态。\n取值范围:\n- ACTIVE: 当前资源状态正常。\n- INACTIVE: 不可用。",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        "ip_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前中转子网下已分配的中转子网IP数量。",
+          "minimum": 0,
+          "maximum": 16777215
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "中转子网创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "中转子网更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          },
+          "description": "标签列表",
+          "minItems": 1,
+          "maxItems": 20
+        }
+      }
+    },
+    "UpdateTransitSubnetOption": {
+      "description": "更新中转子网请求体",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "中转子网的名字。仅支持数字、字母、_(下划线)、-(中划线)、中文。\n只有中转子网的申请方才可修改中转子网的名字,审批方不可修改。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "transit-subnet_t2"
+        },
+        "description": {
+          "type": "string",
+          "description": "中转子网的描述。长度范围小于等于255个字符,不能包含“<”和“>”。\n只有中转子网的申请方才可修改中转子网的描述,审批方不可修改。",
+          "minLength": 1,
+          "maxLength": 255,
+          "example": "transit-subnet-description2"
+        }
+      }
+    },
+    "UpdateTransitSubnetRequestBody": {
+      "description": "",
+      "required": [
+        "transit_subnet"
+      ],
+      "properties": {
+        "transit_subnet": {
+          "$ref": "#/definitions/UpdateTransitSubnetOption"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

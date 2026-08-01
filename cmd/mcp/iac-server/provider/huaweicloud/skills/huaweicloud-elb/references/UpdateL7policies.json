@@ -1,0 +1,316 @@
+{
+  "name": "UpdateL7policies",
+  "summary": "更新转发策略",
+  "tags": "转发策略",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/l7policies/{l7policy_id}": {
+      "put": {
+        "tags": [
+          "转发策略"
+        ],
+        "summary": "更新转发策略",
+        "description": "更新转发策略",
+        "operationId": "UpdateL7policies",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateL7policiesRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateL7policiesRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "l7policy_id",
+            "in": "path",
+            "description": "待更新的转发策略id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "l7policy": {
+                  "redirect_pool_id": "431a03eb-81bb-408e-ae37-7ce19023692b",
+                  "description": "",
+                  "admin_state_up": true,
+                  "rules": [
+                    {
+                      "id": "67d8a8fa-b0dd-4bd4-a85b-671db19b2ef3"
+                    },
+                    {
+                      "id": "f02b3bca-69d2-4335-a3fa-a8054e996213"
+                    }
+                  ],
+                  "tenant_id": "a31d2bdcf7604c0faaddb058e1e08819",
+                  "project_id": "a31d2bdcf7604c0faaddb058e1e08819",
+                  "listener_id": "26058b64-6185-4e06-874e-4bd68b7633d0",
+                  "redirect_url": null,
+                  "action": "REDIRECT_TO_POOL",
+                  "position": 2,
+                  "id": "5ae0e1e7-5f0f-47a1-b39f-5d4c428a1586",
+                  "name": "test"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateL7policiesResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新转发策略",
+        "x-constraint": "如果该健康检查绑定的负载均衡器的provisioning状态不是ACTIVE,不能更新该健康检查。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 54,
+        "x-request-examples-1": "PUT https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/5ae0e1e7-5f0f-47a1-b39f-5d4c428a1586\n{\n    \"l7policy\": {\n        \"name\": \"test\"\n    }\n}",
+        "x-request-examples-text-1": "PUT https://{ELB_Endpoint}/v2/7f38b160526648ee837ca4bdc05f4d09/elb/l7policies/5ae0e1e7-5f0f-47a1-b39f-5d4c428a1586\n{\n    \"l7policy\": {\n        \"name\": \"test\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ocb,ctc,ct",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "L7policyResp": {
+      "required": [
+        "action",
+        "admin_state_up",
+        "description",
+        "id",
+        "listener_id",
+        "name",
+        "position",
+        "project_id",
+        "provisioning_status",
+        "redirect_listener_id",
+        "redirect_pool_id",
+        "redirect_url",
+        "rules",
+        "tenant_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "转发策略ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "转发策略名称",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "rules": {
+          "type": "array",
+          "description": "转发策略关联的转发规则列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "action": {
+          "type": "string",
+          "description": "转发策略的转发动作;取值:REDIRECT_TO_POOL:转发到后端云服务器组;REDIRECT_TO_LISTENER:重定向到监听器",
+          "enum": [
+            "REDIRECT_TO_POOL",
+            "REDIRECT_TO_LISTENER"
+          ]
+        },
+        "provisioning_status": {
+          "type": "string",
+          "description": "健康检查的配置状态;该字段为预留字段,暂未启用。默认为ACTIVE。"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "转发策略所在的项目ID。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "project_id": {
+          "type": "string",
+          "description": "转发策略所在的项目ID。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "转发策略的管理状态;该字段为预留字段,暂未启用。默认为true。"
+        },
+        "description": {
+          "type": "string",
+          "description": "转发策略额描述信息",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "转发策略对应的监听器ID"
+        },
+        "redirect_pool_id": {
+          "type": "string",
+          "description": "转发到pool的ID。转发到pool的ID。当action为REDIRECT_TO_POOL时生效。"
+        },
+        "redirect_listener_id": {
+          "type": "string",
+          "description": "转发到的listener的ID,当action为REDIRECT_TO_LISTENER时生效。"
+        },
+        "redirect_url": {
+          "type": "string",
+          "description": "转发到的url。该字段未启用。",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "position": {
+          "type": "integer",
+          "format": "int32",
+          "description": "转发策略的优先级,从1递增,最高100。该字段为预留字段,暂未启用。",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "description": "转发策略对象"
+    },
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "UpdateL7policyReq": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "转发策略名称",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "转发策略的管理状态;该字段为预留字段,暂未启用。默认为true。"
+        },
+        "description": {
+          "type": "string",
+          "description": "转发策略额描述信息",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "redirect_listener_id": {
+          "type": "string",
+          "description": "转发到的listener的ID,当action为REDIRECT_TO_LISTENER时生效。当action为REDIRECT_TO_LISTENER时必选"
+        },
+        "redirect_pool_id": {
+          "type": "string",
+          "description": "转发到pool的ID。当action为REDIRECT_TO_POOL时生效。使用说明:redirect_pool不能是listener的default_pool,不能已经被其他listener的l7policy所使用。当action为REDIRECT_TO_LISTENER时,不可指定。不允许更新为空。"
+        }
+      },
+      "description": "更新转发策略对象请求体"
+    },
+    "UpdateL7policiesRequestBody": {
+      "required": [
+        "l7policy"
+      ],
+      "properties": {
+        "l7policy": {
+          "description": "转发策略对象",
+          "$ref": "#/definitions/UpdateL7policyReq"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResourceList": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "资源ID"
+        }
+      },
+      "description": "资源对象id列表。"
+    },
+    "UpdateL7policiesResponseBody": {
+      "required": [
+        "l7policy"
+      ],
+      "properties": {
+        "l7policy": {
+          "description": "转发策略对象",
+          "$ref": "#/definitions/L7policyResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

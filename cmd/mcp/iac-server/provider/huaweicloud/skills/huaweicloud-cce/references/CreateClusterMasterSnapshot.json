@@ -1,0 +1,113 @@
+{
+  "name": "CreateClusterMasterSnapshot",
+  "summary": "集群备份",
+  "tags": "集群升级",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3.1/projects/{project_id}/clusters/{cluster_id}/operation/snapshot": {
+      "post": {
+        "tags": [
+          "集群升级"
+        ],
+        "operationId": "CreateClusterMasterSnapshot",
+        "summary": "集群备份",
+        "description": "集群备份",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示创建集群备份任务成功。",
+            "examples": {
+              "application/json": {
+                "uid": "15376f1b-daa6-4e2d-96a6-e9d5d7caeaa2",
+                "metadata": {
+                  "kind": "Snapshot",
+                  "apiVersion": "v3.1"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/SnapshotClusterResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "集群升级备份",
+        "x-order": 11,
+        "x-publishpath": "",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-request-examples-description-1": "集群升级备份请求示例",
+        "x-request-examples-url-1": "POST /api/v3.1/projects/{project_id}/clusters/{cluster_id}/operation/snapshot",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "SnapshotCluserResponseMetadata": {
+      "description": "备份任务数据",
+      "properties": {
+        "apiVersion": {
+          "description": "API版本,默认为v3.1",
+          "type": "string"
+        },
+        "kind": {
+          "description": "任务类型",
+          "type": "string"
+        }
+      }
+    },
+    "SnapshotClusterResponseBody": {
+      "description": "备份返回体",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "任务ID"
+        },
+        "metadata": {
+          "description": "备份任务元数据",
+          "$ref": "#/definitions/SnapshotCluserResponseMetadata"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

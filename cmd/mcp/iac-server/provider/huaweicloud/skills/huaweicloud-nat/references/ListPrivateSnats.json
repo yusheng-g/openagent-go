@@ -1,0 +1,426 @@
+{
+  "name": "ListPrivateSnats",
+  "summary": "查询SNAT规则列表",
+  "tags": "私网SNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/snat-rules": {
+      "get": {
+        "tags": [
+          "私网SNAT规则"
+        ],
+        "summary": "查询SNAT规则列表",
+        "description": "查询SNAT规则列表。",
+        "operationId": "ListPrivateSnats",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数。\n取值范围:1~2000。\n默认值:2000。",
+            "required": false,
+            "type": "integer",
+            "default": "2000",
+            "x-order": 3,
+            "minimum": 1,
+            "maximum": 2000
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "功能说明:分页查询起始的资源ID,为空时查询第一页。\n值从上一次查询的PageInfo中的next_marker或者previous_marker中获取。",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "是否查询前一页。",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "SNAT规则的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 6,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "description": "项目的ID。",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 7,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "SNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 8,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "gateway_id",
+            "in": "query",
+            "description": "私网NAT网关实例的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 9,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "cidr",
+            "in": "query",
+            "description": "规则匹配的CIDR。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 10,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "virsubnet_id",
+            "in": "query",
+            "description": "规则匹配的子网的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 11,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "transit_ip_id",
+            "in": "query",
+            "description": "中转IP的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 12,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "transit_ip_address",
+            "in": "query",
+            "description": "中转IP地址。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 13,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "企业项目ID。创建SNAT规则时,关联的企业项目ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 14,
+            "minItems": 1,
+            "maxItems": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询SNAT规则列表成功。",
+            "examples": {
+              "application/json": {
+                "snat_rules": [
+                  {
+                    "id": "8a522ff9-8158-494b-83cd-533b045700e6",
+                    "project_id": "cfa563efb77d4b6d9960781d82530fd8",
+                    "description": "snat rule description",
+                    "gateway_id": "80da6f26-94eb-4537-97f0-5a56f4d04cfb",
+                    "cidr": "",
+                    "virsubnet_id": "95df1b88-d9bc-4edd-a808-a771dd4ded32",
+                    "transit_ip_associations": [
+                      {
+                        "transit_ip_id": "bbe7c2e7-3bad-445b-a067-b30acce66053",
+                        "transit_ip_address": "172.20.1.98"
+                      }
+                    ],
+                    "created_at": "2019-10-22T03:33:07",
+                    "updated_at": "2019-10-22T03:33:07",
+                    "status": "ACTIVE"
+                  },
+                  {
+                    "id": "af4dbb83-7ca0-4ed1-b28b-668c1f9c6b81",
+                    "project_id": "cfa563efb77d4b6d9960781d82530fd8",
+                    "description": "snat rule description",
+                    "gateway_id": "80da6f26-94eb-4537-97f0-5a56f4d04cfb",
+                    "cidr": "",
+                    "virsubnet_id": "5b9ea497-727d-4ad0-a99e-3984b3f5aaed",
+                    "transit_ip_associations": [
+                      {
+                        "transit_ip_id": "36a3049a-1682-48b3-b1cf-cb986a3350ef",
+                        "transit_ip_address": "172.20.1.10"
+                      }
+                    ],
+                    "created_at": "2019-10-22T03:31:19",
+                    "updated_at": "2019-10-22T03:31:19",
+                    "status": "ACTIVE"
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "af4dbb83-7ca0-4ed1-b28b-668c1f9c6b81",
+                  "previous_marker": "8a522ff9-8158-494b-83cd-533b045700e6",
+                  "current_count": 2
+                },
+                "request_id": "69806207-62e3-4950-b463-ff5c1779b714"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListPrivateSnatsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询SNAT规则列表",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 0,
+        "x-obc": "N",
+        "x-hybridcloud": "",
+        "x-publishpath": "",
+        "x-source": "",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AssociatedTransitIp": {
+      "properties": {
+        "transit_ip_id": {
+          "type": "string",
+          "description": "中转IP的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "transit_ip_address": {
+          "type": "string",
+          "description": "中转IP地址。",
+          "minLength": 7,
+          "maxLength": 35,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "关联的中转IP。",
+      "type": "object"
+    },
+    "PageInfo": {
+      "properties": {
+        "next_marker": {
+          "type": "string",
+          "description": "分页查询结果中最后一条记录的ID。通常用于查询下一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "previous_marker": {
+          "type": "string",
+          "description": "分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "分页查询资源时,本页的实例的个数。",
+          "minimum": 1,
+          "maximum": 2000,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "分页信息。"
+    },
+    "ListPrivateSnatsResponseBody": {
+      "properties": {
+        "snat_rules": {
+          "type": "array",
+          "description": "查询SNAT规则列表的响应体。",
+          "items": {
+            "$ref": "#/definitions/PrivateSnat"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "minLength": 1,
+          "maxLength": 36
+        }
+      },
+      "description": "查询SNAT规则列表的响应体。"
+    },
+    "PrivateSnat": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "gateway_id": {
+          "type": "string",
+          "description": "私网NAT网关实例的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "cidr": {
+          "type": "string",
+          "minLength": 9,
+          "maxLength": 18,
+          "description": "功能说明:规则匹配的CIDR。\n取值约束:\n- 与virsubnet_id参数二选一。\n- cidr不能与已有snat规则的网段相同。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "description": "功能说明:规则匹配的子网的ID。\n取值约束:与cidr参数二选一。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "transit_ip_associations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssociatedTransitIp"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "description": "关联的中转IP详情列表。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "SNAT规则的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目id",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT的SNAT规则状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "SNAT规则的响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

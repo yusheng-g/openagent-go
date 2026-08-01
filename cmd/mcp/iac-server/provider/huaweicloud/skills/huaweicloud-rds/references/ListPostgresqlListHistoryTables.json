@@ -1,0 +1,269 @@
+{
+  "name": "ListPostgresqlListHistoryTables",
+  "summary": "查询指定时间点可恢复的表(PostgreSQL)",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/{database_name}/instances/history/tables": {
+      "post": {
+        "x-request-examples-url-1": "https://{Endpoint}/v3/4879de6859e345c780f1a22d8bc6f229/postgresql/instances/history/tables",
+        "x-request-examples-text-1": {
+          "instance_ids": [
+            "f9e0b25a7b984a5cb193bebc98029914in03"
+          ],
+          "restore_time": 1688554112000,
+          "database_name_like": "",
+          "table_name_like": "",
+          "instance_name_like": ""
+        },
+        "x-request-examples-1": {
+          "instance_ids": [
+            "f9e0b25a7b984a5cb193bebc98029914in03"
+          ],
+          "restore_time": 1688554112000,
+          "database_name_like": "",
+          "table_name_like": "",
+          "instance_name_like": ""
+        },
+        "tags": [
+          "备份与恢复"
+        ],
+        "operationId": "ListPostgresqlListHistoryTables",
+        "summary": "查询指定时间点可恢复的表(PostgreSQL)",
+        "description": "查询指定时间点可恢复的表(PostgreSQL)",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "database_name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "数据库引擎。支持的引擎如下,不区分大小写:postgresql"
+          },
+          {
+            "in": "body",
+            "name": "ListPostgresqlListHistoryTablesRequestBody",
+            "description": "查询可恢复表的请求信息",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostgreSQLHistoryTableRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询可恢复表的响应信息",
+            "schema": {
+              "$ref": "#/definitions/PostgreSQLHistoryTableResponse"
+            },
+            "examples": {
+              "application/json": {
+                "instances": [
+                  {
+                    "id": "70f639ffa8e343e1b7797c1705d4fe71in03",
+                    "name": "rds-e1c8",
+                    "databases": [
+                      {
+                        "name": "db1",
+                        "schemas": [
+                          {
+                            "name": "public",
+                            "tables": [
+                              {
+                                "name": "tb1"
+                              }
+                            ],
+                            "total_tables": 1
+                          },
+                          {
+                            "name": "schema1",
+                            "tables": [
+                              {
+                                "name": "tb1"
+                              }
+                            ],
+                            "total_tables": 1
+                          }
+                        ],
+                        "total_tables": 2
+                      }
+                    ],
+                    "total_tables": 2
+                  }
+                ],
+                "table_limit": 2000
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PostgreSQLHistoryTableRequest": {
+      "description": "查询可恢复表的请求信息",
+      "required": [
+        "instance_ids",
+        "restore_time"
+      ],
+      "properties": {
+        "instance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "实例ID集合",
+          "example": ""
+        },
+        "restore_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "恢复时间点",
+          "example": ""
+        },
+        "database_name_like": {
+          "type": "string",
+          "description": "数据库名,模糊查询",
+          "example": ""
+        },
+        "table_name_like": {
+          "type": "string",
+          "description": "数据库表名,模糊查询"
+        },
+        "instance_name_like": {
+          "type": "string",
+          "description": "实例名称,模糊查询"
+        }
+      },
+      "type": "object"
+    },
+    "PostgreSQLHistoryDatabase": {
+      "description": "PostgreSQL查询可恢复表的数据库信息",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "数据库名",
+          "example": ""
+        },
+        "total_tables": {
+          "type": "integer",
+          "format": "int32",
+          "description": "可恢复表的数量"
+        },
+        "schemas": {
+          "items": {
+            "$ref": "#/definitions/PostgreSQLHistorySchema"
+          },
+          "description": "模式信息",
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "PostgreSQLHistoryTableInstance": {
+      "description": "PostgreSQL查询可恢复表的实例信息",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "实例ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "实例名称",
+          "example": ""
+        },
+        "total_tables": {
+          "type": "integer",
+          "format": "int32",
+          "description": "可恢复表的数量"
+        },
+        "databases": {
+          "items": {
+            "$ref": "#/definitions/PostgreSQLHistoryDatabase"
+          },
+          "description": "数据库信息",
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "PostgreSQLHistorySchema": {
+      "description": "PostgreSQL查询可恢复表的模式信息",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "模式名",
+          "example": ""
+        },
+        "total_tables": {
+          "type": "integer",
+          "format": "int32",
+          "description": "可恢复表的数量"
+        },
+        "tables": {
+          "items": {
+            "$ref": "#/definitions/PostgreSQLHistoryTable"
+          },
+          "description": "表信息",
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "PostgreSQLHistoryTable": {
+      "description": "PostgreSQL查询可恢复表的表信息",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "表名",
+          "example": ""
+        }
+      },
+      "type": "object"
+    },
+    "PostgreSQLHistoryTableResponse": {
+      "description": "查询可恢复表的响应信息",
+      "required": [
+        "table_limit"
+      ],
+      "properties": {
+        "table_limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "恢复表数量限制个数",
+          "example": ""
+        },
+        "instances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PostgreSQLHistoryTableInstance"
+          },
+          "description": "实例信息"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

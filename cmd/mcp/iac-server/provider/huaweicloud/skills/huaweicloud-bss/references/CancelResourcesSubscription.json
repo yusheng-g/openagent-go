@@ -1,0 +1,174 @@
+{
+  "name": "CancelResourcesSubscription",
+  "summary": "退订包年/包月资源",
+  "tags": "管理包年/包月订单(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/orders/subscriptions/resources/unsubscribe": {
+      "post": {
+        "summary": "退订包年/包月资源",
+        "description": "客户购买包年/包月资源后,支持客户退订包年/包月实例。退订资源实例包括资源续费部分和当前正在使用的部分,退订后资源将无法使用。\n\n客户在费用中心退订已购买的包年包月资源请参见[这里](https://support.huaweicloud.com/usermanual-billing/zh-cn_topic_0083138805.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>-   首先要成功支付包年/包月产品,产生一条开通成功的包年/包月资源,才能进行退订。\n>-   调用接口后,如果某个主资源有对应的从资源,系统会将主资源和从资源一起退订,主资源的从资源信息可以通过调用[查询客户包年/包月资源列表](https://support.huaweicloud.com/api-oce/api_order_00021.html)接口获取。\n>-   注意:如ECS主机挂载新购的云硬盘,但此硬盘不是该ECS主资源的从资源,主从资源信息必须以调用[查询客户包年/包月资源列表](https://support.huaweicloud.com/api-oce/api_order_00021.html)接口获取的信息为准。\n>-   调用该接口后,您还可以调用“[查询退款订单的金额详情](查询退款订单的金额详情.md)”接口查询退订订单对应的金额来自哪些订单。\n>-   该接口支持5天无理由全额退订,具体规则请参见“[退订规则说明](https://support.huaweicloud.com/usermanual-billing/unsubscription_topic_20000081.html)”。\n>-   您正在退订使用中的资源,请仔细确认资源信息和退款信息。未放入回收站的资源退订后无法恢复,若您要保留资源,仅退订未使用的续费周期,请退订续费周期。",
+        "tags": [
+          "管理包年/包月订单(客户)"
+        ],
+        "operationId": "CancelResourcesSubscription",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/orders/subscriptions/resources/unsubscribe",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-lastAnalysisDate": "2020-05-09",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "退订包年/包月资源请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UnsubscribeResourcesReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/orders/subscriptions/resources/unsubscribe",
+        "x-request-examples-1": {
+          "resource_ids": [
+            "21e09f37c5c9420c8746ad5c71fb3aab"
+          ],
+          "unsubscribe_type": 1,
+          "unsubscribe_reason_type": 5,
+          "unsubscribe_reason": "test"
+        },
+        "responses": {
+          "200": {
+            "description": "退订包年/包月资源响应",
+            "schema": {
+              "$ref": "#/definitions/UnsubscribeResourcesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "order_ids": [
+                  "CS19040119281JMYC"
+                ],
+                "fail_resource_infos": []
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:parameter error输入参数校验失败||CBC.99003001:资源已过期||CBC.99003002:资源被锁定||CBC.99003004:资源存在依赖||CBC.99003005:资源正在开通||CBC.99003006:云服务类型不支持||CBC.99003128:资源无已续费周期或续费周期已生效,不支持退订续费周期||CBC.99003185:云服务必须整体退订||CBC.99003640:有加油包的资源,不能退订||CBC.99005042:资源无法找到或者不能退订|"
+          }
+        },
+        "x-category": "管理包年/包月订单(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UnsubscribeResourcesRsp": {
+      "properties": {
+        "order_ids": {
+          "description": "客户退订订单ID的列表信息。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fail_resource_infos": {
+          "description": "失败的资源信息列表。有退订失败的资源时,该字段才有值。具体请参见表FailResourceInfo。 该字段为预留字段。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FailResourceInfo"
+          }
+        }
+      }
+    },
+    "FailResourceInfo": {
+      "properties": {
+        "error_code": {
+          "type": "string",
+          "description": "状态码。 具体请参见状态码。",
+          "example": ""
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误描述信息。",
+          "example": ""
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "|参数名称:资源ID| |参数约束及描述:资源ID|",
+          "example": ""
+        }
+      }
+    },
+    "UnsubscribeResourcesReq": {
+      "required": [
+        "resource_ids",
+        "unsubscribe_type"
+      ],
+      "properties": {
+        "resource_ids": {
+          "description": "资源ID列表。 最大支持1次性输入10个资源ID,只能输入主资源ID。 哪些资源是主资源请根据“查询客户包年/包月资源列表”接口响应参数中的“is_main_resource”来标识。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "x-maxLength": 10,
+          "x-minLength": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsubscribe_type": {
+          "description": "退订类型,取值如下: 1:退订资源及其已续费周期。2:只退订资源已续费周期,不退订资源。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1",
+          "maximum": 2,
+          "minimum": 1
+        },
+        "unsubscribe_reason_type": {
+          "description": "退订理由分类,取值如下: 1:产品不好用2:产品功能无法满足需求3:不会操作/操作过于复杂4:对服务不满意5:其他",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1",
+          "maximum": 5,
+          "minimum": 1
+        },
+        "unsubscribe_reason": {
+          "type": "string",
+          "description": "退订原因,一般由客户输入。",
+          "minLength": 0,
+          "maxLength": 512,
+          "example": "不好用"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

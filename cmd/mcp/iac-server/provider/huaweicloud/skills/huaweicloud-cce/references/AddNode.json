@@ -1,0 +1,664 @@
+{
+  "name": "AddNode",
+  "summary": "纳管节点",
+  "tags": "节点管理",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/add": {
+      "post": {
+        "tags": [
+          "节点管理"
+        ],
+        "summary": "纳管节点",
+        "description": "该API用于在指定集群下纳管节点。\n>集群管理的URL格式为:https://Endpoint/uri。其中uri为资源路径,也即API访问的路径。",
+        "operationId": "AddNode",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "AddNodeList",
+            "description": "纳管节点的请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddNodeList"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示在指定集群下纳管节点的作业下发成功。",
+            "examples": {
+              "application/json": {
+                "jobid": "2ec9b78d-9368-46f3-8f29-d1a95622a568"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ReinstallJobResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "纳管节点",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-request-examples-description-1": "纳管一个节点到集群中,且节点操作系统为EulerOS 2.5。",
+        "x-request-examples-url-1": "POST /api/v3/projects/{project_id}/clusters/{cluster_id}/nodes/add",
+        "x-request-examples-1": {
+          "kind": "List",
+          "apiVersion": "v3",
+          "nodeList": [
+            {
+              "serverID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+              "spec": {
+                "name": "my-ecs-0001",
+                "os": "EulerOS 2.5",
+                "login": {
+                  "sshKey": "KeyPair-001"
+                }
+              }
+            }
+          ]
+        },
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-is-registered": "Y",
+        "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,hk_g42,hcso,hcs,hws_eu,hcso_dt,dt"
+      }
+    }
+  },
+  "definitions": {
+    "StorageSelectors": {
+      "required": [
+        "name",
+        "storageType"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "selector的名字,作为storageGroup中selectorNames的索引,因此各个selector间的名字不能重复。"
+        },
+        "storageType": {
+          "type": "string",
+          "description": "存储类型,当前仅支持evs(云硬盘)或local(本地盘);local存储类型不支持磁盘选择,所有本地盘将被组成一个VG,因此也仅允许只有一个local类型的storageSelector。"
+        },
+        "matchLabels": {
+          "description": "evs盘的匹配字段,支持DataVolume中的size、volumeType、iops、throughput、metadataEncrypted、metadataCmkid、count字段。",
+          "properties": {
+            "size": {
+              "type": "string",
+              "description": "匹配的磁盘大小,不填则无磁盘大小限制。例如:100."
+            },
+            "volumeType": {
+              "type": "string",
+              "description": "**参数解释**:\n云硬盘类型,目前支持SSD、GPSSD、SAS、ESSD、SATA等,不填则无云硬盘类型限制。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+            },
+            "iops": {
+              "x-open-region-cloud": "hws",
+              "type": "string",
+              "description": "匹配的磁盘iops大小,不填则无磁盘iops大小限制。当需要选择GPSSD2或ESSD2类型磁盘时,配置iops来准确选择磁盘。例如:3000."
+            },
+            "throughput": {
+              "x-open-region-cloud": "hws",
+              "type": "string",
+              "description": "匹配的磁盘吞吐量大小,不填则无磁盘吞吐量大小限制。当需要选择GPSSD2类型磁盘时,配置throughput来准确选择磁盘。例如:125."
+            },
+            "metadataEncrypted": {
+              "type": "string",
+              "description": "磁盘加密标识符,0代表不加密,1代表加密。"
+            },
+            "metadataCmkid": {
+              "type": "string",
+              "description": "加密磁盘的用户主密钥ID,长度为36字节的字符串。"
+            },
+            "count": {
+              "type": "string",
+              "description": "磁盘选择个数,不填则选择所有此类磁盘。"
+            }
+          }
+        }
+      }
+    },
+    "ReinstallVolumeSpec": {
+      "description": "服务器重装云硬盘配置",
+      "properties": {
+        "imageID": {
+          "type": "string",
+          "format": "uuid",
+          "description": "**参数解释**:\n用户自定义镜像ID\n> 获取方式:在控制台的“服务列表”中,单击“计算 > 镜像服务 > 私有镜像”,单击镜像的名称,在服务器详情页的“基本信息”页签下找到“镜像ID”字段复制即可。\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "cmkID": {
+          "type": "string",
+          "description": "**参数解释**:\n用户主密钥ID。默认为空时,表示云硬盘不加密。\n> 获取密钥ID的方法请参考:[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html)\n\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "Runtime": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "容器运行时,默认场景:\n- v1.25以下集群:默认为\"docker\"\n- v1.25及以上集群,随操作系统变化,默认的容器运行时不同:操作系统为EulerOS 2.5、EulerOS 2.8的节点默认为\"docker\",其余操作系统的节点默认为\"containerd\"",
+          "enum": [
+            "docker",
+            "containerd"
+          ]
+        },
+        "runtimeClass": {
+          "type": "string",
+          "description": "**参数解释**:\n容器运行时子类别。\n**约束限制**:\n仅CCE Turbo集群下弹性云服务器-物理机类型节点且上级运行时为containerd场景支持使用安全运行时。\n**取值范围**:\n- runc: 普通运行时。\n- kata: 安全运行时,需配套c6、c7系列弹性云服务器-物理机,支持的操作系统为EulerOS 2.10。\n- kuasar-vmm: 安全运行时v2,支持kc2、ki2、c7、ac8h系列弹性服务器-物理机,配套操作系统为HCE 2.0,集群版本需为v1.28.15-r70、v1.29.15-r30、v1.30.14-r30、v1.31.10-r30、v1.32.6-r30、v1.33.5-r20或以上版本。\n\n**默认取值**:\nrunc",
+          "enum": [
+            "runc",
+            "kata",
+            "kuasar-vmm"
+          ]
+        }
+      }
+    },
+    "UserTag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "云服务器标签的键。不得以\"CCE-\"或\"__type_baremetal\"开头",
+          "minLength": 1,
+          "maxLength": 36,
+          "pattern": "^[a-zA-Z0-9_\\一-\\龥-]{1,36}$"
+        },
+        "value": {
+          "type": "string",
+          "description": "云服务器标签的值",
+          "minLength": 0,
+          "maxLength": 43,
+          "pattern": "^[a-zA-Z0-9_\\一-\\龥.-]{0,43}$"
+        }
+      },
+      "description": ""
+    },
+    "Storage": {
+      "description": "磁盘初始化配置管理参数。\n\n该参数配置逻辑较为复杂,详细说明请参见[节点磁盘挂载](node_storage_example.xml)。\n\n该参数缺省时,按照extendParam中的DockerLVMConfigOverride(已废弃)参数进行磁盘管理。此参数对1.15.11及以上集群版本支持。\n\n> 如存在节点规格涉及本地盘并同时使用云硬盘场景时,请勿缺省此参数,避免出现将用户未期望的磁盘分区。\n\n> 如希望数据盘取值范围调整至20-32768,请勿缺省此参数。\n\n> 如希望使用共享磁盘空间(取消runtime和kubernetes分区),请勿缺省此参数,共享磁盘空间请参考[数据盘空间分配说明](cce_01_0341.xml)。",
+      "required": [
+        "storageSelectors",
+        "storageGroups"
+      ],
+      "properties": {
+        "storageSelectors": {
+          "type": "array",
+          "description": "磁盘选择,根据matchLabels和storageType对匹配的磁盘进行管理。磁盘匹配存在先后顺序,靠前的匹配规则优先匹配。",
+          "items": {
+            "$ref": "#/definitions/StorageSelectors"
+          }
+        },
+        "storageGroups": {
+          "type": "array",
+          "description": "由多个存储设备组成的存储组,用于各个存储空间的划分。",
+          "items": {
+            "$ref": "#/definitions/StorageGroups"
+          }
+        }
+      }
+    },
+    "ReinstallNodeSpec": {
+      "description": "节点重装配置参数",
+      "required": [
+        "os"
+      ],
+      "properties": {
+        "os": {
+          "type": "string",
+          "description": "**参数解释**:\n操作系统。指定自定义镜像场景将以IMS镜像的实际操作系统版本为准。请选择当前集群支持的操作系统版本。例如Huawei Cloud EulerOS 2.0、Ubuntu 22.04、EulerOS 2.9、CentOS 7.6、EulerOS 2.8。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "login": {
+          "description": "**参数解释**:\n节点的登录方式。密钥对和密码登录方式二者必选其一。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "$ref": "#/definitions/Login"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n节点名称\n> 重装时指定将修改节点名称,且服务器名称会同步修改。默认以服务器当前名称作为节点名称。\n\n**约束限制**:\n命名规则:以小写字母开头,由小写字母、数字、中划线(-)、点(.)组成,长度范围1-56位。\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "serverConfig": {
+          "description": "**参数解释**:\n服务器配置。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/ReinstallServerConfig"
+        },
+        "volumeConfig": {
+          "description": "**参数解释**:\n卷管理配置。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/ReinstallVolumeConfig"
+        },
+        "runtimeConfig": {
+          "description": "**参数解释**:\n容器运行时配置。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/ReinstallRuntimeConfig"
+        },
+        "k8sOptions": {
+          "description": "**参数解释**:\nKubernetes节点配置。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/ReinstallK8sOptionsConfig"
+        },
+        "lifecycle": {
+          "description": "**参数解释**:\n节点自定义生命周期配置\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/NodeLifecycleConfig"
+        },
+        "initializedConditions": {
+          "type": "array",
+          "description": "**参数解释**:\n自定义初始化标记,默认值为空。\n\nCCE节点在初始化完成之前,会打上初始化未完成污点(node.cloudprovider.kubernetes.io/uninitialized)防止pod调度到节点上。用户在纳管/重置节点时,可以通过设置initializedConditions参数,控制污点的移除时间(默认不设置超时时间)。\n\n使用示例如下:\n1. 纳管/重置节点,传入参数 \"initializedConditions\": [\"CCEInitial\", \"CustomedInitial\"];\n2. 用户在执行完自定义初始化操作后,调用k8s接口(例如PATCH /v1/nodes/{node_ip}/status)更新节点的conditions,插入type为CCEInitial、CustomedInitial的两个标记,状态为True;\n3. CCE组件轮询节点的status.Conditions,查看是否存在type为CCEInitial、CustomedInitial的condition,若存在且status字段值为True,认为节点初始化完成,则移除初始化污点;\n4. initializedConditions支持设置超时时间,用户可以在创节点时传入,如:\"initializedConditions\": [\"CCEInitial:15m\", \"CustomedInitial:15m\"],表示超时时间为15分钟,达到超时时间后,当CCE组件轮询到节点时会自动忽略初始化condition,移除初始化污点。\n\n节点Conditions示例如下:\n```\nstatus:\n  conditions:\n  - type: CCEInitial\n    status: 'True'\n  - type: CustomedInitial\n    status: 'True'\n```\n\n**约束限制**:\n- initializedConditions中超时时间取值范围为[1-99]秒\n- 必须以字母、数字组成,长度范围1-20位。\n- 标记数量不超过2个。\n- 超时时间仅支持分钟(m)单位。",
+          "maxItems": 2,
+          "items": {
+            "pattern": "^[A-Za-z0-9]+$",
+            "minLength": 1,
+            "maxLength": 20,
+            "type": "string"
+          }
+        },
+        "extendParam": {
+          "description": "**参数解释**:\n重装拓展参数,已废弃\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "$ref": "#/definitions/ReinstallExtendParam"
+        },
+        "hostnameConfig": {
+          "$ref": "#/definitions/HostnameConfig",
+          "description": "**参数解释**:\nK8S节点名称配置参数,支持的集群版本为v1.23.6-r0到v1.25或者v1.25.2-r0及以上。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "securityReinforcementType": {
+          "type": "string",
+          "description": "**参数解释**:\n指定节点安全加固类型,当前仅支持HCE2.0镜像等保2.0三级安全加固。 等保加固会对身份鉴别、访问控制、安全审计、入侵防范、恶意代码防范进行检查并加固。详情请参见[Huawei Cloud EulerOS 2.0等保2.0三级版镜像概述](https://support.huaweicloud.com/productdesc-hce/hce_sec_0001.html)。\n若未指定此参数,则尝试用原有的值补全。如:原先HCE2.0镜像已配置安全加固,更新节点池时未指定此参数,则仍旧保持安全加固配置,若要取消,需显式指定参数值为\"null\"。\n**约束限制**:\n不涉及\n**取值范围**:\n- 空值:表示不开启等保加固\n- cybersecurity:表示开启等保加固\n\n**默认取值**:\n不涉及",
+          "enum": [
+            "null",
+            "cybersecurity"
+          ],
+          "x-open-region-cloud": "hws,hws_hk"
+        }
+      }
+    },
+    "HostnameConfig": {
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "K8S节点名称配置类型, 默认为“privateIp”。\n\n-  privateIp: 将节点私有IP作为K8S节点名称\n-  cceNodeName: 将CCE节点名称作为K8S节点名称\n\n> - 配置为cceNodeName的节点, 其节点名称、K8S节点名称以及虚机名称相同。节点名称不支持修改, 并且在ECS侧修改了虚机名称,同步云服务器时,不会将修改后的虚机名称同步到节点。\n> - 配置为cceNodeName的节点,为了避免K8S节点名称冲突,系统会自动在节点名称后添加后缀,后缀的格式为中划线(-)+五位随机字符,随机字符的取值为[a-z0-9]。",
+          "enum": [
+            "privateIp",
+            "cceNodeName"
+          ]
+        }
+      }
+    },
+    "ReinstallRuntimeConfig": {
+      "description": "节点重装场景容器运行时配置",
+      "properties": {
+        "dockerBaseSize": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 10,
+          "maximum": 500,
+          "description": "**参数解释**:\n节点上单容器的可用磁盘空间大小(已废弃,请优先使用containerBaseSize参数),单位G。\n\n不配置该值或值为0时将使用默认值,Devicemapper模式下默认值为10;OverlayFS模式默认不限制单容器可用空间大小,且dockerBaseSize设置仅在新版本集群的EulerOS/HCEOS2.0节点上生效。\n\nCCE节点容器运行时空间配置请参考[数据盘空间分配说明](cce_01_0341.xml)。\n\nDevicemapper模式下建议dockerBaseSize配置不超过80G,设置过大时可能会导致容器运行时初始化时间过长而启动失败,若对容器磁盘大小有特殊要求,可考虑使用挂载外部或本地存储方式代替。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "containerBaseSize": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 500,
+          "description": "**参数解释**:\n节点上单容器的可用磁盘空间大小,单位G。\n> - 更新节点池时,不支持更新此参数\n> - 不配置该值或值为0时将使用默认值,OverlayFS模式默认不限制单容器可用空间大小;Devicemapper模式下默认值为10,且containerBaseSize设置仅在新版本集群(v1.23.14-r0/v1.25.9-r0/v1.27.6-r0/v1.28.4-r0及以上)的EulerOS/HCEOS2.0节点上生效。          \n> - CCE节点容器运行时空间配置请参考[数据盘空间分配说明](cce_01_0341.xml)。       \n> - Devicemapper模式下建议containerBaseSize配置不超过80G,设置过大时可能会导致容器运行时初始化时间过长而启动失败,若对容器磁盘大小有特殊要求,可考虑使用挂载外部或本地存储方式代替;Devicemapper模式在新版中仅有共池裸机使用,已逐步废弃。\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "runtime": {
+          "$ref": "#/definitions/Runtime",
+          "description": "容器运行时, 默认场景:\n- 1.25以下集群:默认为\"docker\"\n- 1.25及以上集群,随操作系统变化,默认的容器运行时不同:操作系统为欧拉2.5、欧拉2.8的节点默认为\"docker\",其余操作系统的节点默认为\"containerd\""
+        }
+      }
+    },
+    "Taint": {
+      "required": [
+        "key",
+        "effect"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:\nK8s污点的键。\n**约束限制**:\n必须以字母或数字开头和结尾,可以包含字母、数字、连字符、下划线和点,最长63个字符。\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:\nK8s污点的值。\n**约束限制**:\n必须以字母或数字开头和结尾,可以包含字母、数字、连字符、下划线和点,最长63个字符。\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "maxLength": 63
+        },
+        "effect": {
+          "type": "string",
+          "description": "**参数解释**:\nK8s污点的作用效果。\n**约束限制**:\n不涉及\n**取值范围**:\n只可选NoSchedule,PreferNoSchedule或NoExecute。\n**默认取值**:\n不涉及",
+          "enum": [
+            "NoSchedule",
+            "PreferNoSchedule",
+            "NoExecute"
+          ]
+        }
+      },
+      "description": "如下字段不可使用:\n\n- node.kubernetes.io/memory-pressure\n- node.kubernetes.io/disk-pressure\n- node.kubernetes.io/out-of-disk\n- node.kubernetes.io/unschedulable\n- node.kubernetes.io/network-unavailable"
+    },
+    "NodeLifecycleConfig": {
+      "description": "节点自定义生命周期配置",
+      "properties": {
+        "preInstall": {
+          "type": "string",
+          "description": "**参数解释**:\n安装前执行脚本。\n**约束限制**:\n安装前/后执行脚本统一计算字符,转码后的字符总数不能超过10240。\n输入的值需要经过Base64编码,方法如下:\n  ```\n  echo -n \"待编码内容\" | base64\n  ```\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "maxLength": 10240
+        },
+        "postInstall": {
+          "type": "string",
+          "description": "**参数解释**:\n安装前执行脚本。\n**约束限制**:\n安装前/后执行脚本统一计算字符,转码后的字符总数不能超过10240。\n输入的值需要经过Base64编码,方法如下:\n  ```\n  echo -n \"待编码内容\" | base64\n  ```\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "maxLength": 10240
+        },
+        "waitPostInstallFinish": {
+          "type": "boolean",
+          "description": "**参数解释:**\n该参数用于控制重置/纳管/批量重置节点时, **post-install脚本执行完成前允许节点调度** 的行为。当操作的节点属于节点池时,以节点池相关配置为准。当该参数未设置或者为false时,在kubernetes节点就绪时,容器即可被调度到可用节点。当该参数为true时,在kubernetes节点就绪时且post-install脚本执行完成时,容器才可被调度到可用节点。\n\n**约束限制:**\n不涉及\n\n**取值范围:**\n- false:在kubernetes节点就绪时,容器即可被调度到可用节点。          \n- true:在kubernetes节点就绪时且post-install脚本执行完成时,容器才可被调度到可用节点。\n\n**默认取值:**\nfalse"
+        }
+      }
+    },
+    "ReinstallServerConfig": {
+      "description": "节点重装场景服务器配置",
+      "properties": {
+        "userTags": {
+          "type": "array",
+          "description": "**参数解释**:\n云服务器标签(资源标签),键必须唯一,CCE支持的最大用户自定义标签数量依region而定,自定义标签数上限为8个。\n**约束限制**:\n不涉及",
+          "items": {
+            "$ref": "#/definitions/UserTag"
+          },
+          "maxItems": 8
+        },
+        "rootVolume": {
+          "description": "**参数解释**:\n系统盘重装配置。\n**约束限制**:\n不涉及",
+          "$ref": "#/definitions/ReinstallVolumeSpec"
+        }
+      }
+    },
+    "RuntimeConfig": {
+      "required": [
+        "lvType"
+      ],
+      "properties": {
+        "lvType": {
+          "type": "string",
+          "description": "LVM写入模式:linear、striped。linear:线性模式;striped:条带模式,使用多块磁盘组成条带模式,能够提升磁盘性能。"
+        }
+      }
+    },
+    "ReinstallJobResult": {
+      "required": [
+        "jobid"
+      ],
+      "properties": {
+        "jobid": {
+          "type": "string",
+          "format": "uuid",
+          "example": "70a599e0-31e7-49b7-b260-868f44166666",
+          "description": "**参数解释**:\n提交任务成功后返回的任务ID,用户可以使用该ID对任务执行情况进行查询。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": "纳管节点或者重置节点任务返回体。"
+    },
+    "AddNode": {
+      "description": "纳管节点参数。集群内已有节点支持通过重置进行重新安装并接入集群。",
+      "required": [
+        "serverID",
+        "spec"
+      ],
+      "properties": {
+        "serverID": {
+          "type": "string",
+          "format": "uuid",
+          "description": "**参数解释**:\n服务器ID,从ECS/BMS控制台获取。\n> 获取方式:在控制台的“服务列表”中,单击“计算 > 弹性云服务器 ECS/裸金属服务器 BMS”,单击服务器的名称,在服务器详情页的“基本信息”页签下找到“ID”字段复制即可。\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "spec": {
+          "description": "**参数解释**:\n节点重装配置参数。当前不支持纳管节点接入节点池。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "$ref": "#/definitions/ReinstallNodeSpec"
+        }
+      }
+    },
+    "VirtualSpace": {
+      "required": [
+        "name",
+        "size"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "virtualSpace的名称,当前仅支持四种类型:share、kubernetes、runtime、user。\n- share:共享磁盘空间配置(取消runtime和kubernetes分区),需配置lvmConfig;\n- kubernetes:k8s空间配置,需配置lvmConfig;\n- runtime:运行时空间配置,需配置runtimeConfig;\n- user:用户空间配置,需配置lvmConfig"
+        },
+        "size": {
+          "type": "string",
+          "description": "virtualSpace的大小,仅支持整数百分比。例如:90%。\n>一个group中所有virtualSpace的百分比之和不得超过100%"
+        },
+        "lvmConfig": {
+          "description": "lvm配置管理,适用于share、kubernetes和user空间配置。 需要注意:一个virtualSpace仅支持一个config配置。",
+          "$ref": "#/definitions/LVMConfig"
+        },
+        "runtimeConfig": {
+          "description": "runtime配置管理,适用于运行时空间配置。 需要注意:一个virtualSpace仅支持一个config配置。",
+          "$ref": "#/definitions/RuntimeConfig"
+        }
+      }
+    },
+    "ReinstallK8sOptionsConfig": {
+      "description": "节点重装场景Kubernetes节点配置",
+      "properties": {
+        "labels": {
+          "type": "object",
+          "description": "**参数解释**:\n格式为key/value键值对。\n**约束限制**:\n键值对个数不超过20条。\n- Key:必须以字母或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符;另外可以使用DNS子域作为前缀,例如example.com/my-key,DNS子域最长253个字符。\n- Value:可以为空或者非空字符串,非空字符串必须以字符或数字开头和结尾,可以包含字母、数字、连字符、下划线和点,最长63个字符。\n\n示例:\n```\n\"k8sTags\": {\n  \"key\": \"value\"\n}\n```\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 63
+          }
+        },
+        "taints": {
+          "type": "array",
+          "description": "支持给创建出来的节点加Taints来设置反亲和性,taints配置不超过20条。每条Taints包含以下3个参数:\n\n- Key:必须以字母或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符;另外可以使用DNS子域作为前缀。\n- Value:必须以字符或数字开头,可以包含字母、数字、连字符、下划线和点,最长63个字符。\n- Effect:只可选NoSchedule,PreferNoSchedule或NoExecute。\n\n示例:\n\n```\n\"taints\": [{\n  \"key\": \"status\",\n  \"value\": \"unavailable\",\n  \"effect\": \"NoSchedule\"\n}, {\n  \"key\": \"looks\",\n  \"value\": \"bad\",\n  \"effect\": \"NoSchedule\"\n}]\n```",
+          "items": {
+            "$ref": "#/definitions/Taint"
+          },
+          "maxItems": 20
+        },
+        "maxPods": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n节点最大允许创建的实例数(Pod),该数量包含系统默认实例。\n该设置的目的为防止节点因管理过多实例而负载过重,请根据您的业务需要进行设置。\n节点可以创建多少个Pod,受多个参数影响,具体请参见[节点可创建的最大Pod数量说明](maxPods.xml)。\n**约束限制**:\n不涉及\n**取值范围**:\n通用取值范围为16~256,节点运行时子类别为安全运行时v2(kuasar-vmm)场景取值范围为16~1024。\n**默认取值**:\n不涉及",
+          "minimum": 16,
+          "maximum": 1024
+        },
+        "nicMultiqueue": {
+          "type": "string",
+          "description": "- 弹性网卡队列数配置,默认配置示例如下:\n```\n\"[{\\\"queue\\\":4}]\"\n```\n包含如下字段:\n- queue: 弹性网卡队列数。\n- 仅在turbo集群的BMS节点时,该字段才可配置。\n- 当前支持可配置队列数以及弹性网卡数:{\"1\":128, \"2\":92, \"4\":92, \"8\":32, \"16\":16,\"28\":9}, 既1弹性网卡队列可绑定128张弹性网卡,2队列弹性网卡可绑定92张,以此类推。\n- 弹性网卡队列数越多,性能越强,但可绑定弹性网卡数越少,请根据您的需求进行配置(创建后不可修改)。",
+          "x-open-region-cloud": "hws,hws_hk,dt"
+        },
+        "nicThreshold": {
+          "type": "string",
+          "description": "- 弹性网卡预绑定比例配置,默认配置示例如下:\n```\n\"0.3:0.6\"\n```\n  - 第一位小数:预绑定低水位,弹性网卡预绑定的最低比例(最小预绑定弹性网卡数 = ⌊节点的总弹性网卡数 * 预绑定低水位⌋)\n  - 第二位小数:预绑定高水位,弹性网卡预绑定的最高比例(最大预绑定弹性网卡数 = ⌊节点的总弹性网卡数 * 预绑定高水位⌋)\n  - BMS节点上绑定的弹性网卡数:Pod正在使用的弹性网卡数 + 最小预绑定弹性网卡数 < BMS节点上绑定的弹性网卡数 < Pod正在使用的弹性网卡数 + 最大预绑定弹性网卡数\n  - BMS节点上当预绑定弹性网卡数 < 最小预绑定弹性网卡数时:会绑定弹性网卡,使得预绑定弹性网卡数 = 最小预绑定弹性网卡数\n  - BMS节点上当预绑定弹性网卡数 > 最大预绑定弹性网卡数时:会定时解绑弹性网卡(约2分钟一次),直到预绑定弹性网卡数 = 最大预绑定弹性网卡数\n  - 取值范围:[0.0, 1.0]; 一位小数; 低水位 <= 高水位\n- 仅在turbo集群的BMS节点时,该字段才可配置。\n- 弹性网卡预绑定能加快工作负载的创建,但会占用IP,请根据您的需求进行配置。",
+          "x-open-region-cloud": "hws,hws_hk,dt"
+        }
+      }
+    },
+    "ReinstallVolumeConfig": {
+      "description": "节点重装场景服务器相关配置",
+      "properties": {
+        "lvmConfig": {
+          "type": "string",
+          "description": "**参数解释**:\nDocker数据盘配置项(已废弃)。\n\n默认配置示例如下:\n```\n\"lvmConfig\":\"dockerThinpool=vgpaas/90%VG;kubernetesLV=vgpaas/10%VG;diskType=evs;lvType=linear\"\n```\n\n包含如下字段:\n  - userLV:用户空间的大小,示例格式:vgpaas/20%VG\n  - userPath:用户空间挂载路径,示例格式:/home/wqt-test\n  - diskType:磁盘类型,目前只有evs、hdd和ssd三种格式\n  - lvType:逻辑卷的类型,目前支持linear和striped两种,示例格式:striped\n  - dockerThinpool:Docker盘的空间大小,示例格式:vgpaas/60%VG\n  - kubernetesLV:Kubelet空间大小,示例格式:vgpaas/20%VG\n\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "storage": {
+          "$ref": "#/definitions/Storage"
+        }
+      }
+    },
+    "Login": {
+      "properties": {
+        "sshKey": {
+          "type": "string",
+          "description": "选择密钥对方式登录时的密钥对名称。"
+        },
+        "userPassword": {
+          "description": "选择密码方式登录时的帐号密码信息,之后可通过此帐号密码登录节点。",
+          "$ref": "#/definitions/UserPassword",
+          "x-open-region-cloud": "hws,hws_hk,sbc,hk_sbc,ctc,cmcc,g42,tm,hk_tm,hk_g42,hcso,hcs"
+        },
+        "removeUserPassword": {
+          "type": "boolean",
+          "description": "**参数解释**:\n更新节点池时,移除当前节点池密码方式登录的配置\n**约束限制**:\n仅更新节点池场景支持该参数,设置为true时不允许设置userPassword\n**取值范围**:\n不涉及\n**默认取值**:\nfalse"
+        },
+        "removeSSHKey": {
+          "type": "boolean",
+          "description": "**参数解释**:\n更新节点池时,移除当前节点池密钥对方式登录的配置\n**约束限制**:\n仅更新节点池场景支持该参数,设置为true时不允许设置sshKey\n**取值范围**:\n不涉及\n**默认取值**:\nfalse"
+        }
+      }
+    },
+    "AddNodeList": {
+      "description": "重置节点参数。集群内已有节点,支持通过重置节点方式进行重新安装并接入集群,纳管过程将清理节点上系统盘、数据盘数据,并作为新节点接入Kuberntes集群,请提前备份迁移关键数据。",
+      "required": [
+        "apiVersion",
+        "kind",
+        "nodeList"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI版本\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nv3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "**参数解释**:\nAPI类型\n**约束限制**:\n固定值,不允许修改\n**取值范围**:\n不涉及\n**默认取值**:\nList"
+        },
+        "nodeList": {
+          "type": "array",
+          "description": "**参数解释**:\n纳管节点列表,当前最多支持同时纳管200个节点。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "items": {
+            "$ref": "#/definitions/AddNode"
+          },
+          "minItems": 1,
+          "maxItems": 200
+        }
+      }
+    },
+    "StorageGroups": {
+      "required": [
+        "name",
+        "selectorNames",
+        "virtualSpaces"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "storageGroups的名字,作为虚拟存储组的名字,因此各个group名字不能重复。\n> - 当cceManaged=ture时,name必须为:vgpass。\n> - 当数据盘作为临时存储卷时:name必须为:vg-everest-localvolume-ephemeral。\n> - 当数据盘作为持久存储卷时:name必须为:vg-everest-localvolume-persistent。"
+        },
+        "cceManaged": {
+          "type": "boolean",
+          "description": "k8s及runtime所属存储空间。有且仅有一个group被设置为true,不填默认false。"
+        },
+        "selectorNames": {
+          "type": "array",
+          "description": "对应storageSelectors中的name,一个group可选择多个selector;但一个selector只能被一个group选择。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "virtualSpaces": {
+          "description": "group中空间配置的详细管理。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VirtualSpace"
+          }
+        }
+      }
+    },
+    "LVMConfig": {
+      "required": [
+        "lvType"
+      ],
+      "properties": {
+        "lvType": {
+          "type": "string",
+          "description": "LVM写入模式:linear、striped。linear:线性模式;striped:条带模式,使用多块磁盘组成条带模式,能够提升磁盘性能。"
+        },
+        "path": {
+          "type": "string",
+          "description": "磁盘挂载路径。仅在用户配置中生效。支持包含:数字、大小写字母、点、中划线、下划线的绝对路径。"
+        }
+      }
+    },
+    "ReinstallExtendParam": {
+      "description": "重装拓展参数,已废弃。",
+      "properties": {
+        "alpha.cce/NodeImageID": {
+          "type": "string",
+          "format": "uuid",
+          "description": "**参数解释**:\n指定待切换目标操作系统所使用的用户镜像ID,已废弃。\n指定此参数等价于指定ReinstallVolumeSpec中imageID,原取值将被覆盖。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      }
+    },
+    "UserPassword": {
+      "required": [
+        "password"
+      ],
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "登录帐号,默认为“root”",
+          "default": "root"
+        },
+        "password": {
+          "type": "string",
+          "description": "登录密码,若创建节点通过用户名密码方式,即使用该字段,则响应体中该字段作屏蔽展示。\n密码复杂度要求:\n- 长度为8-26位。\n- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?~#*)中的三种。\n- 密码不能包含用户名或用户名的逆序。\n创建节点时password字段需要加盐加密,具体方法请参见[创建节点时password字段加盐加密](add-salt.xml)。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

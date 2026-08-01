@@ -1,0 +1,276 @@
+{
+  "name": "ListCustomerAccountChangeRecords",
+  "summary": "查询收支明细(客户)",
+  "tags": "管理账户(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/accounts/customer-accounts/account-change-records": {
+      "get": {
+        "summary": "查询收支明细(客户)",
+        "description": "功能描述:客户可以查询自身的收支明细情况(此接口不适用于伙伴的转售类客户。)",
+        "tags": [
+          "管理账户(客户)"
+        ],
+        "operationId": "ListCustomerAccountChangeRecords",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "客户查询自身的收支明细的时候,只允许使用客户自身的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/accounts/customer-accounts/account-change-records",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2023-01-17",
+        "x-readOnly": true,
+        "x-delayTime": "2500ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "|客户token|",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "balance_type",
+            "in": "query",
+            "required": true,
+            "description": "|参数名称:账户类型。BALANCE_TYPE_DEBIT:现金账户BALANCE_TYPE_CREDIT:信用账户| |参数的约束及描述:必填|",
+            "x-maxLength": 20,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "BALANCE_TYPE_DEBIT",
+            "x-allowNull": false,
+            "pattern": "BALANCE_TYPE_DEBIT|BALANCE_TYPE_CREDIT"
+          },
+          {
+            "name": "revenue_expense_type",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:收支类型。REVENUE:收入EXPENSE:支出| |参数的约束及描述:非必填|",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "REVENUE",
+            "x-allowNull": false,
+            "pattern": "REVENUE|EXPENSE"
+          },
+          {
+            "name": "trade_type",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:交易类型| |参数的约束及描述:该参数非必填,RECHARGE:充值 DEDEUCT:消费 REFUND:退款 RFROZEN:冻结 TRANS:转账,余额和保证金互换(老商务模式,当前已无保证金账户) ADJUST:调账(华为核销等) BEUNBIND:解绑/关联模式切换导致的回收 EXPIRED:过期清零 BONUSCONVERT:奖励金转换(老商务模式,当前已无奖励金账户) TRADE_MODE_TRANSFER:交易模式变更 DEPOSIT:保证金 BEADJUST:经销商拨款 BERETRIEVE:经销商回收。此参数不携带、携带值为空时,不作为筛选条件。|",
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "RECHARGE",
+            "x-allowNull": false
+          },
+          {
+            "name": "trade_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:查询收支明细的开始日期| |参数的约束及描述:非必填|",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2022-12-22",
+            "x-allowNull": false
+          },
+          {
+            "name": "trade_time_end",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:查询收支明细的结束日期| |参数的约束及描述:非必填|",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2022-12-22",
+            "x-allowNull": false
+          },
+          {
+            "name": "trade_id",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:交易ID/订单ID| |参数的约束及描述:非必填|",
+            "x-maxLength": 128,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "CS2302011504B2EHDJJ",
+            "x-allowNull": false
+          },
+          {
+            "name": "payment_channel_id",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:交易渠道。可以一次查询多个,用逗号分隔。1:支付宝2:银行转账4:支付宝/网银5:微信支付6:提现7:激励返点10:交易模式变更11:调账317:银联(统一支付平台)319:Huawei Pay320:华为支付| |参数的约束及描述:非必填|",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "1",
+            "x-allowNull": false
+          },
+          {
+            "name": "payment_channel_no",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:交易渠道流水号| |参数的约束及描述:非必填|",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "AC-32210002656-0",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:偏移量| |参数的约束及描述:非必填|",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "x-allowNull": false,
+            "default": "0"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:每页的显示条数| |参数的约束及描述:非必填|",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "x-allowNull": false,
+            "default": "10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询收支明细(客户)响应体| |成功:成功| |参数约束及描述: 查询收支明细(客户)响应体|",
+            "schema": {
+              "$ref": "#/definitions/ListCustomerAccountChangeRecordsRsp"
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误| |CBC.99000084:不支持伙伴的转售类客户查询收支明细。|"
+          }
+        },
+        "x-category": "管理账户(客户)",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListCustomerAccountChangeRecordsRsp": {
+      "properties": {
+        "total_count": {
+          "description": "|参数名称:总条数| |参数的约束及描述:总条数|",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "currency": {
+          "type": "string",
+          "description": "|参数名称:币种| |参数约束及描述:币种|",
+          "example": "CNY"
+        },
+        "records": {
+          "description": "|参数名称:收支明细记录列表| |参数约束以及描述:收支明细记录列表|",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerAccountChangeRecord"
+          }
+        }
+      }
+    },
+    "CustomerAccountChangeRecord": {
+      "properties": {
+        "account_change_id": {
+          "type": "string",
+          "description": "|参数名称:收支明细流水号| |参数约束及描述:收支明细流水号|",
+          "example": "AC-32210002656-0"
+        },
+        "trade_detail_type": {
+          "type": "string",
+          "description": "|参数名称:交易详细类型| |参数约束及描述:交易详细类型|",
+          "example": "SOURCE_OPERAIION_DEDEUCT"
+        },
+        "trade_time": {
+          "type": "string",
+          "description": "|参数名称:交易时间| |参数约束及描述:交易时间|",
+          "example": "2023-02-01T07:08:14Z"
+        },
+        "trade_id": {
+          "type": "string",
+          "description": "|参数名称:交易ID/订单ID| |参数约束及描述:交易ID/订单ID|",
+          "example": "CS2302011504B2EHDJJ"
+        },
+        "change_amount": {
+          "type": "string",
+          "description": "|参数名称:变更金额| |参数约束及描述:变更金额|",
+          "example": "-659.73"
+        },
+        "balance_after_change": {
+          "type": "string",
+          "description": "|参数名称:变更后余额| |参数约束及描述:变更后余额|",
+          "example": "64375.84"
+        },
+        "revenue_expense_type": {
+          "type": "string",
+          "description": "|参数名称:收支类型| |参数约束及描述:收支类型|",
+          "example": "REVENUE"
+        },
+        "bill_cycle": {
+          "type": "string",
+          "description": "|参数名称:账期| |参数约束及描述:账期|",
+          "example": "2023-02"
+        },
+        "payment_channel_id": {
+          "type": "string",
+          "description": "|参数名称:交易渠道| |参数约束及描述:交易渠道|",
+          "example": "1"
+        },
+        "payment_channel_no": {
+          "type": "string",
+          "description": "|参数名称:交易渠道流水号| |参数约束及描述:交易渠道流水号|",
+          "example": "AC-32210002655-0"
+        },
+        "consume_time": {
+          "type": "string",
+          "description": "|参数名称:消费时间| |参数约束及描述:消费时间,UTC时间,格式:yyyy-MM-ddTHH:mm:ssZ。包年/包月:与账单交易时间一致(交易类型为调帐时为账单的计费开始时间和结束时间),按需/分期:为账单的计费开始时间和结束时间。|",
+          "example": ""
+        },
+        "account_name": {
+          "type": "string",
+          "description": "|参数名称:账号名称| |参数约束及描述:账号名称,范围限制:0-128|",
+          "example": ""
+        },
+        "cloud_service_type_name": {
+          "type": "string",
+          "description": "|参数名称:云服务类型名称| |参数约束及描述:产品的云服务名称,范围限制:0-200|",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "|参数名称:资源类型名称,该字段为预留字段。| |参数约束及描述:产品的资源类型名称,范围限制:0-200|",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

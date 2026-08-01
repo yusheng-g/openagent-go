@@ -1,0 +1,99 @@
+{
+  "name": "ShowRealnameAuthenticationReviewResult",
+  "summary": "查询实名认证审核结果",
+  "tags": "实名认证(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/customers/realname-auths/result": {
+      "get": {
+        "summary": "查询实名认证审核结果",
+        "description": "如果实名认证申请或实名认证变更申请的响应中,显示需要人工审核,使用该接口查询审核结果。",
+        "tags": [
+          "实名认证(伙伴)"
+        ],
+        "operationId": "ShowRealnameAuthenticationReviewResult",
+        "x-constraint": "接口只允许使用经销商伙伴或华为云伙伴能力中心(一级经销商)的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/customers/realname-auths/result",
+        "x-open-region-cloud": "hc,hk",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-04-13",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": true,
+            "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。",
+            "x-maxLength": 64,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": false
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/customers/realname-auths/result?customer_id=06a7969058802f0c0f01c00b91846780",
+        "responses": {
+          "200": {
+            "description": "查询实名认证审核结果响应",
+            "schema": {
+              "$ref": "#/definitions/GetRealnameAuthsResultRsp"
+            },
+            "examples": {
+              "application/json": {
+                "review_result": 2,
+                "opinion": null
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "实名认证(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "GetRealnameAuthsResultRsp": {
+      "properties": {
+        "review_result": {
+          "description": "实名认证审核结果,只有状态码为200并且已经提交过实名认证请求才返回: 0:审核中1:不通过2:通过",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "opinion": {
+          "type": "string",
+          "description": "审批意见,只有状态码为200并且审核不通过才返回。",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

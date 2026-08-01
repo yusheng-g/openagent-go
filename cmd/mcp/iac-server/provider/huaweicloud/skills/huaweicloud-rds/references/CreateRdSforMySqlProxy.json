@@ -1,0 +1,221 @@
+{
+  "name": "CreateRdSforMySqlProxy",
+  "summary": "开启数据库代理",
+  "tags": "数据库代理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/proxy/open": {
+      "post": {
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "POST https://{endpoint}/v3/23a50154cf494ec9ad6883979a12db0a/instances/920ec36cef814a8b830a5bed50d9a088in01/proxy/open",
+        "x-request-examples-description-1": "开启数据库代理。",
+        "x-request-examples-text-1": {
+          "flavor_ref": "rds.proxy.xlarge.2",
+          "node_num": 2,
+          "proxy_name": "proxy-test",
+          "instances_weight": []
+        },
+        "x-request-examples-1": {
+          "flavor_ref": "rds.proxy.xlarge.2",
+          "node_num": 2,
+          "proxy_name": "proxy-test",
+          "instances_weight": []
+        },
+        "tags": [
+          "数据库代理"
+        ],
+        "summary": "开启数据库代理",
+        "description": "开启数据库代理。",
+        "operationId": "CreateRdSforMySqlProxy",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "type": "string",
+            "default": "application/json"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一Region下的project ID。\n\n获取方法请参见[获取项目ID](https://support.huaweicloud.com/api-rds/rds_03_0002.html)。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID,严格匹配UUID规则。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。",
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "CreateRDSforMySqlProxyRequestBody",
+            "in": "body",
+            "required": true,
+            "description": "请求体。",
+            "schema": {
+              "$ref": "#/definitions/CreateMysqlMultiProxyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ProxyCommonResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "09908118-8e32-4742-982a-7be194f59e1d"
+              }
+            }
+          },
+          "400": {
+            "description": "Client error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error.",
+            "schema": {
+              "$ref": "#/definitions/MysqlErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProxyCommonResponse": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "description": "任务ID。",
+          "type": "string",
+          "example": "a4217ac4-12cd-4fb3-acfc-db4a4a1896ea"
+        }
+      }
+    },
+    "CreateMysqlMultiProxyRequest": {
+      "type": "object",
+      "description": "开启数据库代理请求体。",
+      "required": [
+        "flavor_ref",
+        "node_num",
+        "nodes_read_weight"
+      ],
+      "properties": {
+        "flavor_ref": {
+          "type": "string",
+          "description": "数据库代理规格码。\n\n    - 当局点支持主备模式数据库代理时,该字段不生效。\n    - 当局点支持集群模式数据库代理时,该字段请参考查询数据库代理规格信息接口返回体中,[规格信息]中的code字段。",
+          "example": "rds.proxy.xlarge.2"
+        },
+        "node_num": {
+          "type": "integer",
+          "format": "int32",
+          "description": "数据库代理节点数量。\n\n    - 当局点支持主备模式数据库代理时,请设置该字段为固定值2。\n    - 当局点支持集群模式数据库代理时,该字段最小值为2,最大值请参考查询数据库代理信息列表接口返回体中,[数据库代理信息列表]中的max_proxy_node_num字段值。",
+          "example": 2
+        },
+        "proxy_name": {
+          "type": "string",
+          "description": "数据库代理名称。用于表示实例的名称,同一租户下,同类型的实例名可重名。\n\n取值范围:最小长度为4个字符,最大不超过64个字节,以字母或中文字符开头,只能包含字母、数字、中划线、下划线、英文句号和中文。\n\n当不选择该参数或局点仅支持主备模式数据库代理时,将随机生成名称。",
+          "example": "proxy-test"
+        },
+        "proxy_mode": {
+          "type": "string",
+          "description": "数据库代理读写模式。\n取值范围:\n    readwrite:读写模式。\n    readonly:只读模式。"
+        },
+        "route_mode": {
+          "type": "integer",
+          "format": "int32",
+          "description": "数据库代理路由模式。\n取值范围:\n    0:表示权重负载模式。\n    1:表示负载均衡模式(数据库主节点不接受读请求)。\n    2:表示负载均衡模式(数据库主节点接受读请求)。\n\n    - 如需使用负载均衡模式,请联系客服申请",
+          "example": 0
+        },
+        "nodes_read_weight": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InstancesWeight"
+          },
+          "description": "数据库节点的读权重设置。\n\n    - 在proxy_mode(数据库代理读写模式)为readonly(只读模式)或者在route_mode(路由模式)>0时,只能为只读节点选择权重。\n    - 在proxy_mode(数据库代理读写模式)为readonly(只读模式)时,需要至少为一个只读实例配置权重。\n    - 在route_mode(路由模式)>0时,为主实例配置的权重将不生效。\n    - 该列表可以为空列表。",
+          "example": {
+            "instance_id": "311693fc4be84d63b3cb749d9058afa1in01",
+            "weight": 2
+          }
+        },
+        "subnet_id": {
+          "type": "string",
+          "description": "数据库VPC下的子网ID。\n取值范围为该实例所在VPC下的所有子网ID。\n\n    - 如需使用该参数,请联系客服申请。\n    - 获取子网ID请参考[创建VPC和子网](https://support.huaweicloud.com/api-cce/cce_02_0100.html)",
+          "example": "6991d82d-9166-4aff-a1fa-d2a8748b7084"
+        }
+      }
+    },
+    "MysqlErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "InstancesWeight": {
+      "type": "object",
+      "description": "数据库节点的读权重设置。\n\n在proxy_mode为readonly时,只能为只读节点选择权重。",
+      "required": [
+        "instance_id",
+        "weight"
+      ],
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "数据库实例ID。",
+          "example": "ba0fd7c13cca4655820e0f858d5d467bin01"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "数据库代理读权重。",
+          "example": 1
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

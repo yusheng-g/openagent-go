@@ -1,0 +1,320 @@
+{
+  "name": "ListFlavorSellPolicies",
+  "summary": "查询规格销售策略",
+  "tags": "规格管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/flavor-sell-policies": {
+      "get": {
+        "tags": [
+          "规格管理"
+        ],
+        "summary": "查询规格销售策略",
+        "description": "查询规格销售策略。",
+        "operationId": "ListFlavorSellPolicies",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "name": "flavor_id",
+            "in": "query",
+            "description": "云服务器的系统规格的ID",
+            "required": false,
+            "type": "string",
+            "x-example": "s3.small.1",
+            "x-order": 2
+          },
+          {
+            "name": "sell_status",
+            "in": "query",
+            "description": "云服务器的系统规格销售状态。\n\n取值范围:\n\n- available:正常售卖\n- sellout:售罄",
+            "required": false,
+            "type": "string",
+            "x-example": "available",
+            "enum": [
+              "available",
+              "sellout"
+            ],
+            "x-order": 3
+          },
+          {
+            "name": "sell_mode",
+            "in": "query",
+            "description": "计费模式。\n\nkey的取值范围:\n\n- postPaid:按需计费实例。\n- prePaid:包年/包月计费实例。\n- spot:竞价实例。\n- ri:预留实例。",
+            "required": false,
+            "type": "string",
+            "x-example": "postPaid",
+            "enum": [
+              "postPaid",
+              "prePaid",
+              "spot",
+              "ri"
+            ],
+            "x-order": 4
+          },
+          {
+            "name": "availability_zone_id",
+            "in": "query",
+            "description": "可用区,需要指定可用区(AZ)",
+            "required": false,
+            "type": "string",
+            "x-example": "az1-dc1",
+            "x-order": 5
+          },
+          {
+            "name": "longest_spot_duration_hours_gt",
+            "in": "query",
+            "description": "查询竞价实例时长大于设置值的策略",
+            "required": false,
+            "type": "integer",
+            "x-example": "3",
+            "x-order": 6
+          },
+          {
+            "name": "largest_spot_duration_count_gt",
+            "in": "query",
+            "description": "查询“竞价实例时长”的个数大于设置值的策略",
+            "required": false,
+            "type": "integer",
+            "x-example": "3",
+            "x-order": 7
+          },
+          {
+            "name": "longest_spot_duration_hours",
+            "in": "query",
+            "description": "查询竞价实例时长等于设置值的策略",
+            "required": false,
+            "type": "integer",
+            "x-example": "4",
+            "x-order": 8
+          },
+          {
+            "name": "largest_spot_duration_count",
+            "in": "query",
+            "description": "查询“竞价实例时长”的个数等于设置值的策略",
+            "required": false,
+            "type": "integer",
+            "x-example": "3",
+            "x-order": 9
+          },
+          {
+            "name": "interruption_policy",
+            "in": "query",
+            "description": "中断策略。\n\n取值范围:\n\n- immediate:立即释放\n- delay:延迟释放",
+            "required": false,
+            "type": "string",
+            "x-example": "immediate",
+            "enum": [
+              "immediate",
+              "delay"
+            ],
+            "x-order": 10
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "单页面可显示的flavor条数最大值,默认是1000。",
+            "required": false,
+            "type": "integer",
+            "default": 1000,
+            "format": "int32",
+            "x-example": 100,
+            "x-order": 11,
+            "x-obc": "",
+            "x-admin": "",
+            "x-internal": ""
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "以单页最后一条flavor的ID作为分页标记。",
+            "required": false,
+            "type": "string",
+            "x-example": "c3.xlarge.2",
+            "x-order": 12
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "examples": {
+                  "application/json": {
+                    "count": 1,
+                    "sell_policies": {
+                      "id": 1,
+                      "flavor_id": "s3.small.1",
+                      "availability_zone_id": "az1-dc1",
+                      "sell_mode": "postPaid",
+                      "spot_options": {
+                        "longest_spot_duration_hours": 1,
+                        "largest_spot_duration_count": 2,
+                        "interruption_policy": "interruption_policy"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListFlavorSellPoliciesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询规格销售策略列表",
+        "x-constraint": "本接口仅适用于查询IES和竞价计费型规格的销售策略。",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 38,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{endpoint}/v1/{project_id}/cloudservers/flavor-sell-policies?source_flavor_id=c3.xlarge.2",
+        "x-request-examples-text-1": "GET https://{endpoint}/v1/{project_id}/cloudservers/flavor-sell-policies?source_flavor_id=c3.xlarge.2",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListFlavorSellPoliciesResponseBody": {
+      "required": [
+        "flavors"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云服务器规格销售策略数量。"
+        },
+        "sell_policies": {
+          "type": "array",
+          "description": "云服务器规格销售策略。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ListFlavorSellPoliciesResult"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "FlavorSpotOptions": {
+      "properties": {
+        "longest_spot_duration_hours": {
+          "type": "integer",
+          "format": "int32",
+          "example": "1",
+          "description": "购买的竞价实例时长",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "largest_spot_duration_count": {
+          "type": "integer",
+          "format": "int32",
+          "example": "1",
+          "description": "购买的“竞价实例时长”的个数。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "interruption_policy": {
+          "type": "string",
+          "description": "竞价实例中断策略。\n\n- immediate:立即释放\n- delay:延迟释放",
+          "default": "0",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ListFlavorSellPoliciesResult": {
+      "required": [
+        "id",
+        "flavor_id",
+        "sell_status",
+        "availability_zone_id",
+        "sell_mode"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "example": "1",
+          "description": "云服务器规格的索引。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "flavor_id": {
+          "type": "string",
+          "example": "c3.15xlarge.2",
+          "description": "云服务器规格的ID。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "sell_status": {
+          "type": "string",
+          "description": "云服务器规格的售卖状态。\n\nsellout:售罄。\navailable:可用。",
+          "default": "0",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "availability_zone_id": {
+          "type": "string",
+          "example": "az1-dc1",
+          "description": "云服务器规格的可用区。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "sell_mode": {
+          "type": "string",
+          "description": "云服务器规格的付费模式。\n\n- postPaid:按需计费实例。\n- prePaid:包年/包月计费实例。\n- spot:竞价实例。\n- ri:预留实例。",
+          "default": "0",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "spot_options": {
+          "description": "云服务器规格竞价实例的销售策略详情。",
+          "$ref": "#/definitions/FlavorSpotOptions",
+          "x-huawei-extraAnnotation": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

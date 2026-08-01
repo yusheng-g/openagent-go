@@ -1,0 +1,582 @@
+{
+  "name": "ListVpcs",
+  "summary": "查询VPC列表",
+  "tags": "VPC",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/vpcs": {
+      "get": {
+        "tags": [
+          "VPC"
+        ],
+        "summary": "查询VPC列表",
+        "description": "查询vpc列表",
+        "operationId": "ListVpcs",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数\n取值范围:0-2000",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "x-order": 3,
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询起始的资源ID,为空时查询第一页",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "VPC资源ID。可以使用该字段过滤VPC",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 5,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "功能说明:企业项目ID。可以使用该字段过滤某个企业项目下的VPC。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。若需要查询当前用户所有企业项目绑定的VPC,请传参all_granted_eps。",
+            "required": false,
+            "type": "string",
+            "maxLength": 36,
+            "x-order": 9,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "VPC的name信息,可以使用该字段过滤VPC",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "VPC的描述信息。可以使用该字段过滤VPC",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "name": "cidr",
+            "in": "query",
+            "description": "VPC的CIDR。可以使用该字段过滤VPC",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "request_id": "9c1838ba498249547be43dd618b58d27",
+                "vpcs": [
+                  {
+                    "id": "01da5a65-0bb9-4638-8ab7-74c64e24a9a7",
+                    "name": "API-PERF-TEST-14bd44c121",
+                    "description": "",
+                    "cidr": "192.168.0.0/16",
+                    "extend_cidrs": [],
+                    "status": "ACTIVE",
+                    "project_id": "087679f0aa80d32a2f4ec0172f5e902b",
+                    "enterprise_project_id": "0",
+                    "tags": [],
+                    "created_at": "2020-06-16T02:32:18Z",
+                    "updated_at": "2020-06-16T02:32:18Z",
+                    "cloud_resources": [
+                      {
+                        "resource_type": "routetable",
+                        "resource_count": 1
+                      },
+                      {
+                        "resource_type": "virsubnet",
+                        "resource_count": 0
+                      }
+                    ]
+                  },
+                  {
+                    "id": "43fd79b0-f7d7-4e9b-828b-2d4d7bfae428",
+                    "name": "API-PERF-TEST_m2n33",
+                    "description": "",
+                    "cidr": "192.168.0.0/16",
+                    "extend_cidrs": [],
+                    "status": "ACTIVE",
+                    "project_id": "087679f0aa80d32a2f4ec0172f5e902b",
+                    "enterprise_project_id": "0",
+                    "tags": [],
+                    "created_at": "2020-06-15T06:29:40Z",
+                    "updated_at": "2020-06-15T06:29:41Z",
+                    "cloud_resources": [
+                      {
+                        "resource_type": "routetable",
+                        "resource_count": 1
+                      },
+                      {
+                        "resource_type": "virsubnet",
+                        "resource_count": 1
+                      }
+                    ]
+                  },
+                  {
+                    "id": "5ed053ba-b46c-4dce-a1ae-e9d8a7015f21",
+                    "name": "API-PERF-TEST-c34b1c4b12",
+                    "description": "",
+                    "cidr": "192.168.0.0/16",
+                    "extend_cidrs": [],
+                    "status": "ACTIVE",
+                    "project_id": "087679f0aa80d32a2f4ec0172f5e902b",
+                    "enterprise_project_id": "0",
+                    "tags": [],
+                    "created_at": "2020-06-16T02:32:33Z",
+                    "updated_at": "2020-06-16T02:32:33Z",
+                    "cloud_resources": [
+                      {
+                        "resource_type": "routetable",
+                        "resource_count": 1
+                      },
+                      {
+                        "resource_type": "virsubnet",
+                        "resource_count": 0
+                      }
+                    ]
+                  }
+                ],
+                "page_info": {
+                  "previous_marker": "01da5a65-0bb9-4638-8ab7-74c64e24a9a7",
+                  "current_count": 3
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListVpcsResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询VPC列表",
+        "x-constraint": "查询提交请求的租户有权限查看的所有vpc信息,单次查询最多返回2000条数据,超过2000后会返回分页标记",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 5,
+        "x-request-examples-description-1": "查询VPC列表",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/{project_id}/vpc/vpcs",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-request-examples-description-2": "使用ID过滤查询VPC列表",
+        "x-request-examples-url-2": "GET https://{Endpoint}/v3/{project_id}/vpc/vpcs?id=01ab4be1-4447-45fb-94be-3ee787ed4ebe&id=02cd5ef2-4447-36fb-75be-3ee787ed6adf",
+        "x-request-examples-2": "",
+        "x-request-examples-text-2": "",
+        "x-request-examples-description-3": "使用name过滤查询VPC列表",
+        "x-request-examples-url-3": "GET https://{Endpoint}/v3/{project_id}/vpc/vpcs?name=vpc-test",
+        "x-request-examples-3": "",
+        "x-request-examples-text-3": "",
+        "x-request-examples-description-4": "分页查询VPC列表",
+        "x-request-examples-url-4": "GET https://{Endpoint}/v3/{project_id}/vpc/vpcs?limit=2&marker=01ab4be1-4447-45fb-94be-3ee787ed4ebe",
+        "x-request-examples-4": "",
+        "x-request-examples-text-4": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Vpc": {
+      "required": [
+        "block_service_endpoint_states",
+        "cidr",
+        "cloud_resources",
+        "created_at",
+        "description",
+        "enable_network_address_usage_metrics",
+        "enterprise_project_id",
+        "extend_cidrs",
+        "id",
+        "name",
+        "project_id",
+        "status",
+        "tags",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能描述:VPC对应的唯一标识\n取值范围:带“-”的UUID格式",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "name": {
+          "type": "string",
+          "example": "vpc-test",
+          "description": "功能说明:VPC对应的名称\n取值范围:1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:VPC的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "功能说明:VPC下可用子网的范围\n取值范围:\n- 10.0.0.0/8~10.255.255.240/28\n- 172.16.0.0/12 ~ 172.31.255.240/28\n- 192.168.0.0/16 ~ 192.168.255.240/28\n不指定cidr时,默认值为“”\n约束:必须是ipv4 cidr格式,例如:192.168.0.0/16",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "extend_cidrs": {
+          "type": "array",
+          "description": "功能描述:VPC的扩展网段\n取值范围:\n约束:目前只支持ipv4",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:VPC对应的状态\n取值范围:PENDING:创建中;ACTIVE:创建成功",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:VPC所属的项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "功能说明:VPC所属的企业项目ID。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:VPC创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:VPC更新时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+        },
+        "cloud_resources": {
+          "type": "array",
+          "description": "功能说明:VPC关联资源类型和数量\n取值范围:目前只返回VPC关联的routetable和virsubnet",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/CloudResource"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "tags": {
+          "type": "array",
+          "description": "功能说明:VPC的标签信息,详情参见Tag对象\n取值范围:0-10个标签键值对",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Tag"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "block_service_endpoint_states": {
+          "type": "string",
+          "description": "功能说明:默认情况下,VPC中的资源可以通过内网访问服务终结点。开启该项后,VPC将无法通过内网访问服务终结点,请谨慎操作。\n无法访问以下云服务:容器镜像服务SWR、云日志服务LTS、企业主机安全HSS、应用运维管理AOM、应用性能管理APM、对象存储服务OBS、API网关APIG。\n取值范围:\noff:代表禁用。\non:代表开启。",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "enable_network_address_usage_metrics": {
+          "type": "boolean",
+          "description": "功能说明:是否开启VPC内所有子网的IPv4地址使用量指标监控。\n取值范围:\ntrue:开启\nfalse:不开启",
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": ""
+    },
+    "Tag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "1.功能说明:标签键\n2.取值范围:最大长度36个unicode字符。 key不能为空。不能包含非打印字符ASCII(0-31),*,<,>,\\,=",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "value": {
+          "type": "string",
+          "description": "1. 功能描述:标签值\n2. 取值范围:每个值最大长度43个unicode字符,可以为空字符串。 不能包含非打印字符ASCII(0-31),*,<,>,\\,=",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "PageInfo": {
+      "required": [
+        "current_count",
+        "previous_marker"
+      ],
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "当前页第一条记录",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "当前页总数",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "当前页最后一条记录,最后一页时无next_marker字段",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "CloudResource": {
+      "required": [
+        "resource_count",
+        "resource_type"
+      ],
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "description": "功能描述:资源类型",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "resource_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:资源数量",
+          "default": 0,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": ""
+    },
+    "ListVpcsResponseBody": {
+      "required": [
+        "page_info",
+        "request_id",
+        "vpcs"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "vpcs": {
+          "type": "array",
+          "description": "VPC列表响应体",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Vpc"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "page_info": {
+          "description": "分页信息",
+          "$ref": "#/definitions/PageInfo",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

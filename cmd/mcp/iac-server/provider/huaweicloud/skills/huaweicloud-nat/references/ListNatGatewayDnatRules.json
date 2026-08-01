@@ -1,0 +1,454 @@
+{
+  "name": "ListNatGatewayDnatRules",
+  "summary": "查询DNAT规则列表",
+  "tags": "公网DNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/dnat_rules": {
+      "get": {
+        "tags": [
+          "公网DNAT规则"
+        ],
+        "summary": "查询DNAT规则列表",
+        "description": "查询DNAT规则列表。",
+        "operationId": "ListNatGatewayDnatRules",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "解冻/冻结状态。\n取值范围: \n- true: 解冻\n- false: 冻结",
+            "required": false,
+            "type": "boolean",
+            "x-order": 16
+          },
+          {
+            "name": "external_service_port",
+            "in": "query",
+            "required": false,
+            "description": "Floatingip对外提供服务的端口号。\n取值范围:0~65535。",
+            "type": "integer",
+            "format": "int32",
+            "x-order": 12,
+            "minLength": 1,
+            "maxLength": 5,
+            "minimum": 0,
+            "maximum": 65535
+          },
+          {
+            "name": "floating_ip_address",
+            "in": "query",
+            "description": "弹性公网的IP地址。",
+            "required": false,
+            "type": "string",
+            "x-order": 11,
+            "minLength": 0,
+            "maxLength": 1024
+          },
+          {
+            "name": "global_eip_address",
+            "in": "query",
+            "description": "全域弹性公网的IP地址。",
+            "required": false,
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1024
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "DNAT规则的状态。\n取值为: \n- ACTIVE: 可用\n- PENDING_CREATE: 创建中\n- PENDING_UPDATE: 更新中\n- PENDING_DELETE: 删除中\n- EIP_FREEZED: EIP冻结\n- INACTIVE: 不可用",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "PENDING_CREATE",
+                "PENDING_UPDATE",
+                "PENDING_DELETE",
+                "EIP_FREEZED",
+                "INACTIVE"
+              ]
+            },
+            "x-order": 28,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "floating_ip_id",
+            "in": "query",
+            "required": false,
+            "description": "弹性公网IP的id。",
+            "type": "string",
+            "x-order": 14,
+            "minimum": 36,
+            "maximum": 36
+          },
+          {
+            "name": "global_eip_id",
+            "in": "query",
+            "required": false,
+            "description": "全域弹性公网IP的id。",
+            "type": "string",
+            "minimum": 36,
+            "maximum": 36
+          },
+          {
+            "name": "internal_service_port",
+            "in": "query",
+            "required": false,
+            "description": "虚拟机或者裸机对外提供服务的协议端口号。\n取值范围:0~65535。",
+            "type": "integer",
+            "format": "int32",
+            "x-order": 9,
+            "minLength": 1,
+            "maxLength": 5,
+            "minimum": 0,
+            "maximum": 65535
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数。\n取值范围:1~2000。\n默认值:2000。",
+            "required": false,
+            "type": "integer",
+            "default": "2000",
+            "x-order": 3,
+            "minimum": 1,
+            "maximum": 2000
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "DNAT规则的ID。",
+            "required": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "DNAT规则的描述,长度范围小于等于255个字符,不能包含“<”和“>”。",
+            "required": false,
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 255
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "description": "DNAT规则的创建时间,格式是yyyy-mm-dd hh:mm:ss.SSSSSS。",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-order": 9,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "nat_gateway_id",
+            "in": "query",
+            "description": "公网NAT网关实例的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 11,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "port_id",
+            "in": "query",
+            "description": "虚拟机或者裸机的Port ID,对应虚拟私有云场景,与private_ip参数二选一。",
+            "required": false,
+            "type": "string",
+            "x-order": 7,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "private_ip",
+            "in": "query",
+            "description": "用户私有IP地址,对应专线、云连接场景,与port_id参数二选一。",
+            "required": false,
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 15,
+            "x-order": 8
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "协议类型,目前支持TCP/tcp、UDP/udp、ANY/any。\n对应协议号6、17、0。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 16,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询的起始资源ID,表示从指定资源的下一条记录开始查询。\n- 若不传入marker和limit参数,查询结果返回第一页全部资源记录(默认2000条)。\n- 若不传入marker参数,limit为10,查询结果返回第1~10条资源记录。\n- 若marker为第10条记录的资源ID,limit为10,查询结果返回第11~20条资源记录。\n- 若marker为第10条记录的资源ID,不传入limit参数,查询结果返回第11条及之后的资源记录(默认2000条)。",
+            "required": false,
+            "type": "string",
+            "x-order": 17,
+            "minLength": 36,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询DNAT规则列表成功。",
+            "examples": {
+              "application/json": {
+                "dnat_rules": [
+                  {
+                    "floating_ip_id": "bf99c679-9f41-4dac-8513-9c9228e713e1",
+                    "status": "ACTIVE",
+                    "nat_gateway_id": "cda3a125-2406-456c-a11f-598e10578541",
+                    "admin_state_up": true,
+                    "port_id": "9a469561-daac-4c94-88f5-39366e5ea193",
+                    "private_ip": "",
+                    "internal_service_port": 993,
+                    "protocol": "tcp",
+                    "tenant_id": "d199ba7e0ba64899b2e81518104b1526d",
+                    "created_at": "2017-11-15 15:44:42.595173",
+                    "id": "79195d50-0271-41f1-bded-4c089b2502ff",
+                    "floating_ip_address": "5.21.11.226",
+                    "external_service_port": 242,
+                    "description": "my dnat rule 01"
+                  },
+                  {
+                    "floating_ip_id": "cf99c679-9f41-4dac-8513-9c9228e713e1",
+                    "status": "ACTIVE",
+                    "nat_gateway_id": "dda3a125-2406-456c-a11f-598e10578541",
+                    "admin_state_up": true,
+                    "port_id": "",
+                    "private_ip": "192.168.1.100",
+                    "internal_service_port": 0,
+                    "protocol": "any",
+                    "tenant_id": "d199ba7e0ba64899b2e81518104b1526d",
+                    "created_at": "2017-11-16 15:44:42.595173",
+                    "id": "89195d50-0271-41f1-bded-4c089b2502ff",
+                    "floating_ip_address": "5.21.11.227",
+                    "external_service_port": 0,
+                    "description": "my dnat rule 01"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListNatGatewayDnatRulesResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询DNAT规则列表",
+        "x-constraint": "可以在URI后面用'?'和'&'添加不同的查询条件组合,支持参数说明中所有非必选参数过滤,请参考请求样例。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-obc": "N",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v2/d199ba7e0ba64899b2e81518104b1526d/dnat_rules?limit=2",
+        "x-request-examples-1": null,
+        "x-request-examples-text-1": "    ",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NatGatewayDnatRuleResponseBody": {
+      "required": [
+        "admin_state_up",
+        "created_at",
+        "description",
+        "external_service_port",
+        "floating_ip_address",
+        "floating_ip_id",
+        "id",
+        "internal_service_port",
+        "nat_gateway_id",
+        "protocol",
+        "status",
+        "tenant_id",
+        "global_eip_id",
+        "global_eip_address"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "DNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "description": {
+          "type": "string",
+          "description": "DNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "port_id": {
+          "type": "string",
+          "description": "虚拟机或者裸机的Port ID,对应虚拟私有云场景,与private_ip参数二选一。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "private_ip": {
+          "type": "string",
+          "description": "用户私有IP地址,对应专线、云连接场景,与port_id参数二选一。",
+          "minLength": 7,
+          "maxLength": 15
+        },
+        "internal_service_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "虚拟机或者裸机对外提供服务的协议端口号。\n取值范围:0~65535。",
+          "minLength": 1,
+          "maxLength": 5,
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "nat_gateway_id": {
+          "type": "string",
+          "description": "公网NAT网关实例的ID。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "floating_ip_id": {
+          "type": "string",
+          "description": "弹性公网IP的id。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "floating_ip_address": {
+          "type": "string",
+          "description": "弹性公网IP的IP地址。",
+          "minLength": 7,
+          "maxLength": 15
+        },
+        "external_service_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Floatingip对外提供服务的端口号。\n取值范围:0~65535。"
+        },
+        "status": {
+          "type": "string",
+          "description": "DNAT规则的状态。\n取值为:\n- ACTIVE: 可用\n- PENDING_CREATE: 创建中\n- PENDING_UPDATE: 更新中\n- PENDING_DELETE: 删除中\n- EIP_FREEZED: EIP冻结\n- INACTIVE: 不可用",
+          "enum": [
+            "ACTIVE",
+            "PENDING_CREATE",
+            "PENDING_UPDATE",
+            "PENDING_DELETE",
+            "EIP_FREEZED",
+            "INACTIVE"
+          ]
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "解冻/冻结状态。\n取值范围: \n- true: 解冻\n- false: 冻结"
+        },
+        "internal_service_port_range": {
+          "type": "string",
+          "description": "虚拟机或者裸机对外提供服务的协议端口号范围。\n功能说明:该端口范围与external _service_port_range按顺序实现1:1映射。\n取值范围:1~65535。\n约束:只能以’-’字符连接端口范围。"
+        },
+        "external_service_port_range": {
+          "type": "string",
+          "description": "Floatingip对外提供服务的端口号范围。\n功能说明:该端口范围与internal _service_port_range按顺序实现1:1映射。\n取值范围:1~65535。\n约束:只能以’-’字符连接端口范围"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "协议类型,目前支持TCP/tcp、UDP/udp、ANY/any。\n对应协议号6、17、0。",
+          "enum": [
+            "tcp",
+            "udp",
+            "any"
+          ],
+          "minLength": 1,
+          "maxLength": 3
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "DNAT规则的创建时间,格式是yyyy-mm-dd hh:mm:ss.SSSSSS。"
+        },
+        "global_eip_id": {
+          "type": "string",
+          "description": "全域弹性公网IP的id。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "global_eip_address": {
+          "type": "string",
+          "description": "全域弹性公网IP的地址。",
+          "minLength": 7,
+          "maxLength": 15
+        }
+      },
+      "description": "DNAT规则的响应体。"
+    },
+    "ListNatGatewayDnatRulesResponseBody": {
+      "properties": {
+        "dnat_rules": {
+          "type": "array",
+          "description": "查询DNAT规则列表的响应体。",
+          "items": {
+            "$ref": "#/definitions/NatGatewayDnatRuleResponseBody"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        }
+      },
+      "description": "查询DNAT规则列表的响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

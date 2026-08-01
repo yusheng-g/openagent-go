@@ -1,0 +1,129 @@
+{
+  "name": "ClaimEnterpriseMultiAccountCoupon",
+  "summary": "企业主账号向企业子账号拨款优惠券",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/transfer-coupon": {
+      "post": {
+        "summary": "企业主账号向企业子账号拨款优惠券",
+        "description": "企业主账号在自建平台向企业子账号拨款优惠券。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>-   仅支持华为发放的测试类、商务类、活动类代金券。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "ClaimEnterpriseMultiAccountCoupon",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/transfer-coupon",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "|参数名称:请求体| |参数的约束及描述:|",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransferEnterpriseMultiAccountCouponReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/transfer-coupon",
+        "x-request-examples-1": {
+          "customer_id": "06a29c********400fc0c01027684d40",
+          "amount": "100",
+          "trans_id": "2020042401",
+          "coupon_id": "CP19092406014086E3"
+        },
+        "responses": {
+          "200": {
+            "description": "|参数名称:默认返回| |成功:success|",
+            "schema": {
+              "$ref": "#/definitions/TransferCouponSuccessRsp"
+            },
+            "examples": {
+              "application/json": {
+                "sub_coupon_id": "CP19092406014086E2"
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:parameter error||CBC.99000043:企业主账号向企业子账号拨款/回收失败。||CBC.99005003:余额不足。||CBC.99007004:发起的业务操作存在不满足的业务检查项。||CBC.99007009:交易事务ID重复。||CBC.99007461:您当前存在尚未完成的拨款或回收任务,请稍后再试。|"
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TransferCouponSuccessRsp": {
+      "properties": {
+        "sub_coupon_id": {
+          "description": "|参数名称:实际回收金额。| |参数的约束及描述:成功时返回|",
+          "type": "string",
+          "example": "CP19092406014086E2"
+        }
+      }
+    },
+    "TransferEnterpriseMultiAccountCouponReq": {
+      "required": [
+        "customer_id",
+        "coupon_id",
+        "amount"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "企业子账号的客户ID。您可以调用查询企业子账号列表接口,获取响应参数“id”的返回值。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "e8a*****b9c"
+        },
+        "coupon_id": {
+          "type": "string",
+          "description": "优惠券ID。您可以调用查询企业主账号可拨款优惠券列表接口,获取响应参数“coupon_id”的返回值。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "CP19092406014086E2"
+        },
+        "amount": {
+          "type": "string",
+          "description": "总划拨金额。单位为元。 单位:元。取值大于0且精确到小数点后2位。",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": 10
+        },
+        "trans_id": {
+          "type": "string",
+          "description": "交易序列号,用于防止重复提交。 如果接口调用方不传此参数的值,则系统自动生成。如果接口调用方传入此参数的值,请采用UUID保证全局唯一。 此参数不携带或携带值为null或携带值为空串时,由系统自动生成。",
+          "minLength": 0,
+          "maxLength": 32,
+          "example": "333333"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,220 @@
+{
+  "name": "CompleteMultipartUpload",
+  "summary": "合并段",
+  "tags": "多段操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "post": {
+        "x-request-examples-url-1": "POST /object02?uploadId=00000163D46218698DF407362295674C",
+        "x-request-examples-1": "POST /object02?uploadId=00000163D46218698DF407362295674C HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 05:23:46 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:dOfK9iILcKxo58tRp3fWeDoYzKA=\nContent-Length: 422\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<CompleteMultipartUpload>\n  <Part>\n    <PartNumber>1</PartNumber>\n    <ETag>a54357aff0632cce46d942af68356b38</ETag>\n  </Part>\n  <Part>\n    <PartNumber>2</PartNumber>\n    <ETag>0c78aef83f66abc1fa1e8477f296d394</ETag>\n  </Part>\n  <Part>\n    <PartNumber>3</PartNumber>\n    <ETag>acbd18db4cc2f85cedef654fccc4a4d8</ETag>\n  </Part>\n</CompleteMultipartUpload>",
+        "tags": [
+          "多段操作"
+        ],
+        "operationId": "CompleteMultipartUpload",
+        "summary": "合并段",
+        "description": "如果用户上传完所有的段,就可以调用合并段接口,系统将在服务端将用户指定的段合并成一个完整的对象。在执行“合并段”操作以前,用户不能下载已经上传的数据。在合并段时需要将多段上传任务初始化时记录的附加消息头信息拷贝到对象元数据中,其处理过程和普通上传对象带这些消息头的处理过程相同。在并发合并段的情况下,仍然遵循Last Write Win策略,但“Last Write”的时间定义为段任务的初始化时间。\n已经上传的段,只要没有取消对应的多段上传任务,都要占用用户的容量配额;对应的多段上传任务“合并段”操作完成后,只有指定的多段数据占用容量配额,用户上传的其他此多段任务对应的段数据如果没有包含在“合并段”操作制定的段列表中,“合并段”完成后删除多余的段数据,且同时释放容量配额。\n合并完成的多段上传数据可以通过已有的下载对象接口,下载整个多段上传对象或者指定Range下载整个多段上传对象的某部分数据。\n合并完成的多段上传数据可以通过已有的删除对象接口,删除整个多段上传对象的所有分段数据,删除后不可恢复。\n合并完成的多段上传数据不记录整个对象的MD5作为Etag,在下载多段数据或List桶内对象看到的多段数据其Etag的生成方式为:MD5(M1M2......MN)-N,其中,Mn表示第n段的MD5值, 如请求示例所示,有3个分段,每个分段都有对应的MD5值,合并段ETag的生成是先将3个分段的MD5合并起来再进行MD5计算得到一个新值,再拼接-N作为合并段的ETag值,-N表示总共有多少段,在该示例中即为-3。\n合并段请求如果出现等待响应超时、服务端返回500或503报错时,建议客户端可以先尝试获取多段任务对应的对象元数据,并比较响应的x-obs-uploadId头域的值,是否与本次要合并的段任务ID相同,如果相同,说明服务端实际已经合并段成功,无需再进行重试。关于并发一致性说明,参见[7.5-并发一致性说明](https://support.huaweicloud.com/api-obs/obs_04_0118.html)。\n#### 多版本 #### 如果桶的多版本状态是开启的,则合并段后得到的对象生成一个唯一的版本号,并且会在响应报头x-obs-version-id返回该版本号。如果桶的多版本状态是暂停的,则合并段后得到的对象版本号为null。关于桶的多版本状态,参见[设置桶的多版本状态](https://support.huaweicloud.com/api-obs/obs_04_0037.html)。\n须知: 如果上传了10个段,但合并时只选择了9个段进行合并,那么未被合并的段将会被系统自动删除,未被合并的段删除后不能恢复。在进行合并之前请使用列出已上传的段接口进行查询,仔细核对所有段,确保没有段被遗漏。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "consumes": [
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "x-obs-checksum-crc64ecma",
+            "in": "header",
+            "description": "按照ECMA-182标准计算出整个多段对象的crc64值,采用64位无符号数编码;使用该头域服务端会进行数据一致性校验。\n如果服务端计算出的crc64值与头域携带的crc64值相同,响应码为200\n如果服务端计算出的crc64值与头域携带的crc64值不符,响应码为400\n示例: x-obs-checksum-crc64ecma: 11051210869376104954\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "桶名称\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "对象名称。\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "uploadId",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "多段上传任务的id。\n"
+          },
+          {
+            "name": "encoding-type",
+            "in": "query",
+            "required": false,
+            "description": "对响应中的Key进行指定类型的编码。如果Key包含xml 1.0标准不支持的控制字符,可通过设置encoding-type对响应中的Key进行编码。",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "CompleteMultipartUploadRequestBody",
+            "description": "该请求需要在消息中带消息元素,指定要合并的段列表。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CompleteMultipartUploadRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-version-id": {
+                "description": "合并得到的对象的版本号。\n",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption:kms",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-kms-key-id": {
+                "description": "如果服务端加密是SSE-KMS方式,响应包含该头域,该头域表示主密钥。\n\n类型:字符串\n\n格式为: regionID:domainID(租户ID):key/key_id\n\n其中regionID是使用密钥所属region的ID;domainID是使用密钥所属租户的租户ID;key_id是本次加密使用的密钥ID。\n\n示例: x-obs-server-side-encryption-kms-key-id:cn-north-4:domainiddomainiddomainiddoma0001:key/4f1cd4de-ab64-4807-920a-47fc42e7f0d0",
+                "type": "string"
+              },
+              "x-obs-server-side-encryption-customer-algorithm": {
+                "description": "如果服务端加密是SSE-C方式,响应包含该头域,该头域表示加密使用的算法。\n\n类型:字符串\n\n示例:x-obs-server-side-encryption-customer-algorithm:AES256",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|-|没有消息体。|400 Bad Request|\n|-|消息体格式不正确。|400 Bad Request|\n|InvalidPartOrderInvalidPartOrder|消息体中段信息未按照段序号升序排列。|400 Bad Request|\n|InvalidPart|请求段列表中包含了不存在的段。|400 Bad Request|\n|InvalidPart|请求段列表中包含的段的Etag错误。|400 Bad Request|\n|-|除最后一个段之外的其它段尺寸过小(小于100KB)。|400 Bad Request|\n|-|对象在合并完成后总大小如果超过48.8TB。|400 Bad Request|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|AccessDenied|AccessKey或签名无效。|403 Forbidden|\n|AccessDenied|用户不是该任务的发起者(initiator)。|403 Forbidden|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|\n|---|---|---|\n|NoSuchBucket|请求的桶不存在。|404 Not Found|\n|NoSuchUpload|请求的多段上传任务不存在。|404 Not Found|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CompleteMultipartUploadRequestBody": {
+      "xml": {
+        "name": "CompleteMultipartUpload"
+      },
+      "description": "合并的段列表。\n",
+      "properties": {
+        "Part": {
+          "description": "合并的段。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CompleteMultipartUploadPart"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "CompleteMultipartUploadPart": {
+      "description": "合并的段。\n",
+      "properties": {
+        "PartNumber": {
+          "description": "段号。\n",
+          "type": "integer",
+          "format": "int32"
+        },
+        "ETag": {
+          "description": "上传段成功后返回的ETag值,是段内容的唯一标识。该值用于合并段时进行数据一致性校验。\n",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,406 @@
+{
+  "name": "KeystoneUpdateUserByAdmin",
+  "summary": "管理员修改IAM用户信息",
+  "tags": "IAM用户管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/users/{user_id}": {
+      "patch": {
+        "tags": [
+          "IAM用户管理"
+        ],
+        "summary": "管理员修改IAM用户信息",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)修改IAM用户信息。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneUpdateUserByAdmin",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "拥有Security Administrator权限的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "待修改信息的IAM用户ID,获取方式请参见:[获取用户ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "2c1c6c54e59141b889c99e6fada5f19f",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "KeystoneUpdateUserByAdminRequestBody",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/KeystoneUpdateUserByAdminRequestBody"
+            },
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "user": {
+                  "pwd_status": false,
+                  "description": "IAMDescription",
+                  "name": "IAMUser",
+                  "extra": {
+                    "pwd_status": false,
+                    "description": "IAMDescription",
+                    "last_project_id": "065a7c66da0010992ff7c0031e5a5e7d"
+                  },
+                  "enabled": true,
+                  "links": {
+                    "self": "https://iam.myhuaweicloud.com/v3/users/07609fb9358010e21f7bc003751c7c32"
+                  },
+                  "last_project_id": "065a7c66da0010992ff7c0031e5a5e7d",
+                  "id": "07609fb9358010e21f7bc003751c7c32",
+                  "domain_id": "d78cbac186b744899480f25bd022f468",
+                  "password_expires_at": null
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneUpdateUserByAdminResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "405": {
+            "description": "不允许的方法。"
+          },
+          "409": {
+            "description": "资源冲突。"
+          },
+          "413": {
+            "description": "请求体过大。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "管理员修改IAM用户信息",
+        "x-constraint": "该接口无法修改手机号、邮箱等信息。如需修改手机号、邮箱等信息,请使用接口:[管理员修改IAM用户信息(推荐)](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=IAM&api=UpdateUser)。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 39,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PATCH https://iam.myhuaweicloud.com/v3/users/{user_id}",
+        "x-request-examples-1": {
+          "user": {
+            "domain_id": "06e060600400d3e90f7fc00288711b00",
+            "name": "IAMUser",
+            "password": "IAMPassword@",
+            "enabled": true,
+            "pwd_status": false,
+            "description": "IAMDescription"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"user\": {\n        \"domain_id\": \"06e060600400d3e90f7fc00288711b00\",\n        \"name\": \"IAMUser\",\n        \"password\":\"IAMPassword@\",\n        \"enabled\": true,\n        \"pwd_status\":false,\n        \"description\":\"IAMDescription\"\n    }\n}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y",
+        "x-apiErrorCodes": [
+          {
+            "errorCode": "1100",
+            "httpStatus": "400",
+            "errorMessage": "缺失必选参数。",
+            "errorDescription": "缺失必选参数。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1101",
+            "httpStatus": "400",
+            "errorMessage": "用户名校验失败。",
+            "errorDescription": "用户名校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1102",
+            "httpStatus": "400",
+            "errorMessage": "邮箱校验失败。",
+            "errorDescription": "邮箱校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1103",
+            "httpStatus": "400",
+            "errorMessage": "密码校验失败。",
+            "errorDescription": "密码校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1104",
+            "httpStatus": "400",
+            "errorMessage": "手机号校验失败。",
+            "errorDescription": "手机号校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1105",
+            "httpStatus": "400",
+            "errorMessage": "xuser_type必须与xdomain_type相同。",
+            "errorDescription": "xuser_type必须与xdomain_type相同。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1106",
+            "httpStatus": "400",
+            "errorMessage": "国家码、手机号必须同时存在。",
+            "errorDescription": "国家码、手机号必须同时存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1107",
+            "httpStatus": "400",
+            "errorMessage": "账号管理员不能被删除。",
+            "errorDescription": "账号管理员不能被删除。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1108",
+            "httpStatus": "400",
+            "errorMessage": "新密码不能与原密码相同。",
+            "errorDescription": "新密码不能与原密码相同。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1109",
+            "httpStatus": "400",
+            "errorMessage": "用户名已存在。",
+            "errorDescription": "用户名已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1110",
+            "httpStatus": "400",
+            "errorMessage": "邮箱已存在。",
+            "errorDescription": "邮箱已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1111",
+            "httpStatus": "400",
+            "errorMessage": "手机号已存在。",
+            "errorDescription": "手机号已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1113",
+            "httpStatus": "400",
+            "errorMessage": "xuser_id、xuser_type已存在。",
+            "errorDescription": "xuser_id、xuser_type已存在。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1115",
+            "httpStatus": "400",
+            "errorMessage": "IAM用户数量达到最大限制。",
+            "errorDescription": "IAM用户数量达到最大限制。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          },
+          {
+            "errorCode": "1117",
+            "httpStatus": "400",
+            "errorMessage": "用户描述校验失败。",
+            "errorDescription": "用户描述校验失败。",
+            "solution": "",
+            "errorDescriptionEn": "",
+            "solutionEn": ""
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "KeystoneUpdateUserOption": {
+      "properties": {
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "IAM用户所属账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMUser",
+          "description": "新IAM用户名,长度1~64之间,只能包含如下字符:大小写字母、空格、数字或特殊字符(-_.)且不能以数字开头"
+        },
+        "password": {
+          "type": "string",
+          "format": "password",
+          "example": "IAMNewPassword@",
+          "description": "IAM用户密码。\n- 系统默认密码最小长度为6位字符,在6-32位之间支持用户自定义密码长度。\n- 至少包含以下四种字符中的两种: 大写字母、小写字母、数字和特殊字符。\n- 不能包含手机号和邮箱。\n- 必须满足账户设置中密码策略的要求。\n- 新密码不能与当前密码相同。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "是否启用IAM用户。true为启用,false为停用,默认为true。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "IAM用户新描述信息。"
+        },
+        "pwd_status": {
+          "type": "boolean",
+          "description": "IAM用户密码状态。true:需要修改密码,false:不需要修改密码。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneUpdateUserByAdminResult": {
+      "required": [
+        "domain_id",
+        "enabled",
+        "id",
+        "links",
+        "name",
+        "password_expires_at"
+      ],
+      "properties": {
+        "pwd_status": {
+          "type": "boolean",
+          "example": false,
+          "description": "IAM用户密码状态。true:需要修改密码,false:不需要修改密码。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "IAM用户所属账号ID。"
+        },
+        "last_project_id": {
+          "type": "string",
+          "example": "aa2d97d7e62c4b7da3ffdfc11551f878",
+          "description": "IAM用户退出系统前,在控制台最后访问的项目ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMUser",
+          "description": "IAM用户名。"
+        },
+        "description": {
+          "type": "string",
+          "example": "IAMDescription",
+          "description": "IAM用户描述信息。"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "example": "null",
+          "description": "IAM用户密码过期时间(UTC时间),“null”表示密码不过期。"
+        },
+        "links": {
+          "description": "IAM用户的资源链接信息。",
+          "$ref": "#/definitions/LinksSelf"
+        },
+        "id": {
+          "type": "string",
+          "example": "076652f08880266a1f0bc003ec005cd2",
+          "description": "IAM用户ID。"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": false,
+          "description": "IAM用户是否启用。true表示启用,false表示停用,默认为true。"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneUpdateUserByAdminResponseBody": {
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "description": "IAM用户信息。",
+          "$ref": "#/definitions/KeystoneUpdateUserByAdminResult"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneUpdateUserByAdminRequestBody": {
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "description": "IAM用户信息。",
+          "$ref": "#/definitions/KeystoneUpdateUserOption"
+        }
+      },
+      "description": ""
+    },
+    "LinksSelf": {
+      "required": [
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/regions/la-south-2",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "patch",
+  "uri": null
+}

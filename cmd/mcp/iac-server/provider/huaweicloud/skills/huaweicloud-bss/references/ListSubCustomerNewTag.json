@@ -1,0 +1,178 @@
+{
+  "name": "ListSubCustomerNewTag",
+  "summary": "查询客户新客标签",
+  "tags": "管理客户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/sub-customers/new-customers-tags/batch-query": {
+      "post": {
+        "summary": "查询客户新客标签",
+        "description": "伙伴通过该接口可以查询客户的新客标签。\n\n>![](public_sys-resources/icon-caution.gif) **注意:** \n>-   新客标签失效后,new\\_customer\\_tag会变成N,且有效期过期。\n>-   客户如果没有实名认证,则新客标签为空。",
+        "tags": [
+          "管理客户(伙伴)"
+        ],
+        "operationId": "ListSubCustomerNewTag",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用",
+        "x-externalURL": "/v2/partners/sub-customers/new-customers-tags/batch-query",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2023-08-28",
+        "x-readOnly": true,
+        "x-delayTime": "2500ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "|参数名称:查询客户新客标签请求体| |参数的约束及描述:|",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListSubCustomerNewTagReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询客户新客标签响应| |成功:成功| |参数约束及描述: 查询客户新客标签响应|",
+            "schema": {
+              "$ref": "#/definitions/ListSubCustomerNewTagRsp"
+            },
+            "examples": {
+              "application/json": {
+                "new_customer_tags": [
+                  {
+                    "customer_id": "05377f723980d4330f06c01929ec37a0",
+                    "customer_tag_type": "SMB",
+                    "new_customer_tag": "Y",
+                    "effective_time": "2022-09",
+                    "expire_time": "2023-04"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理客户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/sub-customers/new-customers-tags/batch-query",
+        "x-request-examples-1": {
+          "customer_ids": [
+            "0bb43f********a10f19c014228fb580",
+            "0bb43f********a10f19c014228fb581"
+          ],
+          "offset": 0,
+          "limit": 10
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListSubCustomerNewTagReq": {
+      "properties": {
+        "customer_ids": {
+          "description": "客户ID列表。单个客户ID最大长度:64。 此参数不携带或携带值为空列表或携带值为null时,不作为筛选条件。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 200,
+          "x-maxLength": 200,
+          "x-minLength": 0,
+          "items": {
+            "type": "string"
+          },
+          "example": ""
+        },
+        "offset": {
+          "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 示例1,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。 示例2,查询总数20条,期望每页返回10条数据,则获取第一页数据,入参offset填写0,limit填写10;获取第二页数据,入参offset填写10,limit填写10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 2147483647,
+          "minimum": 0,
+          "default": "0"
+        },
+        "limit": {
+          "description": "每次查询的客户数量。默认值为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 200,
+          "minimum": 1,
+          "default": "10"
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商ID。获取方法请参见查询云经销商列表。如果需要查询云经销商的客户新客标签,必须携带该字段。除此之外,此参数不做处理。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": ""
+        }
+      }
+    },
+    "ListSubCustomerNewTagRsp": {
+      "properties": {
+        "new_customer_tags": {
+          "description": "新客标签信息列表。只有成功的时候才返回。 此列表不包含非子客户的数据。批量查询客户新客标签时,若入参携带了非子客户,会被过滤。 具体请参见表1 NewCustomerTagItem。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NewCustomerTagItem"
+          }
+        }
+      }
+    },
+    "NewCustomerTagItem": {
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户ID。",
+          "example": ""
+        },
+        "customer_tag_type": {
+          "type": "string",
+          "description": "新客标签类型。 SMB:SMB新客标签。",
+          "example": ""
+        },
+        "new_customer_tag": {
+          "type": "string",
+          "description": "新客标签。 Y:合格新客N:非新客UNDETERMINED:未达标新客,即有新客资格但尚未成为新客",
+          "example": ""
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效月份。 格式为YYYY-MM。",
+          "example": ""
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效月份。 格式为YYYY-MM。",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

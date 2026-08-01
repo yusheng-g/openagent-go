@@ -1,0 +1,275 @@
+{
+  "name": "ListCustomerCouponChangeRecords",
+  "summary": "查询优惠券收支明细",
+  "tags": "管理优惠券(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/promotions/benefits/account-change-records": {
+      "get": {
+        "summary": "查询优惠券收支明细",
+        "description": "功能描述:客户可以查询自身优惠券的收支明细情况(此接口不适用于伙伴的转售类客户。)",
+        "tags": [
+          "管理优惠券(客户)"
+        ],
+        "operationId": "ListCustomerCouponChangeRecords",
+        "x-open-region-cloud": "hc",
+        "x-constraint": "客户查询自身优惠券的收支明细的时候,只允许使用客户自身的AK/SK或者Token调用。",
+        "x-externalURL": "/v2/promotions/benefits/account-change-records",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2025-08-20",
+        "x-readOnly": true,
+        "x-delayTime": 500,
+        "x-operation-data-level": "L2",
+        "x-apigateway-request-type": "public",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "|参数名称:用户鉴权标识| |参数的约束及描述:该参数必填,支持客户token|",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "balance_type",
+            "in": "query",
+            "required": true,
+            "description": "|参数名称:账户类型| |参数的约束及描述:该参数必填,BALANCE_TYPE_COUPON:代金券账户|",
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "x-example": "BALANCE_TYPE_COUPON",
+            "x-allowNull": false,
+            "pattern": "BALANCE_TYPE_COUPON"
+          },
+          {
+            "name": "revenue_expense_type",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:收支类型| |参数的约束及描述:该参数非必填,REVENUE:收入 EXPENSE:支出。此参数不携带时,不作为筛选条件;此参数携带值不允许为空、空串,有枚举值校验。|",
+            "type": "string",
+            "maxLength": 10,
+            "minLength": 1,
+            "x-example": "REVENUE",
+            "x-allowNull": true,
+            "pattern": "REVENUE|EXPENSE"
+          },
+          {
+            "name": "trade_type",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:交易类型| |参数的约束及描述:该参数非必填,ADJUST:激活 DEDEUCT:消费 REFUND:退券 RFROZEN:冻结 EXPIRED:过期清零 COUPONADJUST:划拨 COUPONCANCEL:回收。此参数不携带时,不作为筛选条件;此参数携带值不允许为空、空串,有枚举值校验。|",
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "x-example": "RECHARGE",
+            "x-allowNull": true,
+            "pattern": "ADJUST|DEDEUCT|REFUND|RFROZEN|EXPIRED|COUPONADJUST|COUPONCANCEL"
+          },
+          {
+            "name": "trade_id",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:交易ID/订单ID| |参数的约束及描述:该参数非必填,范围限制:0-128。此参数不携带或携带值为空时,不作为筛选条件。|",
+            "maxLength": 128,
+            "minLength": 0,
+            "type": "string",
+            "x-example": "CS2302011504B2EHDJJ",
+            "x-allowNull": true
+          },
+          {
+            "name": "trade_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:查询收支明细的开始日期| |参数的约束及描述:该参数非必填,东八区时间,格式为YYYY-MM-DD,此参数不携带、携带值为空时,默认值为一年前的当天日期;此参数不允许携带值为空串,有参数校验。|",
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "x-example": "2022-12-22",
+            "x-allowNull": true
+          },
+          {
+            "name": "trade_time_end",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:查询收支明细的结束日期| |参数的约束及描述:该参数非必填,东八区时间,格式为YYYY-MM-DD,此参数不携带、携带值为空时,默认值为当前日期;此参数不允许携带值为空串,有参数校验。|",
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "x-example": "2022-12-22",
+            "x-allowNull": true
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:优惠券ID。| |参数的约束及描述:该参数非必填,范围限制:0-64。此参数不携带或携带值为空时,不作为筛选条件。|",
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "x-example": "CP190912081601OJDA",
+            "x-allowNull": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:偏移量| |参数的约束及描述:该参数非必填,范围限制:0-2147483647,默认值为0。此参数不携带或携带值为空时,默认传参为0。|",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 0,
+            "x-allowNull": true,
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "|参数名称:每次查询的数量| |参数的约束及描述:该参数非必填,范围限制:1-100,默认值为10。此参数不携带或携带值为空时,默认传参为10。|",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "x-allowNull": true,
+            "default": 10
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/promotions/benefits/account-change-records?balance_type=BALANCE_TYPE_COUPON",
+        "responses": {
+          "200": {
+            "description": "|参数名称:查询优惠券收支明细响应体| |参数约束及描述:查询优惠券收支明细响应体|",
+            "schema": {
+              "$ref": "#/definitions/ListCustomerCouponChangeRecordsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "currency": "currency",
+                "records": [
+                  {
+                    "coupon_id": "CP19092406014086E3",
+                    "trade_detail_type": "SOURCE_OPERAIION_DEDEUCT",
+                    "trade_time": "2019-09-16T16:00:00Z",
+                    "trade_id": "ss20190916zero01",
+                    "change_amount": 659.73,
+                    "balance_after_change": 659.73,
+                    "revenue_expense_type": "REVENUE",
+                    "bill_cycle": "2019-09",
+                    "account_name": "accountName01",
+                    "cloud_service_type_name": "云硬盘",
+                    "resource_type_name": "云硬盘"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误| |CBC.99000084:不支持伙伴的转售类客户查询优惠券收支明细。|"
+          }
+        },
+        "x-category": "管理优惠券(客户)",
+        "x-support-sdk": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CustomerCouponChangeRecord": {
+      "properties": {
+        "coupon_id": {
+          "type": "string",
+          "description": "|参数名称:优惠券ID| |参数约束及描述:优惠券ID,范围限制:0-64|",
+          "example": "CP19092406014086E3"
+        },
+        "trade_detail_type": {
+          "type": "string",
+          "description": "|参数名称:交易详细类型| |参数约束及描述:交易详细类型,范围限制:0-128, SOURCE_OPERAIION_DEDEUCT:消费(包年/包月) SOURCE_OPERAIION_USAGE:消费(按需) SOURCE_OPERAIION_SAVINGS_PLANS:消费(节省计划) SOURCE_OPERAIION_WRITEOFF:消费(欠费还款) SOURCE_OPERAIION_EXPIRECLEAR:过期清零 SOURCE_OPERAIION_UNSUBSCRIBE:退券(退订) SOURCE_OPERAIION_UNFROZEN:退券(流程中) SOURCE_OPERAIION_RFROZEN:退券(流程中) SOURCE_OPERAIION_PRIZE:激活 SOURCE_OPERAIION_BILLREFUND:调账(华为核销) SOURCE_OPERATION_COUPONCANCEL:优惠券回收 SOURCE_OPERATION_DEPOSIT_FROZEN:保证金冻结 SOURCE_OPERATION_DEPOSIT_UNFROZEN:保证金解冻 SOURCE_OPERATION_RETRIEVE:回收(企业回收) SOURCE_OPERATION_TRANSFER:划拨(企业划拨)|",
+          "example": "SOURCE_OPERAIION_DEDEUCT"
+        },
+        "trade_time": {
+          "type": "string",
+          "description": "|参数名称:交易时间| |参数约束及描述:交易时间,UTC时间,格式:yyyy-MM-ddTHH:mm:ssZ|",
+          "example": "2023-02-01T07:08:14Z"
+        },
+        "trade_id": {
+          "type": "string",
+          "description": "|参数名称:交易ID/订单ID| |参数约束及描述:交易ID/订单ID,范围限制:0-128|",
+          "example": "CS2302011504B2EHDJJ"
+        },
+        "change_amount": {
+          "type": "string",
+          "description": "|参数名称:变更金额| |参数约束及描述:变更金额|",
+          "example": "659.73"
+        },
+        "balance_after_change": {
+          "type": "string",
+          "description": "|参数名称:变更后余额| |参数约束及描述:变更后余额|",
+          "example": "659.73"
+        },
+        "revenue_expense_type": {
+          "type": "string",
+          "description": "|参数名称:收支类型| |参数约束及描述:收支类型。REVENUE:收入 EXPENSE:支出|",
+          "example": "REVENUE"
+        },
+        "bill_cycle": {
+          "type": "string",
+          "description": "|参数名称:账期| |参数约束及描述:账期|",
+          "example": "2023-02"
+        },
+        "account_name": {
+          "type": "string",
+          "description": "|参数名称:账号名称| |参数约束及描述:账号名称,范围限制:0-128|",
+          "example": ""
+        },
+        "cloud_service_type_name": {
+          "type": "string",
+          "description": "|参数名称:云服务类型名称| |参数约束及描述:产品的云服务名称,范围限制:0-200|",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "|参数名称:资源类型名称| |参数约束及描述:产品的资源类型名称,范围限制:0-200|",
+          "example": ""
+        }
+      }
+    },
+    "ListCustomerCouponChangeRecordsRsp": {
+      "properties": {
+        "total_count": {
+          "description": "|参数名称:返回总条数| |参数的约束及描述:返回总条数|",
+          "type": "integer",
+          "format": "int32",
+          "example": 10
+        },
+        "currency": {
+          "type": "string",
+          "description": "|参数名称:币种| |参数约束及描述:CNY:人民币。|",
+          "example": "CNY"
+        },
+        "records": {
+          "description": "|参数名称:优惠券收支明细记录列表| |参数约束以及描述:优惠券收支明细记录列表,具体请参见表 CustomerCouponChangeRecord。|",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomerCouponChangeRecord"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

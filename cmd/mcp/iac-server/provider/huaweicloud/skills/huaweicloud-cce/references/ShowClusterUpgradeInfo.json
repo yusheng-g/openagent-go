@@ -1,0 +1,233 @@
+{
+  "name": "ShowClusterUpgradeInfo",
+  "summary": "获取集群升级相关信息",
+  "tags": "集群升级",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/api/v3/projects/{project_id}/clusters/{cluster_id}/upgradeinfo": {
+      "get": {
+        "tags": [
+          "集群升级"
+        ],
+        "operationId": "ShowClusterUpgradeInfo",
+        "summary": "获取集群升级相关信息",
+        "description": "获取集群升级相关信息",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取集群升级相关信息成功。",
+            "examples": {
+              "application/json": {
+                "kind": "UpgradeInfo",
+                "apiVersion": "v3",
+                "metadata": {},
+                "spec": {
+                  "lastUpgradeInfo": {
+                    "phase": "Success",
+                    "completionTime": "2023-11-25 11:18:54.478926 +0800 CST"
+                  },
+                  "versionInfo": {
+                    "release": "v1.27.2",
+                    "patch": "r0",
+                    "suggestPatch": "r0",
+                    "targetVersions": [
+                      "v1.27.3-r0"
+                    ]
+                  },
+                  "upgradeFeatureGates": {
+                    "supportUpgradePageV4": true
+                  }
+                },
+                "status": {
+                  "phase": "Success",
+                  "completionTime": "2023-11-25 11:18:54.478926 +0800 CST"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpgradeInfoResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "获取集群升级相关信息",
+        "x-order": 13,
+        "x-publishpath": "",
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "cce",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "UpgradeInfoSpec": {
+      "description": "升级配置相关信息",
+      "properties": {
+        "lastUpgradeInfo": {
+          "description": "上次集群升级信息",
+          "$ref": "#/definitions/UpgradeInfoStatus"
+        },
+        "versionInfo": {
+          "description": "版本信息",
+          "$ref": "#/definitions/UpgradeVersionInfo"
+        },
+        "upgradeFeatureGates": {
+          "description": "集群升级特性开关",
+          "$ref": "#/definitions/UpgradeFeatureGates"
+        }
+      }
+    },
+    "UpgradeVersionInfo": {
+      "description": "版本信息",
+      "properties": {
+        "release": {
+          "type": "string",
+          "description": "正式版本号,如:v1.19.10"
+        },
+        "patch": {
+          "type": "string",
+          "description": "补丁版本号,如r0"
+        },
+        "suggestPatch": {
+          "type": "string",
+          "description": "推荐升级的目标补丁版本号,如r0"
+        },
+        "targetVersions": {
+          "type": "array",
+          "description": "升级目标版本集合",
+          "items": {
+            "type": "string",
+            "description": "目标版本"
+          }
+        }
+      }
+    },
+    "UpgradeInfoStatus": {
+      "description": "升级状态信息",
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "升级任务状态.\n> Init:初始化\n> Running:运行中\n> Pause:暂停\n> Success:成功\n> Failed:失败"
+        },
+        "progress": {
+          "type": "string",
+          "description": "升级任务进度"
+        },
+        "completionTime": {
+          "type": "string",
+          "description": "升级任务结束时间"
+        }
+      }
+    },
+    "UpgradeInfoResponseBody": {
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "类型"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本"
+        },
+        "metadata": {
+          "description": "基本信息,为集合类的元素类型,包含一组由不同名称定义的属性",
+          "$ref": "#/definitions/Metadata"
+        },
+        "spec": {
+          "description": "升级配置相关信息",
+          "$ref": "#/definitions/UpgradeInfoSpec"
+        },
+        "status": {
+          "description": "升级状态信息",
+          "$ref": "#/definitions/UpgradeInfoStatus"
+        }
+      }
+    },
+    "UpgradeFeatureGates": {
+      "description": "集群升级特性开关",
+      "properties": {
+        "supportUpgradePageV4": {
+          "type": "boolean",
+          "description": "集群升级Console界面是否支持V4版本,该字段一般由CCE Console使用。"
+        }
+      }
+    },
+    "Metadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n唯一id标识\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n资源名称\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "labels": {
+          "type": "object",
+          "description": "**参数解释**:\n资源标签,key/value对格式,接口保留字段,填写不会生效\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "description": "**参数解释**:\n资源注解,由key/value组成\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n更新时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n创建时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": "**参数解释**:\n资源描述基本信息,集合类的元素类型,包含一组由不同名称定义的属性。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

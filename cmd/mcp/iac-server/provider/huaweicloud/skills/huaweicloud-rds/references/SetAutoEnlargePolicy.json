@@ -1,0 +1,147 @@
+{
+  "name": "SetAutoEnlargePolicy",
+  "summary": "设置自动扩容策略",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/disk-auto-expansion": {
+      "put": {
+        "x-support-sdk": "Y",
+        "x-constraint": "接口公测中,申请后可用。\n账户余额必须大于等于0元。\n仅支持RDS for MySQL 磁盘大小为40GB及以上云盘实例(即存储类型为超高IO或SSD云盘或极速型SSD)。\n实例在进行规格变更、内核小版本升级、备机迁移、重启时,不能进行此操作。\n包周期实例存在未完成订单时,不会自动扩容。\n实例状态为“正常”和“存储空间满”时可以进行扩容。\n最大可自动扩容至4000GB。",
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/disk-auto-expansion",
+        "x-request-examples-description-1": "设置自动扩容策略",
+        "x-request-examples-text-1": {
+          "switch_option": true,
+          "limit_size": 10000,
+          "trigger_threshold": 10,
+          "step_percent": 20
+        },
+        "x-request-examples-1": {
+          "switch_option": true,
+          "limit_size": 10000,
+          "trigger_threshold": 10,
+          "step_percent": 20
+        },
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "设置自动扩容策略",
+        "description": "设置实例存储空间自动扩容策略,按扩容量扣除存储费用。\n可用存储空间小于设置值或者10GB时,自动扩容当前存储空间的15%(非10倍数向上取整,账户余额不足,会导致自动扩容失败)。\n设置只读实例自动扩容与主实例自动扩容互不影响,对只读实例设置自动扩容时,可选择大于或等于主实例的存储空间。",
+        "operationId": "SetAutoEnlargePolicy",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "CustomerModifyAutoEnlargePolicyReq",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CustomerModifyAutoEnlargePolicyReq"
+            },
+            "description": "请求体"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户Token",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "description": "请求失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "CustomerModifyAutoEnlargePolicyReq": {
+      "type": "object",
+      "properties": {
+        "switch_option": {
+          "type": "boolean",
+          "description": "是否开启自动扩容,true为开启,false为关闭"
+        },
+        "limit_size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "扩容上限,单位GB, 取值范围40~4000,需要大于等于实例当前存储空间总大小,switch_option为true必填"
+        },
+        "trigger_threshold": {
+          "type": "integer",
+          "format": "int32",
+          "description": "可用存储空间百分比,小于等于此值或者10GB时触发扩容,switch_option为true时必填",
+          "enum": [
+            10,
+            15,
+            20
+          ]
+        },
+        "step_percent": {
+          "type": "integer",
+          "format": "int32",
+          "description": "每次自动扩容的百分比步长,取值范围5~50,开启自定义步长功能时必填"
+        }
+      },
+      "required": [
+        "switch_option"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

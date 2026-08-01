@@ -1,0 +1,216 @@
+{
+  "name": "ListAutopilotUpgradeClusterTasks",
+  "summary": "获取集群升级任务详情列表",
+  "tags": "集群升级(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/projects/{project_id}/clusters/{cluster_id}/operation/upgrade/tasks": {
+      "get": {
+        "tags": [
+          "集群升级(Autopilot)"
+        ],
+        "operationId": "ListAutopilotUpgradeClusterTasks",
+        "summary": "获取集群升级任务详情列表",
+        "description": "获取集群升级任务详情列表",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取集群升级任务详情列表成功。",
+            "examples": {
+              "application/json": {
+                "kind": "List",
+                "apiVersion": "v3",
+                "metadata": {},
+                "items": [
+                  {
+                    "kind": "UpgradeTask",
+                    "apiVersion": "v3",
+                    "metadata": {
+                      "uid": "f40cafed-7bf1-4c3b-b619-80113b4bbb18",
+                      "creationTimestamp": "2023-11-24 16:41:12.09236 +0800 CST",
+                      "updateTimestamp": "2023-11-24 16:44:05.634206 +0800 CST"
+                    },
+                    "spec": {
+                      "version": "v1.17.17-r0",
+                      "targetVersion": "v1.19.16-r80"
+                    },
+                    "status": {
+                      "phase": "Success",
+                      "completionTime": "2023-11-24 16:44:05.634206 +0800 CST"
+                    }
+                  },
+                  {
+                    "kind": "UpgradeTask",
+                    "apiVersion": "v3",
+                    "metadata": {
+                      "uid": "91755b96-5fd8-4a6a-bda1-983de9055996",
+                      "creationTimestamp": "2023-11-24 19:54:35.194306 +0800 CST",
+                      "updateTimestamp": "2023-11-24 20:14:35.194306 +0800 CST"
+                    },
+                    "spec": {
+                      "version": "v1.19.16-r80",
+                      "targetVersion": "v1.23.8-r10"
+                    },
+                    "status": {
+                      "phase": "Success",
+                      "completionTime": "2023-11-24 20:14:35.194306 +0800 CST"
+                    }
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpgradeTaskListResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "获取集群升级任务详情列表",
+        "x-order": 6,
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "UpgradeTaskStatus": {
+      "description": "升级任务状态信息",
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "升级任务状态.\n> Init:初始化\n> Queuing:等待\n> Running:运行中\n> Pause:暂停\n> Success:成功\n> Failed:失败"
+        },
+        "progress": {
+          "type": "string",
+          "description": "升级任务进度"
+        },
+        "completionTime": {
+          "type": "string",
+          "description": "升级任务结束时间"
+        }
+      }
+    },
+    "UpgradeTaskListResponseBody": {
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "api版本,默认为v3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型"
+        },
+        "metadata": {
+          "description": "元数据信息",
+          "$ref": "#/definitions/UpgradeTaskMetadata"
+        },
+        "items": {
+          "type": "array",
+          "description": "集群升级任务列表",
+          "items": {
+            "$ref": "#/definitions/UpgradeTaskResponseBody"
+          }
+        }
+      }
+    },
+    "UpgradeTaskSpec": {
+      "description": "升级任务属性",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "升级前集群版本"
+        },
+        "targetVersion": {
+          "type": "string",
+          "description": "升级的目标集群版本"
+        },
+        "items": {
+          "type": "object",
+          "description": "升级任务附属信息"
+        }
+      }
+    },
+    "UpgradeTaskResponseBody": {
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "api版本,默认为v3"
+        },
+        "kind": {
+          "type": "string",
+          "description": "资源类型,默认为UpgradeTask"
+        },
+        "metadata": {
+          "description": "升级任务元数据信息",
+          "$ref": "#/definitions/UpgradeTaskMetadata"
+        },
+        "spec": {
+          "description": "升级任务信息",
+          "$ref": "#/definitions/UpgradeTaskSpec"
+        },
+        "status": {
+          "description": "升级任务状态",
+          "$ref": "#/definitions/UpgradeTaskStatus"
+        }
+      }
+    },
+    "UpgradeTaskMetadata": {
+      "description": "升级任务元数据",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "升级任务ID"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "description": "任务创建时间"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "description": "任务更新时间"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

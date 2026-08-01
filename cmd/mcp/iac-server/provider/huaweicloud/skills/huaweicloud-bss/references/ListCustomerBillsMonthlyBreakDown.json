@@ -1,0 +1,608 @@
+{
+  "name": "ListCustomerBillsMonthlyBreakDown",
+  "summary": "查询月度成本",
+  "tags": "管理成本(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/costs/cost-analysed-bills/monthly-breakdown": {
+      "get": {
+        "summary": "查询月度成本",
+        "description": "客户可以查询指定月份的月度摊销成本。当前仅支持查询近18个月的摊销成本。摊销成本计算规则请参见[成本摊销规则](https://support.huaweicloud.com/usermanual-cost/costcenter_000002_01.html)。\n\n客户可查询的数据范围同成本中心提供的[数据范围](https://support.huaweicloud.com/usermanual-cost/costcenter_0000004.html)一致。\n\n客户登录成本中心导出成本明细请参见[导出成本明细数据](https://support.huaweicloud.com/usermanual-cost/costcenter_000002_03.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>该接口仅面向已开通成本中心的客户开放。如何开启成本中心请参见[这里](https://support.huaweicloud.com/usermanual-cost/costcenter_000004.html)。",
+        "tags": [
+          "管理成本(客户)"
+        ],
+        "operationId": "ListCustomerBillsMonthlyBreakDown",
+        "x-constraint": "该接口只允许使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/costs/cost-analysed-bills/monthly-breakdown",
+        "x-open-region-cloud": "hc",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-02-23",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L3",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。en_US:英文。zh_CN:中文",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "shared_month",
+            "in": "query",
+            "required": true,
+            "description": "查询分摊成本的月份,东八区时间,格式:YYYY-MM。",
+            "x-maxLength": 10,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "service_type_code",
+            "in": "query",
+            "required": false,
+            "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用[查询云服务类型列表](https://support.huaweicloud.com/api-oce/zh-cn_topic_0000001256679455.html)接口获取。此参数不携带或携带值为空时,不作为筛选条件;携带值为空串时,作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "resource_type_code",
+            "in": "query",
+            "required": false,
+            "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用[查询资源类型列表](https://support.huaweicloud.com/api-oce/zh-cn_topic_0000001256519451.html)接口获取。此参数不携带或携带值为空时,不作为筛选条件;携带值为空串时,作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "region_code",
+            "in": "query",
+            "required": false,
+            "description": "云服务区编码,例如:“cn-north-1”。具体请参见[地区和终端节点](https://developer.huaweicloud.com/endpoint)对应云服务的“区域”列的值。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "charging_mode",
+            "in": "query",
+            "required": false,
+            "description": "计费模式。1:包年/包月3:按需10:预留实例11:节省计划此参数不携带或携带值为空时,不作为筛选条件。",
+            "maximum": 11,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "bill_type",
+            "in": "query",
+            "required": false,
+            "description": "账单类型。1:消费-新购 2:消费-续订 3:消费-变更 4:退款-退订 5:消费-使用 8:消费-自动续订 9:调账-补偿 14:消费-服务支持计划月末扣费 16:调账-扣费 18:消费-按月付费 20:退款-变更 23:消费-节省计划抵扣 24:退款-包年/包月转按需 25:消费-抹零补扣 103:消费-按年付费 此参数不携带或携带值为空时,不作为筛选条件。",
+            "maximum": 103,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "default": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量限制。默认值为10。",
+            "maximum": 1000,
+            "minimum": 1,
+            "default": 10,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "resource_id",
+            "in": "query",
+            "required": false,
+            "description": "资源ID。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "resource_name",
+            "in": "query",
+            "required": false,
+            "description": "资源名称。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "required": false,
+            "description": "企业项目标识(企业项目ID)。default项目对应ID:0未归集(表示该云服务不支持企业项目管理能力)项目对应ID:null其余项目对应ID获取方法请参见[如何获取企业项目ID](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0126101490.html)。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "method",
+            "in": "query",
+            "required": false,
+            "description": "查询资源消费记录的方式。oneself:客户自己sub_customer:企业子客户all:客户自己和企业子客户默认为all,如果没有企业子客户,取值为all时查询的是客户自己的资源消费记录。此参数不携带,不作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          },
+          {
+            "name": "sub_customer_id",
+            "in": "query",
+            "required": false,
+            "description": "企业子账号ID。此参数不携带或携带值为空或携带值为空串时,不作为筛选条件。 说明: 如果method取值不为sub_customer,则该参数无效。如果method取值为sub_customer,则该参数不能为空。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询月度成本响应",
+            "schema": {
+              "$ref": "#/definitions/ListCustomerBillsMonthlyBreakDownRsp"
+            },
+            "examples": {
+              "application/json": {
+                "currency": "CNY",
+                "total_count": 1,
+                "details": [
+                  {
+                    "shared_month": "2021-02",
+                    "bill_cycle": "2021-02",
+                    "bill_type": 4,
+                    "customer_id": "07fe28********8d0f26c0129657a4a0",
+                    "region_code": "cn-north-4",
+                    "region_name": "CN North-Beijing4",
+                    "service_type_code": "hws.service.type.ebs",
+                    "resource_type_code": "hws.resource.type.volume",
+                    "effective_time": "2020-03-12T11:39:52Z",
+                    "expire_time": "2020-04-12T15:59:59Z",
+                    "resource_id": "b3caab6a-6669-4bfd-95c0-14fc****303a",
+                    "resource_name": "volume-5d41",
+                    "resource_tag": null,
+                    "product_spec_desc": null,
+                    "enterprise_project_id": "0",
+                    "enterprise_project_name": "default",
+                    "charging_mode": 1,
+                    "order_id": "CS2003********3TZ",
+                    "period_type": 20,
+                    "usage_type": "duration",
+                    "usage": 0,
+                    "usage_measure_id": null,
+                    "free_resource_usage": 0,
+                    "free_resource_measure_id": null,
+                    "ri_usage": null,
+                    "ri_usage_measure_id": null,
+                    "consume_amount": 3,
+                    "past_months_amortized_amount": 1.88,
+                    "current_month_amortized_amount": 1.12,
+                    "future_months_amortized_amount": 0,
+                    "amortized_cash_amount": 1.12,
+                    "amortized_credit_amount": 0,
+                    "amortized_coupon_amount": 0,
+                    "amortized_flexipurchase_coupon_amount": 0,
+                    "amortized_stored_value_card_amount": 0,
+                    "sub_service_type_code": null,
+                    "sub_service_type_name": null,
+                    "sub_resource_type_code": null,
+                    "sub_resource_type_name": null,
+                    "sub_resource_id": null,
+                    "sub_resource_name": null,
+                    "amortized_bonus_amount": 0
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:参数错误|"
+          }
+        },
+        "x-category": "管理成本(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/costs/cost-analysed-bills/monthly-breakdown?shared_month=2020-02&charging_mode=1&service_type_code=hws.service.type.ec2&resource_type_code=hws.resource.type.vm&region_code=cn-east-2&bill_type=2&offset=0&limit=10&resource_id=c8d5f0c83&resource_name=_node_core_UfqMv&enterprise_project_id=430A093D231C423BBD215DCDD6842319&method=all&sub_customer_id=07fe2821e4802f8d0f26c0129657a4a0"
+      }
+    }
+  },
+  "definitions": {
+    "NvlCostAnalysedBillDetail": {
+      "properties": {
+        "shared_month": {
+          "type": "string",
+          "description": "查询分摊成本的月份。 格式为YYYY-MM,按照东八区时间截取。",
+          "example": ""
+        },
+        "bill_cycle": {
+          "type": "string",
+          "description": "账期。 格式:YYYY-MM。按照东八区时间截取。",
+          "example": ""
+        },
+        "bill_type": {
+          "description": "账单类型。1:消费-新购 2:消费-续订 3:消费-变更 4:退款-退订 5:消费-使用 8:消费-自动续订 9:调账-补偿 14:消费-服务支持计划月末扣费 16:调账-扣费 18:消费-按月付费 20:退款-变更 23:消费-节省计划抵扣 24:退款-包年/包月转按需 25:消费-抹零补扣 103:消费-按年付费",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "消费的客户账号ID。 如果是普通客户或者企业子查询消费记录,只能查询到自身的消费记录,则这个地方显示的是自身的客户ID。如果是企业主查询消费记录,可以查询到自身以及企业子的消费记录,这个地方是消费的实际客户ID,如果是企业主自身消费,为企业主ID,如果这条消费记录是某个企业子客户的消费,这个地方的ID是企业子账号ID。",
+          "example": ""
+        },
+        "region_code": {
+          "type": "string",
+          "description": "云服务区编码,例如:“cn-north-1”。具体请参见地区和终端节点对应云服务的“区域”列的值。",
+          "example": ""
+        },
+        "region_name": {
+          "type": "string",
+          "description": "云服务区名称,例如:“华北-北京一”。具体请参见地区和终端节点对应云服务的“区域名称”列的值。",
+          "example": ""
+        },
+        "service_type_code": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用查询云服务类型列表接口获取。",
+          "example": ""
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。您可以调用查询资源类型列表接口获取。",
+          "example": ""
+        },
+        "service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "费用对应的资源使用的开始时间,按需有效,包年/包月该字段保留。",
+          "example": ""
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "费用对应的资源使用的结束时间,按需有效,包年/包月该字段保留。",
+          "example": ""
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID。",
+          "example": ""
+        },
+        "resource_name": {
+          "type": "string",
+          "description": "资源名称。",
+          "example": ""
+        },
+        "resource_tag": {
+          "type": "string",
+          "description": "资源标签。",
+          "example": ""
+        },
+        "product_spec_desc": {
+          "type": "string",
+          "description": "产品的规格描述。",
+          "example": ""
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目标识(企业项目ID)。 default项目对应ID:0未归集(表示该云服务不支持企业项目管理能力)项目对应ID:null其余项目对应ID获取方法请参见[如何获取企业项目ID](https://support.huaweicloud.com/usermanual-em/zh-cn_topic_0126101490.html)。",
+          "example": ""
+        },
+        "enterprise_project_name": {
+          "type": "string",
+          "description": "企业项目的名称。",
+          "example": ""
+        },
+        "charging_mode": {
+          "description": "计费模式。 1:包年/包月3:按需10:预留实例11:节省计划",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID。  说明: 包年/包月资源的使用记录才有该字段,按需资源则为空。",
+          "example": ""
+        },
+        "period_type": {
+          "description": "周期类型。 19:年20:月24:天25:小时5:一次性",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "usage_type": {
+          "type": "string",
+          "description": "资源使用量的类型,您可以调用查询使用量类型列表接口获取。",
+          "example": ""
+        },
+        "usage": {
+          "description": "资源的使用量。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "usage_measure_id": {
+          "description": "资源使用量的度量单位,您可以调用查询度量单位列表接口获取。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "free_resource_usage": {
+          "description": "套餐内使用量。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "free_resource_measure_id": {
+          "description": "套餐内使用量的度量单位,您可以调用查询度量单位列表接口获取。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "ri_usage": {
+          "description": "预留实例使用量。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "ri_usage_measure_id": {
+          "description": "预留实例使用量单位。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "consume_amount": {
+          "description": "消费金额(应付金额)。 消费金额=期初已分摊金额+当月分摊金额+期末未分摊金额",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "past_months_amortized_amount": {
+          "description": "期初已分摊金额。  说明: 包周期和预留实例预付时有效;计费类型为按需,预留实例为按时计费时该值为0。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "current_month_amortized_amount": {
+          "description": "当月分摊金额。 当月分摊金额=现金分摊金额+信用额度分摊金额+代金券分摊金额+现金券分摊金额+储值卡分摊金额+奖励金分摊金额",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "future_months_amortized_amount": {
+          "description": "期末未分摊金额。月度成本分摊时,当月以后还未分摊的金额。  说明: 包周期和预留实例预付时有效;计费类型为按需,预留实例为按时计费时该值为0。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amortized_cash_amount": {
+          "description": "月度成本分摊时,当月已分摊金额中包含的现金金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amortized_credit_amount": {
+          "description": "月度成本分摊时,当月已分摊金额中包含的信用额度分摊金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amortized_coupon_amount": {
+          "description": "月度成本分摊时,当月已分摊金额中包含的代金券分摊金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amortized_flexipurchase_coupon_amount": {
+          "description": "月度成本分摊时,当月已分摊金额中包含的现金券分摊金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amortized_stored_value_card_amount": {
+          "description": "月度成本分摊时,当月已分摊金额中包含的储值卡分摊金额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "amortized_bonus_amount": {
+          "description": "月度成本分摊时,当月已分摊金额中包含的奖励金分摊金额(用于现网未清干净的奖励金)。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": ""
+        },
+        "sub_service_type_code": {
+          "type": "string",
+          "description": "整机的子云服务的自身的云服务类型编码。",
+          "example": ""
+        },
+        "sub_service_type_name": {
+          "type": "string",
+          "description": "整机的子云服务的自身的云服务类型名称。",
+          "example": ""
+        },
+        "sub_resource_type_code": {
+          "type": "string",
+          "description": "整机的子云服务的自身的资源类型编码。",
+          "example": ""
+        },
+        "sub_resource_type_name": {
+          "type": "string",
+          "description": "整机的子云服务的自身的资源类型名称。",
+          "example": ""
+        },
+        "sub_resource_id": {
+          "type": "string",
+          "description": "整机的子云服务的自身的资源ID,资源标识。(如果为预留实例,则为预留实例标识)",
+          "example": ""
+        },
+        "sub_resource_name": {
+          "type": "string",
+          "description": "整机的子云服务的自身的资源名称,资源标识。(如果为预留实例,则为预留实例标识)",
+          "example": ""
+        },
+        "effective_tag_pairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagPair"
+          },
+          "description": "成本标签。",
+          "example": ""
+        },
+        "cost_unit_pairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CostUnitPair"
+          },
+          "description": "成本单元。",
+          "example": ""
+        }
+      }
+    },
+    "TagPair": {
+      "properties": {
+        "tag_key": {
+          "type": "string",
+          "description": "标签key。",
+          "example": ""
+        },
+        "tag_value": {
+          "type": "string",
+          "description": "标签value。",
+          "example": ""
+        }
+      }
+    },
+    "ListCustomerBillsMonthlyBreakDownRsp": {
+      "properties": {
+        "currency": {
+          "type": "string",
+          "description": "货币单位代码: CNY:人民币",
+          "example": ""
+        },
+        "total_count": {
+          "description": "结果集数量,只有成功才返回这个参数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "details": {
+          "description": "分摊成本记录数据。 具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NvlCostAnalysedBillDetail"
+          }
+        }
+      }
+    },
+    "CostUnitPair": {
+      "properties": {
+        "cost_unit_name": {
+          "type": "string",
+          "description": "成本单元名称。",
+          "example": ""
+        },
+        "cost_unit_rule_value": {
+          "type": "string",
+          "description": "成本单元规则值。",
+          "example": ""
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

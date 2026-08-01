@@ -1,0 +1,217 @@
+{
+  "name": "ListBuckets",
+  "summary": "获取桶列表",
+  "tags": "桶的基础操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的基础操作"
+        ],
+        "operationId": "ListBuckets",
+        "summary": "获取桶列表",
+        "description": "OBS用户可以通过请求查询自己创建的桶列表。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "/",
+        "x-request-examples-1": "GET / HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Mon, 25 Jun 2018 05:37:12 +0000\nAuthorization: OBS GKDF4C7Q6SI0IPGTXTJN:9HXkVQIiQKw33UEmyBI4rWrzmic=\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "x-obs-bucket-type",
+            "in": "header",
+            "description": "通过此消息头明确获取的列表内容。\n取值:\nOBJECT:获取所有桶列表。\nPOSIX:获取所有并行文件系统列表。\n不带此消息头则获取所有桶和并行文件系统列表。\n",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "OBJECT",
+              "POSIX"
+            ],
+            "x-example": "OBJECT"
+          },
+          {
+            "name": "x-obs-ies-location",
+            "in": "header",
+            "description": "通过此头域可以列举指定AZ Id的CloudPond站点的桶,普通桶不返回。如果对应CloudPond站点下没有桶或者没有对应CloudPond站点,则列举桶返回空。\n",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "x-obs-edge-location",
+            "in": "header",
+            "description": "通过此头域可以列举指定AZ Id的智能边缘云站点的桶,普通桶不返回。如果对应智能边缘云站点下没有桶或者没有对应智能边缘云站点,则列举桶返回空。\n示例:x-obs-edge-location:AZ1\n",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-bucket-type": {
+                "description": "通过此消息头明确获取的列表内容。\n\n取值:\nOBJECT:获取所有桶列表。\nPOSIX:获取所有并行文件系统列表。\n不带此消息头则获取所有桶和并行文件系统列表。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListBucketsResult"
+            },
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: BF260000016435722C11379647A8A00A\nx-obs-id-2:\n32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSGGDRUM62QZi3hGP8Fz3gOloYCfZ39U\nContent-Type: application/xml\nDate: Mon, 25 Jun 2018 05:37:12 GMT\nContent-Length: 460\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ListAllMyBucketsResult\nxmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n  <Owner>\n    <ID>783fc6652cf246c096ea836694f71855</ID>\n  </Owner>\n  <Buckets>\n    <Bucket>\n      <Name>examplebucket01</Name>\n      <CreationDate>2018-06-21T09:15:01.032Z</CreationDate>\n      <Location>cn-north-4</Location>\n      <BucketType>OBJECT</BucketType>\n    </Bucket>\n    <Bucket>\n      <Name>examplebucket02</Name>\n      <CreationDate>2018-06-22T03:56:33.700Z</CreationDate>\n      <Location>cn-east-3</Location>\n      <BucketType>OBJECT</BucketType>\n    </Bucket>\n  </Buckets>\n</ListAllMyBucketsResult>\n"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Buckets": {
+      "properties": {
+        "Bucket": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Bucket"
+          },
+          "description": "用户所拥有的桶列表。\n"
+        }
+      }
+    },
+    "ListBucketsResult": {
+      "description": "列举桶响应消息体",
+      "type": "object",
+      "properties": {
+        "Owner": {
+          "description": "桶拥有者信息,包含租户ID。",
+          "$ref": "#/definitions/Owner"
+        },
+        "Buckets": {
+          "$ref": "#/definitions/Buckets"
+        }
+      }
+    },
+    "Bucket": {
+      "description": "具体的桶信息。\n",
+      "properties": {
+        "Name": {
+          "description": "桶名称。\n",
+          "type": "string",
+          "example": "bucketName"
+        },
+        "CreationDate": {
+          "description": "桶的创建时间。\n",
+          "type": "string",
+          "example": "CreationDate"
+        },
+        "Location": {
+          "description": "桶的位置信息。\n",
+          "type": "string",
+          "example": "region"
+        },
+        "ClusterType": {
+          "type": "string",
+          "description": "桶所在的集群类型,当桶创建在专属集群上时,会返回此字段。其他场景不返回。\n",
+          "example": "dedicated"
+        },
+        "IESLocation": {
+          "type": "string",
+          "description": "如果桶创建在IES站点集群中,返回IES站点ID。如果桶创建在IES站点集群中,返回IES站点ID。其他场景下不返回此头域。\n",
+          "example": "959378f9-4d2e-4e09-a47d-c6da6d75d830",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      },
+      "type": "object"
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "Owner": {
+      "description": "桶拥有者信息,包含租户ID。\n",
+      "properties": {
+        "ID": {
+          "description": "用户的DomainID(帐号ID)。\n",
+          "type": "string",
+          "example": "id"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,299 @@
+{
+  "name": "CreateCertificate",
+  "summary": "创建SSL证书",
+  "tags": "SSL证书管理",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/certificates": {
+      "post": {
+        "tags": [
+          "SSL证书管理"
+        ],
+        "summary": "创建SSL证书",
+        "description": "创建SSL证书。将监听器和SSL证书绑定后,可以通过负载均衡器实现服务端认证,后端服务器只要提供HTTP服务就能实现安全可靠的连接。",
+        "operationId": "CreateCertificate",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateCertificateRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCertificateRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "创建成功返回对象",
+            "examples": {
+              "application/json": {
+                "domain": "www.elb.com",
+                "update_time": "2017-12-04 06:49:13",
+                "create_time": "2017-12-04 06:49:13",
+                "id": "3d8a7a02f87a40ed931b719edfe75451",
+                "private_key": "-----BEGIN RSA PRIVATE KEY-----\r\n******\r\n-----END RSA PRIVATE KEY-----",
+                "tenant_id": "930600df07ac4f66964004041bd3deaf",
+                "type": "server",
+                "certificate": "-----BEGIN CERTIFICATE-----\r\nMIIDpTCCAo2gAwIBAgIJAKdmmOBYnFvoMA0GCSqGSIb3DQEBCwUAMGkxCzAJBgNV\r\nBAYTAnh4MQswCQYDVQQIDAJ4eDELMAkGA1UEBwwCeHgxCzAJBgNVBAoMAnh4MQsw\r\nCQYDVQQLDAJ4eDELMAkGA1UEAwwCeHgxGTAXBgkqhkiG9w0BCQEWCnh4QDE2My5j\r\nb20wHhcNMTcxMjA0MDM0MjQ5WhcNMjAxMjAzMDM0MjQ5WjBpMQswCQYDVQQGEwJ4\r\neDELMAkGA1UECAwCeHgxCzAJBgNVBAcMAnh4MQswCQYDVQQKDAJ4eDELMAkGA1UE\r\nCwwCeHgxCzAJBgNVBAMMAnh4MRkwFwYJKoZIhvcNAQkBFgp4eEAxNjMuY29tMIIB\r\nIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ5UJULAjWr7p6FVwGRQRjFN\r\n2s8tZ/6LC3X82fajpVsYqF1xqEuUDndDXVD09E4u83MS6HO6a3bIVQDp6/klnYld\r\niE6Vp8HH5BSKaCWKVg8lGWg1UM9wZFnlryi14KgmpIFmcu9nA8yV/6MZAe6RSDmb\r\n3iyNBmiZ8aZhGw2pI1YwR+15MVqFFGB+7ExkziROi7L8CFCyCezK2/oOOvQsH1dz\r\nQ8z1JXWdg8/9Zx7Ktvgwu5PQM3cJtSHX6iBPOkMU8Z8TugLlTqQXKZOEgwajwvQ5\r\nmf2DPkVgM08XAgaLJcLigwD513koAdtJd5v+9irw+5LAuO3JclqwTvwy7u/YwwID\r\nAQABo1AwTjAdBgNVHQ4EFgQUo5A2tIu+bcUfvGTD7wmEkhXKFjcwHwYDVR0jBBgw\r\nFoAUo5A2tIu+bcUfvGTD7wmEkhXKFjcwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0B\r\nAQsFAAOCAQEAWJ2rS6Mvlqk3GfEpboezx2J3X7l1z8Sxoqg6ntwB+rezvK3mc9H0\r\n83qcVeUcoH+0A0lSHyFN4FvRQL6X1hEheHarYwJK4agb231vb5erasuGO463eYEG\r\nr4SfTuOm7SyiV2xxbaBKrXJtpBp4WLL/s+LF+nklKjaOxkmxUX0sM4CTA7uFJypY\r\nc8Tdr8lDDNqoUtMD8BrUCJi+7lmMXRcC3Qi3oZJW76ja+kZA5mKVFPd1ATih8TbA\r\ni34R7EQDtFeiSvBdeKRsPp8c0KT8H1B4lXNkkCQs2WX5p4lm99+ZtLD4glw8x6Ic\r\ni1YhgnQbn5E0hz55OLu5jvOkKQjPCW+8Kg==\r\n-----END CERTIFICATE-----",
+                "name": "https_certificate",
+                "description": "description for certificate"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CertificateResp"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建SSL证书",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-url-1": "POST https://{ELB_Endpoint}/v2/{project_id}/elb/certificates",
+        "x-request-examples-1": "{\n  \"name\": \"https_certificate\",\n  \"description\": \"description for certificate\",\n  \"type\": \"server\",\n  \"domain\": \"www.elb.com\",\n  \"private_key\": \"-----BEGIN RSA PRIVATE KEY-----\n******\n-----END RSA PRIVATE KEY-----\",\n\"certificate\":\n\"-----BEGIN CERTIFICATE-----\nMIIDpTCCAo2gAwIBAgIJAKdmmOBYnFvoMA0GCSqGSIb3DQEBCwUAMGkxCzAJBgNV\nBAYTAnh4MQswCQYDVQQIDAJ4eDELMAkGA1UEBwwCeHgxCzAJBgNVBAoMAnh4MQsw\nCQYDVQQLDAJ4eDELMAkGA1UEAwwCeHgxGTAXBgkqhkiG9w0BCQEWCnh4QDE2My5j\nb20wHhcNMTcxMjA0MDM0MjQ5WhcNMjAxMjAzMDM0MjQ5WjBpMQswCQYDVQQGEwJ4\neDELMAkGA1UECAwCeHgxCzAJBgNVBAcMAnh4MQswCQYDVQQKDAJ4eDELMAkGA1UE\nCwwCeHgxCzAJBgNVBAMMAnh4MRkwFwYJKoZIhvcNAQkBFgp4eEAxNjMuY29tMIIB\nIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ5UJULAjWr7p6FVwGRQRjFN\n2s8tZ/6LC3X82fajpVsYqF1xqEuUDndDXVD09E4u83MS6HO6a3bIVQDp6/klnYld\niE6Vp8HH5BSKaCWKVg8lGWg1UM9wZFnlryi14KgmpIFmcu9nA8yV/6MZAe6RSDmb\n3iyNBmiZ8aZhGw2pI1YwR+15MVqFFGB+7ExkziROi7L8CFCyCezK2/oOOvQsH1dz\nQ8z1JXWdg8/9Zx7Ktvgwu5PQM3cJtSHX6iBPOkMU8Z8TugLlTqQXKZOEgwajwvQ5\nmf2DPkVgM08XAgaLJcLigwD513koAdtJd5v+9irw+5LAuO3JclqwTvwy7u/YwwID\nAQABo1AwTjAdBgNVHQ4EFgQUo5A2tIu+bcUfvGTD7wmEkhXKFjcwHwYDVR0jBBgw\nFoAUo5A2tIu+bcUfvGTD7wmEkhXKFjcwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0B\nAQsFAAOCAQEAWJ2rS6Mvlqk3GfEpboezx2J3X7l1z8Sxoqg6ntwB+rezvK3mc9H0\n83qcVeUcoH+0A0lSHyFN4FvRQL6X1hEheHarYwJK4agb231vb5erasuGO463eYEG\nr4SfTuOm7SyiV2xxbaBKrXJtpBp4WLL/s+LF+nklKjaOxkmxUX0sM4CTA7uFJypY\nc8Tdr8lDDNqoUtMD8BrUCJi+7lmMXRcC3Qi3oZJW76ja+kZA5mKVFPd1ATih8TbA\ni34R7EQDtFeiSvBdeKRsPp8c0KT8H1B4lXNkkCQs2WX5p4lm99+ZtLD4glw8x6Ic\ni1YhgnQbn5E0hz55OLu5jvOkKQjPCW+8Kg==\n-----END CERTIFICATE-----\"\n}\n",
+        "x-request-examples-text-1": "{\n  \"name\": \"https_certificate\",\n  \"description\": \"description for certificate\",\n  \"type\": \"server\",\n  \"domain\": \"www.elb.com\",\n  \"private_key\": \"-----BEGIN RSA PRIVATE KEY-----\n******\n-----END RSA PRIVATE KEY-----\",\n\"certificate\":\n\"-----BEGIN CERTIFICATE-----\nMIIDpTCCAo2gAwIBAgIJAKdmmOBYnFvoMA0GCSqGSIb3DQEBCwUAMGkxCzAJBgNV\nBAYTAnh4MQswCQYDVQQIDAJ4eDELMAkGA1UEBwwCeHgxCzAJBgNVBAoMAnh4MQsw\nCQYDVQQLDAJ4eDELMAkGA1UEAwwCeHgxGTAXBgkqhkiG9w0BCQEWCnh4QDE2My5j\nb20wHhcNMTcxMjA0MDM0MjQ5WhcNMjAxMjAzMDM0MjQ5WjBpMQswCQYDVQQGEwJ4\neDELMAkGA1UECAwCeHgxCzAJBgNVBAcMAnh4MQswCQYDVQQKDAJ4eDELMAkGA1UE\nCwwCeHgxCzAJBgNVBAMMAnh4MRkwFwYJKoZIhvcNAQkBFgp4eEAxNjMuY29tMIIB\nIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwZ5UJULAjWr7p6FVwGRQRjFN\n2s8tZ/6LC3X82fajpVsYqF1xqEuUDndDXVD09E4u83MS6HO6a3bIVQDp6/klnYld\niE6Vp8HH5BSKaCWKVg8lGWg1UM9wZFnlryi14KgmpIFmcu9nA8yV/6MZAe6RSDmb\n3iyNBmiZ8aZhGw2pI1YwR+15MVqFFGB+7ExkziROi7L8CFCyCezK2/oOOvQsH1dz\nQ8z1JXWdg8/9Zx7Ktvgwu5PQM3cJtSHX6iBPOkMU8Z8TugLlTqQXKZOEgwajwvQ5\nmf2DPkVgM08XAgaLJcLigwD513koAdtJd5v+9irw+5LAuO3JclqwTvwy7u/YwwID\nAQABo1AwTjAdBgNVHQ4EFgQUo5A2tIu+bcUfvGTD7wmEkhXKFjcwHwYDVR0jBBgw\nFoAUo5A2tIu+bcUfvGTD7wmEkhXKFjcwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0B\nAQsFAAOCAQEAWJ2rS6Mvlqk3GfEpboezx2J3X7l1z8Sxoqg6ntwB+rezvK3mc9H0\n83qcVeUcoH+0A0lSHyFN4FvRQL6X1hEheHarYwJK4agb231vb5erasuGO463eYEG\nr4SfTuOm7SyiV2xxbaBKrXJtpBp4WLL/s+LF+nklKjaOxkmxUX0sM4CTA7uFJypY\nc8Tdr8lDDNqoUtMD8BrUCJi+7lmMXRcC3Qi3oZJW76ja+kZA5mKVFPd1ATih8TbA\ni34R7EQDtFeiSvBdeKRsPp8c0KT8H1B4lXNkkCQs2WX5p4lm99+ZtLD4glw8x6Ic\ni1YhgnQbn5E0hz55OLu5jvOkKQjPCW+8Kg==\n-----END CERTIFICATE-----\"\n}\n",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-11-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ocb,ctc,ct",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "CertificateResp": {
+      "required": [
+        "id",
+        "tenant_id",
+        "admin_state_up",
+        "name",
+        "description",
+        "type",
+        "domain",
+        "private_key",
+        "certificate",
+        "expire_time",
+        "create_time",
+        "update_time"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "SSL证书id"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "SSL证书所在的项目ID",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "SSL证书的管理状态;暂不支持"
+        },
+        "name": {
+          "type": "string",
+          "description": "SSL证书的名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "SSL证书的描述。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "type": {
+          "type": "string",
+          "description": "SSL证书的类型。分为服务器证书(server)和CA证书(client)。",
+          "enum": [
+            "server",
+            "client"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "description": "服务器证书所签域名。该字段仅type为server时有效。"
+        },
+        "private_key": {
+          "type": "string",
+          "description": "服务器证书的私钥。仅type为server时有效。type为server时必选。"
+        },
+        "certificate": {
+          "type": "string",
+          "description": "当type为server时,表示服务器证书的公钥;当type为client时,表示用于认证客户端证书的CA证书。"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "SSL证书的过期时间。\nUTC时间,格式为:yyyy-MM-dd HH:mm:ss ,如2020-05-28 08:30:09"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "SSL证书的创建时间。\nUTC时间,格式为:yyyy-MM-dd HH:mm:ss ,如2020-05-28 08:30:09"
+        },
+        "update_time": {
+          "type": "string",
+          "description": "SSL证书的更新时间。\nUTC时间,格式为:yyyy-MM-dd HH:mm:ss ,如2020-05-28 08:30:09"
+        },
+        "source": {
+          "type": "string",
+          "description": "参数解释: 证书来源 \n约束限制: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”。 \n取值范围: 无 \n默认取值: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”; 其他情况下默认为空。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "参数解释: 修改保护状态 \n约束限制: 无 \n取值范围: \n- nonProtection: 不保护 \n- consoleProtection: 控制台修改保护 \n默认取值: nonProtection",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ]
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "参数解释: 设置修改保护的原因 约束限制: 仅当protection_status为consoleProtection时有效 取值范围: 无 默认取值: 空",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "证书信息",
+      "type": "object"
+    },
+    "CreateCertificateRequestBody": {
+      "required": [
+        "certificate"
+      ],
+      "properties": {
+        "certificate": {
+          "type": "string",
+          "description": "服务端公有密钥证书或者用于认证客户端证书的CA证书,由type字段区分。\n格式:证书为PEM格式。"
+        },
+        "private_key": {
+          "type": "string",
+          "description": "服务端的私有密钥。\n格式:私钥为PEM格式。\n该字段仅type为server时有效且为必选。\n该字段在type为client时无效。"
+        },
+        "description": {
+          "type": "string",
+          "description": "SSL证书的描述信息。支持的最大字符长度:255",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "domain": {
+          "type": "string",
+          "description": "服务端证书所签的域名。\n\n取值:总长度为0-1024。\n\n普通域名由若干字符串组成,字符串间以\".\"分割,单个字符串长度不超过63个字符,只能包含英文字母、数字或\"-\",且必须以字母或数字开头和结尾。\n\n泛域名仅允许首段为\"*\",其他取值限制与普通域名一致。如:*.domain.com,但不能是:*my.domain.com\n\n该字段仅type为server时有效。",
+          "minLength": 0,
+          "maxLength": 100,
+          "x-admin": "",
+          "x-internal": "",
+          "x-open-region-cloud": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "SSL证书的名称。支持的最大字符长度:255",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "SSL证书的管理状态;\n取值范围: true/false。\n该字段为预留字段,暂未启用。只支持设定为true。",
+          "default": true
+        },
+        "type": {
+          "type": "string",
+          "description": "SSL证书的类型。默认值:server;\n取值范围:\nserver:服务端证书;\nclient:客户端证书;"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。\n\n传入all_granted_eps表示查询所有有权限的企业项目资源;\"0\"表示查询默认企业项目资源;或者指定的企业项目ID下的资源。",
+          "default": "0"
+        },
+        "source": {
+          "type": "string",
+          "description": "参数解释: 证书来源 \n约束限制: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”。 \n取值范围: 无 \n默认取值: 当scm_certificate_id不为空,且未传入source时,默认取值为“scm”; 其他情况下默认为空。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "参数解释: 修改保护状态 \n约束限制: 无 \n取值范围: \n- nonProtection: 不保护\n- consoleProtection: 控制台修改保护 \n默认取值: nonProtection",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ]
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "参数解释: 设置修改保护的原因 \n约束限制: 仅当protection_status为consoleProtection时有效 \n取值范围: 无 \n默认取值: 空",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "This is a auto create Body Object",
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

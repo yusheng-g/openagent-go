@@ -1,0 +1,289 @@
+{
+  "name": "ListTag",
+  "summary": "使用标签查询资源实例",
+  "tags": "标签管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/{resource_type}/resource_instances/action": {
+      "post": {
+        "tags": [
+          "标签管理"
+        ],
+        "x-request-examples-description-1": "使用标签查询资源实例,分页查询起始偏移量为100,每页返回资源个数为100。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2/{project_id}/{resource_type}/resource_instances/action",
+        "x-request-examples-1": {
+          "offset": "100",
+          "limit": "100",
+          "action": "filter",
+          "matches": [
+            {
+              "key": "resource_name",
+              "value": "resource1"
+            }
+          ],
+          "not_tags": [
+            {
+              "key": "key1",
+              "values": [
+                "*value1",
+                "value2"
+              ]
+            }
+          ],
+          "tags": [
+            {
+              "key": "key1",
+              "values": [
+                "*value1",
+                "value2"
+              ]
+            }
+          ],
+          "tags_any": [
+            {
+              "key": "key1",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ],
+          "not_tags_any": [
+            {
+              "key": "key1",
+              "values": [
+                "value1",
+                "value2"
+              ]
+            }
+          ]
+        },
+        "operationId": "ListTag",
+        "summary": "使用标签查询资源实例",
+        "description": "使用标签查询资源实例",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "resource_type",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "**参数解释:**\n资源的类型。\n**约束限制:**\n不涉及。\n**取值范围:**\n- DNS-public_zone:公网域名\n- DNS-private_zone:内网域名\n- DNS-public_recordset:公网记录集\n- DNS-private_recordset:内网记录集\n- DNS-ptr_record:反向解析\n\n**默认取值:**\n不涉及。"
+          },
+          {
+            "name": "ListTagReq",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ListTagReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "使用标签查询资源实例响应。",
+            "schema": {
+              "$ref": "#/definitions/ListTagResp"
+            },
+            "examples": {
+              "application/json": {
+                "resources": [
+                  {
+                    "resource_detail": null,
+                    "resource_id": "cdfs_cefs_wesas_12_dsad",
+                    "resource_name": "resource1",
+                    "tags": [
+                      {
+                        "key": "key1",
+                        "value": "value1"
+                      },
+                      {
+                        "key": "key2",
+                        "value": "value1"
+                      }
+                    ]
+                  }
+                ],
+                "total_count": 1000
+              }
+            }
+          }
+        },
+        "x-order": 5
+      }
+    }
+  },
+  "definitions": {
+    "tag": {
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释:**\n标签键。\n**取值范围:**\n- 不能为空。\n- 对于同一资源键的取值唯一。\n- 长度不超过128个字符。\n- 取值可以包含任意语种字母、数字、空格,以及_ . : = + - @特殊字符,但首尾不能含有空格,不能以_sys_开头。"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释:**\n标签值。\n**取值范围:**\n- 可以为空。\n- 长度不超过255个字符。\n- 取值可以包含任意语种字母、数字、空格,以及_ . : / = + - @特殊字符。"
+        }
+      }
+    },
+    "ListTagReq": {
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "包含标签。 最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。",
+          "items": {
+            "$ref": "#/definitions/tagValues"
+          }
+        },
+        "tags_any": {
+          "type": "array",
+          "description": "最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。",
+          "items": {
+            "$ref": "#/definitions/tagValues"
+          }
+        },
+        "not_tags": {
+          "type": "array",
+          "description": "最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。",
+          "items": {
+            "$ref": "#/definitions/tagValues"
+          }
+        },
+        "not_tags_any": {
+          "type": "array",
+          "description": "最多包含10个key,每个key下面的value最多10个,结构体不能缺失,key不能为空或者空字符串。Key不能重复,同一个key中values不能重复。",
+          "items": {
+            "$ref": "#/definitions/tagValues"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "description": "分页查询时配置每页返回的资源个数。  取值范围:1~1000  参数取值说明:  如果action为filter时,默认为1000。 如果action为count时,无此参数。",
+          "format": "int32"
+        },
+        "offset": {
+          "type": "integer",
+          "description": "分页查询起始偏移量,表示从偏移量的下一个资源开始查询。  取值范围:0~2147483647  默认值为0。  参数取值说明: 查询第一页数据时,不需要传入此参数。 查询后续页码数据时,将查询前一页数据时响应体中的值带入此参数。 如果action为filter时,默认为0,必须为数字,不能为负数。 如果action为count时,无此参数。",
+          "format": "int32"
+        },
+        "action": {
+          "type": "string",
+          "description": "操作标识(区分大小写)。  取值范围:  filter:分页过滤查询 count:查询总条数"
+        },
+        "matches": {
+          "type": "array",
+          "description": "key为要匹配的字段,value为匹配的值。  如果value为空字符串则精确匹配,否则模糊匹配。",
+          "items": {
+            "$ref": "#/definitions/match"
+          }
+        }
+      }
+    },
+    "ListTagResp": {
+      "properties": {
+        "resources": {
+          "type": "array",
+          "description": "标签资源信息列表。",
+          "items": {
+            "$ref": "#/definitions/resourceItem"
+          }
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "资源总数。"
+        }
+      }
+    },
+    "tagValues": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度128个unicode字符。 key不能为空。(搜索时不对此参数做校验)"
+        },
+        "values": {
+          "type": "array",
+          "description": "值列表。每个值最大长度255个unicode字符。&ast;为系统保留字符。如果里面的value是以&ast;开头时,表示按照&ast;后面的值全模糊匹配。如果values缺失,则表示匹配任意值。value之间为或的关系。",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "match": {
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。当前值限定为resource_name。"
+        },
+        "value": {
+          "type": "string",
+          "description": "值。每个值最大长度255个unicode字符。"
+        }
+      }
+    },
+    "resourceItem": {
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "description": "资源ID"
+        },
+        "resource_detail": {
+          "type": "object",
+          "description": "资源详情。资源对象,用于扩展,默认为空。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "标签列表,没有标签默认为空数组。",
+          "items": {
+            "$ref": "#/definitions/tag"
+          }
+        },
+        "resource_name": {
+          "type": "string",
+          "description": "资源名称,没有默认为空字符串"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

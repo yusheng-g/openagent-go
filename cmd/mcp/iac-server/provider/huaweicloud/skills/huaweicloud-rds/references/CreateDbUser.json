@@ -1,0 +1,195 @@
+{
+  "name": "CreateDbUser",
+  "summary": "创建数据库用户",
+  "tags": "管理数据库和用户(MySQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/db_user": {
+      "post": {
+        "tags": [
+          "管理数据库和用户(MySQL)"
+        ],
+        "operationId": "CreateDbUser",
+        "summary": "创建数据库用户",
+        "description": "在指定实例中创建数据库帐号。",
+        "x-support-sdk": "Y",
+        "x-constraint": "实例在创建、变更规格、修改端口、异常状态或冻结状态下不能执行该操作。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "租户在某一region下的project ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e73893ef73754465a8bd2e0857bbf13ein01"
+          },
+          {
+            "name": "CreateDbUserRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserForCreation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DBMSuccessRsp"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/db_user",
+        "x-request-examples-1": {
+          "name": "rds",
+          "password": "****",
+          "comment": "this is  a comment",
+          "hosts": [
+            "%"
+          ],
+          "databases": [
+            {
+              "name": "***",
+              "readonly": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DBMSuccessRsp": {
+      "required": [
+        "resp"
+      ],
+      "properties": {
+        "resp": {
+          "description": "操作结果。",
+          "type": "string",
+          "example": "successful"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "UserForCreation": {
+      "required": [
+        "name",
+        "password"
+      ],
+      "properties": {
+        "name": {
+          "description": "数据库用户名称。\n数据库帐号名称在1到32个字符之间,由字母、数字、中划线或下划线组成,不能包含其他特殊字符。\n- 若数据库版本为MySQL5.6,帐号长度为1~16个字符。\n- 若数据库版本为MySQL5.7和8.0,帐号长度为1~32个字符。",
+          "type": "string"
+        },
+        "password": {
+          "description": "数据库帐号密码。\n\n取值范围:\n\n非空,由大小写字母、数字和特殊符号~!@#$%^*-_=+?,()&组成,长度8~32个字符,不能和数据库帐号“name”或“name”的逆序相同。\n\n建议您输入高强度密码,以提高安全性,防止出现密码被暴力破解等安全风险。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 32
+        },
+        "comment": {
+          "description": "数据库用户备注。\n取值范围:长度1~512个字符。目前仅支持MySQL 8.0.25及以上版本。",
+          "type": "string"
+        },
+        "is_privilege": {
+          "type": "boolean",
+          "description": "是否创建高权限用户。\n• 默认为false,暂不支持设置为true"
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "授权用户登录主机IP列表\n• 若IP地址为%,则表示允许所有地址访问MySQL实例。\n• 若IP地址为“10.10.10.%”,则表示10.10.10.X的IP地址都可以访问该MySQL实例。\n• 支持添加多个IP地址。"
+        },
+        "databases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DatabaseWithPrivilegeObject"
+          },
+          "description": "授权用户数据库权限"
+        }
+      },
+      "type": "object"
+    },
+    "DatabaseWithPrivilegeObject": {
+      "description": "数据库及其权限。",
+      "properties": {
+        "name": {
+          "description": "已有数据库名称。",
+          "type": "string"
+        },
+        "readonly": {
+          "description": "是否为只读权限。",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

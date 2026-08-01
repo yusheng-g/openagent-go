@@ -1,0 +1,482 @@
+{
+  "name": "ListQuotaCoupons",
+  "summary": "查询优惠券额度",
+  "tags": "管理优惠券(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/coupon-quotas/query": {
+      "post": {
+        "summary": "查询优惠券额度",
+        "description": "合作伙伴可以查看所拥有的优惠劵额度。\n\n伙伴登录合作伙伴中心查看所拥有的代金券额度请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0072435100.html)。",
+        "tags": [
+          "管理优惠券(伙伴)"
+        ],
+        "operationId": "ListQuotaCoupons",
+        "x-constraint": "该接口只能给合作伙伴使用,调用的时候必须传递合作伙伴的AK/SK或者Token。",
+        "x-externalURL": "/v2/partners/coupon-quotas/query",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-20",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "查询优惠券额度列表请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QueryCouponQuotasReqExt"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/coupon-quotas/query",
+        "x-request-examples-1": {
+          "quota_type": 1,
+          "create_time_begin": "2017-12-17T10:32:02Z",
+          "create_time_end": "2222-12-17T10:32:02Z",
+          "effective_time_begin": "2019-05-06T08:05:01Z",
+          "effective_time_end": "2222-05-06T08:05:01Z",
+          "expire_time_begin": "2019-05-06T08:05:01Z",
+          "expire_time_end": "2222-05-06T08:05:01Z",
+          "offset": 0,
+          "limit": 10
+        },
+        "responses": {
+          "200": {
+            "description": "查询优惠券额度列表响应",
+            "schema": {
+              "$ref": "#/definitions/QueryCouponQuotasRspExt"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 3,
+                "quotas": [
+                  {
+                    "quota_id": "2020040206297606",
+                    "quota_type": 1,
+                    "create_time": "2020-04-02T06:29:47Z",
+                    "last_update_time": "2020-04-02T06:29:47Z",
+                    "quota_value": 2000.0,
+                    "quota_status": 0,
+                    "balance": 2000.0,
+                    "measure_id": 1,
+                    "currency": "CNY",
+                    "effective_time": "2020-04-01T00:00:00Z",
+                    "expire_time": "2021-03-31T15:59:59Z",
+                    "limit_infos": [
+                      {
+                        "limit_key": "associationType",
+                        "limit_values": [
+                          {
+                            "value1": "3",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "isOnlyForStrictSelected",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithEmpowerDiscount",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "chargeScene",
+                        "limit_values": [
+                          {
+                            "value1": "6",
+                            "value2": null
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "quota_id": "2020040206177605",
+                    "quota_type": 1,
+                    "create_time": "2020-04-02T06:17:03Z",
+                    "last_update_time": "2020-04-02T06:17:03Z",
+                    "quota_value": 2000.0,
+                    "quota_status": 0,
+                    "balance": 2000.0,
+                    "measure_id": 1,
+                    "currency": "CNY",
+                    "effective_time": "2020-04-01T00:00:00Z",
+                    "expire_time": "2021-03-31T15:59:59Z",
+                    "limit_infos": [
+                      {
+                        "limit_key": "associationType",
+                        "limit_values": [
+                          {
+                            "value1": "3",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "isOnlyForStrictSelected",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithEmpowerDiscount",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "chargeScene",
+                        "limit_values": [
+                          {
+                            "value1": "6",
+                            "value2": null
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "quota_id": "2020040206167604",
+                    "quota_type": 1,
+                    "create_time": "2020-04-02T06:16:14Z",
+                    "last_update_time": "2020-04-02T06:16:14Z",
+                    "quota_value": 10000.03,
+                    "quota_status": 0,
+                    "balance": 10000.03,
+                    "measure_id": 1,
+                    "currency": "CNY",
+                    "effective_time": "2020-04-01T00:00:00Z",
+                    "expire_time": "2021-03-31T15:59:59Z",
+                    "limit_infos": [
+                      {
+                        "limit_key": "associationType",
+                        "limit_values": [
+                          {
+                            "value1": "3",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "isOnlyForStrictSelected",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "simultaneousUseWithEmpowerDiscount",
+                        "limit_values": [
+                          {
+                            "value1": "1",
+                            "value2": null
+                          }
+                        ]
+                      },
+                      {
+                        "limit_key": "chargeScene",
+                        "limit_values": [
+                          {
+                            "value1": "6",
+                            "value2": null
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败parameter error|"
+          }
+        },
+        "x-category": "管理优惠券(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "LimitValue": {
+      "properties": {
+        "value1": {
+          "type": "string",
+          "description": "属性值1。",
+          "example": ""
+        },
+        "value2": {
+          "type": "string",
+          "description": "属性值2。",
+          "example": ""
+        }
+      }
+    },
+    "QueryCouponQuotasReqExt": {
+      "properties": {
+        "quota_ids": {
+          "description": "优惠券额度ID列表。 此参数不携带或携带值为空列表或携带值为null时,不作为筛选条件。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 50,
+          "x-maxLength": 50,
+          "x-minLength": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "quota_status_list": {
+          "description": "优惠券额度状态列表。 0:正常3:失效(过期失效和人工设置失效)4:额度调整中(伙伴可以查看该额度,但不能使用该额度发放优惠券)5:冻结 此参数不携带或携带值为空列表或携带值为null时,不作为筛选条件。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 5,
+          "x-maxLength": 5,
+          "x-minLength": 0,
+          "items": {
+            "type": "integer"
+          }
+        },
+        "quota_type": {
+          "description": "优惠券额度的类型。 0:代金券额度1:现金券额度 此参数不携带或携带值为null时,默认值为“0:代金券额度”。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0",
+          "maximum": 1,
+          "minimum": 0
+        },
+        "create_time_begin": {
+          "type": "string",
+          "description": "创建时间(开始)。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 输入这个条件,会查询出创建时间大于这个时间的记录。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2017-12-17T10:32:02Z",
+          "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]Z$"
+        },
+        "create_time_end": {
+          "type": "string",
+          "description": "创建时间(结束)。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 输入这个条件,会查询出创建时间小于这个时间的记录。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2017-12-17T10:32:02Z",
+          "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]Z$"
+        },
+        "effective_time_begin": {
+          "type": "string",
+          "description": "生效时间(开始)。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 输入这个条件,会查询出生效时间大于这个时间的记录。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2019-05-06T08:05:01Z",
+          "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]Z$"
+        },
+        "effective_time_end": {
+          "type": "string",
+          "description": "生效时间(结束)。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 输入这个条件,会查询出生效时间小于这个时间的记录。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 20,
+          "maxLength": 20,
+          "example": "2019-05-06T08:05:01Z",
+          "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]Z$"
+        },
+        "expire_time_begin": {
+          "type": "string",
+          "description": "失效时间(开始)。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 输入这个条件,会查询出失效时间大于这个时间的记录。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 20,
+          "maxLength": 20,
+          "example": "2019-05-06T08:05:01Z",
+          "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]Z$"
+        },
+        "expire_time_end": {
+          "type": "string",
+          "description": "失效时间(结束)。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。 其中,HH范围是0~23,mm和ss范围是0~59。 输入这个条件,会查询出失效时间小于这个时间的记录。 此参数不携带或携带值为null时,不作为筛选条件。",
+          "minLength": 20,
+          "maxLength": 20,
+          "example": "2019-05-06T08:05:01Z",
+          "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]Z$"
+        },
+        "offset": {
+          "description": "偏移量,从0开始。默认值为0。  说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。 例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0",
+          "maximum": 2147483646,
+          "minimum": 0,
+          "default": 0
+        },
+        "limit": {
+          "description": "每次查询记录数。默认值为10。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "10",
+          "maximum": 100,
+          "minimum": 1,
+          "default": 10
+        },
+        "indirect_partner_id": {
+          "type": "string",
+          "description": "云经销商(二级经销商)ID。 华为云总经销商(一级经销商)查询云经销商的优惠券额度时,需要携带该参数;否则只能查询自己的优惠券额度。",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "si3fjg8ugfxxxxxxxx",
+          "x-site": "HC"
+        }
+      }
+    },
+    "QuotaLimitInfo": {
+      "properties": {
+        "limit_key": {
+          "type": "string",
+          "description": "属性key值。",
+          "example": ""
+        },
+        "limit_values": {
+          "description": "属性值,具体参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LimitValue"
+          }
+        }
+      }
+    },
+    "QueryCouponQuotasRspExt": {
+      "properties": {
+        "total_count": {
+          "description": "查询总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "quotas": {
+          "description": "额度记录列表。 具体请参见表1。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CouponQuotaV2"
+          }
+        }
+      }
+    },
+    "CouponQuotaV2": {
+      "properties": {
+        "quota_id": {
+          "type": "string",
+          "description": "优惠券额度ID。",
+          "example": "CP0XXXXXXXX"
+        },
+        "quota_type": {
+          "description": "优惠券额度的类型: 0:代金券额度1:现金券额度",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "last_update_time": {
+          "type": "string",
+          "description": "最后一次更新时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "quota_value": {
+          "description": "优惠券额度的值,精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": ""
+        },
+        "quota_status": {
+          "description": "优惠券额度的状态: 0:正常3:失效(过期失效和人工设置失效)4:额度调整中(伙伴可以查看该额度,但不能使用该额度发放优惠券)5:冻结",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "0"
+        },
+        "balance": {
+          "description": "剩余的优惠券额度,精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": "0.01"
+        },
+        "measure_id": {
+          "description": "面额单位。 1:元。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币",
+          "example": "CNY"
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2017-12-17T10:32:02Z"
+        },
+        "limit_infos": {
+          "description": "优惠券额度上的限制属性,具体参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QuotaLimitInfo"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

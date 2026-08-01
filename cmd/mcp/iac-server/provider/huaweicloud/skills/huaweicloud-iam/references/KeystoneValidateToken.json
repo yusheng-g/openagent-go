@@ -1,0 +1,460 @@
+{
+  "name": "KeystoneValidateToken",
+  "summary": "校验Token的有效性",
+  "tags": "Token管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/auth/tokens": {
+      "get": {
+        "tags": [
+          "Token管理"
+        ],
+        "summary": "校验Token的有效性",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)校验本账号中IAM用户token的有效性,或IAM用户校验自己token的有效性。管理员仅能校验本账号中IAM用户token的有效性,不能校验其他账号中IAM用户token的有效性。如果被校验的token有效,则返回该token的详细信息。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneValidateToken",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)校验本账号中IAM用户的token的有效性:拥有Security Administrator权限的token。\n\nIAM用户校验自己token的有效性:该IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          },
+          {
+            "name": "X-Subject-Token",
+            "in": "header",
+            "description": "待校验的token。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 2
+          },
+          {
+            "name": "nocatalog",
+            "in": "query",
+            "description": "如果设置该参数,返回的响应体中将不显示catalog信息。任何非空字符串都将解释为true,并使该字段生效。",
+            "required": false,
+            "type": "string",
+            "x-example": "true",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "token": {
+                  "expires_at": "2020-01-04T09:08:49.965000Z",
+                  "methods": [
+                    "password"
+                  ],
+                  "catalog": [
+                    {
+                      "endpoints": [
+                        {
+                          "id": "33e1cbdd86d34e89a63cf8ad16a5f49f",
+                          "interface": "public",
+                          "region": "*",
+                          "region_id": "*",
+                          "url": "https://iam.myhuaweicloud.com/v3.0"
+                        }
+                      ],
+                      "id": "100a6a3477f1495286579b819d399e36",
+                      "name": "iam",
+                      "type": "iam"
+                    },
+                    {
+                      "endpoints": [
+                        {
+                          "id": "29319cf2052d4e94bcf438b55d143832",
+                          "interface": "public",
+                          "region": "*",
+                          "region_id": "*",
+                          "url": "https://bss.myhuaweicloud.com/v1.0"
+                        }
+                      ],
+                      "id": "c6db69fabbd549908adcb861c7e47ca4",
+                      "name": "bssv1",
+                      "type": "bssv1"
+                    }
+                  ],
+                  "domain": {
+                    "id": "d78cbac186b744899480f25bd022f468",
+                    "name": "IAMDomain"
+                  },
+                  "roles": [
+                    {
+                      "id": "0",
+                      "name": "te_admin"
+                    },
+                    {
+                      "id": "0",
+                      "name": "secu_admin"
+                    },
+                    {
+                      "id": "0",
+                      "name": "te_agency"
+                    }
+                  ],
+                  "issued_at": "2020-01-03T09:08:49.965000Z",
+                  "user": {
+                    "domain": {
+                      "id": "d78cbac186b744899480f25bd022f468",
+                      "name": "IAMDomain"
+                    },
+                    "id": "7116d09f88fa41908676fdd4b039e95b",
+                    "name": "IAMUser",
+                    "password_expires_at": ""
+                  }
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneValidateTokenResponseBody"
+            },
+            "headers": {
+              "X-Subject-Token": {
+                "type": "string",
+                "description": "已校验的token。",
+                "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX..."
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "X-Subject-Token is invalid in the request",
+                  "title": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "校验Token的有效性",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3/auth/tokens",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3/auth/tokens",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TokenProjectResult": {
+      "required": [
+        "domain",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "项目名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "34c77f3eaf84c00aaf54...",
+          "description": "项目ID。"
+        },
+        "domain": {
+          "description": "项目所属账号信息。",
+          "$ref": "#/definitions/TokenProjectDomainResult"
+        }
+      },
+      "description": ""
+    },
+    "TokenProjectDomainResult": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "账号名。"
+        },
+        "id": {
+          "type": "string",
+          "description": "账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenUserDomainResult": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMDomain",
+          "description": "IAM用户所属账号名称。"
+        },
+        "id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "IAM用户所属账号ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenCatalog": {
+      "required": [
+        "endpoints",
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "identity",
+          "description": "该接口所属服务。"
+        },
+        "id": {
+          "type": "string",
+          "example": "1331e5cff2a74d76b03da1225910e31d",
+          "description": "服务ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "iam",
+          "description": "服务名称。"
+        },
+        "endpoints": {
+          "type": "array",
+          "description": "终端节点。",
+          "items": {
+            "$ref": "#/definitions/TokenCatalogEndpoint",
+            "default": {
+              "value": "{}",
+              "type": "object"
+            }
+          }
+        }
+      },
+      "description": ""
+    },
+    "TokenResult": {
+      "required": [
+        "catalog",
+        "expires_at",
+        "issued_at",
+        "methods",
+        "roles",
+        "user"
+      ],
+      "properties": {
+        "catalog": {
+          "type": "array",
+          "description": "服务目录信息。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/TokenCatalog",
+            "default": {
+              "value": "{}",
+              "type": "object"
+            }
+          }
+        },
+        "domain": {
+          "description": "获取token的IAM用户所属的账号信息。如果获取token时请求体中scope参数设置为domain,则返回该字段。  ",
+          "$ref": "#/definitions/TokenDomainResult"
+        },
+        "expires_at": {
+          "type": "string",
+          "example": "2020-01-04T09:08:49.965000Z",
+          "description": "token过期时间。"
+        },
+        "issued_at": {
+          "type": "string",
+          "example": "2020-01-03T09:08:49.965000Z",
+          "description": "token下发时间。"
+        },
+        "methods": {
+          "type": "array",
+          "description": "获取token的方式。",
+          "items": {
+            "type": "string",
+            "default": {
+              "value": "{}",
+              "type": "object"
+            }
+          }
+        },
+        "project": {
+          "description": "获取token的IAM用户所属账号的项目信息。如果获取token时请求体中scope参数设置为project,则返回该字段。  ",
+          "$ref": "#/definitions/TokenProjectResult"
+        },
+        "roles": {
+          "type": "array",
+          "description": "token的权限信息。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/TokenRole",
+            "default": {
+              "value": "{}",
+              "type": "object"
+            }
+          }
+        },
+        "user": {
+          "description": "获取token的IAM用户信息。",
+          "$ref": "#/definitions/TokenUserResult"
+        }
+      },
+      "description": ""
+    },
+    "TokenUserResult": {
+      "required": [
+        "domain",
+        "id",
+        "name",
+        "password_expires_at"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "IAMUser",
+          "description": "IAM用户名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "7116d09f88fa41908676fdd4b039e95b",
+          "description": "IAM用户ID。"
+        },
+        "password_expires_at": {
+          "type": "string",
+          "example": "2020-03-10T03:16:46.000000Z",
+          "description": "密码过期时间(UTC时间),“”表示密码不过期。"
+        },
+        "domain": {
+          "description": "IAM用户所属的账号信息。",
+          "$ref": "#/definitions/TokenUserDomainResult"
+        }
+      },
+      "description": ""
+    },
+    "KeystoneValidateTokenResponseBody": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "description": "获取到的token信息。",
+          "$ref": "#/definitions/TokenResult"
+        }
+      },
+      "description": ""
+    },
+    "TokenCatalogEndpoint": {
+      "required": [
+        "id",
+        "interface",
+        "region",
+        "region_id",
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3",
+          "description": "终端节点的URL。"
+        },
+        "region": {
+          "type": "string",
+          "example": "*",
+          "description": "终端节点所属区域。"
+        },
+        "region_id": {
+          "type": "string",
+          "example": "*",
+          "description": "终端节点所属区域ID。"
+        },
+        "interface": {
+          "type": "string",
+          "example": "public",
+          "description": "接口类型,描述接口在该终端节点的可见性。值为“public”,表示该接口为公开接口。"
+        },
+        "id": {
+          "type": "string",
+          "example": "089d4a381d574308a703122d3ae738e9",
+          "description": "终端节点ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenRole": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "te_admin",
+          "description": "权限名称。"
+        },
+        "id": {
+          "type": "string",
+          "description": "权限ID。默认显示为0,非真实权限ID。"
+        }
+      },
+      "description": ""
+    },
+    "TokenDomainResult": {
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "exampledomain",
+          "description": "用户所属账号名。"
+        },
+        "id": {
+          "type": "string",
+          "example": "e31ac82d778b4d128cb6fed37fd72cdb",
+          "description": "用户所属账号ID。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

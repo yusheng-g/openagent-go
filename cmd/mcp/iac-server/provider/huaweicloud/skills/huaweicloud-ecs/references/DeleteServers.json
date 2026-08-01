@@ -1,0 +1,157 @@
+{
+  "name": "DeleteServers",
+  "summary": "删除云服务器",
+  "tags": "生命周期管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/delete": {
+      "post": {
+        "tags": [
+          "生命周期管理"
+        ],
+        "summary": "删除云服务器",
+        "description": "根据指定的云服务器ID列表,删除云服务器。\n\n系统支持删除单台云服务器和批量删除多台云服务器操作,批量删除云服务器时,一次最多可以删除1000台。",
+        "operationId": "DeleteServers",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "DeleteServersRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteServersRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JobResult"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "删除云服务器",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v1/{project_id}/cloudservers/delete",
+        "x-request-examples-1": {
+          "servers": [
+            {
+              "id": "616fb98f-46ca-475e-917e-2563e5a8cd19"
+            }
+          ],
+          "delete_publicip": false,
+          "delete_volume": false
+        },
+        "x-request-examples-text-1": "{\n    \"servers\": [\n        {\n            \"id\": \"616fb98f-46ca-475e-917e-2563e5a8cd19\"\n        }\n    ],\n    \"delete_publicip\": false,\n    \"delete_volume\": false\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ServerId": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "616fb98f-46ca-475e-917e-2563e5a86666",
+          "description": "云服务器ID。"
+        }
+      },
+      "description": ""
+    },
+    "JobResult": {
+      "required": [
+        "job_id"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "example": "70a599e0-31e7-49b7-b260-868f44166666",
+          "description": "提交任务成功后返回的任务ID,用户可以使用该ID对任务执行情况进行查询。"
+        }
+      },
+      "description": "任务类响应通用返回体。"
+    },
+    "DeleteServersRequestBody": {
+      "required": [
+        "servers"
+      ],
+      "properties": {
+        "delete_publicip": {
+          "type": "boolean",
+          "example": false,
+          "description": "配置删除云服务器是否删除云服务器绑定的弹性IP。如果选择不删除,则系统仅做解绑定操作,保留弹性IP资源。 取值为true或false,默认为false。 \n\n- true:删除云服务器时会同时删除绑定在云服务器上的弹性IP。 \n- false:删除云服务器时,仅解绑定在云服务器上的弹性IP,不删除弹性IP"
+        },
+        "delete_volume": {
+          "type": "boolean",
+          "example": false,
+          "description": "配置删除云服务器是否删除云服务器对应的数据盘,如果选择不删除,则系统仅做解绑定操作,保留云磁盘资源。 取值为false或true,默认为false。\n\n- true:删除云服务器时会同时删除挂载在云服务器上的数据盘。\n- false:删除云服务器时,仅卸载云服务器上挂载的数据盘,不删除该数据盘。"
+        },
+        "servers": {
+          "type": "array",
+          "description": "所需要删除的云服务器列表。",
+          "items": {
+            "$ref": "#/definitions/ServerId"
+          },
+          "maxItems": 1000,
+          "minItems": 1
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,191 @@
+{
+  "name": "ListSpecs",
+  "summary": "查询项目支持的网关规格列表",
+  "tags": "私网NAT网关",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/specs": {
+      "get": {
+        "tags": [
+          "私网NAT网关"
+        ],
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/70505c941b9b4dfd82fd351932328a2f/private-nat/specs",
+        "summary": "查询项目支持的网关规格列表",
+        "description": "查询项目支持的网关规格列表。",
+        "operationId": "ListSpecs",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询项目支持的网关规格列表成功",
+            "schema": {
+              "$ref": "#/definitions/ListSpecResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "specs": [
+                  {
+                    "name": "Small",
+                    "code": "1",
+                    "cbc_code": "privatenat_small",
+                    "rule_max": 20,
+                    "sess_max": 2000,
+                    "bps_max": 233,
+                    "pps_max": 20000,
+                    "qps_max": 6000
+                  },
+                  {
+                    "name": "Medium",
+                    "code": "2",
+                    "cbc_code": "privatenat_medium",
+                    "rule_max": 50,
+                    "sess_max": 5000,
+                    "bps_max": 584,
+                    "pps_max": 50000,
+                    "qps_max": 9000
+                  },
+                  {
+                    "name": "Large",
+                    "code": "3",
+                    "cbc_code": "privatenat_large",
+                    "rule_max": 200,
+                    "sess_max": 20000,
+                    "bps_max": 2336,
+                    "pps_max": 200000,
+                    "qps_max": 10000
+                  },
+                  {
+                    "name": "Extra-large",
+                    "code": "4",
+                    "cbc_code": "privatenat_xlarge",
+                    "rule_max": 500,
+                    "sess_max": 50000,
+                    "bps_max": 5840,
+                    "pps_max": 500000,
+                    "qps_max": 10000
+                  },
+                  {
+                    "name": "Extra-xlarge",
+                    "code": "5",
+                    "cbc_code": "privatenat_xxlarge",
+                    "rule_max": 5000,
+                    "sess_max": 500000,
+                    "bps_max": 58400,
+                    "pps_max": 5000000,
+                    "qps_max": 100000
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询租户支持的网关规格列表",
+        "x-api-type": "open-api",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2025/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N"
+      }
+    }
+  },
+  "definitions": {
+    "ListSpecResponseBody": {
+      "properties": {
+        "specs": {
+          "type": "array",
+          "description": "查询项目支持网关规格列表的响应体。",
+          "items": {
+            "$ref": "#/definitions/Spec"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        }
+      }
+    },
+    "Spec": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "规格名称。"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2,
+          "description": "规格编号。"
+        },
+        "cbc_code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "规格cbc编码。"
+        },
+        "rule_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大规则数。",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "sess_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大连接数。",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "bps_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大bps。",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "pps_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大pps。",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "qps_max": {
+          "type": "integer",
+          "format": "int32",
+          "description": "最大qps。",
+          "minimum": 0,
+          "maximum": 65535
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,320 @@
+{
+  "name": "ShowJob",
+  "summary": "查询job的状态",
+  "tags": "其他",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "其他"
+        ],
+        "summary": "查询job的状态",
+        "description": "查询Job的执行状态。\n可用于查询创建云硬盘,扩容云硬盘,删除云硬盘等API的执行状态。",
+        "operationId": "ShowJob",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "",
+            "x-internal": ""
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "job_id",
+            "in": "path",
+            "description": "job ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "status": "RUNNING",
+                "entities": {
+                  "volume_id": "bdf1bb37-f20f-4266-9a04-f43e0a127376"
+                },
+                "job_id": "4010a32d535527910153552b492c0002",
+                "job_type": "createVolume",
+                "begin_time": "2016-03-08T07:40:13.219Z",
+                "end_time": "",
+                "error_code": null,
+                "fail_reason": null
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowJobResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询job的状态",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{endpoint}/v1/{project_id}/jobs/{job_id}",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-hybridcloud": "true",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2016/6/30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "SubJob": {
+      "required": [
+        "begin_time",
+        "end_time",
+        "entities",
+        "error_code",
+        "fail_reason",
+        "job_id",
+        "job_type",
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "子job的状态。SUCCESS:成功。RUNNING:运行中。FAIL:失败。INIT:正在初始化。",
+          "enum": [
+            "SUCCESS",
+            "RUNNING",
+            "FAIL",
+            "INIT"
+          ]
+        },
+        "entities": {
+          "description": "子job的响应信息。",
+          "$ref": "#/definitions/SubJobEntities",
+          "x-huawei-extraAnnotation": ""
+        },
+        "job_id": {
+          "type": "string",
+          "description": "子job的ID。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "job_type": {
+          "type": "string",
+          "description": "子job的类型。createVolume:创建单个云硬盘。batchCreateVolume:批量创建云硬盘。deleteVolume:删除单个云硬盘。extendVolume:扩容云硬盘。bulkDeleteVolume:批量删除云硬盘。deleteSingleVolume:批量删除时逐个删除单个云硬盘。retypeVolume:对云硬盘做硬盘类型变更。"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "error_code": {
+          "type": "string",
+          "description": "子job执行失败时的错误码。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "fail_reason": {
+          "type": "string",
+          "description": "子job执行失败时的错误原因。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "子Job的详细信息。"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "ShowJobResponseBody": {
+      "required": [
+        "begin_time",
+        "end_time",
+        "entities",
+        "error_code",
+        "fail_reason",
+        "job_id",
+        "job_type",
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "job的状态。SUCCESS:成功。RUNNING:运行中。FAIL:失败。INIT:正在初始化。",
+          "enum": [
+            "SUCCESS",
+            "RUNNING",
+            "FAIL",
+            "INIT"
+          ]
+        },
+        "entities": {
+          "description": "job的响应信息。",
+          "$ref": "#/definitions/JobEntities",
+          "x-huawei-extraAnnotation": ""
+        },
+        "job_id": {
+          "type": "string",
+          "description": "job的ID。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "job_type": {
+          "type": "string",
+          "description": "job的类型。createVolume:创建单个云硬盘。batchCreateVolume:批量创建云硬盘。deleteVolume:删除单个云硬盘。extendVolume:扩容云硬盘。bulkDeleteVolume:批量删除云硬盘。deleteSingleVolume:批量删除时逐个删除单个云硬盘。retypeVolume:对云硬盘做硬盘类型变更。"
+        },
+        "begin_time": {
+          "type": "string",
+          "description": "开始时间。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "error_code": {
+          "type": "string",
+          "description": "job执行失败时的错误码。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "fail_reason": {
+          "type": "string",
+          "description": "job执行失败时的错误原因。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "Job信息。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "JobEntities": {
+      "properties": {
+        "volume_type": {
+          "type": "string",
+          "description": "云硬盘的类型。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘的容量,单位为GB。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘的ID。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘的名称。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "sub_jobs": {
+          "type": "array",
+          "description": "子Job的信息。当存在子Job信息时,entities中的其他字段将不会返回。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/SubJob"
+          },
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "Job的响应信息。"
+    },
+    "SubJobEntities": {
+      "properties": {
+        "volume_type": {
+          "type": "string",
+          "description": "云硬盘的类型。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘的容量,单位为GB。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "volume_id": {
+          "type": "string",
+          "description": "云硬盘的ID。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘的名称。",
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "子Job的响应信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

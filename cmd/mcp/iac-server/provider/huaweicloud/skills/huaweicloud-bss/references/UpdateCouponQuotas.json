@@ -1,0 +1,197 @@
+{
+  "name": "UpdateCouponQuotas",
+  "summary": "向云经销商发放代金券额度",
+  "tags": "管理云经销商优惠券(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/partners/coupon-quotas/indirect-partner-adjust": {
+      "post": {
+        "summary": "向云经销商发放代金券额度",
+        "description": "华为云总经销商(一级经销商)可以向云经销商(二级经销商)发放代金券额度。\n\n一级经销商在伙伴中心向二级经销商发放代金券额度请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/dp_120206.html)。",
+        "tags": [
+          "管理云经销商优惠券(伙伴)"
+        ],
+        "operationId": "UpdateCouponQuotas",
+        "x-low-frequency-scene": "Operation",
+        "x-constraint": "该接口只能给合作伙伴使用,调用的时候必须传递合作伙伴的AK/SK或者Token。调用该接口之前,需通过客户经理联系华为运营人员,为合作伙伴设置优惠券发放额度。",
+        "x-externalURL": "/v2/partners/coupon-quotas/indirect-partner-adjust",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "向云经销商发放代金券额度请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AdjustCouponQuotasReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/partners/coupon-quotas/indirect-partner-adjust",
+        "x-request-examples-1": {
+          "quota_id": "2018011615520150",
+          "indirect_partner_ids": [
+            "62a*****d30"
+          ],
+          "quota_amount": "1.11"
+        },
+        "responses": {
+          "200": {
+            "description": "向云经销商发放代金券额度响应",
+            "schema": {
+              "$ref": "#/definitions/AdjustCouponQuotasRsp"
+            },
+            "examples": {
+              "application/json": {
+                "error_details": [
+                  {
+                    "id": "l5241b7a12695obeca8b60633560e6c",
+                    "error_code": "",
+                    "error_msg": ""
+                  }
+                ],
+                "simple_quota_infos": [
+                  {
+                    "id": "f8231a7d11484dfaaea8b70755680c7e",
+                    "quota_id": "2018011615520150"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败parameter error||CBC.99000012:额度不存在或者额度状态不正确||CBC.99000013:优惠券额度不足||CBC.99000014:该券不能发给该合作类型的客户||CBC.99000015:额度不能给BP自己发券||CBC.99000016:该子客户不存在或者不是该伙伴子客户||CBC.99000017:额度未生效或者已过期||CBC.99000018:券面值不得小于最小值||CBC.99000019:券面值不得大于最大值||CBC.99000020:券数量超过最大限制||CBC.99000021:券总面值不允许超过总面值||CBC.99000022:该券只能发给首次关联的子客户||CBC.99000023:券的云服务限制、产品限制超出额度的限制||CBC.99000024:券的使用限制条件配置(订购类型列表),不在额度配置的限制条件范围内||CBC.99000025:该类伙伴不能给自己发券|"
+          }
+        },
+        "x-category": "管理云经销商优惠券(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AdjustCouponQuotasReq": {
+      "required": [
+        "quota_id",
+        "indirect_partner_ids",
+        "quota_amount"
+      ],
+      "properties": {
+        "quota_id": {
+          "type": "string",
+          "description": "华为云总经销商发放的代金券额度的ID。获取方法请参见查询优惠券额度。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "2018011615520150"
+        },
+        "indirect_partner_ids": {
+          "description": "云经销商ID列表。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "x-maxLength": 100,
+          "x-minLength": 1,
+          "items": {
+            "type": "string"
+          },
+          "x-site": "HC"
+        },
+        "quota_amount": {
+          "description": "华为云总经销商向云经销商发放的代金券额度值。 单位:元。取值大于0且精确到小数点后2位。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "maximum": 100000000.0,
+          "minimum": 0.01,
+          "example": "1.11"
+        }
+      }
+    },
+    "QuotaSimpleInfo": {
+      "required": [
+        "id",
+        "quota_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "云经销商ID。",
+          "example": "f8231a7d11484dfaaea8b70755680c7e"
+        },
+        "quota_id": {
+          "type": "string",
+          "description": "分配给云经销商的代金券额度ID。",
+          "example": "2018011615520150"
+        }
+      }
+    },
+    "AdjustCouponQuotasRsp": {
+      "properties": {
+        "error_details": {
+          "description": "发放失败的云经销商额度信息,具体参见表1,只有HTTP STATUS 200的时候才有这个结构体。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ErrorDetail"
+          }
+        },
+        "simple_quota_infos": {
+          "description": "发放成功的云经销商额度信息,具体参见表2,只有HTTP STATUS 200的时候才有这个结构体。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QuotaSimpleInfo"
+          }
+        }
+      }
+    },
+    "ErrorDetail": {
+      "properties": {
+        "error_code": {
+          "description": "状态码。",
+          "type": "string",
+          "maxLength": 16,
+          "minLength": 0,
+          "example": "CBC.5024"
+        },
+        "error_msg": {
+          "description": "错误描述信息。",
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 0,
+          "example": "subcustomers are not resale customers"
+        },
+        "id": {
+          "description": "出现错误的客户ID或批量处理消息的ID。",
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0,
+          "example": "f8231a7d11484dfaaea8b70755680c7e"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

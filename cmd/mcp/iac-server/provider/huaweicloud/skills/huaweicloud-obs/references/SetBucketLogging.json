@@ -1,0 +1,207 @@
+{
+  "name": "SetBucketLogging",
+  "summary": "设置桶日志管理配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "SetBucketLogging",
+        "summary": "设置桶日志管理配置",
+        "description": "创建桶时,默认是不生成桶的日志的,如果需要生成桶的日志,该桶需要打开日志配置管理的开关。桶日志功能开启后,桶的每次操作将会产生一条日志,并将多条日志打包成一个日志文件。日志文件存放位置需要在开启桶日志功能时指定,可以存放到开启日志功能的桶中,也可以存放到其他你有权限的桶中,但需要和开启日志功能的桶在同一个region中。\n\n由于日志文件是OBS产生,并且由OBS上传到存放日志的桶中,因此OBS需要获得委托授权,用于上传生成的日志文件,所以在配置桶日志管理前,需要先到统一身份认证服务生成一个对OBS服务的委托,并将委托名作为参数配置到桶上,并且在xml文件中<LoggingEnabled>标签下配置相应的日志管理功能。在为委托配置权限时只需设置目标桶的上传对象权限。\n#### 委托权限示例 ####\n```\n{\n    \"Version\": \"1.1\",\n    \"Statement\": [\n        {\n            \"Action\": [\n                \"obs:object:PutObject\"\n            ],\n            \"Resource\": [\n                \"OBS:*:*:object:mybucketlogs/*\"\n            ],\n            \"Effect\": \"Allow\"\n        }\n    ]\n}\n```\n关闭桶日志功能的方法是上传一个带有空的BucketLoggingStatus标签的logging文件。\n默认存储类别为低频访问存储或归档存储的桶不能作为存放日志文件的桶。日志文件存放到桶中后,这些日志文件会占用空间,并按照用户存放数据同样的计费策略进行计费。\n",
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "x-request-examples-url-1": "/?logging",
+        "x-request-examples-1": "PUT /?logging HTTP/1.1\nHost: bucketname.obs.cn-north-4.myhuaweicloud.com\nDate: date\nAuthorization: signatureValue\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<BucketLoggingStatus>\n  <Agency>agency-name</Agency>\n  <LoggingEnabled>\n    <TargetBucket>mybucketlogs</TargetBucket>\n    <TargetPrefix>mybucket-access_log-/</TargetPrefix>\n    <TargetGrants>\n      <Grant>\n        <Grantee>\n          <ID>domainID</ID>\n        </Grantee>\n        <Permission>READ</Permission>\n      </Grant>\n    </TargetGrants>\n  </LoggingEnabled>\n</BucketLoggingStatus>",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "logging",
+            "in": "query",
+            "required": true,
+            "description": "logging表示请求桶日志管理配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "in": "body",
+            "name": "SetBucketLoggingRequestBody",
+            "description": "日志状态信息的容器。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketLoggingRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "TargetGrantsGrant": {
+      "description": "是被授权者及其权限的容器。用于描述谁有什么权限来访问产生的日志文件。\n",
+      "properties": {
+        "Grantee": {
+          "$ref": "#/definitions/TargetGrantsGrantGrantee"
+        },
+        "Permission": {
+          "description": "产生的日志文件对被授权者的具体权限。\n\n- FULL_CONTROL 完全控制权限。\n- READ 读权限。\n- WRITE 写权限。\n",
+          "type": "string",
+          "enum": [
+            "FULL_CONTROL",
+            "READ",
+            "WRITE"
+          ]
+        }
+      }
+    },
+    "TargetGrantsGrantGrantee": {
+      "description": "作为被授权logging权限用户的容器。\n",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "被授权者的租户ID,全局唯一标识\n"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "LoggingEnabled": {
+      "description": "该元素起到对日志配置管理的使能作用(呈现此元素则打开日志配置,否则关闭配置)。在此元素下,可加入具体的日志配置信息。\n设置logging时必选。关闭logging时勿选。\n",
+      "properties": {
+        "TargetBucket": {
+          "description": "在生成日志时,配置日志桶的所有者可以指定一个桶用于存放产生的日志文件。需要保证配置日志文件的桶owner对存放日志文件的桶有FULL_CONTROL权限。支持多个桶生成的日志放在同一个目标桶中,如果这样做,就需要指定不同的TargetPrefix以达到为来自不同源桶的日志分类的目的。\n设置logging时必选。关闭logging时勿选。\n",
+          "type": "string"
+        },
+        "TargetPrefix": {
+          "description": "通过该元素指定一个前缀,所有生成的日志对象的对象名都以此元素的内容为前缀。\n设置logging时必选。关闭logging时勿选。\n",
+          "type": "string"
+        },
+        "TargetGrants": {
+          "description": "授权信息的容器。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TargetGrantsGrant"
+          }
+        }
+      }
+    },
+    "SetBucketLoggingRequestBody": {
+      "xml": {
+        "name": "BucketLoggingStatus"
+      },
+      "description": "日志状态信息的容器。\n",
+      "properties": {
+        "Agency": {
+          "description": "目标桶Owner通过统一身份认证服务创建的对OBS服务的委托的名称。\n设置logging时必选。关闭logging时勿选。\n",
+          "type": "string"
+        },
+        "LoggingEnabled": {
+          "$ref": "#/definitions/LoggingEnabled"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

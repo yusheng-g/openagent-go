@@ -1,0 +1,220 @@
+{
+  "name": "ListHookInstances",
+  "summary": "查询伸缩实例挂起信息",
+  "tags": "生命周期挂钩管理",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_instance_hook/{scaling_group_id}/list": {
+      "get": {
+        "tags": [
+          "生命周期挂钩管理"
+        ],
+        "summary": "查询伸缩实例挂起信息",
+        "description": "添加生命周期挂钩后,当伸缩组进行伸缩活动时,实例将被挂钩挂起并置于等待状态,根据输入条件过滤查询弹性伸缩组中伸缩实例的挂起信息。可根据实例ID进行条件过滤查询。若不加过滤条件默认查询指定伸缩组内所有实例挂起信息。",
+        "operationId": "ListHookInstances",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f"
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "description": "伸缩实例ID。",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "66e0f775-c4ac-xxxx-xxxx-f93ba217aa5f",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "examples": {
+              "application/json": {
+                "instance_hanging_info": [
+                  {
+                    "instance_id": "b25c1589-c96c-465b-9fef-d06540d1945c",
+                    "scaling_group_id": "e5d27f5c-dd76-4a61-b4bc-a67c5686719a",
+                    "lifecycle_hook_name": "hook-test",
+                    "lifecycle_action_key": "6ebe6e72-4b09-4adb-ae4a-a91dc0560069",
+                    "default_result": "ABANDON",
+                    "timeout": "2016-11-15T06:43:41Z",
+                    "lifecycle_hook_status": "HANGING"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/InstanceListResult"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-is-registered": "Y",
+        "x-request-examples-description-1": "本示例展示了在ID为e5d27f5c-dd76-4a61-b4bc-a67c5686719a的伸缩组内,查询ID为b25c1589-c96c-465b-9fef-d06540d1945c的实例的挂起信息。",
+        "x-support-sdk": "Y",
+        "x-hybridcloud": true,
+        "x-name": "查询伸缩实例挂起信息",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 6,
+        "x-request-examples-url-1": "GET https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_instance_hook/e5d27f5c-dd76-4a61-b4bc-a67c5686719a/list?instance_id=b25c1589-c96c-465b-9fef-d06540d1945c",
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2018-09-30",
+        "x-tenant_flow_value": "78",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "N",
+        "x-is_calling": "Y",
+        "x-obc": "N",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "N",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "780",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "InstanceListResult": {
+      "properties": {
+        "instance_hanging_info": {
+          "type": "array",
+          "description": "伸缩实例生命周期挂钩列表。",
+          "items": {
+            "$ref": "#/definitions/InstanceHangingInfos"
+          }
+        }
+      },
+      "description": "伸缩实例生命周期挂钩列表。"
+    },
+    "InstanceHangingInfos": {
+      "properties": {
+        "lifecycle_hook_name": {
+          "type": "string",
+          "description": "生命周期挂钩名称。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "lifecycle_action_key": {
+          "type": "string",
+          "description": "生命周期操作令牌,用于指定生命周期回调对象。"
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "伸缩实例ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "scaling_group_id": {
+          "type": "string",
+          "description": "伸缩组ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "lifecycle_hook_status": {
+          "type": "string",
+          "description": "伸缩实例挂钩的挂起状态。HANGING:挂起。CONTINUE:继续。ABANDON:终止。",
+          "enum": [
+            "HANGING",
+            "CONTINUE",
+            "ABANDON"
+          ]
+        },
+        "timeout": {
+          "type": "string",
+          "description": "超时时间,遵循UTC时间,格式为:YYYY-MM-DDThh:mm:ssZZ。"
+        },
+        "default_result": {
+          "type": "string",
+          "description": "生命周期挂钩默认回调操作。"
+        }
+      },
+      "description": "挂钩实例信息"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

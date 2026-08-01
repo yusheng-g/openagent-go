@@ -1,0 +1,174 @@
+{
+  "name": "KeystoneShowVersion",
+  "summary": "查询版本信息",
+  "tags": "版本信息管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3": {
+      "get": {
+        "tags": [
+          "版本信息管理"
+        ],
+        "summary": "查询版本信息",
+        "description": "该接口用于查询Keystone API的3.0版本的信息。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "KeystoneShowVersion",
+        "consumes": [],
+        "produces": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "version": {
+                  "status": "stable",
+                  "updated": "2016-04-04T00:00:00Z",
+                  "media-types": [
+                    {
+                      "base": "application/json",
+                      "type": "application/vnd.openstack.identity-v3+json"
+                    }
+                  ],
+                  "id": "v3.6",
+                  "links": [
+                    {
+                      "href": "https://iam.myhuaweicloud.com/v3/",
+                      "rel": "self"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/KeystoneShowVersionResponseBody"
+            }
+          },
+          "400": {
+            "description": "参数无效。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "503": {
+            "description": "服务不可用。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询版本信息",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 82,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "VersionMediatypes": {
+      "required": [
+        "base",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "application/vnd.openstack.identity-v3+json",
+          "description": "媒体类型。"
+        },
+        "base": {
+          "type": "string",
+          "example": "application/json",
+          "description": "基础类型。"
+        }
+      },
+      "description": ""
+    },
+    "VersionLinks": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "rel": {
+          "type": "string",
+          "example": "self",
+          "description": "链接类型。self:自助链接包含了版本链接的资源。bookmark:书签链接提供了一个永久资源的永久链接。alternate:备用链接包含了资源的替换表示形式。"
+        },
+        "href": {
+          "type": "string",
+          "example": "https://iam.myhuaweicloud.com/v3/",
+          "description": "资源链接地址。"
+        }
+      },
+      "description": ""
+    },
+    "Version": {
+      "required": [
+        "id",
+        "links",
+        "media-types",
+        "status",
+        "updated"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "stable",
+          "description": "版本状态。"
+        },
+        "updated": {
+          "type": "string",
+          "example": "2016-04-04T00:00:00Z",
+          "description": "最后更新时间。"
+        },
+        "links": {
+          "type": "array",
+          "description": "版本的资源链接信息。",
+          "items": {
+            "$ref": "#/definitions/VersionLinks"
+          }
+        },
+        "id": {
+          "type": "string",
+          "example": "v3.6",
+          "description": "版本号,如v3.6。"
+        },
+        "media-types": {
+          "type": "array",
+          "description": "支持的消息格式。",
+          "items": {
+            "$ref": "#/definitions/VersionMediatypes"
+          }
+        }
+      },
+      "description": ""
+    },
+    "KeystoneShowVersionResponseBody": {
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "description": "Keystone API的3.0版本信息。",
+          "$ref": "#/definitions/Version"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

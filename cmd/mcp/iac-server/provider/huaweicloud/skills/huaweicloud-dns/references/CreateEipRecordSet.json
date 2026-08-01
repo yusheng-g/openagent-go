@@ -1,0 +1,209 @@
+{
+  "name": "CreateEipRecordSet",
+  "summary": "设置弹性公网IP的反向解析记录",
+  "tags": "反向解析管理(v2)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/reverse/floatingips/{region}:{floatingip_id}": {
+      "patch": {
+        "tags": [
+          "反向解析管理(v2)"
+        ],
+        "x-request-examples-description-1": "设置弹性公网IP的反向解析记录,设置TTL为300秒。",
+        "x-request-examples-url-1": "PATCH https://{endpoint}/v2/reverse/floatingips/{region}:{floatingip_id}",
+        "x-request-examples-1": {
+          "ptrdname": "www.example.com",
+          "description": "Description for this PTR record",
+          "ttl": 300,
+          "tags": [
+            {
+              "key": "key1",
+              "value": "value1"
+            }
+          ]
+        },
+        "operationId": "CreateEipRecordSet",
+        "summary": "设置弹性公网IP的反向解析记录",
+        "description": "设置弹性公网IP的反向解析记录。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户的区域信息。"
+          },
+          {
+            "name": "floatingip_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "弹性公网IP(EIP)的ID。"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "CreatePtrReq",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePtrReq"
+            },
+            "description": "设置弹性公网IP的反向解析记录请求。"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "设置弹性公网IP的反向解析记录响应。",
+            "schema": {
+              "$ref": "#/definitions/Floatingips"
+            },
+            "examples": {
+              "application/json": {
+                "id": "region_id:c5504932-bf23-4171-b655-b87a6bc59334",
+                "ptrdname": "www.example.com.",
+                "description": "Description for this PTR record",
+                "address": "10.154.52.138",
+                "action": "CREATE",
+                "ttl": 300,
+                "status": "PENDING_CREATE",
+                "links": {
+                  "self": "https://Endpoint/v2/reverse/floatingips/region_id:c5504932-bf23-4171-b655-b87a6bc59334"
+                },
+                "enterprise_project_id": 0
+              }
+            }
+          }
+        },
+        "x-order": 0
+      }
+    }
+  },
+  "definitions": {
+    "Floatingips": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "反向解析记录的ID,格式形如{region}:{floatingip_id}。"
+        },
+        "ptrdname": {
+          "type": "string",
+          "description": "反向解析记录对应的域名。"
+        },
+        "description": {
+          "type": "string",
+          "description": "对反向解析记录的描述。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "反向解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。",
+          "format": "int32"
+        },
+        "address": {
+          "type": "string",
+          "description": "弹性公网IP的IP地址。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- ERROR:失败"
+        },
+        "action": {
+          "type": "string",
+          "description": "**参数解释:**\n对该资源的当前操作。\n**取值范围:**\n- CREATE:创建操作\n- UPDATE:更新操作\n- DELETE:删除操作\n- NONE:无操作"
+        },
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "反向解析关联的企业项目ID,长度不超过36个字符。"
+        }
+      }
+    },
+    "CreatePtrReq": {
+      "required": [
+        "ptrdname"
+      ],
+      "properties": {
+        "ptrdname": {
+          "type": "string",
+          "description": "反向解析记录对应的域名。"
+        },
+        "description": {
+          "type": "string",
+          "description": "对反向解析记录的描述。"
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "反向解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。取值范围:1~2147483647"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "反向解析关联的企业项目ID,长度不超过36个字符。默认值为0。",
+          "default": 0
+        },
+        "tags": {
+          "type": "array",
+          "description": "资源标签。",
+          "items": {
+            "$ref": "#/definitions/tag"
+          }
+        }
+      }
+    },
+    "tag": {
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释:**\n标签键。\n**取值范围:**\n- 不能为空。\n- 对于同一资源键的取值唯一。\n- 长度不超过128个字符。\n- 取值可以包含任意语种字母、数字、空格,以及_ . : = + - @特殊字符,但首尾不能含有空格,不能以_sys_开头。"
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释:**\n标签值。\n**取值范围:**\n- 可以为空。\n- 长度不超过255个字符。\n- 取值可以包含任意语种字母、数字、空格,以及_ . : / = + - @特殊字符。"
+        }
+      }
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "patch",
+  "uri": null
+}

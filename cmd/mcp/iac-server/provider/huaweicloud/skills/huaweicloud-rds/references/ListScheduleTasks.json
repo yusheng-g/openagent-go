@@ -1,0 +1,279 @@
+{
+  "name": "ListScheduleTasks",
+  "summary": "查询定时任务列表",
+  "tags": "任务管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/schedule-tasks": {
+      "get": {
+        "x-request-examples-description-1": "查询定时任务列表",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/54623db08b174c858ba779d2aa7923a3/schedule-tasks?offset=1&limit=3&instance_id=43e4feaab48f11e89039fa163ebaa7e4in04&instance_name=sqlserver_instance&start_time=1747919701390&end_time=1748524501390",
+        "tags": [
+          "任务管理"
+        ],
+        "summary": "查询定时任务列表",
+        "description": "查询定时任务列表",
+        "operationId": "ListScheduleTasks",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "索引位置,偏移量。\n\n从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "default": 0,
+            "minimum": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "查询记录数。默认为10,不能为负数,最小值为1,最大值为50。",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 50
+          },
+          {
+            "name": "instance_id",
+            "in": "query",
+            "required": false,
+            "description": "实例id,按实例id过滤。",
+            "type": "string"
+          },
+          {
+            "name": "instance_name",
+            "in": "query",
+            "required": false,
+            "description": "实例名称,按实例名称过滤。",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "任务状态,按任务状态过滤。\nIniting:初始化中\nPending:挂起\nRunning:运行中\nCompleted:已完成\nFailed:已失败\nUnauthorized:未授权\nCanceled:已取消",
+            "type": "string",
+            "enum": [
+              "Initing",
+              "Pending",
+              "Running",
+              "Completed",
+              "Failed",
+              "Unauthorized",
+              "Canceled"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "type": "string",
+            "description": "查询任务创建的开始时间,“start_time”有值时,“end_time”必选。格式为UTC时间戳。",
+            "required": false,
+            "x-example": 1594233788000
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "string",
+            "description": "查询任务创建的结束时间,“start_time”有值时,“end_time”必选。格式为UTC时间戳。",
+            "required": false,
+            "x-example": 1595443388000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/PageScheduleTaskInfo"
+            },
+            "examples": {
+              "application/json": {
+                "schedule_task": [
+                  {
+                    "id": "676e9f17f9b74289883a44a47b8101f5",
+                    "instance_id": "4d00c7e9d22145deb889937a72b59c8ein01",
+                    "instance_name": "rds-local-scale",
+                    "instance_status": "ACTIVE",
+                    "project_id": "54623db08b174c858ba779d2aa7923a3",
+                    "name": "RESIZE_FLAVOR_SWITCH",
+                    "create_time": "2020-07-15T07:46:10+0000",
+                    "start_time": "2020-07-15T08:46:10+0000",
+                    "end_time": "2020-07-15T09:46:10+0000",
+                    "order": "1",
+                    "status": "Initing",
+                    "datastore_type": "mysql",
+                    "volume_type": "LOCALSSD"
+                  },
+                  {
+                    "id": "5ed6a9e95f2747f7bac1b5899ddd1316",
+                    "instance_id": "3d2929b2c7ea4fe9bd27f21061d037ccin01",
+                    "instance_name": "rds-zfs-test-56-44",
+                    "instance_status": "ACTIVE",
+                    "project_id": "54623db08b174c858ba779d2aa7923a3",
+                    "name": "RESIZE_FLAVOR",
+                    "create_time": "2020-07-15T07:46:10+0000",
+                    "start_time": "2020-07-15T08:46:10+0000",
+                    "end_time": "2020-07-15T09:46:10+0000",
+                    "order": "1",
+                    "status": "Canceled",
+                    "datastore_type": "mysql",
+                    "target_config": {
+                      "flavor": "rds.mysql.n1.xlarge.2",
+                      "mem": "8",
+                      "cpu": "4"
+                    },
+                    "volumeType": "CLOUDSSD"
+                  }
+                ],
+                "total_count": 2
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PageScheduleTaskInfo": {
+      "type": "object",
+      "required": [
+        "schedule_tasks",
+        "total_count"
+      ],
+      "properties": {
+        "schedule_tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScheduleTaskInfo"
+          },
+          "description": "定时任务列表。"
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "总任务数量。",
+          "example": 10
+        }
+      }
+    },
+    "TargetConfig": {
+      "properties": {
+        "flavor": {
+          "type": "string",
+          "description": "当name=RESIZE_FLAVOR时,表示规格变更任务的目标规格。"
+        },
+        "cpu": {
+          "type": "string",
+          "description": "当name=RESIZE_FLAVOR时,表示规格变更任务的的目标cpu。"
+        },
+        "mem": {
+          "type": "string",
+          "description": "当name=RESIZE_FLAVOR时,表示规格变更任务的目标内存。"
+        }
+      }
+    },
+    "ScheduleTaskInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "5ed6a9e95f2747f7bac1b5899ddd1316",
+          "description": "任务ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "RESIZE_FLAVOR",
+          "description": "任务名称。"
+        },
+        "instance_id": {
+          "type": "string",
+          "example": "3d2929b2c7ea4fe9bd27f21061d037ccin01",
+          "description": "实例ID。"
+        },
+        "instance_name": {
+          "type": "string",
+          "example": "rds-zfs-test-56-44",
+          "description": "实例名称。"
+        },
+        "instance_status": {
+          "type": "string",
+          "example": "ACTIVE",
+          "description": "实例状态。\n- 值为“BUILD”,表示实例正在创建。\n- 值为“CREATE FAIL”,表示实例创建失败。\n- 值为“ACTIVE”,表示实例正常。\n- 值为“FAILED”,表示实例异常。\n- 值为“FROZEN”,表示实例冻结。\n- 值为“MODIFYING”,表示实例正在扩容。\n- 值为“REBOOTING”,表示实例正在重启。\n- 值为“RESTORING”,表示实例正在恢复。\n- 值为“MODIFYING INSTANCE TYPE”,表示实例正在转主备。\n- 值为“SWITCHOVER”,表示实例正在主备切换。\n- 值为“MIGRATING”,表示实例正在迁移。\n- 值为“BACKING UP”,表示实例正在进行备份。\n- 值为“MODIFYING DATABASE PORT”,表示实例正在修改数据库端口。\n- 值为“STORAGE FULL”,表示实例磁盘空间满。"
+        },
+        "project_id": {
+          "type": "string",
+          "example": "54623db08b174c858ba779d2aa7923a3",
+          "description": "项目ID。"
+        },
+        "create_time": {
+          "type": "string",
+          "format": "int32",
+          "example": "2020-07-15T07:46:10+0000",
+          "description": "任务创建时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "start_time": {
+          "type": "string",
+          "example": "2020-07-15T08:46:10+0000",
+          "description": "任务计划开始时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "end_time": {
+          "type": "string",
+          "example": "2020-07-15T09:46:10+0000",
+          "description": "任务计划结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "order": {
+          "type": "string",
+          "example": 1,
+          "description": "任务优先级,整数取值范围1-100,数值越小优先级越高。"
+        },
+        "status": {
+          "type": "string",
+          "example": "Canceled",
+          "description": "任务状态。取值范围如下:\nIniting:初始化中\nPending:挂起\nRunning:运行中\nCompleted:已完成\nFailed:已失败\nUnauthorized:未授权\nCanceled:已取消"
+        },
+        "datastore_type": {
+          "type": "string",
+          "example": "mysql",
+          "description": "数据库类型。"
+        },
+        "volume_type": {
+          "type": "string",
+          "example": "CLOUDSSD",
+          "description": "磁盘类型。"
+        },
+        "target_config": {
+          "description": "目标配置。",
+          "type": "object",
+          "$ref": "#/definitions/TargetConfig"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

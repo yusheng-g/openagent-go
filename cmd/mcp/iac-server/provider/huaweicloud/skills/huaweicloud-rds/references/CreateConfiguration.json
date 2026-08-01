@@ -1,0 +1,231 @@
+{
+  "name": "CreateConfiguration",
+  "summary": "创建参数模板",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations": {
+      "post": {
+        "tags": [
+          "参数配置"
+        ],
+        "operationId": "CreateConfiguration",
+        "summary": "创建参数模板",
+        "description": "创建参数模板。",
+        "x-support-sdk": "Y",
+        "x-constraint": "- MySQL:仅支持5.6,5.7。\n- Microsoft SQL Server:仅支持2014 SE、2014 EE、2016 SE、2016 EE、2008 R2 EE、2008 R2 WEB、2014 WEB、2016 WEB。\n- 创建参数模板的name名称不能与默认参数模板或已有参数模板的名称重复。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "CreateConfigurationRequestBody",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ConfigurationForCreation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/CreateConfigurationResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "configuration": {
+                  "id": "463b4b58-d0e8-4e2b-9560-5dea4552fde9",
+                  "name": "configuration_test",
+                  "datastore_version_name": "5.6",
+                  "datastore_name": "mysql",
+                  "description": "configuration_test",
+                  "created": "2017-04-09T08:27:56+0800",
+                  "updated": "2017-04-09T08:27:56+0800"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/configurations",
+        "x-request-examples-1": {
+          "name": "configuration_test",
+          "description": "configuration_test",
+          "values": {
+            "max_connections": "10",
+            "autocommit": "OFF"
+          },
+          "datastore": {
+            "type": "mysql",
+            "version": "5.6"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ConfigurationSummaryForCreate": {
+      "description": "参数模板信息。",
+      "required": [
+        "id",
+        "name",
+        "datastore_version_name",
+        "datastore_name",
+        "created",
+        "updated"
+      ],
+      "properties": {
+        "id": {
+          "description": "参数组ID。",
+          "type": "string"
+        },
+        "name": {
+          "description": "参数组名称。",
+          "type": "string"
+        },
+        "description": {
+          "description": "参数组描述。",
+          "type": "string"
+        },
+        "datastore_version_name": {
+          "description": "引擎版本。",
+          "type": "string"
+        },
+        "datastore_name": {
+          "description": "引擎名。",
+          "type": "string",
+          "enum": [
+            "mysql",
+            "postgresql",
+            "sqlserver",
+            "mariadb"
+          ]
+        },
+        "created": {
+          "description": "创建时间,格式为\"yyyy-MM-ddTHH:mm:ssZ\"。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "updated": {
+          "description": "更新时间,格式为\"yyyy-MM-ddTHH:mm:ssZ\"。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        }
+      }
+    },
+    "ConfigurationForCreation": {
+      "required": [
+        "name",
+        "datastore"
+      ],
+      "properties": {
+        "name": {
+          "description": "参数模板名称。最长64个字符,只允许大写字母、小写字母、数字、和“-_.”特殊字符。",
+          "type": "string"
+        },
+        "description": {
+          "description": "参数模板描述。最长256个字符,不支持>!<\"&'=特殊字符。默认为空。",
+          "type": "string"
+        },
+        "datastore": {
+          "$ref": "#/definitions/ParaGroupDatastore"
+        },
+        "values": {
+          "description": "参数值对象,用户基于默认参数模板自定义的参数值。为空时不修改参数值。\n\n- key:参数名称,\"max_connections\":\"10\"。为空时不修改参数值,key不为空时value也不可为空。\n- value:参数值,\"max_connections\":\"10\"。",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "example": {
+            "max_connections": "10"
+          }
+        }
+      }
+    },
+    "CreateConfigurationResponseBody": {
+      "properties": {
+        "configuration": {
+          "$ref": "#/definitions/ConfigurationSummaryForCreate"
+        }
+      }
+    },
+    "ParaGroupDatastore": {
+      "required": [
+        "type",
+        "version"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "数据库引擎,不区分大小写:\n- MySQL\n- PostgreSQL\n- SQLServer\n- MariaDB",
+          "enum": [
+            "MySQL",
+            "PostgreSQL",
+            "SQLServer",
+            "MariaDB"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "数据库版本。\n\n- MySQL引擎支持5.6、5.7、8.0版本。取值示例:5.7。具有相应权限的用户才可使用8.0,您可联系华为云客服人员申请。\n- PostgreSQL引擎支持9.5、9.6、10、11版本。取值示例:9.6。\n- Microsoft SQL Server:仅支持2017 企业版、2017 标准版、2017 web版、2014 标准版、2014 企业版、2016 标准版、2016 企业版、2012 企业版、2012 标准版、2012 web版、2008 R2 企业版、2008 R2 web版、2014 web版、2016 web版。取值示例2014_SE。 例如:2017标准版可填写2017_SE,2017企业版可填写2017_EE,2017web版可以填写2017_WEB"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

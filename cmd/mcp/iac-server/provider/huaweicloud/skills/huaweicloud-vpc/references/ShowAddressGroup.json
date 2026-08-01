@@ -1,0 +1,401 @@
+{
+  "name": "ShowAddressGroup",
+  "summary": "查询地址组",
+  "tags": "IP地址组",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/address-groups/{address_group_id}": {
+      "get": {
+        "tags": [
+          "IP地址组"
+        ],
+        "summary": "查询地址组",
+        "description": "查询地址组详情。",
+        "operationId": "ShowAddressGroup",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "05137572fa00d5eb2fdcc014b0f5c751",
+            "x-order": 2
+          },
+          {
+            "name": "address_group_id",
+            "in": "path",
+            "description": "地址组的唯一标识",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "791870bd-36a7-4d9b-b015-a78e9b06af08",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "地址组创建API的GET查询操作正常返回",
+            "examples": {
+              "application/json": {
+                "address_group": {
+                  "id": "dd18a501-fcd5-4adc-acfe-b0e2384baf08",
+                  "name": "AutoTester746010.580123789",
+                  "tenant_id": "b2782e6708b8475c993e6064bc456bf8",
+                  "ip_version": 4,
+                  "max_capacity": 20,
+                  "ip_set": [
+                    "192.168.5.0/24",
+                    "192.168.3.20-192.168.3.100",
+                    "192.168.3.40",
+                    "192.168.3.2"
+                  ],
+                  "ip_extra_set": [
+                    {
+                      "ip": "192.168.5.0/24"
+                    },
+                    {
+                      "ip": "192.168.3.20-192.168.3.100"
+                    },
+                    {
+                      "ip": "192.168.3.40"
+                    },
+                    {
+                      "ip": "192.168.3.2"
+                    }
+                  ],
+                  "enterprise_project_id": "0aad99bc-f5f6-4f78-8404-c598d76b0ed2",
+                  "created_at": "2019-06-28T02:06:38.000+00:00",
+                  "updated_at": "2019-06-28T02:06:38.000+00:00",
+                  "description": "10.10.4.0/23",
+                  "status": "NORMAL",
+                  "status_message": ""
+                },
+                "request_id": "ce6c359b-9002-41e5-a0b1-232759bd6637"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowAddressGroupResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询地址组",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 11,
+        "x-request-examples-description-1": "查询IP地址组详情",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v3/2bc7a67b35a64a79ad1d3bb8b5f61fc9/vpc/address-groups/dd18a501-fcd5-4adc-acfe-b0e2384baf08",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-6-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ShowAddressGroupResponseBody": {
+      "required": [
+        "address_group",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "address_group": {
+          "description": "地址组的查询响应体",
+          "$ref": "#/definitions/AddressGroup",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "AddressGroup": {
+      "required": [
+        "created_at",
+        "description",
+        "enterprise_project_id",
+        "id",
+        "ip_extra_set",
+        "ip_set",
+        "ip_version",
+        "max_capacity",
+        "name",
+        "status",
+        "status_message",
+        "tags",
+        "tenant_id",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:地址组唯一标识\n取值范围:合法UUID的字符串",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:地址组名称\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:地址组描述信息\n取值范围:0-255个字符\n约束:不能包含“<”和“>”。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "max_capacity": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:地址组最大条目数,限制地址组可以包含的地址数量\n取值范围:0-20\n默认值:20",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "ip_set": {
+          "type": "array",
+          "description": "功能说明:地址组可包含地址集\n取值范围:可以是单个ip地址,ip地址范围,ip地址cidr\n约束:当前一个地址组ip_set数量限制默认值为20,即配置的ip地址、ip地址范围或ip地址cidr的总数默认限制20",
+          "items": {
+            "type": "string",
+            "description": ""
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:IP地址组ip版本\n取值范围:4, 表示ipv4地址组;6, 表示ipv6地址组",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:地址组创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss;系统自动生成",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能描述:地址组最近一次更新资源的时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss;系统自动生成",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "功能说明:资源所属项目ID",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "功能说明:企业项目ID。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。",
+          "maxLength": 36,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "tags": {
+          "type": "array",
+          "description": "IP地址组资源标签",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:地址组状态\n取值范围:\n      NORMAL:正常\n      UPDATING:更新中\n      UPDATE_FAILED:更新失败\n默认值:NORMAL\n约束:当地址组处于UPDATING(更新中)状态时,不允许再次更新",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "status_message": {
+          "type": "string",
+          "description": "功能说明:地址组状态详情信息",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc"
+        },
+        "ip_extra_set": {
+          "type": "array",
+          "description": "功能说明:地址组包含的地址集及其备注信息",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/IpExtraSetRespOption"
+          },
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    },
+    "IpExtraSetRespOption": {
+      "required": [
+        "ip",
+        "remarks"
+      ],
+      "properties": {
+        "ip": {
+          "type": "string",
+          "description": "功能说明:单个IP地址、IP地址范围或ip地址网段,支持IPv4、IPv6",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "remarks": {
+          "type": "string",
+          "description": "功能说明:IP的备注信息\n取值范围:0-255个字符,不能包含“<”和“>”。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

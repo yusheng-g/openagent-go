@@ -1,0 +1,228 @@
+{
+  "name": "ShowBatchCreateRecordSetsTask",
+  "summary": "查询批量创建记录集任务",
+  "tags": "记录集管理(v2.1)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/zones/{zone_id}/recordsets/batch-create-task": {
+      "get": {
+        "tags": [
+          "记录集管理(v2.1)"
+        ],
+        "operationId": "ShowBatchCreateRecordSetsTask",
+        "summary": "查询批量创建记录集任务",
+        "description": "查询批量创建记录集任务,分页返回失败条目。",
+        "x-api-type": "open-api",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-enable-auth-anno": {
+          "type": "iam-token"
+        },
+        "x-iam-auth-meta-anno": {
+          "authLevel": "instance",
+          "abacAction": "dns:recordset:showBatchCreateTask",
+          "abacActionAlias": "dns:privateRecordset:getImport,dns:publicRecordset:getImport",
+          "authContextInitializerName": "zoneAuthContextInitializer"
+        },
+        "x-cts-meta-anno": {
+          "resourceType": "privateRecordSet",
+          "traceName": "showBatchCreateRecordSetsTask",
+          "operationId": "ShowBatchCreateRecordSetsTask"
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          },
+          {
+            "name": "error_item_limit",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释:**\n分页查询时配置每页返回的失败条目个数。\n**约束限制:**\n不涉及。\n**取值范围:**\n0~2000。\n**默认取值:**\n2000",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 2000,
+            "default": 2000
+          },
+          {
+            "name": "error_item_offset",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释:**\n分页查询起始偏移量,表示从偏移量的下一个失败条目开始查询。\n**约束限制:**\n不涉及。\n**取值范围:**\n0~2000。\n**默认取值:**\n0",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 2000,
+            "default": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询批量创建记录集任务响应。",
+            "examples": {
+              "application/json": {
+                "task_id": "9a186e66977dd48f01977e021c480cac",
+                "status": "DONE",
+                "created_at": "2025-06-17T13:09:15.214",
+                "updated_at": "2025-06-17T13:11:26.968",
+                "total_count": 2,
+                "success_count": 1,
+                "error_count": 1,
+                "error_items": [
+                  {
+                    "name": "www.example.com.",
+                    "type": "A",
+                    "line": "default_view",
+                    "ttl": 300,
+                    "weight": 1,
+                    "records": [
+                      "192.168.10.1",
+                      "192.168.10.2"
+                    ],
+                    "status": "ERROR",
+                    "error_code": "DNS.0312",
+                    "error_message": "Duplicate record set exists. (name: www.example.com., type: A, records: 192.168.10.1, 192.168.10.2)."
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowBatchCreateRecordSetsTaskResponseBody"
+            }
+          }
+        },
+        "x-request-examples-description-1": "查询批量创建记录集任务。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v2.1/zones/{zone_id}/recordsets/batch-create-task",
+        "x-order": 12
+      }
+    }
+  },
+  "definitions": {
+    "ShowBatchCreateRecordSetsTaskErrorItem": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n域名。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的类型。\n**取值范围:**\n- A:将域名解析到指定的IPv4地址。\n- AAAA:将域名解析到指定的IPv6地址。\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。\n- SRV:用于记录某台服务器对外提供了哪些服务。\n- NS:指定域名的权威DNS服务器,当前接口仅支持公网域名解析。\n- REDIRECT_URL:显性URL转发,仅支持公网域名解析。\n- FORWARD_URL:隐性URL转发,仅支持公网域名解析。\n- CAA:指定为域名颁发HTTPS证书的授权CA机构,仅支持公网域名解析。\n- PTR:指定IP地址反向解析记录,仅支持内网域名解析。",
+          "readOnly": true
+        },
+        "line": {
+          "type": "string",
+          "description": "**参数解释:**\n解析线路ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n**取值范围:**\n1~2147483647。",
+          "readOnly": true
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n解析记录的权重。\n**取值范围:**\n0~1000。",
+          "readOnly": true
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "readOnly": true
+          },
+          "description": "**参数解释:**\n域名解析后的值。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集状态。\n**取值范围:**\n- ERROR:失败",
+          "readOnly": true
+        },
+        "error_code": {
+          "type": "string",
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "error_message": {
+          "type": "string",
+          "description": "**参数解释:**\n错误信息。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    },
+    "ShowBatchCreateRecordSetsTaskResponseBody": {
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "**参数解释:**\n批量创建记录集任务的ID。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n任务状态。\n**取值范围:**\n- PENDING:处理中\n- DONE:已完成",
+          "readOnly": true
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释:**\n任务的创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "**参数解释:**\n任务的更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n批量创建记录集的总数。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "success_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n记录集创建成功的数量。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "error_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n记录集创建失败的数量。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "error_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ShowBatchCreateRecordSetsTaskErrorItem"
+          },
+          "description": "**参数解释:**\n记录集创建失败的条目。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

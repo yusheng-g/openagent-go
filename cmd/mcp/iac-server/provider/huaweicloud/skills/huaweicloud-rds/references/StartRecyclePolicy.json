@@ -1,0 +1,150 @@
+{
+  "name": "StartRecyclePolicy",
+  "summary": "设置回收站策略",
+  "tags": "回收站",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/recycle-policy": {
+      "put": {
+        "x-request-examples-text-1": {
+          "recycle_policy": [
+            {
+              "retention_period_in_days": 1
+            }
+          ]
+        },
+        "tags": [
+          "回收站"
+        ],
+        "operationId": "StartRecyclePolicy",
+        "summary": "设置回收站策略",
+        "description": "设置回收站策略。",
+        "x-support-sdk": "Y",
+        "x-constraint": "",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "619d3e78f61b4be68bc5aa0b59edcf7b"
+          },
+          {
+            "name": "RecyclePolicyRequest",
+            "in": "body",
+            "description": "请求体。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RecyclePolicyRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DBMRestSuccessRsp"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "PUT https://rds.cn-north-1.myhuaweicloud.com/v3/054ea741f700d4a32f1bc00f5c80dd4c/instances/recycle-policy",
+        "x-request-examples-1": {
+          "recycle_policy": [
+            {
+              "retention_period_in_days": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DBMRestSuccessRsp": {
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "description": "操作结果。",
+          "type": "string",
+          "example": "success"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "RecyclePolicy": {
+      "description": "回收策略。",
+      "properties": {
+        "retention_period_in_days": {
+          "description": "保留时间,设置已删除实例保留天数,支持整数,可设置范围为1~7天。\n\n当“retention_period_in_days”为空,保留时间默认是7天。",
+          "type": "string"
+        }
+      }
+    },
+    "RecyclePolicyRequestBody": {
+      "required": [
+        "recycle_policy"
+      ],
+      "properties": {
+        "recycle_policy": {
+          "description": "每个元素都是与回收站相关信息。",
+          "type": "object",
+          "$ref": "#/definitions/RecyclePolicy"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

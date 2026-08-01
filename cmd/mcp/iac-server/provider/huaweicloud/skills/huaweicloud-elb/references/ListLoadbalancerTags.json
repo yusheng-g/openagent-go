@@ -1,0 +1,132 @@
+{
+  "name": "ListLoadbalancerTags",
+  "summary": "查询所有负载均衡器的标签列表",
+  "tags": "标签管理",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/{project_id}/loadbalancers/tags": {
+      "get": {
+        "tags": [
+          "标签管理"
+        ],
+        "summary": "查询所有负载均衡器的标签列表",
+        "description": "查询指定项目下所有负载均衡器的标签列表",
+        "operationId": "ListLoadbalancerTags",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-admin": "",
+            "x-internal": "",
+            "x-open-region-cloud": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GET操作正常返回",
+            "examples": {
+              "application/json": {
+                "tags": [
+                  {
+                    "values": [
+                      "value1",
+                      "value2"
+                    ],
+                    "key": "key1"
+                  },
+                  {
+                    "values": [
+                      "value1",
+                      "value2"
+                    ],
+                    "key": "key2"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListLoadbalancerTagsResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询所有负载均衡器的标签列表",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 8,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v2.0/6a0de1c3-7d74-4f4a-b75e-e57135bd2b97/loadbalancers/tags",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "",
+        "x-first-open-time": "",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ListLoadbalancerTagsResponseBody": {
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "标签列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ListTag"
+          },
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ListTag": {
+      "required": [
+        "key",
+        "values"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "键。最大长度36个unicode字符。 key不能为空。不能包含非打印字符\"=\",“*”,“<”,“>”,“\\”,“,”,\"|\",“/”。"
+        },
+        "values": {
+          "type": "array",
+          "description": "值列表。每个值最大长度43个unicode字符,可以为空字符串。 如果values为空列表,则表示any_value。value之间为或的关系。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        }
+      },
+      "description": "项目下的某资源的标签列表。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

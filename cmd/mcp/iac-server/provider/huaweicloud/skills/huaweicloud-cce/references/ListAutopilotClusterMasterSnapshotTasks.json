@@ -1,0 +1,232 @@
+{
+  "name": "ListAutopilotClusterMasterSnapshotTasks",
+  "summary": "获取集群备份任务详情列表",
+  "tags": "集群升级(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3.1/projects/{project_id}/clusters/{cluster_id}/operation/snapshot/tasks": {
+      "get": {
+        "tags": [
+          "集群升级(Autopilot)"
+        ],
+        "operationId": "ListAutopilotClusterMasterSnapshotTasks",
+        "summary": "获取集群备份任务详情列表",
+        "description": "获取集群备份任务详情列表",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示获取集群备份任务详情列表成功。",
+            "examples": {
+              "application/json": {
+                "kind": "List",
+                "apiVersion": "v3.1",
+                "metadata": {},
+                "items": [
+                  {
+                    "kind": "SnapshotTask",
+                    "apiVersion": "v3.1",
+                    "metadata": {
+                      "uid": "87d326f9-46b0-486e-a4ba-1f82ec9315ed",
+                      "creationTimestamp": "2023-11-25 17:03:46.739012 +0800 CST",
+                      "updateTimestamp": "2023-11-25 17:03:46.739027 +0800 CST"
+                    },
+                    "spec": {},
+                    "status": {
+                      "phase": "Running",
+                      "progress": "67",
+                      "completionTime": "2023-11-25 17:03:46.739027 +0800 CST"
+                    }
+                  }
+                ],
+                "status": {
+                  "latestBackupTime": "2023-11-25 17:03:47.980844 +0800 CST"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/SnapshotClusterTaskResponseBody"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "获取集群备份任务列表详情",
+        "x-order": 12,
+        "x-scope": "Commercial",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot",
+        "x-open-region-cloud": "hws,hws_hk"
+      }
+    }
+  },
+  "definitions": {
+    "SnapshotTask": {
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "任务类型"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本"
+        },
+        "metadata": {
+          "description": "备份任务元数据信息",
+          "$ref": "#/definitions/SnapshotTaskMetadata"
+        },
+        "spec": {
+          "description": "备份任务配置信息(待废弃)",
+          "$ref": "#/definitions/SnapshotSpec"
+        },
+        "status": {
+          "description": "备份任务状态",
+          "$ref": "#/definitions/SnapshotStatus"
+        }
+      }
+    },
+    "SnapshotTaskStatus": {
+      "properties": {
+        "latestBackupTime": {
+          "type": "string",
+          "description": "最近一次备份的时间"
+        }
+      }
+    },
+    "SnapshotSpecItems": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "子任务ID"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:\n子任务类型\n**取值范围**:\n- master-backup:集群EVS备份\n- master-backup-rollback:集群EVS回滚\n**默认取值**:\n不涉及"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释**:\n状态\n**取值范围**:\n- Init:初始化\n- Queuing:等待\n- Running:运行中\n- Pause:暂停\n- Success:成功\n- Failed:失败\n**默认取值**:\n不涉及"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "description": "任务创建时间"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "description": "任务更新时间"
+        },
+        "message": {
+          "type": "string",
+          "description": "信息"
+        }
+      }
+    },
+    "SnapshotStatus": {
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "任务状态"
+        },
+        "progress": {
+          "type": "string",
+          "description": "任务进度"
+        },
+        "completionTime": {
+          "type": "string",
+          "description": "完成时间"
+        }
+      }
+    },
+    "SnapshotTaskMetadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "任务的ID。"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "description": "任务的创建时间。"
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "description": "任务的更新时间。"
+        }
+      }
+    },
+    "SnapshotClusterTaskResponseBody": {
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "description": "api版本,默认为v3.1"
+        },
+        "kind": {
+          "type": "string",
+          "description": "任务类型"
+        },
+        "metadata": {
+          "description": "备份任务元数据信息",
+          "$ref": "#/definitions/SnapshotTaskMetadata"
+        },
+        "items": {
+          "type": "array",
+          "description": "备份任务列表",
+          "items": {
+            "$ref": "#/definitions/SnapshotTask"
+          }
+        },
+        "status": {
+          "description": "备份任务状态",
+          "$ref": "#/definitions/SnapshotTaskStatus"
+        }
+      }
+    },
+    "SnapshotSpec": {
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "备份任务详情",
+          "items": {
+            "$ref": "#/definitions/SnapshotSpecItems"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

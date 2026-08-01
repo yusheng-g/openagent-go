@@ -1,0 +1,244 @@
+{
+  "name": "GetBucketReplication",
+  "summary": "获取桶的跨区域复制配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "GetBucketReplication",
+        "summary": "获取桶的跨区域复制配置",
+        "description": "获取指定桶的复制配置信息。执行该配置操作前需要确保执行者拥有GetReplicationConfiguration权限。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?replication",
+        "x-request-examples-1": "GET /?replication HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: Wed, 27 Jun 2018 13:42:40 +0000\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:jGHviInfRyOkT/EpySpua1hlBuY=\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "replication",
+            "in": "query",
+            "required": true,
+            "description": "replication表示请求桶的跨区域复制配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: B59500000164417B57D02F7EF8823152\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCSHu6lz4vgk5G3E32OFcIPEZZgdOEYE/\nContent-Type: application/xml\nDate: Wed, 27 Jun 2018 13:42:39 GMT\nContent-Length: 337\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<ReplicationConfiguration xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2006-03-01/\">\n\n  <Rule>\n    <ID>Rule-1</ID>\n    <Status>Enabled</Status>\n    <Prefix></Prefix>\n    <Destination>\n      <Bucket>dstbucket</Bucket>\n      <StorageClass>STANDARD</StorageClass>\n      <DeleteData>Enabled</DeleteData>\n    </Destination>\n    <HistoricalObjectReplication>Enabled</HistoricalObjectReplication>\n  </Rule>\n  <Agency>testAcy</Agency>\n</ReplicationConfiguration>\n"
+            },
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetBucketReplicationResponseBody"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "请求失败响应消息。\n除了公共的错误码外,此接口还会返回一些其他的错误码。下面列出本接口的一些常见错误,以及可能原因。\n|错误码|描述|HTTP状态码|SOAP错误码前缀|\n|---|---|---|---|\n|NoSuchReplicationConfiguration|跨region复制配置不存在。|404 Not Found|Client|\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ReplicationConfigurationRuleDestination": {
+      "description": "目标桶信息的容器。\n",
+      "properties": {
+        "Bucket": {
+          "description": "存储被规则标识的对象副本的桶名称。\n\n如果在复制配置中有多条规则,这些规则必须都要标识同一个桶作为目标桶。\n",
+          "type": "string"
+        },
+        "StorageClass": {
+          "description": "对象的存储类型。\n",
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "WARM",
+            "COLD"
+          ]
+        },
+        "DeleteData": {
+          "description": "删除同步复制关键字,如果为Enabled,源桶的对象删除操作会复制到目标端。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        }
+      }
+    },
+    "SetBucketReplicationRequestBody": {
+      "xml": {
+        "name": "ReplicationConfiguration"
+      },
+      "description": "复制规则的容器,最多可以达到100条规则,所有的复制配置大小可达到50KB。\n",
+      "required": [
+        "Agency",
+        "Rule"
+      ],
+      "properties": {
+        "Agency": {
+          "description": "用户创建的委托名字,最大长度为64字符。\n",
+          "type": "string"
+        },
+        "Rule": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReplicationConfigurationRule"
+          }
+        }
+      }
+    },
+    "ReplicationConfigurationRule": {
+      "description": "一条特定复制规则信息的容器。\n\n复制配置必须至少配置一条规则,最多能达到100条规则。\n",
+      "required": [
+        "Status",
+        "Prefix",
+        "Destination",
+        "Bucket"
+      ],
+      "properties": {
+        "ID": {
+          "description": "规则的特殊辨识符,最大长度为255字符。\n",
+          "type": "string",
+          "maxLength": 255
+        },
+        "Status": {
+          "description": "如果Status为Disabled,这条规则会被忽略。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        },
+        "Prefix": {
+          "description": "对象键值名的前缀,适配于一个或者多个对象。\n\n最大前缀长度可达到为1024个字节,不支持重叠的前缀。\n",
+          "type": "string",
+          "maxLength": 1024
+        },
+        "Destination": {
+          "$ref": "#/definitions/ReplicationConfigurationRuleDestination"
+        },
+        "HistoricalObjectReplication": {
+          "description": "历史对象复制关键字,如果为Enabled,会复制符合这条规则的历史对象。\n",
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "GetBucketReplicationResponseBody": {
+      "properties": {
+        "ReplicationConfiguration": {
+          "$ref": "#/definitions/SetBucketReplicationRequestBody"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

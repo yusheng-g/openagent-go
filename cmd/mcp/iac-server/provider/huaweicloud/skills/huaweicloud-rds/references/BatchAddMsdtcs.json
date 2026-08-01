@@ -1,0 +1,155 @@
+{
+  "name": "BatchAddMsdtcs",
+  "summary": "添加MSDTC",
+  "tags": "管理数据库和用户(SQL Server)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/msdtc/host": {
+      "post": {
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "x-request-examples-url-1": "https://console-datebase.huaweiclouds.com/rds/rest/rds/v3/054b93101a00d3a02fe3c01fb31462ac/instances/463a6520abc345888850ea5bfb245e4fin04/msdtc/host",
+        "x-request-examples-text-1": {
+          "hosts": [
+            {
+              "host_name": "pc1",
+              "ip": "127.0.0.1"
+            }
+          ]
+        },
+        "x-request-examples-1": {
+          "hosts": [
+            {
+              "host_name": "pc1",
+              "ip": "127.0.0.1"
+            }
+          ]
+        },
+        "tags": [
+          "管理数据库和用户(SQL Server)"
+        ],
+        "summary": "添加MSDTC",
+        "description": "添加MSDTC相关主机host地址",
+        "operationId": "BatchAddMsdtcs",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "addMsdtc",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddMsdtcRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/MsdtcJobResponse"
+            },
+            "examples": {
+              "application/json": {
+                "job_id": "603d87db-9a91-411e-b369-ca4d72007e27"
+              }
+            }
+          },
+          "default": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "AddMsdtcRequestBody": {
+      "type": "object",
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MsdtcHostOption"
+          },
+          "description": "主机信息,key为hostname ,value 为IP"
+        }
+      }
+    },
+    "MsdtcJobResponse": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务流id"
+        }
+      },
+      "required": [
+        "job_id"
+      ]
+    },
+    "MsdtcHostOption": {
+      "type": "object",
+      "required": [
+        "host_name",
+        "ip"
+      ],
+      "properties": {
+        "host_name": {
+          "type": "string",
+          "description": "主机名称 hostname"
+        },
+        "ip": {
+          "type": "string",
+          "description": "主机ip"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

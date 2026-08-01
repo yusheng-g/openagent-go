@@ -1,0 +1,476 @@
+{
+  "name": "ListPrivateDnats",
+  "summary": "查询DNAT规则列表",
+  "tags": "私网DNAT规则",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/private-nat/dnat-rules": {
+      "get": {
+        "tags": [
+          "私网DNAT规则"
+        ],
+        "summary": "查询DNAT规则列表",
+        "description": "查询DNAT规则列表。",
+        "operationId": "ListPrivateDnats",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数。\n取值范围:1~2000。\n默认值:2000。",
+            "required": false,
+            "type": "integer",
+            "default": "2000",
+            "x-order": 3,
+            "minimum": 1,
+            "maximum": 2000
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "功能说明:分页查询起始的资源ID,为空时查询第一页。\n值从上一次查询的PageInfo中的next_marker或者previous_marker中获取。",
+            "required": false,
+            "type": "string",
+            "x-order": 4,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "是否查询前一页。",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "DNAT规则的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 6,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "description": "项目的ID。",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 7,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "企业项目ID。创建DNAT规则时,关联的企业项目ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 8,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "DNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 9,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "gateway_id",
+            "in": "query",
+            "description": "私网NAT网关实例的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 10,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "transit_ip_id",
+            "in": "query",
+            "description": "中转IP的ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 11,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "network_interface_id",
+            "in": "query",
+            "description": "计算实例、ELBV2、ELBV3、VIP等资源的端口ID。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 13,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "DNAT规则后端的类型。\n取值:\n- COMPUTE:后端为计算实例。\n- VIP:后端为VIP的实例。\n- ELB:后端为ELBv2的实例。\n- ELBv3:后端为ELBv3的实例。\n- CUSTOMIZE:后端为自定义IP。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 14,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "private_ip_address",
+            "in": "query",
+            "description": "后端资源(计算实例、ELBV2、ELBV3、VIP等)的私网IP地址。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 15,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "DNAT规则协议类型,\n目前支持TCP/tcp/Tcp/tCp/tcP/TCp/tCP/TcP、\nUDP/udp/Udp/uDp/udP/UDp/uDP/UdP、\nANY/any/Any/aNy/anY/ANy/aNY/AnY。\n分别对应协议号6、17、0。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 16,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "internal_service_port",
+            "in": "query",
+            "description": "后端实例的端口号(计算实例、ELBV2、ELBV3、VIP等)。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 17,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "transit_service_port",
+            "in": "query",
+            "description": "中转IP的端口号。",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-order": 18,
+            "minItems": 1,
+            "maxItems": 10
+          }
+        ],
+        "deprecated": false,
+        "x-name": "查询DNAT规则列表",
+        "x-constraint": "可以在URI后面用‘?’和‘&’添加不同的查询条件组合。\n支持参数说明中所有非必选参数过滤,请参考请求样例。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 0,
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "responses": {
+          "200": {
+            "description": "查询DNAT规则列表成功。",
+            "examples": {
+              "application/json": {
+                "dnat_rules": [
+                  {
+                    "id": "24dd6bf5-48f2-4915-ad0b-5bb111d39c83",
+                    "project_id": "da261828016849188f4dcc2ef94d9da9",
+                    "description": "aa",
+                    "gateway_id": "0adefb29-a6c2-48a5-8637-2be67fa03fec",
+                    "transit_ip_id": "3faa719d-6d18-4ccb-a5c7-33e65a09663e",
+                    "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                    "network_interface_id": "dae9393a-b536-491c-a5a2-72edc1104707",
+                    "type": "COMPUTE",
+                    "protocol": "any",
+                    "internal_service_port": "0",
+                    "transit_service_port": "0",
+                    "private_ip_address": "192.168.1.72",
+                    "created_at": "2019-04-29T07:10:01",
+                    "updated_at": "2019-04-29T07:10:01",
+                    "status": "ACTIVE"
+                  },
+                  {
+                    "id": "25dcdb21-97de-43cd-b476-31637a47f05d",
+                    "project_id": "da261828016849188f4dcc2ef94d9da9",
+                    "description": "aa",
+                    "gateway_id": "0adefb29-a6c2-48a5-8637-2be67fa03fec",
+                    "transit_ip_id": "15abdf29-4a68-474c-9963-79c4e6d495d7",
+                    "enterprise_project_id": "2759da7b-8015-404c-ae0a-a389007b0e2a",
+                    "network_interface_id": "9e2f0dbb-68b2-4c4b-9298-fa4f13187976",
+                    "type": "COMPUTE",
+                    "protocol": "any",
+                    "internal_service_port": "0",
+                    "transit_service_port": "0",
+                    "private_ip_address": "192.168.1.99",
+                    "created_at": "2019-04-29T07:15:41",
+                    "updated_at": "2019-04-29T07:15:41",
+                    "status": "ACTIVE"
+                  }
+                ],
+                "request_id": "a7b00469-5a31-4274-bb10-59167243383e",
+                "page_info": {
+                  "previous_marker": "14338426-6afe-4019-996b-018008113013",
+                  "current_count": 2
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListPrivateDnatsResponseBody"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListPrivateDnatsResponseBody": {
+      "properties": {
+        "dnat_rules": {
+          "type": "array",
+          "description": "查询DNAT规则列表的响应体。",
+          "items": {
+            "$ref": "#/definitions/PrivateDnat"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        }
+      },
+      "description": "查询DNAT规则列表的响应体。"
+    },
+    "PrivateDnat": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "DNAT规则的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "description": {
+          "type": "string",
+          "description": "DNAT规则的描述。长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "transit_ip_id": {
+          "type": "string",
+          "description": "中转IP的ID。",
+          "minLength": 36,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "gateway_id": {
+          "type": "string",
+          "description": "私网NAT网关实例的ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "network_interface_id": {
+          "type": "string",
+          "description": "网络接口ID,支持计算、ELBV2、ELBV3、VIP等实例的端口。",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "a3bad420-33b8-4e26-9e9b-bdf67aa8e72b"
+        },
+        "type": {
+          "type": "string",
+          "description": "DNAT规则后端的类型。\n取值:\n- COMPUTE:后端为计算实例。\n- VIP:后端为VIP的实例。\n- ELB:后端为ELBv2的实例。\n- ELBv3:后端为ELBv3的实例。\n- CUSTOMIZE:后端为自定义IP。",
+          "minLength": 1,
+          "maxLength": 10,
+          "example": "COMPUTE"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "协议类型。\n目前支持TCP/tcp、UDP/udp、ANY/any。\n对应协议号6、17、0。",
+          "enum": [
+            "tcp",
+            "udp",
+            "any"
+          ],
+          "minLength": 1,
+          "maxLength": 3,
+          "example": "tcp"
+        },
+        "private_ip_address": {
+          "type": "string",
+          "description": "后端资源(计算实例、ELBV2、ELBV3、VIP等)的私网IP地址。",
+          "minLength": 7,
+          "maxLength": 15,
+          "example": "192.168.1.72"
+        },
+        "internal_service_port": {
+          "type": "string",
+          "description": "后端实例的端口号(计算实例、ELBV2、ELBV3、VIP等)。",
+          "minLength": 1,
+          "maxLength": 5,
+          "default": 0,
+          "minimum": 0,
+          "maximum": 65535,
+          "example": 22
+        },
+        "transit_service_port": {
+          "type": "string",
+          "description": "中转IP的端口号。",
+          "minLength": 1,
+          "maxLength": 5,
+          "default": 0,
+          "minimum": 0,
+          "maximum": 65535,
+          "example": 22
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。创建DNAT规则时,关联的企业项目ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "example": "0c478f9e-73a4-4c45-b9bc-b2c3bfc0d4c0"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "DNAT规则的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 1,
+          "maxLength": 36,
+          "description": "DNAT规则的更新时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。"
+        },
+        "status": {
+          "type": "string",
+          "description": "私网NAT的DNAT规则状态。\n取值为:\n- ACTIVE:正常运行\n- FROZEN:冻结\n- INACTIVE:不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "FROZEN",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "DNAT规则的响应体。"
+    },
+    "PageInfo": {
+      "properties": {
+        "next_marker": {
+          "type": "string",
+          "description": "分页查询结果中最后一条记录的ID。通常用于查询下一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "previous_marker": {
+          "type": "string",
+          "description": "分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "分页查询资源时,本页的实例的个数。",
+          "minimum": 1,
+          "maximum": 2000,
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "分页信息。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

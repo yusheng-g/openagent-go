@@ -1,0 +1,66 @@
+{
+  "name": "GetAsymmetricSignatureSwitchV5",
+  "summary": "获取账号非对称签名开关状态",
+  "tags": "账号功能管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/asymmetric-signature-switch": {
+      "get": {
+        "x-api-type": "open-api",
+        "tags": [
+          "AccountSummary"
+        ],
+        "summary": "获取账号非对称签名开关状态",
+        "description": "该接口用于获取账号非对称签名开关的状态。",
+        "operationId": "GetAsymmetricSignatureSwitchV5",
+        "x-request-examples-description-1": "获取账号非对称签名开关状态。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v5/asymmetric-signature-switch",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAsymmetricSignatureRes"
+                },
+                "example": {
+                  "asymmetric_signature": {
+                    "asymmetric_signature_switch": true,
+                    "domain_id": "xxxxx"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

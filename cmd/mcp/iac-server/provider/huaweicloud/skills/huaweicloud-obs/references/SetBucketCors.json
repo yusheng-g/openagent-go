@@ -1,0 +1,215 @@
+{
+  "name": "SetBucketCors",
+  "summary": "设置桶的CORS配置",
+  "tags": "静态网站托管",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "静态网站托管"
+        ],
+        "operationId": "SetBucketCors",
+        "summary": "设置桶的CORS配置",
+        "description": "CORS(Cross Origin Resource Sharing),即跨域资源共享,是W3C标准化组织提出的一种规范机制,允许客户端的跨域请求的配置。在通常的网页请求中,由于安全策略SOP(Same Origin Policy)的存在,一个网站的脚本和内容是不能与另一个网站的脚本和内容发生交互的。\n\nOBS允许在桶内保存静态的网页资源,在正确的使用下,OBS的桶可以成为网站资源(请参见设置桶的网站配置)。只有进行了适当的CORS配置,OBS中的网站才能响应另一个网站的跨域请求。\n\n典型的应用场景如下:\n\n你可以使用CORS支持,使用JavaScript和HTML 5来构建Web应用,直接访问OBS中的资源,而不再需要代理服务器做中转。\n可以使用HTML 5中的拖拽功能,直接向OBS上传文件,展示上传进度,或是直接从Web应用中更新内容。\n托管在不同域中的外部网页、样式表和HTML 5应用,现在可以引用存储在OBS中的Web字体或图片,让这些资源能被多个网站共享。\n要正确执行此操作,需要确保执行者有PutBucketCORS权限。默认情况下只有桶的所有者可以执行此操作,也可以通过设置桶策略或用户策略授权给其他用户。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/?cors",
+        "x-request-examples-1": "PUT /?cors HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 03:51:52 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:lq7BGoqE9yyhdEwE6KojJ7ysVxU=\nContent-MD5: NGLzvw81f/A2C9PiGO0aZQ==\nContent-Length: 617\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<CORSConfiguration>\n  <CORSRule>\n    <AllowedMethod>POST</AllowedMethod>\n    <AllowedMethod>GET</AllowedMethod>\n    <AllowedMethod>HEAD</AllowedMethod>\n    <AllowedMethod>PUT</AllowedMethod>\n    <AllowedMethod>DELETE</AllowedMethod>\n    <AllowedOrigin>www.example.com</AllowedOrigin>\n    <AllowedHeader>AllowedHeader_1</AllowedHeader>\n    <AllowedHeader>AllowedHeader_2</AllowedHeader>\n    <MaxAgeSeconds>100</MaxAgeSeconds>\n    <ExposeHeader>ExposeHeader_1</ExposeHeader>\n    <ExposeHeader>ExposeHeader_2</ExposeHeader>\n  </CORSRule>\n</CORSConfiguration>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "Content-MD5",
+            "in": "header",
+            "description": "按照RFC 1864标准计算出消息体的MD5摘要字符串,即消息体128-bit MD5值经过base64编码后得到的字符串。也支持设置Content-SHA256头域,其值为消息体256-bit SHA256值经过base64编码后得到的字符串,Content-MD5和Content-SHA256二选一。\n\n类型:字符串\n\n示例:n58IG6hfM7vqI4K0vnWpog==\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "SetBucketCorsRequestBody",
+            "description": "在此请求中,需要在请求的消息体中配置桶的CORS配置信息。配置信息以XML格式上传。\n",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SetBucketCorsRequestBody"
+            }
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "cors",
+            "in": "query",
+            "required": true,
+            "description": "cors表示请求桶的CORS配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "SetBucketCorsRequestBody": {
+      "xml": {
+        "name": "CORSConfiguration"
+      },
+      "type": "object",
+      "description": "CORSRules的根节点,最大不超过64 KB。\n\n类型:容器。\n\n父节点:无。\n",
+      "required": [
+        "CORSRule"
+      ],
+      "properties": {
+        "CORSRule": {
+          "description": "CORS规则,CORSConfiguration下可最多包含100个规则。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CORSRule"
+          }
+        }
+      }
+    },
+    "CORSRule": {
+      "description": "CORS规则,CORSConfiguration下可最多包含100个规则。\n\n类型:容器。\n\n父节点:CORSConfiguration。\n",
+      "required": [
+        "AllowedMethod",
+        "AllowedOrigin"
+      ],
+      "properties": {
+        "ID": {
+          "description": "一条Rule的标识,由不超过255个字符的字符串组成。\n\n类型:字符串。\n\n父节点:CORSRule。\n",
+          "type": "string"
+        },
+        "AllowedMethod": {
+          "description": "CORS规则允许的Method。\n\n类型:字符串。\n\n有效值:GET、PUT、HEAD、POST 、DELETE\n\n父节点:CORSRule。\n",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "PUT",
+              "HEAD",
+              "POST",
+              "DELETE"
+            ]
+          }
+        },
+        "AllowedOrigin": {
+          "description": "CORS规则允许的Origin(表示域名的字符串),可以带一个匹配符”*”。每一个AllowedOrigin可以带最多一个“*”通配符。\n\n类型:字符串。\n\n父节点:CORSRule。\n",
+          "type": "string"
+        },
+        "AllowedHeader": {
+          "description": "配置CORS请求中允许携带的“Access-Control-Request-Headers”头域。如果一个请求带了“Access-Control-Request-Headers”头域,则只有匹配上AllowedHeader中的配置才认为是一个合法的CORS请求。每一个AllowedHeader可以带最多一个“*”通配符,不可出现空格。\n\n类型:字符串。\n\n父节点:CORSRule。\n",
+          "type": "string"
+        },
+        "MaxAgeSeconds": {
+          "description": "客户端可以缓存的CORS响应时间,以秒为单位。\n\n每个CORSRule可以包含至多一个MaxAgeSeconds,可以设置为负值。\n\n类型:整数。\n\n父节点:CORSRule。\n",
+          "type": "string"
+        },
+        "ExposeHeader": {
+          "description": "CORS响应中带的附加头域,给客户端提供额外的信息,不可出现空格。\n\n类型:字符串。\n\n父节点:CORSRule。\n",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

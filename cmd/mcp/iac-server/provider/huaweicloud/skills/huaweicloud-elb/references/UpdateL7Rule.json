@@ -1,0 +1,308 @@
+{
+  "name": "UpdateL7Rule",
+  "summary": "更新转发规则",
+  "tags": "转发规则",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/l7policies/{l7policy_id}/rules/{l7rule_id}": {
+      "put": {
+        "x-request-examples-description-1": "更新转发规则",
+        "tags": [
+          "转发规则"
+        ],
+        "summary": "更新转发规则",
+        "description": "更新七层转发规则。",
+        "operationId": "UpdateL7Rule",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateL7RuleRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateL7RuleRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "l7policy_id",
+            "in": "path",
+            "description": "**参数解释**:策略ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          },
+          {
+            "name": "l7rule_id",
+            "in": "path",
+            "description": "**参数解释**:规则ID。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "rule": {
+                  "compare_type": "STARTS_WITH",
+                  "provisioning_status": "ACTIVE",
+                  "project_id": "99a3fff0d03c428eac3678da6a7d0f24",
+                  "invert": false,
+                  "admin_state_up": true,
+                  "value": "/ccc.html",
+                  "key": null,
+                  "type": "PATH",
+                  "id": "84f4fcae-9c15-4e19-a99f-72c0b08fd3d7"
+                },
+                "request_id": "133096f9-e754-430d-a2c2-e61fe1190aa8"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateL7RuleResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "更新转发规则",
+        "x-constraint": "",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-url-1": "PUT https://{ELB_Endpoint}/v3/{99a3fff0d03c428eac3678da6a7d0f24}/elb/l7policies/cf4360fd-8631-41ff-a6f5-b72c35da74be/rules/84f4fcae-9c15-4e19-a99f-72c0b08fd3d7",
+        "x-request-examples-1": {
+          "rule": {
+            "compare_type": "STARTS_WITH",
+            "value": "/ccc.html"
+          }
+        },
+        "x-request-examples-text-1": {
+          "rule": {
+            "compare_type": "STARTS_WITH",
+            "value": "/ccc.html"
+          }
+        },
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "L7Rule": {
+      "required": [
+        "admin_state_up",
+        "compare_type",
+        "key",
+        "project_id",
+        "type",
+        "value",
+        "provisioning_status",
+        "invert",
+        "id",
+        "conditions"
+      ],
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:转发规则的管理状。\n\n**取值范围**:固定为true。\n\n不支持该字段,请勿使用。"
+        },
+        "compare_type": {
+          "type": "string",
+          "description": "**参数解释**:转发规则的匹配方式。\n\n**取值范围**:type为HOST_NAME时可以为EQUAL_TO。type为PATH时可以为REGEX,STARTS_WITH,EQUAL_TO。"
+        },
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:匹配内容的键值。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:转发规则所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:转发规则类别。\n\n**取值范围**:\n- HOST_NAME:匹配域名。\n- PATH:匹配请求路径。\n- METHOD:匹配请求方法。\n- HEADER:匹配请求头。\n- QUERY_STRING:匹配请求查询参数。\n- SOURCE_IP:匹配请求源IP地址。\n- COOKIE: 匹配cookie信息。",
+          "enum": [
+            "HOST_NAME",
+            "PATH",
+            "METHOD",
+            "HEADER",
+            "QUERY_STRING",
+            "SOURCE_IP"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:匹配内容的值。\n\n**取值范围**:\n- 当type为HOST_NAME时,字符串只能包含英文字母、数字、-.*,必须以字母、数字或*开头。若域名中包含*,则*只能出现在开头且必须以*.开始。当*开头时表示通配0~任一个字符。\n- 当type为PATH时,当转发规则的compare_type为STARTS_WITH、EQUAL_TO时,字符串只能包含英文字母、数字、_~';@^-%#&$.*+?,=!:|\\\\/()\\[\\]{},且必须以/开头。\n- 当type为METHOD、SOURCE_IP、HEADER、QUERY_STRING时,该字段无意义,使用conditions来指定key,value。",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "provisioning_status": {
+          "type": "string",
+          "description": "**参数解释**:provisioning状态。该字段无效,默认为ACTIVE。\n\n**取值范围**:\n- ACTIVE:已生效。\n- PENDING_CREATE:创建中。\n- ERROR:当前配置有误。"
+        },
+        "invert": {
+          "type": "boolean",
+          "description": "**参数解释**:是否反向匹配。\n\n**取值范围**:不涉及"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:规则ID。\n\n**取值范围**:不涉及"
+        },
+        "conditions": {
+          "type": "array",
+          "description": "**参数解释**:转发规则的匹配条件。\n\n**取值范围**:不涉及",
+          "items": {
+            "$ref": "#/definitions/RuleCondition"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:创建时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:更新时间。\n\n**取值范围**:格式:yyyy-MM-dd'T'HH:mm:ss'Z',UTC时区。\n\n注意:独享型实例的历史数据以及共享型实例下的资源,不返回该字段。"
+        }
+      },
+      "description": "L7转发规则",
+      "type": "object"
+    },
+    "UpdateL7RuleOption": {
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:转发规则的管理状态。\n\n**约束限制**:只支持设置为true。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及"
+        },
+        "compare_type": {
+          "type": "string",
+          "description": "**参数解释**:转发匹配方式。\n\n**约束限制**:\n- type为HOST_NAME时仅支持EQUAL_TO,支持通配符*。\n- type为PATH时可以为REGEX,STARTS_WITH,EQUAL_TO。\n- type为METHOD、SOURCE_IP时,仅支持EQUAL_TO。\n- type为HEADER、QUERY_STRING,仅支持EQUAL_TO,支持通配符*、?。\n\n**取值范围**:\n- EQUAL_TO 表示精确匹配。\n- REGEX 表示正则匹配。\n- STARTS_WITH 表示前缀匹配。\n\n**默认取值**:不涉及"
+        },
+        "invert": {
+          "type": "boolean",
+          "description": "**参数解释**:是否反向匹配。\n\n**约束限制**:不涉及\n\n**取值范围**:true、false。\n\n**默认取值**:不涉及\n\n不支持该字段,请勿使用。"
+        },
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的名称,比如转发规则匹配类型是请求头匹配,则key表示请求头参数的名称。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及\n\n不支持该字段,请勿使用。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的值。比如转发规则匹配类型是域名匹配,则value表示域名的值。\n\n**约束限制**:仅当conditions空时该字段生效。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME时,字符串只能包含英文字母、数字、-.\\*,必须以字母、数字或\\*开头。若域名中包含\\*,则\\*只能出现在开头且必须以\\*.开始。当\\*开头时表示通配0~任一个字符。\n- 当转发规则类别type为PATH时,当转发规则的compare_type为STARTS_WITH、EQUAL_TO时,字符串只能包含英文字母、数字、_~';@^-%#&$.*+?,=!:|\\\\/()\\[\\]{},且必须以/开头。\n- 当转发规则类别type为METHOD、SOURCE_IP、HEADER,QUERY_STRING时,该字段无意义,使用conditions来指定key/value。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conditions": {
+          "type": "array",
+          "description": "**参数解释**:转发规则的匹配条件。\n\n**约束限制**:\n- 当监听器的高级转发策略功能(enhance_l7policy_enable)开启后才会生效。\n- 若转发规则配置了conditions,字段key、字段value的值无意义。\n- 同一个rule内的conditions列表中所有key必须相同,value不允许重复。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+          "items": {
+            "$ref": "#/definitions/UpdateRuleCondition"
+          }
+        }
+      },
+      "description": "**参数解释**:更新七层转发规则的请求参数。\n\n**约束限制**:不涉及"
+    },
+    "UpdateL7RuleRequestBody": {
+      "required": [
+        "rule"
+      ],
+      "properties": {
+        "rule": {
+          "description": "**参数解释**:规则对象。\n\n**约束限制**:不涉及",
+          "$ref": "#/definitions/UpdateL7RuleOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "UpdateL7RuleResponseBody": {
+      "required": [
+        "request_id",
+        "rule"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "rule": {
+          "description": "**参数解释**:规则对象。",
+          "$ref": "#/definitions/L7Rule"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "RuleCondition": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的名称。\n\n**约束限制**:同一个rule内的conditions列表中所有key必须相同。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME、PATH、METHOD、SOURCE_IP时,该字段固定为空字符串。\n- 当转发规则类别type为HEADER时,key表示请求头参数的名称,value表示请求头参数的值。key的长度限制1-40字符,只允许包含字母、数字和-_。\n- 当转发规则类别type为QUERY_STRING时,key表示查询参数的名称,value表示查询参数的值。key的长度限制为1-128字符,不支持空格,中括号,大括号,尖括号,反斜杠,双引号,'#','&','|',‘%’,‘~’,字母区分大小写。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的值。\n\n**约束限制**:同一个rule内的conditions列表中所有value不允许重复。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME时,key固定为空字符串,value表示域名的值。value长度1-128字符,字符串只能包含英文字母、数字、-.\\*,必须以字母、数字或\\*开头,\\*只能出现在开头且必须以\\*.开始。\n- 当转发规则类别type为PATH时,key固定为空字符串,value表示请求路径的值。value长度1-128字符。当转发规则的compare_type为STARTS_WITH、EQUAL_TO时,字符串只能包含英文字母、数字、_~';@^-%#&$.*+?,=!:|\\\\/()\\[\\]{},且必须以\"/\"开头。\n- 当转发规则类别type为HEADER时,key表示请求头参数的名称,value表示请求头参数的值。value长度限制1-128字符,不支持空格,双引号,支持以下通配符:*(匹配0个或更多字符)和?(正好匹配1个字符)。\n- 当转发规则类别type为QUERY_STRING时,key表示查询参数的名称,value表示查询参数的值。value长度限制为1-128字符,不支持空格,中括号,大括号,尖括号,反斜杠,双引号,'#','&','|',‘%’,‘~’,字母区分大小写,支持通配符:*(匹配0个或更多字符)和?(正好匹配1个字符)\n- 当转发规则类别type为METHOD时,key固定为空字符串,value表示请求方式。value取值范围为:GET, PUT,POST,DELETE, PATCH, HEAD, OPTIONS。\n\n- 当转发规则类别type为SOURCE_IP时,key固定为空字符串,value表示请求源地址。value为CIDR格式,支持ipv4,ipv6。例如192.168.0.2/32,2049::49/64。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "type": "object"
+    },
+    "UpdateRuleCondition": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的名称。\n\n**约束限制**:同一个rule内的conditions列表中所有key必须相同。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME、PATH、METHOD、SOURCE_IP时,该字段固定为空字符串。\n- 当转发规则类别type为HEADER时,key表示请求头参数的名称,value表示请求头参数的值。key的长度限制1-40字符,只允许包含字母、数字和-_。\n- 当转发规则类别type为QUERY_STRING时,key表示查询参数的名称,value表示查询参数的值。key的长度限制为1-128字符,不支持空格,中括号,大括号,尖括号,反斜杠,双引号,'#','&','|',‘%’,‘~’,字母区分大小写。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:匹配项的值。\n\n**约束限制**:\n- 同一个rule内的conditions列表中所有key必须相同。\n- 同一个rule内的conditions列表中所有value不允许重复。\n\n**取值范围**:\n- 当转发规则类别type为HOST_NAME时,key固定为空字符串,value表示域名的值。value长度1-128字符,字符串只能包含英文字母、数字、-.\\*,必须以字母、数字或\\*开头,\\*只能出现在开头且必须以\\*.开始。\n- 当转发规则类别type为PATH时,key固定为空字符串,value表示请求路径的值。value长度1-128字符。当转发规则的compare_type为STARTS_WITH、EQUAL_TO时,字符串只能包含英文字母、数字、_~';@^-%#&$.*+?,=!:|\\\\/()\\[\\]{},且必须以\"/\"开头。\n- 当转发规则类别type为HEADER时,key表示请求头参数的名称,value表示请求头参数的值。value长度限制1-128字符,不支持空格,双引号,支持以下通配符:*(匹配0个或更多字符)和?(正好匹配1个字符)。\n- 当转发规则类别type为QUERY_STRING时,key表示查询参数的名称,value表示查询参数的值。value长度限制为1-128字符,不支持空格,中括号,大括号,尖括号,反斜杠,双引号,'#','&','|',‘%’,‘~’,字母区分大小写,支持通配符:*(匹配0个或更多字符)和?(正好匹配1个字符)\n- 当转发规则类别type为METHOD时,key固定为空字符串,value表示请求方式。value取值范围为:GET, PUT,POST,DELETE, PATCH, HEAD, OPTIONS。\n- 当转发规则类别type为SOURCE_IP时,key固定为空字符串,value表示请求源地址。value为CIDR格式,支持ipv4,ipv6。例如192.168.0.2/32,2049::49/64。\n\n**默认取值**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "description": "**参数解释**:转发到服务器组配置。\n\n**约束限制**:不涉及"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

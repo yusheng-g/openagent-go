@@ -1,0 +1,90 @@
+{
+  "name": "ListAgenciesV5",
+  "summary": "查询指定条件下的委托及信任委托列表",
+  "tags": "委托及信任委托管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/agencies": {
+      "get": {
+        "tags": [
+          "Agency"
+        ],
+        "operationId": "ListAgenciesV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "查询指定条件下的委托及信任委托列表",
+        "description": "该接口可以用于查询指定条件下的委托及信任委托列表。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Marker"
+          },
+          {
+            "$ref": "#/components/parameters/PathPrefix"
+          }
+        ],
+        "x-request-examples-description-1": "查询所有委托及信任委托列表。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v5/agencies",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAgenciesResp"
+                },
+                "example": {
+                  "agencies": [
+                    {
+                      "urn": "iam::accountid:agency:name",
+                      "trust_policy": "{\"Version\":\"5.0\",\"Statement\":[{\"Action\":[\"sts:agencies:assume\",\"sts::tagSession\",\"sts::setSourceIdentity\"],\"Effect\":\"Allow\",\"Principal\":{\"IAM\":[\"xxx\"]}}]}",
+                      "created_at": "2023-09-21T01:17:19.590Z",
+                      "description": "description",
+                      "max_session_duration": 3600,
+                      "path": "",
+                      "agency_id": "string",
+                      "agency_name": "name",
+                      "trust_domain_id": null,
+                      "trust_domain_name": null
+                    }
+                  ],
+                  "page_info": {
+                    "next_marker": "marker",
+                    "current_count": 1
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

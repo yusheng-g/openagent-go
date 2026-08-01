@@ -1,0 +1,267 @@
+{
+  "name": "UpdateTrafficMirrorFilterRule",
+  "summary": "更新流量镜像筛选规则",
+  "tags": "流量镜像筛选规则",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/traffic-mirror-filter-rules/{traffic_mirror_filter_rule_id}": {
+      "put": {
+        "tags": [
+          "流量镜像筛选规则"
+        ],
+        "summary": "更新流量镜像筛选规则",
+        "description": "更新流量镜像筛选规则",
+        "operationId": "UpdateTrafficMirrorFilterRule",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateTrafficMirrorFilterRuleRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateTrafficMirrorFilterRuleRequestBody"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "traffic_mirror_filter_rule_id",
+            "in": "path",
+            "description": "流量镜像筛选条件规则ID",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "request_id": "197e0ed1-f59f-473b-9363-74666a7d3710",
+                "traffic_mirror_filter_rule": {
+                  "created_at": "2023-03-09T13:14:47Z",
+                  "updated_at": "2023-03-09T13:16:43Z",
+                  "id": "7c12805a-1b8d-40b5-ab23-a8fac480f2ec",
+                  "project_id": "7365fcd452924e398ec4cc1fe39c0d12",
+                  "description": "",
+                  "traffic_mirror_filter_id": "417d7317-6c17-4428-a0f3-997d3e2293a0",
+                  "direction": "ingress",
+                  "protocol": "ICMP",
+                  "ethertype": "IPv4",
+                  "source_cidr_block": "80-90",
+                  "destination_cidr_block": "192.168.1.0/24",
+                  "source_port_range": "10.0.0.0/8",
+                  "action": "reject",
+                  "priority": 23
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/TrafficMirrorFilterRuleResponseBody"
+            }
+          }
+        },
+        "x-name": "更新流量镜像筛选规则",
+        "x-scope": "Commercial",
+        "x-order": 17,
+        "x-request-examples-description-1": "更新ID为7c12805a-1b8d-40b5-ab23-a8fac480f2ec的流量镜像筛选规则,策略更新为reject。",
+        "x-request-examples-url-1": "PUT http://{endpoint}/v3/{project_id}/vpc/traffic-mirror-filter-rules/7c12805a-1b8d-40b5-ab23-a8fac480f2ec",
+        "x-request-examples-1": {
+          "traffic_mirror_filter_rule": {
+            "source_port_range": "80-90",
+            "destination_cidr_block": "192.168.1.0/24",
+            "source_cidr_block": "10.0.0.0/8",
+            "action": "reject"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"traffic_mirror_filter_rule\": {\n        \"source_port_range\": \"80-90\",\n        \"destination_cidr_block\": \"192.168.1.0/24\",\n        \"source_cidr_block\": \"10.0.0.0/8\",\n        \"action\":\"reject\"\n    }\n}",
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "TrafficMirrorFilterRuleResponseBody": {
+      "required": [
+        "request_id",
+        "traffic_mirror_filter_rule"
+      ],
+      "properties": {
+        "traffic_mirror_filter_rule": {
+          "description": "流量镜像筛选条件规则对象",
+          "$ref": "#/definitions/TrafficMirrorFilterRule"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "UpdateTrafficMirrorFilterRuleRequestBody": {
+      "required": [
+        "traffic_mirror_filter_rule"
+      ],
+      "properties": {
+        "traffic_mirror_filter_rule": {
+          "description": "流量镜像筛选条件规则对象",
+          "$ref": "#/definitions/UpdateTrafficMirrorFilterRuleOption"
+        }
+      },
+      "description": ""
+    },
+    "TrafficMirrorFilterRule": {
+      "required": [
+        "action",
+        "created_at",
+        "description",
+        "destination_cidr_block",
+        "destination_port_range",
+        "direction",
+        "ethertype",
+        "id",
+        "priority",
+        "project_id",
+        "protocol",
+        "source_cidr_block",
+        "source_port_range",
+        "traffic_mirror_filter_id",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:流量镜像筛选规则ID"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:项目ID"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:流量镜像筛选规则的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”"
+        },
+        "traffic_mirror_filter_id": {
+          "type": "string",
+          "description": "功能说明:流量镜像筛选条件ID"
+        },
+        "direction": {
+          "type": "string",
+          "description": "功能说明:流量方向\n取值范围:\n    ingress:入方向\n    egress:出方向"
+        },
+        "source_cidr_block": {
+          "type": "string",
+          "description": "功能说明:镜像流量的源网段"
+        },
+        "destination_cidr_block": {
+          "type": "string",
+          "description": "功能说明:镜像流量的目的网段"
+        },
+        "source_port_range": {
+          "type": "string",
+          "description": "功能说明:流量源端口范围\n取值范围:1~65535\n格式:80-200"
+        },
+        "destination_port_range": {
+          "type": "string",
+          "description": "功能说明:流量目的端口范围\n取值范围:1~65535\n格式:80-200"
+        },
+        "ethertype": {
+          "type": "string",
+          "description": "功能说明:镜像流量的地址协议版本\n取值范围:IPv4,IPv6"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:镜像流量的协议类型\n取值范围:TCP、UDP、ICMP、ICMPV6、ALL"
+        },
+        "action": {
+          "type": "string",
+          "description": "功能说明:镜像策略\n取值范围:accept(采集)、reject(不采集)"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:镜像规则优先级\n取值范围:1~65535,数字越小,优先级越高"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "创建时间戳"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "更新时间戳"
+        }
+      },
+      "description": ""
+    },
+    "UpdateTrafficMirrorFilterRuleOption": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "功能说明:流量镜像筛选规则的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:镜像流量的协议类型\n取值范围:TCP、UDP、ICMP、ICMPV6、ALL"
+        },
+        "ethertype": {
+          "type": "string",
+          "description": "功能说明:镜像流量的地址协议版本\n取值范围:IPv4,IPv6"
+        },
+        "source_cidr_block": {
+          "type": "string",
+          "description": "功能说明:镜像流量的源网段"
+        },
+        "destination_cidr_block": {
+          "type": "string",
+          "description": "功能说明:镜像流量的目的网段"
+        },
+        "source_port_range": {
+          "type": "string",
+          "description": "功能说明:流量源端口范围\n取值范围:1~65535\n格式:80-200"
+        },
+        "destination_port_range": {
+          "type": "string",
+          "description": "功能说明:流量目的端口范围\n取值范围:1~65535\n格式:80-200"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:镜像规则优先级\n取值范围:1~65535,数字越小,优先级越高"
+        },
+        "action": {
+          "type": "string",
+          "description": "功能说明:镜像策略\n取值范围:accept(采集)、reject(不采集)"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

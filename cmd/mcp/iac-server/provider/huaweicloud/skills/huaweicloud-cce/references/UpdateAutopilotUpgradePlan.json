@@ -1,0 +1,293 @@
+{
+  "name": "UpdateAutopilotUpgradePlan",
+  "summary": "延期自动升级计划",
+  "tags": "集群升级(Autopilot)",
+  "productshort": "CCE",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/autopilot/v3/projects/{project_id}/clusters/{cluster_id}/upgradeplans/{upgrade_plan_id}": {
+      "put": {
+        "tags": [
+          "集群升级(Autopilot)"
+        ],
+        "summary": "延期自动升级计划",
+        "description": "该API用于延期集群自动升级计划。",
+        "operationId": "UpdateAutopilotUpgradePlan",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/param_path_projectid"
+          },
+          {
+            "$ref": "#/parameters/param_path_clusterid"
+          },
+          {
+            "$ref": "#/parameters/param_path_upgrade_plan_id"
+          },
+          {
+            "$ref": "#/parameters/param_header_content_type"
+          },
+          {
+            "$ref": "#/parameters/param_header_x_auth_token"
+          },
+          {
+            "in": "body",
+            "name": "DelayUpgradePlanRequestBody",
+            "description": "延期自动升级计划请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DelayUpgradePlanRequestBody"
+            },
+            "x-order": 500
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "表示在指定集群下延期自动升级计划成功。",
+            "examples": {
+              "application/json": {
+                "kind": "UpgradePlan",
+                "apiVersion": "v3",
+                "metadata": {
+                  "uid": "5ddfddfe-87db-11ec-b5e5-0255ac111914"
+                },
+                "spec": {
+                  "clusterID": "b4b9e60f-8aa2-11ee-af09-0255ac10004f",
+                  "clusterVersion": "v1.27.6-r0",
+                  "targetVersion": "v1.27.9-r0",
+                  "notBefore": "2025-01-06 16:00:00 +0000 UTC",
+                  "notAfter": "2025-01-06 20:00:00 +0000 UTC",
+                  "notBeforeDeadline": "2025-01-30 20:00:00 +0000 UTC"
+                },
+                "status": {
+                  "phase": "Pending"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpgradePlan"
+            }
+          }
+        },
+        "x-constraint": "",
+        "x-is-registered": "Y",
+        "x-name": "延期自动升级计划",
+        "x-order": 26,
+        "x-scope": "Commercial",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-support-sdk": "Y",
+        "x-api-type": "open-api",
+        "x-apiexplorer-hide": "false",
+        "x-api-category": "autopilot"
+      }
+    }
+  },
+  "definitions": {
+    "UpgradePlan": {
+      "required": [
+        "kind",
+        "apiVersion",
+        "metadata",
+        "spec",
+        "status"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "pattern": "UpgradePlan",
+          "description": "API类型,固定值“UpgradePlan”,该值不可修改。",
+          "default": "UpgradePlan"
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "API版本,固定值“v3”,该值不可修改。",
+          "pattern": "v3",
+          "default": "v3"
+        },
+        "metadata": {
+          "description": "自动升级计划的元数据信息",
+          "$ref": "#/definitions/Metadata"
+        },
+        "spec": {
+          "description": "自动升级计划主体",
+          "$ref": "#/definitions/UpgradePlanSpec"
+        },
+        "status": {
+          "description": "自动升级计划的当前状态",
+          "$ref": "#/definitions/UpgradePlanStatus"
+        }
+      }
+    },
+    "UpgradePlanStatus": {
+      "required": [
+        "phase"
+      ],
+      "properties": {
+        "phase": {
+          "type": "string",
+          "description": "自动升级计划状态",
+          "default": "Pending",
+          "enum": [
+            "Pending",
+            "Enqueued",
+            "Upgrading",
+            "Success",
+            "Failed",
+            "Skipped"
+          ]
+        }
+      }
+    },
+    "UpgradePlanSpec": {
+      "required": [
+        "clusterID",
+        "clusterVersion",
+        "targetVersion",
+        "notBefore",
+        "notAfter",
+        "notBeforeDeadline"
+      ],
+      "properties": {
+        "clusterID": {
+          "type": "string",
+          "description": "集群ID",
+          "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"
+        },
+        "clusterVersion": {
+          "type": "string",
+          "description": "当前集群版本",
+          "pattern": "^v\\d\\.\\d\\.\\d-r\\d$",
+          "example": "v1.23.4-r0"
+        },
+        "targetVersion": {
+          "type": "string",
+          "description": "本次集群升级的目标版本",
+          "pattern": "^v\\d\\.\\d\\.\\d-r\\d$",
+          "example": "v1.25.2-r0"
+        },
+        "notBefore": {
+          "type": "string",
+          "description": "自动升级计划的最早时间(UTC时间),需要早于notBeforeDeadline",
+          "example": "2025-01-06 16:00:00 +0000 UTC"
+        },
+        "notAfter": {
+          "type": "string",
+          "description": "自动升级计划的最晚时间(UTC时间)",
+          "example": "2025-01-06 20:00:00 +0000 UTC"
+        },
+        "notBeforeDeadline": {
+          "type": "string",
+          "description": "自动升级计划开始的截止时间(UTC时间)",
+          "example": "2025-01-30 16:00:00 +0000 UTC"
+        }
+      }
+    },
+    "Metadata": {
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "**参数解释**:\n唯一id标识\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n资源名称\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "labels": {
+          "type": "object",
+          "description": "**参数解释**:\n资源标签,key/value对格式,接口保留字段,填写不会生效\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "object",
+          "description": "**参数解释**:\n资源注解,由key/value组成\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "updateTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n更新时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        },
+        "creationTimestamp": {
+          "type": "string",
+          "format": "date",
+          "description": "**参数解释**:\n创建时间\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+        }
+      },
+      "description": "**参数解释**:\n资源描述基本信息,集合类的元素类型,包含一组由不同名称定义的属性。\n**约束限制**:\n不涉及\n**取值范围**:\n不涉及\n**默认取值**:\n不涉及"
+    },
+    "DelayUpgradePlanRequestBody": {
+      "required": [
+        "notBefore"
+      ],
+      "properties": {
+        "notBefore": {
+          "type": "string",
+          "format": "date",
+          "description": "新的自动升级计划启动时间,必须早于notBeforeDeadline",
+          "example": "2025-02-01 16:00:00 +0000 UTC"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "param_header_x_auth_token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "调用接口的认证方式分为Token和AK/SK两种,如果您使用的Token方式,此参数为必填,请填写Token的值,获取方式请参见[获取token](cce_02_0004.xml)。",
+      "required": true,
+      "type": "string",
+      "maxLength": 16384,
+      "x-order": 52
+    },
+    "param_path_clusterid": {
+      "name": "cluster_id",
+      "in": "path",
+      "description": "集群ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 2
+    },
+    "param_path_upgrade_plan_id": {
+      "name": "upgrade_plan_id",
+      "in": "path",
+      "description": "集群自动升级计划ID",
+      "required": true,
+      "type": "string",
+      "pattern": "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$",
+      "x-order": 55
+    },
+    "param_header_content_type": {
+      "name": "Content-Type",
+      "in": "header",
+      "description": "**参数解释:**\n消息体的类型(格式),默认为application/json,有其他取值时会在具体接口中专门说明。\n**约束限制:**\nGET方法不做校验\n**默认取值:**\n不涉及",
+      "required": true,
+      "type": "string",
+      "x-order": 51,
+      "default": "application/json"
+    },
+    "param_path_projectid": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID,获取方式请参见[如何获取接口URI中参数](cce_02_0271.xml)。",
+      "required": true,
+      "type": "string",
+      "x-order": 1
+    }
+  },
+  "host": "cce.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

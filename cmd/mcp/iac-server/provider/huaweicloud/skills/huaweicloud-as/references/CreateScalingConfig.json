@@ -1,0 +1,542 @@
+{
+  "name": "CreateScalingConfig",
+  "summary": "创建弹性伸缩配置",
+  "tags": "弹性伸缩配置",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling_configuration": {
+      "post": {
+        "tags": [
+          "弹性伸缩配置"
+        ],
+        "summary": "创建弹性伸缩配置",
+        "description": "创建弹性伸缩配置。伸缩配置是伸缩组内实例(弹性云服务器云主机)的模板,定义了伸缩组内待添加的实例的规格数据。伸缩配置与伸缩组是解耦的,同一伸缩配置可以被多个伸缩组使用。默认最多可以创建100个伸缩配置。",
+        "operationId": "CreateScalingConfig",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "description": "BodyParameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateScalingConfigOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求正常",
+            "examples": {
+              "application/json": {
+                "scaling_configuration_id": "f8327883-6a07-4497-9a61-68c03e8e72a2"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ScalingConfigId"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-request-examples-url-2": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_configuration",
+        "x-request-examples-description-2": "使用云服务器规格、镜像和磁盘等信息创建伸缩配置",
+        "x-request-examples-text-2": {
+          "scaling_configuration_name": "as-config-tlzq",
+          "instance_config": {
+            "flavorRef": "s3.xlarge.4",
+            "imageRef": "627a1223-2ca3-46a7-8d5f-7aef22c74ee6",
+            "disk": [
+              {
+                "size": 40,
+                "volume_type": "SATA",
+                "disk_type": "SYS"
+              }
+            ],
+            "key_name": "100vm_key",
+            "security_groups": [
+              {
+                "id": "6c22a6c0-b5d2-4a84-ac56-51090dcc33be"
+              }
+            ]
+          }
+        },
+        "x-request-examples-2": {
+          "scaling_configuration_name": "as-config-tlzq",
+          "instance_config": {
+            "flavorRef": "s3.xlarge.4",
+            "imageRef": "627a1223-2ca3-46a7-8d5f-7aef22c74ee6",
+            "disk": [
+              {
+                "size": 40,
+                "volume_type": "SATA",
+                "disk_type": "SYS"
+              }
+            ],
+            "key_name": "100vm_key",
+            "security_groups": [
+              {
+                "id": "6c22a6c0-b5d2-4a84-ac56-51090dcc33be"
+              }
+            ]
+          }
+        },
+        "x-request-examples-description-1": "使用已有云服务器规格为模板",
+        "x-support-sdk": "Y",
+        "x-name": "创建弹性伸缩配置",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "公开接口",
+        "x-order": 1,
+        "x-request-examples-url-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling_configuration",
+        "x-request-examples-1": {
+          "scaling_configuration_name": "as-config-32b4",
+          "instance_config": {
+            "instance_id": "b5b921a9-4391-46c4-803e-52276885c319",
+            "key_name": "KeyPair-4f64",
+            "security_groups": [
+              {
+                "id": "77585219-c6cb-4648-9344-466c23989488"
+              }
+            ]
+          }
+        },
+        "x-request-examples-text-1": {
+          "scaling_configuration_name": "as-config-32b4",
+          "instance_config": {
+            "instance_id": "b5b921a9-4391-46c4-803e-52276885c319",
+            "key_name": "KeyPair-4f64",
+            "security_groups": [
+              {
+                "id": "77585219-c6cb-4648-9344-466c23989488"
+              }
+            ]
+          }
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-is-registered": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "52",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "520",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "VmMetaData": {
+      "properties": {
+        "admin_pass": {
+          "type": "string",
+          "description": "如果需要使用密码方式登录云服务器,可使用adminPass字段指定云服务器管理员帐户初始登录密码。其中,Linux管理员帐户为root,Windows管理员帐户为Administrator。密码复杂度要求:- 长度为8-26位。- 密码至少必须包含大写字母、小写字母、数字和特殊字符(!@$%^-_=+[{}]:,./?)中的三种。- 密码不能包含用户名或用户名的逆序。- Windows系统密码不能包含用户名或用户名的逆序,不能包含用户名中超过两个连续字符的部分。"
+        }
+      },
+      "description": "云服务器元数据"
+    },
+    "EipInfo": {
+      "required": [
+        "bandwidth",
+        "ip_type"
+      ],
+      "properties": {
+        "ip_type": {
+          "type": "string",
+          "description": "弹性IP地址类型。类型枚举值:5_bgp:全动态BGP;5_sbgp:静态BGP;5_telcom:中国电信;5_union:中国联通;详情请参见《虚拟私有云接口参考》“申请弹性公网IP”章节的“publicip”字段说明。",
+          "enum": [
+            "5_bgp",
+            "5_sbgp",
+            "5_telcom",
+            "5_union"
+          ]
+        },
+        "bandwidth": {
+          "description": "IP地址带宽参数。",
+          "$ref": "#/definitions/BandwidthInfo"
+        }
+      },
+      "description": "配置云服务器的弹性IP信息"
+    },
+    "PersonalityInfo": {
+      "required": [
+        "content",
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "注入文件路径信息。Linux系统请输入注入文件保存路径,例如 “/etc/foo.txt”。Windows系统注入文件自动保存在C盘根目录,只需要输入保存文件名,例如 “foo”,文件名只能包含字母(a~zA~Z)和数字(0~9)。"
+        },
+        "content": {
+          "type": "string",
+          "description": "注入文件内容。该值应指定为注入文件的内容进行base64格式编码后的信息。"
+        }
+      },
+      "description": "注入文件信息。仅支持注入文本文件,最大支持注入5个文件,每个文件最大1KB。"
+    },
+    "CreateScalingConfigOption": {
+      "type": "object",
+      "properties": {
+        "scaling_configuration_name": {
+          "type": "string",
+          "example": "as-config-tlzq",
+          "description": "伸缩配置名称(1-64个字符),只能包含中文、字母、数字、下划线或中划线。",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "instance_config": {
+          "description": "实例配置信息",
+          "$ref": "#/definitions/InstanceConfig"
+        },
+        "source_scaling_configuration_id": {
+          "type": "string",
+          "description": "源伸缩配置ID,通过该ID查询已有伸缩配置信息与instance_config中参数进行结合,创建新的伸缩配置。\n说明:\n\t- 若传入instance_config中的instance_id,则优先使用instance_id相关实例配置创建新的伸缩配置,source_scaling_configuration_id参数不生效。\n\t- 若未传入instance_config中的instance_id,则使用source_scaling_configuration_id与instance_config中的参数相结合创建伸缩配置。\n        - 若instance_config中的参数值为null,则创建新伸缩配置时该字段不产生修改。\n        - 若instance_config中的参数值不为null,则创建新伸缩配置时该字段将覆盖原有值,其中值为空时,该字段会被清空。\n\t- 若不指定source_scaling_configuration_id创建伸缩配置,则scaling_configuration_name和instance_config为必选。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "创建伸缩配置请求"
+    },
+    "SecurityGroups": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "6c22a6c0-b5d2-4a84-ac56-51090dcc33be",
+          "description": "安全组ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "安全组信息"
+    },
+    "ScalingConfigId": {
+      "properties": {
+        "scaling_configuration_id": {
+          "type": "string",
+          "description": "伸缩配置ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "请求正常"
+    },
+    "InstanceConfig": {
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "description": "云服务器ID,当使用已存在的云服务器的规格为模板创建弹性伸缩配置时传入该字段,此时flavorRef、imageRef、disk、security_groups、tenancy和dedicated_host_id字段不生效。当不传入instance_id字段时flavorRef、imageRef、disk字段为必选。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "flavorRef": {
+          "type": "string",
+          "description": "云服务器的规格ID。最多支持选择10个规格,多个规格ID以逗号分隔。云服务器的ID通过查询弹性云服务器规格详情和扩展信息列表接口获取,详情请参考 [查询云服务器规格详情和扩展信息列表](https://support.huaweicloud.com/api-ecs/zh-cn_topic_0020212656.html)。",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        "imageRef": {
+          "type": "string",
+          "description": "镜像ID,同image_id,指定创建实例时选择的镜像资源。通过查询镜像服务镜像列表接口获取,请参考[查询镜像列表](https://support.huaweicloud.com/api-ims/ims_03_0602.html)。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "disk": {
+          "type": "array",
+          "description": "磁盘组信息,系统盘必选,数据盘可选。",
+          "items": {
+            "$ref": "#/definitions/DiskInfo"
+          }
+        },
+        "key_name": {
+          "type": "string",
+          "description": "登录云服务器的SSH密钥名称。获取密钥对方式请参考[创建及导入SSH密钥对](https://support.huaweicloud.com/api-dew/CreateKeypair.html)。说明:当key_name与user_data同时指定时,user_data只做用户数据注入。",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "personality": {
+          "type": "array",
+          "description": "注入文件信息。仅支持注入文本文件,最大支持注入5个文件,每个文件最大1KB。",
+          "items": {
+            "$ref": "#/definitions/PersonalityInfo"
+          }
+        },
+        "public_ip": {
+          "description": "配置云服务器的弹性IP信息,弹性IP有两种配置方式。详情请参考表 public_ip字段数据结构说明。不使用(无该字段)自动分配,需要指定新创建弹性IP的信息说明:当用户开通了细粒度策略,并且要将配置了弹性IP的伸缩配置关联到某个伸缩组时,这个用户被授予的细粒度策略中必须包含允许“vpc:publicIps:create”的授权项。",
+          "$ref": "#/definitions/PublicIp"
+        },
+        "user_data": {
+          "type": "string",
+          "description": "cloud-init用户数据。支持注入文本、文本文件或gzip文件。文件内容需要进行base64格式编码,注入内容(编码之前的内容)最大为32KB。说明:当key_name没有指定时,user_data注入的数据默认为云服务器root账号的登录密码。创建密码方式鉴权的Linux弹性云服务器时为必填项,为root用户注入自定义初始化密码。"
+        },
+        "metadata": {
+          "description": "创建云服务器元数据。\n\n说明:\n创建密码方式鉴权的Windows弹性云服务器时,为必填字段。\n该字段暂不支持用户写入数据,但是当使用Windows镜像创建弹性云服务器时,该字段为必填字段。",
+          "$ref": "#/definitions/VmMetaData"
+        },
+        "security_groups": {
+          "type": "array",
+          "description": "安全组信息。使用vpc_id通过查询VPC服务安全组列表接口获取,详见《虚拟私有云API参考》的“查询安全组列表”。当伸缩配置和伸缩组同时指定安全组时,将以伸缩配置中的安全组为准;当伸缩配置和伸缩组都没有指定安全组时,将使用默认安全组。为了使用灵活性更高,推荐在伸缩配置中指定安全组。",
+          "items": {
+            "$ref": "#/definitions/SecurityGroups"
+          }
+        },
+        "server_group_id": {
+          "type": "string",
+          "description": "云服务器组ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "tenancy": {
+          "type": "string",
+          "description": "在专属主机上创建弹性云服务器。参数取值为dedicated。",
+          "enum": [
+            "dedicated"
+          ]
+        },
+        "dedicated_host_id": {
+          "type": "string",
+          "description": "专属主机的ID。 说明:该字段仅在tenancy为dedicated时生效;如果指定该字段,云服务器将被创建到指定的专属主机上;如果不指定该字段,此时系统会将云服务器创建在符合规格的专属主机中剩余内存最大的那一台上,以使各专属主机尽量均衡负载。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "multi_flavor_priority_policy": {
+          "type": "string",
+          "description": "使用伸缩配置创建云主机的时候,多规格使用的优先级策略。PICK_FIRST(默认):选择优先,虚拟机扩容时规格的选择按照flavorRef列表的顺序进行优先级排序。COST_FIRST:成本优化,虚拟机扩容时规格的选择按照价格最优原则进行优先级排序。",
+          "enum": [
+            "PICK_FIRST",
+            "COST_FIRST"
+          ]
+        },
+        "market_type": {
+          "type": "string",
+          "description": "云服务器的计费模式,可以选择竞价计费或按需计费,取值如下:按需计费:不指定该字段。竞价计费:spot",
+          "enum": [
+            "spot"
+          ]
+        },
+        "cpu_options": {
+          "description": "是否关闭超线程,1是关闭,2是开启(默认)",
+          "$ref": "#/definitions/CpuOptions"
+        }
+      },
+      "description": "实例配置信息"
+    },
+    "DiskInfo": {
+      "type": "object",
+      "required": [
+        "disk_type",
+        "size",
+        "volume_type"
+      ],
+      "properties": {
+        "size": {
+          "type": "integer",
+          "description": "磁盘大小,容量单位为GB。系统盘输入大小范围为1~1024,且不小于镜像中系统盘的最小(min_disk属性)值。数据盘输入大小范围为10~32768。",
+          "minimum": 10,
+          "maximum": 32768
+        },
+        "volume_type": {
+          "type": "string",
+          "description": "云服务器系统盘对应的磁盘类型,需要与系统所提供的磁盘类型相匹配。SATA:普通IO磁盘类型。SAS:高IO磁盘类型。SSD:超高IO磁盘类型。GPSSD:通用型SSD磁盘类型。co-p1:高IO (性能优化I型)uh-l1:超高IO (时延优化)GPSSD2: 通用型SSD V2云硬盘ESSD2: 极速型SSD V2云硬盘当指定的云硬盘类型在avaliability_zone内不存在时,则创建云硬盘失败。说明:对于HANA云服务器、HL1型云服务器、HL2型云服务器,需使用co-p1和uh-l1两种磁盘类型。对于其他类型的云服务器,不能使用co-p1和uh-l1两种磁盘类型。了解不同磁盘类型的详细信息,请参见[磁盘类型及性能介绍](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。",
+          "enum": [
+            "SATA",
+            "SAS",
+            "SSD",
+            "co-pl",
+            "uh-11",
+            "GPSSD",
+            "GPSSD2",
+            "ESSD2"
+          ],
+          "default": "SATA"
+        },
+        "disk_type": {
+          "type": "string",
+          "description": "系统盘还是数据盘,DATA表示为数据盘,SYS表示为系统盘。\n说明:\n系统盘不支持加密。",
+          "enum": [
+            "SYS",
+            "DATA"
+          ],
+          "default": "SYS"
+        },
+        "dedicated_storage_id": {
+          "type": "string",
+          "description": "云服务器的磁盘可指定创建在用户的专属存储中,需要指定专属存储ID。说明:同一个伸缩配置中的磁盘需统一指定或统一不指定专属存储,不支持混用;当指定专属存储时,所有专属存储需要属于同一个可用分区,且每个磁盘选择的专属存储支持的磁盘类型都需要和参数volume_type保持一致。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "data_disk_image_id": {
+          "type": "string",
+          "description": "云服务器的数据盘可指定从数据盘镜像导出,需要指定数据盘镜像ID。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "description": "当选择使用整机镜像时,云服务器的系统盘及数据盘将通过整机备份恢复,需要指定磁盘备份的快照ID。说明:磁盘备份的快照ID可通过镜像的整机备份ID在CSBS查询备份详情获得;一个伸缩配置中的每一个disk需要通过snapshot_id和整机备份中的磁盘备份一一对应。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        },
+        "metadata": {
+          "$ref": "#/definitions/MetaData"
+        },
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "为云硬盘配置iops。当“volume_type”设置为GPSSD2、ESSD2类型的云硬盘时,该参数必填,其他类型无需设置。"
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "为云硬盘配置吞吐量,单位是MiB/s。当“volume_type”设置为GPSSD2类型的云硬盘时必填,其他类型不能设置。"
+        }
+      },
+      "description": "磁盘组信息,系统盘必选,数据盘可选。"
+    },
+    "PublicIp": {
+      "required": [
+        "eip"
+      ],
+      "properties": {
+        "eip": {
+          "description": "配置云服务器自动分配弹性IP时,创建弹性IP的配置参数。",
+          "$ref": "#/definitions/EipInfo"
+        }
+      },
+      "description": "配置云服务器的弹性IP信息,弹性IP有两种配置方式。详情请参考表 public_ip字段数据结构说明。不使用(无该字段)自动分配,需要指定新创建弹性IP的信息说明:当用户开通了细粒度策略,并且要将配置了弹性IP的伸缩配置关联到某个伸缩组时,这个用户被授予的细粒度策略中必须包含允许“vpc:publicIps:create”的授权项。"
+    },
+    "CpuOptions": {
+      "type": "object",
+      "properties": {
+        "hw_cpu_threads": {
+          "type": "integer",
+          "format": "int32",
+          "description": "是否关闭实例超线程,1是关闭,2是开启"
+        }
+      }
+    },
+    "MetaData": {
+      "properties": {
+        "__system__encrypted": {
+          "type": "string",
+          "description": "metadata中的表示加密功能的字段,0代表不加密,1代表加密。  该字段不存在时,云硬盘默认为不加密。\n说明:\n系统盘不支持加密。"
+        },
+        "__system__cmkid": {
+          "type": "string",
+          "description": "用户主密钥ID,是metadata中的表示加密功能的字段,与__system__encrypted配合使用。说明:- 系统盘不支持加密。- 请参考[查询密钥列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=KMS&api=ListKeys&version=v2),通过HTTPS请求获取密钥ID。"
+        }
+      },
+      "description": "创建磁盘的元数据"
+    },
+    "BandwidthInfo": {
+      "required": [
+        "share_type"
+      ],
+      "properties": {
+        "size": {
+          "type": "integer",
+          "description": "带宽(Mbit/s),按带宽分配取值范围为[1,2000],按流量分配取值范围为[1,300]。\n\n说明:\n- 若share_type是PER,该参数为必选项。若share_type是WHOLE,会忽略该参数。\n- 具体范围以各区域配置为准,请参见控制台对应页面显示。\n- 创建带宽时的最小单位会根据带宽取值范围不同存在差异。\n- 小于等于300Mbit/s:默认最小单位为1Mbit/s。\n- 300Mbit/s~1000Mbit/s:默认最小单位为50Mbit/s。\n- 大于1000Mbit/s:默认最小单位为500Mbit/s。",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "share_type": {
+          "type": "string",
+          "description": "带宽的共享类型。共享类型枚举:PER:独享型。WHOLE:共享型。",
+          "enum": [
+            "PER",
+            "WHOLE"
+          ]
+        },
+        "charging_mode": {
+          "type": "string",
+          "description": "带宽的计费类型。字段值为“bandwidth”,表示按带宽计费。字段值为“traffic”,表示按流量计费。字段为其它值,会导致创建云服务器失败。如果share_type是PER,该参数为必选项。如果share_type是WHOLE,会忽略该参数。",
+          "enum": [
+            "bandwidth",
+            "traffic"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "description": "带宽ID,使用共享型带宽时,可以选择之前创建的共享带宽来创建弹性IP。如果share_type是PER,会忽略该参数。如果share_type是WHOLE,该参数为必选项。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      },
+      "description": "带宽信息"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

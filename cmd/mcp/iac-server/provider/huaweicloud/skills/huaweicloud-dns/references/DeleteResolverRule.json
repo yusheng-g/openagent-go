@@ -1,0 +1,174 @@
+{
+  "name": "DeleteResolverRule",
+  "summary": "删除解析器转发规则",
+  "tags": "解析器管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/resolverrules/{resolverrule_id}": {
+      "delete": {
+        "tags": [
+          "解析器管理"
+        ],
+        "operationId": "DeleteResolverRule",
+        "summary": "删除解析器转发规则",
+        "description": "删除解析器转发规则。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ResolverRuleIdInPath"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "删除解析器转发规则响应。",
+            "schema": {
+              "$ref": "#/definitions/DeleteResolverRuleResp"
+            },
+            "examples": {
+              "application/json": {
+                "resolver_rule": {
+                  "id": "8a36f60a753badb401753bade3400002",
+                  "name": "rule-xxx",
+                  "domain_name": "www.example.com",
+                  "endpoint_id": "8a36f60a753badb401753bade3400001",
+                  "status": "DELETED",
+                  "rule_type": "FORWARD",
+                  "ipaddress_count": 0,
+                  "create_time": "2020-10-18T12:27:31.448",
+                  "update_time": "2020-10-18T12:27:31.448"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 13
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "ResolverRuleParam": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "转发规则ID。",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "规则名称。",
+          "readOnly": true
+        },
+        "domain_name": {
+          "type": "string",
+          "description": "域名。",
+          "readOnly": true
+        },
+        "endpoint_id": {
+          "type": "string",
+          "description": "当前规则所属的终端节点ID。",
+          "readOnly": true
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n资源状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_DELETE:删除中\n- ERROR:失败",
+          "readOnly": true
+        },
+        "rule_type": {
+          "type": "string",
+          "description": "规则类型。\n预留字段,当前默认为FORWARD。",
+          "readOnly": true,
+          "format": "int32"
+        },
+        "ipaddress_count": {
+          "type": "integer",
+          "description": "当前规则下的IP地址数量。",
+          "format": "int32",
+          "readOnly": true
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。",
+          "readOnly": true
+        },
+        "update_time": {
+          "type": "string",
+          "description": "更新时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。",
+          "readOnly": true
+        }
+      }
+    },
+    "DeleteResolverRuleResp": {
+      "properties": {
+        "resolver_rule": {
+          "description": "解析器转发规则。",
+          "$ref": "#/definitions/ResolverRuleParam"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    },
+    "ResolverRuleIdInPath": {
+      "name": "resolverrule_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "转发规则ID。",
+      "pattern": "[0-9a-fA-F]{32}"
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "delete",
+  "uri": null
+}

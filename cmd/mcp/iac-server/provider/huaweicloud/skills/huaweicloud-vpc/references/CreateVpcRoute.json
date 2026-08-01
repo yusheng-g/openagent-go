@@ -1,0 +1,326 @@
+{
+  "name": "CreateVpcRoute",
+  "summary": "创建VPC路由",
+  "tags": "VPC路由",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/vpc/routes": {
+      "post": {
+        "tags": [
+          "VPC路由"
+        ],
+        "summary": "创建VPC路由",
+        "description": "创建路由",
+        "operationId": "CreateVpcRoute",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。 \n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+          },
+          {
+            "in": "body",
+            "name": "route",
+            "description": "route对象,必选字段:destination、nexthop、type、vpc_id。",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateVpcRouteRequestBody"
+            },
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "route": {
+                  "type": "peering",
+                  "nexthop": "60c809cb-6731-45d0-ace8-3bf5626421a9",
+                  "destination": "192.168.200.0/24",
+                  "vpc_id": "ab78be2d-782f-42a5-aa72-35879f6890ff",
+                  "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
+                  "id": "3d42a0d4-a980-4613-ae76-a2cddecff054"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/VpcRouteResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建VPC路由",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 31,
+        "x-request-examples-description-1": "创建对等连接的路由",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v2.0/vpc/routes ",
+        "x-request-examples-1": {
+          "route": {
+            "type": "peering",
+            "nexthop": "60c809cb-6731-45d0-ace8-3bf5626421a9",
+            "destination": "192.168.200.0/24",
+            "vpc_id": "ab78be2d-782f-42a5-aa72-35879f6890ff"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"route\": {\n        \"type\": \"peering\",\n        \"nexthop\": \"60c809cb-6731-45d0-ace8-3bf5626421a9\",\n        \"destination\": \"192.168.200.0/24\",\n        \"vpc_id\": \"ab78be2d-782f-42a5-aa72-35879f6890ff\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2017-9-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronErrorResp": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "NeutronError对象",
+          "$ref": "#/definitions/NeutronError"
+        }
+      },
+      "description": ""
+    },
+    "CreateVpcRouteRequestBody": {
+      "required": [
+        "route"
+      ],
+      "properties": {
+        "route": {
+          "description": "route对象",
+          "$ref": "#/definitions/CreateVpcRouteOption",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronError": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Resource could not be found",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "example": "ResourceNotFound",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "VpcRoute": {
+      "required": [
+        "destination",
+        "id",
+        "nexthop",
+        "tenant_id",
+        "type",
+        "vpc_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "62818c73-543d-4e73-bf3f-771491113dbc",
+          "description": "路由ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "destination": {
+          "type": "string",
+          "example": "192.168.200.0/24",
+          "description": "路由目的地址CIDR,如192.168.200.0/24。",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "nexthop": {
+          "type": "string",
+          "example": "bdc3126d-d624-4752-9e5c-9d34eb7f0eb4",
+          "description": "功能说明:路由下一跳\n取值范围:如果type为peering类型,则nexthop为peering的ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "example": "peering",
+          "description": "功能说明:路由类型\n取值范围:peering",
+          "enum": [
+            "peering"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "vpc_id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "请求添加路由的VPC ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "b433fedb577940bfa59abff86482ed1a",
+          "description": "项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "CreateVpcRouteOption": {
+      "required": [
+        "destination",
+        "nexthop",
+        "type",
+        "vpc_id"
+      ],
+      "properties": {
+        "destination": {
+          "type": "string",
+          "example": "192.168.200.0/24",
+          "description": "路由目的地址CIDR,如192.168.200.0/24。",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "nexthop": {
+          "type": "string",
+          "example": "bdc3126d-d624-4752-9e5c-9d34eb7f0eb4",
+          "description": "功能说明:路由下一跳\n\n取值范围:如果type为peering类型,则nexthop为peering的ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "example": "peering",
+          "description": "功能说明:路由类型\n\n取值范围:peering",
+          "enum": [
+            "peering"
+          ],
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "vpc_id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "请求添加路由的VPC ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "VpcRouteResponseBody": {
+      "required": [
+        "route"
+      ],
+      "properties": {
+        "route": {
+          "description": "route对象",
+          "$ref": "#/definitions/VpcRoute",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

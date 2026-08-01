@@ -1,0 +1,336 @@
+{
+  "name": "ListSubcustomerMonthlyBills",
+  "summary": "查询客户月度消费账单",
+  "tags": "管理账单(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/bills/partner-bills/subcustomer-bills/monthly-sum": {
+      "get": {
+        "summary": "查询客户月度消费账单",
+        "description": "合作伙伴可查询客户的消费汇总账单,消费按月汇总。\n\n伙伴在伙伴中心查询客户月度消费账单请参见[这里](https://support.huaweicloud.com/usermanual-bpconsole/zh-cn_topic_0072435154.html)。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>消费汇总数据仅包含前一天24点前的数据。每天刷新一次,更新前一天的数据。\n>该接口用于合作伙伴查询其代售类客户在华为的消费情况,如果输入某个客户ID,则是查询单个客户的,否则是查询该伙伴下所有使用伙伴拨款消费的客户的消费记录(包括退订记录)。",
+        "tags": [
+          "管理账单(伙伴)"
+        ],
+        "operationId": "ListSubcustomerMonthlyBills",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。",
+        "x-externalURL": "/v2/bills/partner-bills/subcustomer-bills/monthly-sum",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "c890j7gkj94ijgCoII...",
+            "x-allowNull": true
+          },
+          {
+            "name": "cycle",
+            "in": "query",
+            "required": true,
+            "description": "消费时间。格式固定为YYYY-MM。示例:2018-08",
+            "x-maxLength": 10,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "2018-08",
+            "x-allowNull": true
+          },
+          {
+            "name": "cloud_service_type",
+            "in": "query",
+            "required": false,
+            "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。您可以调用[查询云服务类型列表](https://support.huaweicloud.com/api-bpconsole/zh-cn_topic_0000001256679455.html)接口获取。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 256,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "hws.service.type.obs",
+            "x-allowNull": true
+          },
+          {
+            "name": "charge_mode",
+            "in": "query",
+            "required": true,
+            "description": "计费模式。1:包年/包月;3:按需;11:节省计划|",
+            "x-maxLength": 4,
+            "x-minLength": 1,
+            "type": "string",
+            "x-example": "1",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "default": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 0,
+            "x-allowNull": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每页个数。默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "default": 10,
+            "type": "integer",
+            "format": "int32",
+            "x-example": 10,
+            "x-allowNull": true
+          },
+          {
+            "name": "bill_type",
+            "in": "query",
+            "required": false,
+            "description": "账单类型。0:消费1:退订2:华为核销 此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 1,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "0",
+            "x-allowNull": true
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。如果需要查询云经销商伙伴的子客户的消费汇总账单,必须携带该字段。除此之外,此参数不做处理。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "c890j7gkj94ijgCoIIDgzCCXXXXXX...",
+            "x-allowNull": true,
+            "x-site": "HC"
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/bills/partner-bills/subcustomer-bills/monthly-sum?customer_id=c890j7gkj94ijgCoII...&cycle=2018-08&cloud_service_type=hws.service.type.ec2&charge_mode=1&offset=0&limit=10&bill_type=0&indirect_partner_id=c890j7gkj94ijgCoIIDgzCCXXXXXX",
+        "responses": {
+          "200": {
+            "description": "查询客户月度消费账单响应",
+            "schema": {
+              "$ref": "#/definitions/QuerySubCustomerMonthlySumRsp"
+            },
+            "examples": {
+              "application/json": {
+                "bill_sums": [
+                  {
+                    "customer_id": "051b9c187500d5340f0cc00f45000440",
+                    "cloud_service_type": "hws.service.type.ebs",
+                    "bill_type": "0",
+                    "charge_mode": "1",
+                    "amount": 3500.0,
+                    "debt_amount": 0.0,
+                    "adjustment_amount": 0.0,
+                    "discount_amount": 0.0,
+                    "measure_id": 1,
+                    "account_details": [
+                      {
+                        "balance_type": "BALANCE_TYPE_DEBIT",
+                        "amount": 3500.0,
+                        "bill_type": "0"
+                      },
+                      {
+                        "balance_type": "BALANCE_TYPE_BONUS",
+                        "amount": 0.0,
+                        "bill_type": "0"
+                      },
+                      {
+                        "balance_type": "BALANCE_TYPE_CREDIT",
+                        "amount": 0.0,
+                        "bill_type": "0"
+                      },
+                      {
+                        "balance_type": "BALANCE_TYPE_COUPON",
+                        "amount": 0.0,
+                        "bill_type": "0"
+                      },
+                      {
+                        "balance_type": "BALANCE_TYPE_RCASH_COUPON",
+                        "amount": 0.0,
+                        "bill_type": "0"
+                      },
+                      {
+                        "balance_type": "BALANCE_TYPE_STORED_VALUE_CARD",
+                        "amount": 0.0,
+                        "bill_type": "0"
+                      }
+                    ],
+                    "resource_type_code": "hws.service.type.vm"
+                  }
+                ],
+                "count": 1,
+                "currency": "CNY"
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "管理账单(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QuerySubCustomerMonthlySumRsp": {
+      "properties": {
+        "bill_sums": {
+          "description": "账单记录,具体参考表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BillSumInfoV2"
+          }
+        },
+        "count": {
+          "description": "总记录数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "1"
+        },
+        "currency": {
+          "type": "string",
+          "description": "货币编码。 CNY:人民币。",
+          "example": "CNY"
+        }
+      }
+    },
+    "BillSumInfoV2": {
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": "c890j7gkj94ijgCoII..."
+        },
+        "cloud_service_type": {
+          "type": "string",
+          "description": "云服务类型编码,例如OBS的云服务类型编码为“hws.service.type.obs”。",
+          "example": "hws.service.type.obs"
+        },
+        "cloud_service_type_name": {
+          "type": "string",
+          "description": "云服务类型名称。例如ECS的云服务类型名称为“弹性云服务器”。",
+          "example": ""
+        },
+        "bill_type": {
+          "type": "string",
+          "description": "账单类型。 0:正常1:退订2:华为核销",
+          "example": "0"
+        },
+        "charge_mode": {
+          "type": "string",
+          "description": "计费模式。 1:包年/包月3: 按需",
+          "example": "1"
+        },
+        "amount": {
+          "description": "金额。 对于billType=1或者2的账单,该金额为负值。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": 99.0
+        },
+        "debt_amount": {
+          "description": "欠费金额,指从客户账户扣费的时候,客户账户金额不足,欠费的金额,华为核销或者退订的时候没有该字段。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 88.0
+        },
+        "adjustment_amount": {
+          "description": "核销欠款,华为核销或者退订的时候没有该字段。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 77.0
+        },
+        "discount_amount": {
+          "description": "折扣金额,华为核销或者退订的时候没有该字段。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": 66.0
+        },
+        "measure_id": {
+          "description": "金额单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "account_details": {
+          "description": "按不同账户消费类型和付费方式区分的支付总金额。 具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BalanceTypeDeductSumV2"
+          }
+        },
+        "resource_type_code": {
+          "type": "string",
+          "description": "资源类型编码,例如ECS的VM为“hws.resource.type.vm”。",
+          "example": "hws.resource.type.bandwidth"
+        },
+        "resource_type_name": {
+          "type": "string",
+          "description": "资源类型名称。例如ECS的资源类型名称为“云主机”。",
+          "example": ""
+        }
+      }
+    },
+    "BalanceTypeDeductSumV2": {
+      "properties": {
+        "balance_type": {
+          "type": "string",
+          "description": "账户类型。 BALANCE_TYPE_DEBIT:现金BALANCE_TYPE_CREDIT:信用BALANCE_TYPE_BONUS:奖励BALANCE_TYPE_COUPON:代金券BALANCE_TYPE_RCASH_COUPON 现金券。BALANCE_TYPE_STORED_VALUE_CARD:储值卡消费",
+          "example": "BALANCE_TYPE_DEBIT"
+        },
+        "amount": {
+          "description": "金额。 对于billType=1或者2的账单,该金额为负值。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": false,
+          "example": "55.00"
+        },
+        "bill_type": {
+          "type": "string",
+          "description": "账单类型。 0:正常1:退订2:华为核销",
+          "example": "0"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

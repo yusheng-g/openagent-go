@@ -1,0 +1,155 @@
+{
+  "name": "ListSlowLogFile",
+  "summary": "查询慢日志文件列表",
+  "tags": "获取日志信息",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/slowlog-files": {
+      "get": {
+        "tags": [
+          "获取日志信息"
+        ],
+        "operationId": "ListSlowLogFile",
+        "summary": "查询慢日志文件列表",
+        "description": "查询慢日志文件列表。\n调用该接口取到慢日志文件名后,可以调用接口/v3/{project_id}/instances/{instance_id}/slowlog-download 获取慢日志文件下载链接",
+        "x-support-sdk": "Y",
+        "x-constraint": "该接口仅支持SQLServer数据库引擎。",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "054b93101a00d3a02fe3c01fb31462ac"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "37de2fd8a533405f86dce46fff15e7b0in04"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "integer",
+            "description": "索引位置,偏移量。\n\n从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "查询记录数。取值范围[1, 100]。"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListSlowLogFileResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "list": [
+                  {
+                    "file_name": "SQLTrace.trc",
+                    "file_size": "1024"
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054b93101a00d3a02fe3c01fb31462ac/instances/37de2fd8a533405f86dce46fff15e7b0in04/slowlog-files"
+      }
+    }
+  },
+  "definitions": {
+    "ListSlowLogFileResponseBody": {
+      "required": [
+        "list",
+        "total_count"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SlowLogFile"
+          }
+        },
+        "total_count": {
+          "type": "integer",
+          "description": "文件总数。",
+          "format": "int64"
+        }
+      }
+    },
+    "SlowLogFile": {
+      "description": "慢日志信息。",
+      "required": [
+        "file_name",
+        "file_size"
+      ],
+      "properties": {
+        "file_name": {
+          "type": "string",
+          "description": "文件名。"
+        },
+        "file_size": {
+          "type": "string",
+          "description": "文件大小(单位Byte)"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

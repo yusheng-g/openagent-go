@@ -1,0 +1,209 @@
+{
+  "name": "GetBucketLogging",
+  "summary": "获取桶日志管理配置",
+  "tags": "桶的高级配置",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的高级配置"
+        ],
+        "operationId": "GetBucketLogging",
+        "summary": "获取桶日志管理配置",
+        "description": "该接口的目的是查询当前桶的日志管理配置情况。其实现是通过使用http的get方法再加入logging子资源来返回当前桶的日志配置情况。\n\n要使用该接口,使用者必须是桶的所有者或者是被桶策略授权GetBucketLogging权限的用户。\n",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "logging",
+            "in": "query",
+            "required": true,
+            "description": "logging表示请求桶日志管理配置API。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GetBucketLoggingResponseBody"
+            },
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: BF260000016436B8EEE7FBA2AA3335E3\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCShuQJoWFpS77C8bOv1mqURv0UY+0ejx\nContent-Type: application/xml\nDate: WED, 01 Jul 2015 02:42:46 GMT\nContent-Length: 429\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<BucketLoggingStatus xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n  <Agency>agency-name</Agency>\n  <LoggingEnabled>\n    <TargetBucket>log-bucket</TargetBucket>\n    <TargetPrefix>mybucket-access_log-/</TargetPrefix>\n    <TargetGrants>\n      <Grant>\n        <Grantee>\n          <ID>b4bf1b36d9ca43d984fbcb9491b6fce9</ID>\n        </Grantee>\n        <Permission>READ</Permission>\n      </Grant>\n    </TargetGrants>\n  </LoggingEnabled>\n</BucketLoggingStatus>\n"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "TargetGrantsGrant": {
+      "description": "是被授权者及其权限的容器。用于描述谁有什么权限来访问产生的日志文件。\n",
+      "properties": {
+        "Grantee": {
+          "$ref": "#/definitions/TargetGrantsGrantGrantee"
+        },
+        "Permission": {
+          "description": "产生的日志文件对被授权者的具体权限。\n\n- FULL_CONTROL 完全控制权限。\n- READ 读权限。\n- WRITE 写权限。\n",
+          "type": "string",
+          "enum": [
+            "FULL_CONTROL",
+            "READ",
+            "WRITE"
+          ]
+        }
+      }
+    },
+    "TargetGrantsGrantGrantee": {
+      "description": "作为被授权logging权限用户的容器。\n",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "被授权者的租户ID,全局唯一标识\n"
+        }
+      }
+    },
+    "GetBucketLoggingResponseBody": {
+      "properties": {
+        "BucketLoggingStatus": {
+          "$ref": "#/definitions/SetBucketLoggingRequestBody"
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "LoggingEnabled": {
+      "description": "该元素起到对日志配置管理的使能作用(呈现此元素则打开日志配置,否则关闭配置)。在此元素下,可加入具体的日志配置信息。\n设置logging时必选。关闭logging时勿选。\n",
+      "properties": {
+        "TargetBucket": {
+          "description": "在生成日志时,配置日志桶的所有者可以指定一个桶用于存放产生的日志文件。需要保证配置日志文件的桶owner对存放日志文件的桶有FULL_CONTROL权限。支持多个桶生成的日志放在同一个目标桶中,如果这样做,就需要指定不同的TargetPrefix以达到为来自不同源桶的日志分类的目的。\n设置logging时必选。关闭logging时勿选。\n",
+          "type": "string"
+        },
+        "TargetPrefix": {
+          "description": "通过该元素指定一个前缀,所有生成的日志对象的对象名都以此元素的内容为前缀。\n设置logging时必选。关闭logging时勿选。\n",
+          "type": "string"
+        },
+        "TargetGrants": {
+          "description": "授权信息的容器。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TargetGrantsGrant"
+          }
+        }
+      }
+    },
+    "SetBucketLoggingRequestBody": {
+      "xml": {
+        "name": "BucketLoggingStatus"
+      },
+      "description": "日志状态信息的容器。\n",
+      "properties": {
+        "Agency": {
+          "description": "目标桶Owner通过统一身份认证服务创建的对OBS服务的委托的名称。\n设置logging时必选。关闭logging时勿选。\n",
+          "type": "string"
+        },
+        "LoggingEnabled": {
+          "$ref": "#/definitions/LoggingEnabled"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

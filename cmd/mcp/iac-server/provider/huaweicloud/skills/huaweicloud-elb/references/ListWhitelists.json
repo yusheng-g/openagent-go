@@ -1,0 +1,240 @@
+{
+  "name": "ListWhitelists",
+  "summary": "查询白名单列表",
+  "tags": "白名单",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/whitelists": {
+      "get": {
+        "tags": [
+          "白名单"
+        ],
+        "summary": "查询白名单列表",
+        "description": "查询白名单,支持过滤查询和分页查询。",
+        "operationId": "ListWhitelists",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "分页查询中每页的白名单个数",
+            "required": false,
+            "type": "integer",
+            "minimum": 0,
+            "format": "int32",
+            "x-order": 1
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询的起始的资源id,表示上一页最后一条查询记录的白名单的id。不指定时表示查询第一页。",
+            "required": false,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "分页的顺序,true表示从后往前分页,false表示从前往后分页,默认为false。",
+            "required": false,
+            "type": "boolean",
+            "x-order": 3
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "白名单ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "name": "enable_whitelist",
+            "in": "query",
+            "description": "是否开启访问控制开关。true:打开false:关闭",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "listener_id",
+            "in": "query",
+            "description": "白名单关联的监听器ID。",
+            "required": false,
+            "type": "string",
+            "x-order": 6
+          },
+          {
+            "name": "whitelist",
+            "in": "query",
+            "description": "白名单IP的字符串。",
+            "required": false,
+            "type": "string",
+            "x-order": 7
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 8
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 9
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "whitelists": [
+                  {
+                    "tenant_id": "eabfefa3fd1740a88a47ad98e132d238",
+                    "enable_whitelist": true,
+                    "listener_id": "eabfefa3fd1740a88a47ad98e132d238",
+                    "id": "eabfefa3fd1740a88a47ad98e132d238",
+                    "whitelist": "192.168.11.1,192.168.0.1/24,192.168.201.18/8,100.164.0.1/24"
+                  },
+                  {
+                    "tenant_id": "eabfefa3fd1740a88a47ad98e132d436",
+                    "whitelist": "192.168.12.1,192.168.1.1/24,192.168.203.18/8,100.164.5.1/24",
+                    "enable_whitelist": true,
+                    "listener_id": "eabfefa3fd1740a88a47ad98e132d327",
+                    "id": "eabfefa3fd1740a88a47ad98e132d326"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListWhitelistsResp"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询白名单列表",
+        "x-constraint": "分页查询使用的参数为marker、limit、page_reverse。marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 35,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://{Endpoint}/v2/eabfefa3fd1740a88a47ad98e132d238/elb/whitelists",
+        "x-request-examples-text-1": "GET https://{Endpoint}/v2/eabfefa3fd1740a88a47ad98e132d238/elb/whitelists",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2017-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "ListWhitelistsResp": {
+      "required": [
+        "whitelists"
+      ],
+      "properties": {
+        "whitelists": {
+          "type": "array",
+          "description": "白名单对象的列表",
+          "items": {
+            "$ref": "#/definitions/WhitelistResp"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "WhitelistResp": {
+      "required": [
+        "enable_whitelist",
+        "id",
+        "listener_id",
+        "tenant_id",
+        "whitelist"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "白名单id"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "白名单所在的项目ID"
+        },
+        "listener_id": {
+          "type": "string",
+          "description": "白名单关联的监听器ID"
+        },
+        "enable_whitelist": {
+          "type": "boolean",
+          "description": "是否开启白名单访问控制开关。true:开启;false:关闭"
+        },
+        "whitelist": {
+          "type": "string",
+          "description": "白名单IP列表。可以是ip,例如192.168.10.123;也可以是一个网段,例如192.168.10.1/24;不同的值之间用逗号分隔"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,489 @@
+{
+  "name": "ListTopSqls",
+  "summary": "查询TOP SQL相关信息",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/top-sqls": {
+      "get": {
+        "x-request-examples-url-1": "https://{endpoint}/v3/1783d762a2c7416c817810224d01ca22/instances/8862f0a6de6c4b4eaa35abe435f4edccin04/top-sqls?limit=1",
+        "x-apigateway-ratelimit": "rds_user_policy",
+        "tags": [
+          "实例管理"
+        ],
+        "operationId": "ListTopSqls",
+        "summary": "查询TOP SQL相关信息",
+        "description": "查询TOP SQL相关信息。",
+        "x-constraint": "仅支持RDS for SQL Server。",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "instance_id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "实例ID。"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言。",
+            "type": "string",
+            "x-example": "zh-cn",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "排序字段:\navg_cpu_time:平均CPU耗时\ntotal_cpu_time:总CPU耗时\ntotal_duration_time:总执行时间\navg_duration_time:平均执行时间\ntotal_rows:总行数\navg_rows:平均行数\ntotal_logical_reads:总逻辑读\navg_logical_reads:平均逻辑读",
+            "default": "avg_cpu_time"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "TOP 数量,最大支持15个。",
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 15
+          },
+          {
+            "name": "statement",
+            "in": "query",
+            "required": false,
+            "description": "搜索文本内容。",
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "sort_dir",
+            "in": "query",
+            "required": false,
+            "description": "排序规则:\ndesc: 降序\nasc: 升序",
+            "type": "string",
+            "default": "desc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/QueryTopSqlsResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "list": [
+                  {
+                    "id": "0xb1a8d62fcf665755",
+                    "statement": "select * from ::fn_trace_getinfo(default)",
+                    "query": "select * from ::fn_trace_getinfo(default)",
+                    "db_name": "test",
+                    "execution_count": "1",
+                    "execution_count_percent": "1.0000",
+                    "total_cpu_time": "294",
+                    "total_cpu_time_percent": "1.0000",
+                    "avg_cpu_time": "294.98",
+                    "avg_cpu_time_percent": "0.9999",
+                    "total_duration_time": "779",
+                    "total_duration_time_percent": "1.0000",
+                    "avg_duration_time": "779.92",
+                    "avg_duration_time_percent": "1.0000",
+                    "total_rows": "134",
+                    "total_rows_percent": "1.0000",
+                    "avg_rows": "134.00",
+                    "avg_rows_percent": "1.0000",
+                    "total_logical_reads": "75564",
+                    "total_logical_reads_percent": "1.0000",
+                    "avg_logical_reads": "75564.00",
+                    "avg_logical_reads_percent": "1.0000",
+                    "total_physical_reads": "1083",
+                    "total_physical_reads_percent": "1.0000",
+                    "avg_physical_reads": "1083.00",
+                    "avg_physical_reads_percent": "1.0000",
+                    "total_logical_write": "41",
+                    "total_logical_write_percent": "1.0000",
+                    "avg_logical_write": "41.00",
+                    "avg_logical_write_percent": "1.0000",
+                    "last_execution_time": "2025-08-03 10:49:02.267"
+                  }
+                ],
+                "avg_cpu_time_top_values": [
+                  {
+                    "id": "0xb1a8d62fcf665755",
+                    "data_type": "AvgWorkerTime",
+                    "value": "294.98"
+                  }
+                ],
+                "avg_duration_time_top_values": [
+                  {
+                    "id": "0xd9bfe0aeb1b674bf",
+                    "data_type": "AvgDuration",
+                    "value": "968.88"
+                  }
+                ],
+                "avg_rows_top_values": [
+                  {
+                    "id": "0xe2d481769b70e309",
+                    "data_type": "AvgReturnRows",
+                    "value": "1428.00"
+                  }
+                ],
+                "avg_logical_top_values": [
+                  {
+                    "id": "0xe2d481769b70e309",
+                    "data_type": "AvgLogicalReads",
+                    "value": "81663.00"
+                  }
+                ],
+                "total_cpu_time_top_values": [
+                  {
+                    "id": "0xcb9a020ae719df11",
+                    "data_type": "TotalWorkerTime",
+                    "value": "988334.79"
+                  }
+                ],
+                "total_duration_time_top_values": [
+                  {
+                    "id": "0xcb9a020ae719df11",
+                    "data_type": "TotalDuration",
+                    "value": "1003770.19"
+                  }
+                ],
+                "total_rows_top_values": [
+                  {
+                    "id": "0x84798563b8b1721c",
+                    "data_type": "TotalReturnRows",
+                    "value": "1742768.00"
+                  }
+                ],
+                "total_logical_reads_top_values": [
+                  {
+                    "id": "0xcb9a020ae719df11",
+                    "data_type": "TotalLogicalReads",
+                    "value": "50701726.00"
+                  }
+                ]
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "QueryTopSqlsResponseBody": {
+      "type": "object",
+      "properties": {
+        "total_count": {
+          "type": "integer",
+          "description": "总数。"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QueryTopSqlsResult"
+          },
+          "description": "TOP SQL 信息列表。"
+        },
+        "avg_cpu_time_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsTimeResult"
+          },
+          "description": "平均CPU开销表TOP SQL列表。"
+        },
+        "avg_duration_time_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsTimeResult"
+          },
+          "description": "平均执行耗时TOP SQL列表。"
+        },
+        "avg_rows_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsRowResult"
+          },
+          "description": "平均返回行TOP SQL列表。"
+        },
+        "avg_logical_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsLogicalReadResult"
+          },
+          "description": "平均逻辑读TOP SQL列表。"
+        },
+        "total_cpu_time_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsTimeResult"
+          },
+          "description": "总CPU开销表TOP SQL列表。"
+        },
+        "total_duration_time_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsTimeResult"
+          },
+          "description": "总执行耗时TOP SQL列表。"
+        },
+        "total_rows_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsRowResult"
+          },
+          "description": "总返回行TOP SQL列表。"
+        },
+        "total_logical_reads_top_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopSqlsLogicalReadResult"
+          },
+          "description": "总逻辑读TOP SQL列表。"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "QueryTopSqlsResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "对查询计算的二进制哈希值,用于标识具有类似逻辑的查询。"
+        },
+        "statement": {
+          "type": "string",
+          "description": "当前执行的SQL语句。"
+        },
+        "query": {
+          "type": "string",
+          "description": "SQL全文。"
+        },
+        "db_name": {
+          "type": "string",
+          "description": "数据库名称。"
+        },
+        "execution_count": {
+          "type": "string",
+          "description": "执行总次数。"
+        },
+        "execution_count_percent": {
+          "type": "string",
+          "description": "执行总次数百分比,范围0.0000-1.0000。"
+        },
+        "total_cpu_time": {
+          "type": "string",
+          "description": "总CPU耗时,单位ms。"
+        },
+        "total_cpu_time_percent": {
+          "type": "string",
+          "description": "总CPU耗时百分比,范围0.0000-1.0000。"
+        },
+        "avg_cpu_time": {
+          "type": "string",
+          "description": "平均CPU耗时,单位ms。"
+        },
+        "avg_cpu_time_percent": {
+          "type": "string",
+          "description": "平均CPU耗时百分比,范围0.0000-1.0000。"
+        },
+        "total_duration_time": {
+          "type": "string",
+          "description": "总执行耗时。"
+        },
+        "total_duration_time_percent": {
+          "type": "string",
+          "description": "总执行耗时百分比,范围0.0000-1.0000。"
+        },
+        "avg_duration_time": {
+          "type": "string",
+          "description": "平均执行耗时。"
+        },
+        "avg_duration_time_percent": {
+          "type": "string",
+          "description": "平均执行耗时百分比,范围0.0000-1.0000。"
+        },
+        "total_rows": {
+          "type": "string",
+          "description": "总返回行。"
+        },
+        "total_rows_percent": {
+          "type": "string",
+          "description": "总返回行百分比,范围0.0000-1.0000。"
+        },
+        "avg_rows": {
+          "type": "string",
+          "description": "平均返回行。"
+        },
+        "avg_rows_percent": {
+          "type": "string",
+          "description": "平均返回行百分比,范围0.0000-1.0000。"
+        },
+        "total_logical_reads": {
+          "type": "string",
+          "description": "总逻辑读消耗。"
+        },
+        "total_logical_reads_percent": {
+          "type": "string",
+          "description": "总逻辑读百分比,范围0.0000-1.0000。"
+        },
+        "avg_logical_reads": {
+          "type": "string",
+          "description": "平均逻辑读消耗。"
+        },
+        "avg_logical_reads_percent": {
+          "type": "string",
+          "description": "平均逻辑读百分比,范围0.0000-1.0000。"
+        },
+        "avg_logical_write": {
+          "type": "string",
+          "description": "平均逻辑写消耗。"
+        },
+        "avg_logical_write_percent": {
+          "type": "string",
+          "description": "平均逻辑写百分比,范围0.0000-1.0000。"
+        },
+        "total_logical_write": {
+          "type": "string",
+          "description": "总逻辑写消耗。"
+        },
+        "total_logical_write_percent": {
+          "type": "string",
+          "description": "总逻辑写百分比,范围0.0000-1.0000。"
+        },
+        "avg_physical_reads": {
+          "type": "string",
+          "description": "平均物理读消耗。"
+        },
+        "avg_physical_reads_percent": {
+          "type": "string",
+          "description": "平均物理读百分比,范围0.0000-1.0000。"
+        },
+        "total_physical_reads": {
+          "type": "string",
+          "description": "总物理读消耗。"
+        },
+        "total_physical_reads_percent": {
+          "type": "string",
+          "description": "总物理读百分比,范围0.0000-1.0000。"
+        },
+        "last_execution_time": {
+          "type": "string",
+          "description": "上次执行时间。"
+        }
+      }
+    },
+    "TopSqlsRowResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "对查询计算的二进制哈希值,用于标识具有类似逻辑的查询。"
+        },
+        "data_type": {
+          "type": "string",
+          "description": "数据类型。 取值范围:\nAvgReturnRows 平均返回行\nTotalReturnRows 总返回行"
+        },
+        "value": {
+          "type": "string",
+          "description": "行数。"
+        }
+      }
+    },
+    "TopSqlsLogicalReadResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "对查询计算的二进制哈希值,用于标识具有类似逻辑的查询。"
+        },
+        "data_type": {
+          "type": "string",
+          "description": "数据类型。取值范围:\nAvgLogicalReads 平均逻辑读\nTotalLogicalReads 总逻辑读"
+        },
+        "value": {
+          "type": "string",
+          "description": "逻辑读消耗。"
+        }
+      }
+    },
+    "TopSqlsTimeResult": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "对查询计算的二进制哈希值,用于标识具有类似逻辑的查询。"
+        },
+        "data_type": {
+          "type": "string",
+          "description": "数据类型。取值范围:\nAvgWorkerTime 平均CPU开销\nAvgDuration 平均执行耗时\nTotalWorkerTime 总CPU开销\nTotalDuration 总执行耗时"
+        },
+        "value": {
+          "type": "string",
+          "description": "耗时时间,单位ms。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

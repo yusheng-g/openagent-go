@@ -1,0 +1,167 @@
+{
+  "name": "DisassociateServerVirtualIp",
+  "summary": "云服务器网卡解绑虚拟IP地址",
+  "tags": "网卡管理",
+  "productshort": "ECS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/cloudservers/nics/{nic_id}": {
+      "put": {
+        "tags": [
+          "网卡管理"
+        ],
+        "summary": "云服务器网卡解绑虚拟IP地址",
+        "description": "虚拟IP地址用于为网卡提供第二个IP地址,同时支持与多个弹性云服务器的网卡绑定,从而实现多个弹性云服务器之间的高可用性。\n\n该接口用于解绑定弹性云服务器网卡的虚拟IP地址。解绑后,网卡不会被删除。",
+        "operationId": "DisassociateServerVirtualIp",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "nic_id",
+            "in": "path",
+            "description": "云服务器网卡ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "e6b99563-xxxx-xxxx-xxxx-1820d4fd2a67",
+            "x-order": 2
+          },
+          {
+            "$ref": "#/parameters/project_id"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "in": "body",
+            "name": "DisassociateServerVirtualIpRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DisassociateServerVirtualIpRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "port_id": "d32019d3-bc6e-4319-9c1d-6722fc136a23"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/DisassociateServerVirtualIpResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "云服务器网卡解绑虚拟IP地址",
+        "x-constraint": "无",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 28,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v1/{project_id}/cloudservers/nics/{nic_id}",
+        "x-request-examples-1": {
+          "nic": {
+            "subnet_id": "",
+            "ip_address": "",
+            "reverse_binding": false
+          }
+        },
+        "x-request-examples-text-1": "{\n\t\"nic\": {\n\t\t\"subnet_id\": \"\",\n\t\t\"ip_address\": \"\",\n\t\t\"reverse_binding\": false\n\t}\n}",
+        "x-registered_to": "apicom",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2018-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "DisassociateServerVirtualIpResponseBody": {
+      "required": [
+        "port_id"
+      ],
+      "properties": {
+        "port_id": {
+          "type": "string",
+          "description": "云服务器网卡ID"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "DisassociateServerVirtualIpOption": {
+      "required": [
+        "ip_address",
+        "subnet_id"
+      ],
+      "properties": {
+        "subnet_id": {
+          "type": "string",
+          "example": "",
+          "description": "云服务器添加网卡的信息。\n\n约束:解绑虚拟IP时,subnet_id为空字符串",
+          "enum": [
+            ""
+          ],
+          "default": ""
+        },
+        "ip_address": {
+          "type": "string",
+          "example": "",
+          "description": "网卡即将配置的虚拟IP的地址。\n\n约束:解绑虚拟IP时,ip_address为空字符串",
+          "enum": [
+            ""
+          ],
+          "default": ""
+        },
+        "reverse_binding": {
+          "type": "boolean",
+          "example": false,
+          "description": "虚拟IP的allowed_address_pairs属性是否添加网卡的IP/Mac对。"
+        }
+      },
+      "description": ""
+    },
+    "DisassociateServerVirtualIpRequestBody": {
+      "required": [
+        "nic"
+      ],
+      "properties": {
+        "nic": {
+          "description": "需要解绑私有IP的网卡参数列表。",
+          "$ref": "#/definitions/DisassociateServerVirtualIpOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "project_id": {
+      "name": "project_id",
+      "in": "path",
+      "description": "项目ID。",
+      "required": true,
+      "type": "string",
+      "x-example": "2b31ed520xxxxxxebedb6e57xxxxxxxx"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "用户Token。\n\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "ecs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

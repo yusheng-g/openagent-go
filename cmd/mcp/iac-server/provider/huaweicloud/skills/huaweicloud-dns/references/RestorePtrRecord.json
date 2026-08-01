@@ -1,0 +1,91 @@
+{
+  "name": "RestorePtrRecord",
+  "summary": "将弹性公网IP的反向解析记录恢复为默认值",
+  "tags": "反向解析管理(v2)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/reverse/floatingips/{region}:{floatingip_id}": {
+      "patch": {
+        "tags": [
+          "反向解析管理(v2)"
+        ],
+        "x-request-examples-description-1": "将弹性公网IP的反向解析记录恢复为默认值。",
+        "x-request-examples-url-1": "PATCH https://{endpoint}/v2/reverse/floatingips/{region}:{floatingip_id}",
+        "x-request-examples-1": {
+          "ptrdname": null
+        },
+        "operationId": "RestorePtrRecord",
+        "summary": "将弹性公网IP的反向解析记录恢复为默认值",
+        "description": "将弹性公网IP的反向解析记录恢复为默认值。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "region",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "域名所属的区域。"
+          },
+          {
+            "name": "floatingip_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "弹性公网IP(EIP)的ID。"
+          },
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "name": "RestorePtrReq",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/RestorePtrReq"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "将弹性公网IP的反向解析记录恢复为默认值响应。"
+          }
+        },
+        "x-order": 4
+      }
+    }
+  },
+  "definitions": {
+    "RestorePtrReq": {
+      "required": [
+        "ptrdname"
+      ],
+      "properties": {
+        "ptrdname": {
+          "type": "object",
+          "description": "反向解析记录对应的域名。  此处值为null。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "patch",
+  "uri": null
+}

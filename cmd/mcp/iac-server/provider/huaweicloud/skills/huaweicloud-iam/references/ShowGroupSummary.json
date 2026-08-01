@@ -1,0 +1,98 @@
+{
+  "name": "ShowGroupSummary",
+  "summary": "查询用户组相关属性",
+  "tags": "用户组管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/groups-summary": {
+      "get": {
+        "tags": [
+          "Group"
+        ],
+        "operationId": "ShowGroupSummary",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "查询用户组相关属性",
+        "description": "该接口可以用于查询用户组相关属性。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Marker"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdInQuery"
+          }
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-request-examples-description-1": "查询所有用户组属性。",
+        "x-request-examples-url-1": "GET https://{endpoint}/v5/groups-summary",
+        "x-request-examples-description-2": "查询IAM用户xxx所在的所有用户组列表。",
+        "x-request-examples-url-2": "GET https://{endpoint}/v5/groups-summary?user_id=xxx",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetGroupSummaryResp"
+                },
+                "example": {
+                  "groups": [
+                    {
+                      "group_id": "string",
+                      "group_name": "name",
+                      "created_at": "2023-09-11T10:13:25.414Z",
+                      "urn": "iam::accountid:group:name",
+                      "description": "description",
+                      "user_count": 100
+                    }
+                  ],
+                  "page_info": {
+                    "next_marker": "marker",
+                    "current_count": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResp"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "get",
+  "uri": null
+}

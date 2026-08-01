@@ -1,0 +1,271 @@
+{
+  "name": "UpdateRecordSets",
+  "summary": "修改记录集",
+  "tags": "记录集管理(v2.1)",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/zones/{zone_id}/recordsets/{recordset_id}": {
+      "put": {
+        "tags": [
+          "记录集管理(v2.1)"
+        ],
+        "x-request-examples-description-1": "修改解析记录,设置类型为A,TTL为3600秒,解析记录值为 \"192.168.10.1\"、\"192.168.10.2\" ,权重为1。",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v2/zones/{zone_id}/recordsets/{recordset_id}",
+        "x-request-examples-1": {
+          "name": "www.example.com.",
+          "description": "This is an example record set.",
+          "type": "A",
+          "ttl": 3600,
+          "records": [
+            "192.168.10.1",
+            "192.168.10.2"
+          ],
+          "weight": 1
+        },
+        "operationId": "UpdateRecordSets",
+        "summary": "修改记录集",
+        "description": "当您的记录集创建成功后,您可以通过调用此接口修改记录集的信息,包括域名、类型、记录值、TTL、描述等。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          },
+          {
+            "$ref": "#/parameters/RecordSetIdInPath"
+          },
+          {
+            "name": "UpdateRecordSetsReq",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UpdateRecordSetsReq"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "修改记录集响应。",
+            "schema": {
+              "$ref": "#/definitions/UpdateRecordSetsResp"
+            },
+            "examples": {
+              "application/json": {
+                "id": "2c9eb155587228570158722b6ac30007",
+                "name": "www.example.com.",
+                "description": "This is an example record set.",
+                "type": "A",
+                "ttl": 3600,
+                "records": [
+                  "192.168.10.1",
+                  "192.168.10.2"
+                ],
+                "status": "PENDING_UPDATE",
+                "links": {
+                  "self": "https://Endpoint/v2.1/zones/2c9eb155587194ec01587224c9f90149/recordsets/2c9eb155587228570158722b6ac30007"
+                },
+                "zone_id": "2c9eb155587194ec01587224c9f90149",
+                "zone_name": "example.com.",
+                "created_at": "2016-11-17T12:03:17.827",
+                "updated_at": "2016-11-17T12:56:06.439",
+                "default": false,
+                "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
+                "line": "default_view",
+                "weight": 1,
+                "health_check_id": null
+              }
+            }
+          }
+        },
+        "x-order": 4
+      }
+    }
+  },
+  "definitions": {
+    "UpdateRecordSetsReq": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n域名,后缀需以zone name结束且为FQDN(Fully Qualified Domain Name,全称域名),即以“.”结束的完整主机名。\n如“www.example.com.”。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的描述信息。\n**约束限制:**\n不涉及。\n**取值范围:**\n长度不超过255个字符。\n**默认取值:**\n默认为空,表示维持原值。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的类型。\n**约束限制:**\n不涉及。\n**取值范围:**\n- A:将域名解析到指定的IPv4地址。\n- AAAA:将域名解析到指定的IPv6地址。\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。\n- SRV:用于记录某台服务器对外提供了哪些服务。\n- NS:指定域名的权威DNS服务器。\n- SOA:提供域名的基本信息和权威服务器的详细信息。\n- CAA:指定为域名颁发HTTPS证书的授权CA机构,仅支持公网域名解析。\n- PTR:指定IP地址反向解析记录,仅支持内网域名解析。\n\n**默认取值:**\n不涉及。"
+        },
+        "ttl": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n**约束限制:**\n不涉及。\n**取值范围:**\n1~2147483647。\n**默认取值:**\n默认为空,表示维持原值。"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "**参数解释:**\n解析记录的值。不同类型解析记录对应的值的规则不同。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n默认为空,表示维持原值。"
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释:**\n解析记录的权重。\n**约束限制:**\n不涉及。\n**取值范围:**\n取值范围:0~1000。\n- 当weight为空时,表示该解析记录将保持原有设置的权重。\n- 当weight=0,表示该解析记录为备用域名解析记录。\n- 当weight>0,表示该解析记录为主用域名解析记录。\n\n**默认取值:**\n默认为空,表示维持原值。"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
+    },
+    "alias_target": {
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "description": "**参数解释:**\n资源服务类型,支持别名记录的服务。\n**约束限制:**\n不涉及。\n**取值范围:**\n- cloudsite:企业门户\n- waf:Web应用防火墙\n\n**默认取值:**\n不涉及。"
+        },
+        "resource_domain_name": {
+          "type": "string",
+          "description": "**参数解释:**\n对应服务下的域名,由各服务提供。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+        }
+      },
+      "description": "**参数解释:**\n别名记录。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    },
+    "UpdateRecordSetsResp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的ID。\n**取值范围:**\n不涉及。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的名称。\n**取值范围:**\n不涉及。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的描述信息。\n**取值范围:**\n长度不超过255个字符。"
+        },
+        "zone_id": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该记录的域名ID。\n**取值范围:**\n不涉及。"
+        },
+        "zone_name": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该记录的域名。\n**取值范围:**\n不涉及。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释:**\n记录类型。\n**取值范围:**\n- A:将域名解析到指定的IPv4地址。\n- AAAA:将域名解析到指定的IPv6地址。\n- MX:指定域名对应的邮件服务器。\n- CNAME:将域名解析到另一域名,或者多个域名映射到同一域名上。\n- TXT:用于对域名进行标识和说明。\n- SRV:用于记录某台服务器对外提供了哪些服务。\n- NS:指定域名的权威DNS服务器。\n- SOA:提供域名的基本信息和权威服务器的详细信息。\n- CAA:指定为域名颁发HTTPS证书的授权CA机构,仅支持公网域名解析。\n- PTR:指定IP地址反向解析记录,仅支持内网域名解析。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "**参数解释:**\n解析记录在本地DNS服务器的缓存时间,缓存时间越长更新生效越慢,以秒为单位。\n**取值范围:**\n1~2147483647。",
+          "format": "int32"
+        },
+        "records": {
+          "type": "array",
+          "description": "**参数解释:**\n域名解析后的值。\n**取值范围:**\n不涉及。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集的最近一次修改时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n记录集状态。\n**取值范围:**\n- PENDING_UPDATE:更新中\n- PENDING_DISABLE:暂停中"
+        },
+        "default": {
+          "type": "boolean",
+          "description": "**参数解释:**\n标识是否由系统默认生成,系统默认生成的记录集不能删除。\n**取值范围:**\n不涉及。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释:**\n该记录集所属的项目ID。\n**取值范围:**\n不涉及。"
+        },
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "line": {
+          "type": "string",
+          "description": "**参数解释:**\n解析线路ID。\n**取值范围:**\n不涉及。"
+        },
+        "weight": {
+          "type": "integer",
+          "description": "**参数解释:**\n解析记录的权重。\n**取值范围:**\n0~1000。",
+          "format": "int32"
+        },
+        "health_check_id": {
+          "type": "string",
+          "description": "**参数解释:**\n健康检查ID。\n**取值范围:**\n不涉及。"
+        },
+        "alias_target": {
+          "$ref": "#/definitions/alias_target"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "RecordSetIdInPath": {
+      "name": "recordset_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n记录集ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

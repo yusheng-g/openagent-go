@@ -1,0 +1,137 @@
+{
+  "name": "CopyConfiguration",
+  "summary": "复制参数模板",
+  "tags": "参数配置",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/configurations/{config_id}/copy": {
+      "post": {
+        "x-support-sdk": "Y",
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "x-request-examples-url-1": "https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/configurations/66251c9024774eeb9edd8663a4cbb0a1pr04/copy",
+        "x-request-examples-text-1": {
+          "name": "copy_by_v31",
+          "description": "复制V3"
+        },
+        "x-request-examples-1": {
+          "name": "copy_by_v31",
+          "description": "复制V3"
+        },
+        "tags": [
+          "参数配置"
+        ],
+        "summary": "复制参数模板",
+        "description": "复制参数模板",
+        "operationId": "CopyConfiguration",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "config_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "参数模板ID"
+          },
+          {
+            "name": "ConfigurationCopyRequestBody",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/ConfigurationCopyRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/CustomerConfigurationResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "id": "a73a272e50ba427397e90992fbb96f3cpr04",
+                "name": "copy_by_v31",
+                "description": "复制V3",
+                "datastore_version_name": "2017_EE",
+                "datastore_name": "sqlserver",
+                "create_time": "2022-10-31T08:24:06+0000",
+                "update_time": "2022-10-31T08:24:06+0000"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ConfigurationCopyRequestBody": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "只支持a-zA-Z0-9._- 以上字符,长度限制1-64字符"
+        },
+        "description": {
+          "type": "string",
+          "description": "不支持 !<>=&\" ' 字符,长度限制0-256字符"
+        }
+      }
+    },
+    "CustomerConfigurationResponseBody": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "参数模板ID。"
+        },
+        "name": {
+          "type": "string",
+          "description": "参数模板名称。"
+        },
+        "description": {
+          "type": "string",
+          "description": "描述。"
+        },
+        "datastore_version_name": {
+          "type": "string",
+          "description": "数据库版本名称"
+        },
+        "datastore_name": {
+          "type": "string",
+          "description": "数据库名称。"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "创建时间,格式为\"yyyy-MM-ddTHH:mm:ssZ\"。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        },
+        "update_time": {
+          "type": "string",
+          "description": "更新时间,格式为\"yyyy-MM-ddTHH:mm:ssZ\"。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

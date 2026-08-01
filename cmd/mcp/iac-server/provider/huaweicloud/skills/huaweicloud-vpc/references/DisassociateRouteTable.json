@@ -1,0 +1,430 @@
+{
+  "name": "DisassociateRouteTable",
+  "summary": "子网解关联路由表",
+  "tags": "路由表",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v1/{project_id}/routetables/{routetable_id}/action": {
+      "post": {
+        "tags": [
+          "路由表"
+        ],
+        "summary": "子网解关联路由表",
+        "description": "子网解关联路由表",
+        "operationId": "DisassociateRouteTable",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "05137572fa00d5eb2fdcc014b0f5c751",
+            "x-order": 2
+          },
+          {
+            "name": "routetable_id",
+            "in": "path",
+            "description": "路由表ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "575c5798-bb62-4500-a8dc-174ef7d8685f",
+            "x-order": 3
+          },
+          {
+            "in": "body",
+            "name": "RoutetableAssociate",
+            "description": "关联路由表与子网请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RoutetableAssociateReqbody"
+            },
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "routetable": {
+                  "id": "3d42a0d4-a980-4613-ae76-a2cddecff054",
+                  "name": "routetable_01",
+                  "vpc_id": "ab78be2d-782f-42a5-aa72-35879f6890ff",
+                  "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
+                  "default": false,
+                  "description": "abc",
+                  "routes": [
+                    {
+                      "type": "ecs",
+                      "destination": "10.10.10.0/24",
+                      "nexthop": "7c50463d-d36c-4417-aa85-cc11fa10f341",
+                      "description": "abc"
+                    }
+                  ],
+                  "subnets": [
+                    {
+                      "id": "8d4ce32f-d68a-4c4c-9f18-c68d8a5c7f2f"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/RoutetableRespBodyShow"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "子网解关联路由表",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-order": 63,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v1/{project_id}/routetables/{routetable_id}/action",
+        "x-request-examples-1": {
+          "routetable": {
+            "subnets": {
+              "disassociate": [
+                "815a6b9e-f766-48eb-967c-0ada72d85435"
+              ]
+            }
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"routetable\": {\n        \"subnets\": {\n            \"disassociate\": [\n                \"815a6b9e-f766-48eb-967c-0ada72d85435\"\n            ]\n        }\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2019-01-30",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "AssociateRouteTableAndSubnetReq": {
+      "properties": {
+        "associate": {
+          "type": "array",
+          "description": "路由表关联子网ID列表",
+          "items": {
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+          },
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "disassociate": {
+          "type": "array",
+          "description": "路由表解除关联子网ID列表",
+          "items": {
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+          },
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "ErrorResp": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "请求返回的错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "message": {
+          "type": "string",
+          "description": "请求返回的错误信息",
+          "minLength": 1,
+          "maxLength": 999,
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "http响应码为错误码时的返回体数据模型"
+    },
+    "RoutetableRespBodyShow": {
+      "required": [
+        "routetable"
+      ],
+      "properties": {
+        "routetable": {
+          "description": "路由表对象",
+          "$ref": "#/definitions/RouteTableResp",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "RouteTableResp": {
+      "required": [
+        "created_at",
+        "default",
+        "description",
+        "id",
+        "name",
+        "routes",
+        "subnets",
+        "tenant_id",
+        "updated_at",
+        "vpc_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "575c5798-bb62-4500-a8dc-174ef7d8685f",
+          "description": "功能说明:路由表ID\n\n取值范围:标准UUID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "name": {
+          "type": "string",
+          "example": "rtb-01",
+          "description": "功能说明:路由表名称\n\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)",
+          "minLength": 0,
+          "maxLength": 64,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "default": {
+          "type": "boolean",
+          "description": "功能说明:是否为默认路由表\n\n取值范围:true表示默认路由表;false表示自定义路由表",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "routes": {
+          "type": "array",
+          "description": "功能说明:路由对象,参见route字段说明。\n\n约束:每个路由表最大关联200条路由",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/RouteTableRoute"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc"
+        },
+        "subnets": {
+          "type": "array",
+          "description": "功能说明:路由表所关联的子网\n\n约束:只能关联路由表所属VPC下的子网",
+          "items": {
+            "$ref": "#/definitions/SubnetList"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "05137572fa00d5eb2fdcc014b0f5c751",
+          "description": "项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "vpc_id": {
+          "type": "string",
+          "example": "575c5798-bb62-4500-a8dc-174ef7d8685f",
+          "description": "路由表所在的虚拟私有云ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:路由表描述信息\n\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源创建UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "功能说明:资源更新UTC时间\n格式:yyyy-MM-ddTHH:mm:ss",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc"
+        }
+      },
+      "description": ""
+    },
+    "AsscoiateReq": {
+      "required": [
+        "subnets"
+      ],
+      "properties": {
+        "subnets": {
+          "description": "关联、解除关联要操作的子网,参见AssociateRouteTableAndSubnetReq对象",
+          "$ref": "#/definitions/AssociateRouteTableAndSubnetReq",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "RouteTableRoute": {
+      "required": [
+        "destination",
+        "nexthop",
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "功能说明:路由的类型。\n取值范围:\necs:弹性云服务器\neni:网卡\nvip:虚拟IP\nnat:NAT网关\npeering:对等连接\nvpn:虚拟专用网络\ndc:云专线\ncc:云连接\negw:VPC终端节点\ner:企业路由器\nsubeni:辅助弹性网卡\nlocal:保留网段,用户下发路由的目的网段不能和local类型路由的目的网段有重叠",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,obc,tlf,ctc"
+        },
+        "destination": {
+          "type": "string",
+          "description": "功能说明:路由目的网段\n约束:合法的CIDR格式",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,obc"
+        },
+        "nexthop": {
+          "type": "string",
+          "description": "功能说明:路由下一跳对象的ID。\n取值范围:\n当type为ecs时,传入ecs实例ID;\n当type为eni时,取值为从网卡ID;\n当type为vip时,取值为vip对应的IP地址;\n当type为nat时,取值为nat实例对应的ID;\n当type为peering时,取值为peering对应实例ID;\n当type为vpn时,取值为vpn实例ID;\n当type为dc时,取值为dc实例ID;\n当type为cc时,取值为cc的实例ID;\n当type为egw时,取值为vpc终端节点的实例ID;\n当type为er时,取值为企业路由器的实例ID;\n当type为subeni时,取值为辅助弹性网卡的实例ID。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,obc,tlf,ctc"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:路由的描述信息\n取值范围:0-255个字符,不能包含“<”和“>”",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,obc,tlf,ctc"
+        }
+      },
+      "description": ""
+    },
+    "SubnetList": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "575c5798-bb62-4500-a8dc-174ef7d8685f",
+          "description": "路由表关联的子网ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "RoutetableAssociateReqbody": {
+      "required": [
+        "routetable"
+      ],
+      "properties": {
+        "routetable": {
+          "description": "路由表对象",
+          "$ref": "#/definitions/AsscoiateReq",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

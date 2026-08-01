@@ -1,0 +1,1037 @@
+{
+  "name": "ListListeners",
+  "summary": "查询监听器列表",
+  "tags": "监听器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/elb/listeners": {
+      "get": {
+        "tags": [
+          "监听器"
+        ],
+        "summary": "查询监听器列表",
+        "description": "查询监听器列表。",
+        "operationId": "ListListeners",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "**参数解释**:IAM鉴权Token。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:项目ID。获取方式请参见[获取项目ID](elb_fl_0008.xml)。\n\n**约束限制**:不涉及\n\n**取值范围**:长度为32个字符,由小写字母和数字组成。\n\n**默认取值**:不涉及",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "**参数解释**:每页返回的个数。\n\n**约束限制**:不涉及\n\n**取值范围**:0-2000\n\n**默认取值**:2000",
+            "required": false,
+            "type": "integer",
+            "maximum": 2000,
+            "minimum": 0,
+            "default": 2000,
+            "format": "int32",
+            "x-order": 3
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "**参数解释**:上一页最后一条记录的ID。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 不指定时表示查询第一页。\n- 该字段不允许为空或无效的ID。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "string",
+            "x-order": 4
+          },
+          {
+            "name": "page_reverse",
+            "in": "query",
+            "description": "**参数解释**:是否反向查询。\n\n**约束限制**:\n- 必须与limit一起使用。\n- 当page_reverse=true时,若要查询上一页,marker取值为当前页返回值的previous_marker。\n\n**取值范围**:\n- true:查询上一页。\n- false:查询下一页。\n\n**默认取值**:false",
+            "required": false,
+            "type": "boolean",
+            "x-order": 5
+          },
+          {
+            "name": "protocol_port",
+            "in": "query",
+            "description": "**参数解释**:监听器的前端监听端口。\n支持多值查询,查询条件格式:*protocol_port=xxx&protocol_port=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6
+          },
+          {
+            "name": "protocol",
+            "in": "query",
+            "description": "**参数解释**:监听器的监听协议。\n支持多值查询,查询条件格式:*protocol=xxx&protocol=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:TCP、UDP、HTTP、HTTPS、TERMINATED_HTTPS、QUIC、TLS、IP。IP为网关型LB上的监听器独有的协议。\n说明:TERMINATED_HTTPS为共享型LB上的监听器独有的协议。\n\n\n\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 7
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "**参数解释**:监听器的描述信息。\n支持多值查询,查询条件格式:*description=xxx&description=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 8
+          },
+          {
+            "name": "default_tls_container_ref",
+            "in": "query",
+            "description": "**参数解释**:监听器的服务器证书ID。\n支持多值查询,查询条件格式:\n*default_tls_container_ref=xxx&default_tls_container_ref=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 9
+          },
+          {
+            "name": "client_ca_tls_container_ref",
+            "in": "query",
+            "description": "**参数解释**:监听器的CA证书ID。\n支持多值查询,查询条件格式:\n*client_ca_tls_container_ref=xxx&client_ca_tls_container_ref=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 10
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "**参数解释**:监听器的管理状态。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 11
+          },
+          {
+            "name": "include_recycle_bin",
+            "in": "query",
+            "description": "**参数解释**:查询结果是否包含回收站负载均衡器的监听器\n\n**约束限制**:不涉及\n\n**取值范围**:\n- true :包含回收站elb的监听器。\n- false:不包含回收站elb的监听器。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 9
+          },
+          {
+            "name": "connection_limit",
+            "in": "query",
+            "description": "**参数解释**:监听器的最大连接数。\n支持多值查询,查询条件格式:*connection_limit=xxx&connection_limit=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 12
+          },
+          {
+            "name": "default_pool_id",
+            "in": "query",
+            "description": "**参数解释**:监听器的默认后端服务器组ID。当请求没有匹配的转发策略时,转发到默认后端服务器组上处理。\n支持多值查询,查询条件格式:*default_pool_id=xxx&default_pool_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 13
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "**参数解释**:监听器ID。\n支持多值查询,查询条件格式:*id=xxx&id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 14
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "**参数解释**:监听器名称。\n支持多值查询,查询条件格式:*name=xxx&name=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 15
+          },
+          {
+            "name": "http2_enable",
+            "in": "query",
+            "description": "**参数解释**:客户端与LB之间的HTTPS请求的HTTP2功能的开启状态。\n开启后,可提升客户端与LB间的访问性能,但LB与后端服务器间仍采用HTTP1.X协议。\n\n**约束限制**:不涉及\n\n**取值范围**:true 开启,false 不开启。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 16
+          },
+          {
+            "name": "loadbalancer_id",
+            "in": "query",
+            "description": "**参数解释**:监听器所属的负载均衡器ID。\n支持多值查询,查询条件格式:*loadbalancer_id=xxx&loadbalancer_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 17
+          },
+          {
+            "name": "tls_ciphers_policy",
+            "in": "query",
+            "description": "**参数解释**:监听器使用的安全策略。\n支持多值查询,查询条件格式:*tls_ciphers_policy=xxx&tls_ciphers_policy=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 18
+          },
+          {
+            "name": "member_address",
+            "in": "query",
+            "description": "**参数解释**:后端服务器的IP地址。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*member_address=xxx&member_address=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 19
+          },
+          {
+            "name": "member_device_id",
+            "in": "query",
+            "description": "**参数解释**:后端服务器对应的弹性云服务器的ID。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*member_device_id=xxx&member_device_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 20
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "**参数解释**:资源所属的企业项目ID。\n支持多值查询,查询条件格式:\n*enterprise_project_id=xxx&enterprise_project_id=xxx*。\n\n**约束限制**:\n如果enterprise_project_id不传值,默认查询所有企业项目下的资源,鉴权按照细粒度权限鉴权,必须在用户组下分配elb:listeners:list权限。\n如果enterprise_project_id传值,鉴权按照企业项目权限鉴权,分为传入具体eps_id和all_granted_eps两种场景,前者查询指定eps_id的eps下的资源,后者查询的是所有有list权限的eps下的资源。\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 21
+          },
+          {
+            "name": "enable_member_retry",
+            "in": "query",
+            "description": "**参数解释**:是否开启后端服务器的重试。\n\n**约束限制**:不涉及\n\n**取值范围**:true 开启,false 不开启。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-order": 22
+          },
+          {
+            "name": "member_timeout",
+            "in": "query",
+            "description": "**参数解释**:等待后端服务器响应超时时间。请求转发后端服务器后,在等待超时member_timeout时长没有响应,负载均衡将终止等待,并返回HTTP504错误码。\n支持多值查询,查询条件格式:*member_timeout=xxx&member_timeout=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 23
+          },
+          {
+            "name": "client_timeout",
+            "in": "query",
+            "description": "**参数解释**:等待客户端请求超时时间,包括两种情况:\n- 读取整个客户端请求头的超时时长:如果客户端未在超时时长内发送完整个请求头,则请求将被中断\n- 两个连续body体的数据包到达LB的时间间隔,超出client_timeout将会断开连接。\n支持多值查询,查询条件格式:*client_timeout=xxx&client_timeout=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 24
+          },
+          {
+            "name": "keepalive_timeout",
+            "in": "query",
+            "description": "**参数解释**:客户端连接空闲超时时间。在超过keepalive_timeout时长一直没有请求,负载均衡会暂时中断当前连接,直到下一次请求时重新建立新的连接。\n支持多值查询,查询条件格式:*keepalive_timeout=xxx&keepalive_timeout=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "multi",
+            "x-order": 25
+          },
+          {
+            "name": "transparent_client_ip_enable",
+            "in": "query",
+            "description": "**参数解释**:是否开启后客户端IP地址将透传到后端服务器。\n仅作用于共享型LB的TCP/UDP监听器。\n\n**约束限制**:不涉及\n\n**取值范围**:true开启,false不开启。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean",
+            "x-example": "false",
+            "x-order": 26
+          },
+          {
+            "name": "proxy_protocol_enable",
+            "in": "query",
+            "description": "**参数解释**:是否开启proxy_protocol。\n\n**约束限制**:不涉及\n\n**取值范围**:true开启,false不开启。\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "enhance_l7policy_enable",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:是否开启高级转发策略功能。开启高级转发策略后,支持更灵活的转发策略和转发规则设置。\n\n**约束限制**:不涉及\n\n**取值范围**:true开启,false不开启。\n\n**默认取值**:不涉及",
+            "type": "boolean"
+          },
+          {
+            "name": "member_instance_id",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:后端服务器ID。仅用于查询条件,不作为响应参数字段。\n支持多值查询,查询条件格式:*member_instance_id=xxx&member_instance_id=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:不涉及\n\n**默认取值**:不涉及",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "protection_status",
+            "in": "query",
+            "description": "**参数解释**:修改保护状态。\n支持多值查询,查询条件格式:*protection_status=xxx&protection_status=xxx*。\n\n**约束限制**:不涉及\n\n**取值范围**:\n- nonProtection: 不保护,默认值为nonProtection\n- consoleProtection: 控制台修改保护\n\n**默认取值**:不涉及",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-open-region-cloud": "hc,hk"
+          },
+          {
+            "name": "ssl_early_data_enable",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:是否开启监听器0-RTT功能。\n\n**约束限制**:不涉及\n\n**取值范围**:true开启,false不开启。\n\n**默认取值**:不涉及",
+            "type": "boolean"
+          },
+          {
+            "name": "nat64_enable",
+            "in": "query",
+            "required": false,
+            "description": "**参数解释**:是否开启nat64地址转换功能。\n\n**约束限制**:不涉及\n\n**取值范围**:true开启,false不开启。\n\n**默认取值**:不涉及",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "操作正常返回。",
+            "examples": {
+              "application/json": {
+                "listeners": [
+                  {
+                    "id": "0b11747a-b139-492f-9692-2df0b1c87193",
+                    "name": "My listener",
+                    "protocol_port": 80,
+                    "protocol": "TCP",
+                    "ipgroup": null,
+                    "description": "My listener update.",
+                    "default_tls_container_ref": null,
+                    "admin_state_up": true,
+                    "loadbalancers": [
+                      {
+                        "id": "098b2f68-af1c-41a9-8efd-69958722af62"
+                      }
+                    ],
+                    "member_timeout": null,
+                    "client_timeout": null,
+                    "keepalive_timeout": 300,
+                    "client_ca_tls_container_ref": null,
+                    "project_id": "99a3fff0d03c428eac3678da6a7d0f24",
+                    "sni_container_refs": [],
+                    "connection_limit": -1,
+                    "default_pool_id": null,
+                    "tls_ciphers_policy": "tls-1-2",
+                    "tags": [],
+                    "created_at": "2019-04-02T00:12:32Z",
+                    "updated_at": "2019-04-02T17:43:46Z",
+                    "http2_enable": true,
+                    "insert_headers": {
+                      "X-Forwarded-ELB-IP": true
+                    },
+                    "transparent_client_ip_enable": false,
+                    "quic_config": null,
+                    "nat64_enable": false
+                  },
+                  {
+                    "id": "0b455839-3ea7-4bac-ad26-35bf22f96ea4",
+                    "name": "listener-test",
+                    "protocol_port": 86,
+                    "protocol": "TERMINATED_HTTPS",
+                    "description": null,
+                    "default_tls_container_ref": "ad9b123e858d4652b80e89b9941e49a4",
+                    "admin_state_up": true,
+                    "loadbalancers": [
+                      {
+                        "id": "309a0f61-0b62-45f2-97d1-742f3434338e"
+                      }
+                    ],
+                    "member_timeout": 60,
+                    "client_timeout": 60,
+                    "keepalive_timeout": 15,
+                    "client_ca_tls_container_ref": "7875ccb4c6b44cdb90ab2ab89892ab71",
+                    "project_id": "99a3fff0d03c428eac3678da6a7d0f24",
+                    "sni_container_refs": [
+                      "7f41c96223d34ebaa3c8e836b6625ec0"
+                    ],
+                    "connection_limit": -1,
+                    "default_pool_id": "5e7e0175-d5d5-4f37-bfba-88a9524ad20b",
+                    "tls_ciphers_policy": "tls-1-2",
+                    "tags": [],
+                    "created_at": "2019-03-22T23:37:14Z",
+                    "updated_at": "2019-03-22T23:37:14Z",
+                    "http2_enable": false,
+                    "ipgroup": null,
+                    "insert_headers": {
+                      "X-Forwarded-ELB-IP": true
+                    },
+                    "transparent_client_ip_enable": false,
+                    "quic_config": null,
+                    "nat64_enable": false
+                  }
+                ],
+                "page_info": {
+                  "next_marker": "0b455839-3ea7-4bac-ad26-35bf22f96ea4",
+                  "previous_marker": "0b11747a-b139-492f-9692-2df0b1c87193",
+                  "current_count": 2
+                },
+                "request_id": "774640ee-6863-4de3-8156-aff16f51a087"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListListenersResponseBody"
+            }
+          }
+        },
+        "x-name": "查询监听器列表",
+        "x-constraint": "- 分页查询使用的参数为marker、limit、page_reverse。\n\n- marker和page_reverse只有和limit一起使用时才会生效,单独使用无效。",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 2,
+        "x-request-examples-description-1": "分页查询监听器列表",
+        "x-request-examples-url-1": "GET https://{ELB_Endpoint}/v3/99a3fff0d03c428eac3678da6a7d0f24/elb/listeners?limit=2&marker=0r31747a-b139-492f-2749-2df0b1c87193",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2019-04-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,hws_eu,otc,ocb,tlf,ctc,hcso,ct,sbc,g42,tm,cmcc,hk_g42,hcso_dt,mix,hk_sbc,hws_ocb,hk_vdf,srg,fcs,fcs_dt,dt",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api"
+      }
+    }
+  },
+  "definitions": {
+    "ListListenersResponseBody": {
+      "required": [
+        "listeners",
+        "page_info",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:请求ID。\n\n**取值范围**:由数字、小写字母和中划线(-)组成的字符串,自动生成。"
+        },
+        "page_info": {
+          "$ref": "#/definitions/PageInfo"
+        },
+        "listeners": {
+          "type": "array",
+          "description": "**参数解释**:Listener的列表。",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/Listener"
+          }
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "Tag": {
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "**参数解释**:标签键。\n\n**取值范围**:不涉及",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "description": "**参数解释**:标签值。\n\n**取值范围**:不涉及",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      },
+      "description": "**参数解释**:资源标签。",
+      "type": "object"
+    },
+    "PageInfo": {
+      "properties": {
+        "previous_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中第一条记录的ID。通常用于配合page_reverse=true查询上一页。\n\n**取值范围**:不涉及"
+        },
+        "next_marker": {
+          "type": "string",
+          "description": "**参数解释**:分页查询结果中最后一条记录的ID。通常用于查询下一页。\n\n**取值范围**:不涉及"
+        },
+        "current_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:当前页返回记录数。\n\n**取值范围**:不涉及"
+        }
+      },
+      "description": "**参数解释**:分页信息。",
+      "required": [
+        "previous_marker",
+        "current_count"
+      ],
+      "type": "object"
+    },
+    "ListenerQuicConfig": {
+      "description": "**参数解释**:当前监听器关联的QUIC监听器配置信息。\n\n> 客户端向服务端发送正常的HTTP协议请求并携带了支持QUIC协议的信息。\n如果服务端监听器开启了升级QUIC,那么就会在响应头中加入服务端支持的QUIC端口和版本信息。\n客户端再次请求时会同时发送TCP(HTTPS)和UDP(QUIC)请求,若QUIC请求成功,则后续继续使用QUIC交互。",
+      "properties": {
+        "quic_listener_id": {
+          "type": "string",
+          "description": "**参数解释**:监听器关联的QUIC监听器ID。\n\n**取值范围**:不涉及"
+        },
+        "enable_quic_upgrade": {
+          "type": "boolean",
+          "description": "**参数解释**:QUIC升级的开启状态。开启HTTPS监听器升级QUIC监听器能力。\n\n**取值范围**:\n- true:开启QUIC升级。\n- false:关闭QUIC升级。"
+        }
+      }
+    },
+    "ListenerIpGroup": {
+      "required": [
+        "enable_ipgroup",
+        "ipgroup_id",
+        "type"
+      ],
+      "properties": {
+        "ipgroup_id": {
+          "type": "string",
+          "description": "**参数解释**:监听器关联的访问控制组的ID。\n关联多个IP地址组时ID使用逗号分隔。\n\n**取值范围**:不涉及"
+        },
+        "enable_ipgroup": {
+          "type": "boolean",
+          "description": "**参数解释**:访问控制组的状态。\n开启访问控制的监听器,允许直接删除。\n\n**取值范围**:\n- true:开启访问控制。\n- false:关闭访问控制。"
+        },
+        "type": {
+          "type": "string",
+          "description": "**参数解释**:访问控制组的类型。\n\n**取值范围**:\n- white:白名单,只允许指定ip访问。\n- black:黑名单,不允许指定ip访问。"
+        }
+      },
+      "description": "listener对象中的ipgroup信息",
+      "type": "object"
+    },
+    "LoadBalancerRef": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:负载均衡器ID。\n\n**取值范围**:不涉及"
+        }
+      }
+    },
+    "ListenerInsertHeaders": {
+      "properties": {
+        "X-Forwarded-ELB-IP": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-ELB-IP设为true可以将ELB实例的eip地址从报文的http头中带到后端服务器。"
+        },
+        "X-Forwarded-Port": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-Port设为true可以将ELB实例的监听端口从报文的http头中带到后端服务器。"
+        },
+        "X-Forwarded-For-Port": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-For-Port设为true可以将客户端的源端口从报文的http头中带到后端服务器。"
+        },
+        "X-Forwarded-Host": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-Host设为true可以将客户请求头的X-Forwarded-Host设置为请求头的Host带到后端服务器。"
+        },
+        "X-Forwarded-Proto": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-Proto设为true可以将负载均衡器实例的监听协议通过报文的http头带到后端服务器。"
+        },
+        "X-Real-IP": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Real-IP设为true可以将客户端的IP通过报文的http头带到后端服务器。"
+        },
+        "X-Forwarded-ELB-ID": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-ELB-ID设为true可以将负载均衡器实例的ID通过报文的http头带到后端服务器。"
+        },
+        "X-Forwarded-TLS-Certificate-ID": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-TLS-Certificate-ID设为true可以将负载均衡器实例的证书ID通过报文的http头带到后端服务器。"
+        },
+        "X-Forwarded-TLS-Protocol": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-TLS-Protocol设为true可以将负载均衡器实例的算法协议通过报文的http头带到后端服务器。"
+        },
+        "X-Forwarded-TLS-Cipher": {
+          "type": "boolean",
+          "description": "**参数解释**:X-Forwarded-TLS-Cipher设为true可以将负载均衡器实例的算法套件通过报文的http头带到后端服务器。"
+        },
+        "X-Forwarded-TLS-Protocol-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-TLS-Protocol头字段名称。\n\n**约束限制**:只有当 X-Forwarded-TLS-Protocol 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-TLS-Cipher-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-TLS-Cipher头字段名称。\n\n**约束限制**:只有当 X-Forwarded-TLS-Cipher 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-For-Processing-Mode": {
+          "type": "string",
+          "description": "**参数解释**:处理X-Forwarded-For头字段的模式:\n配置 append,将请求发送至后端服务之前把最后一跳 IP 加入X-Forwarded-For头字段;\n配置 remove,请求发送至后端服务之前删除X-Forwarded-For标头,无论请求是否携带X-Forwarded-For头字段;\n配置preserve,保留请求中已有的X-Forwarded-For标头;\n\n**约束限制**:仅HTTP、HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段;\n\n**取值范围**:append、remove、preserve\n\n**默认取值**:append",
+          "enum": [
+            "append、remove、preserve"
+          ]
+        },
+        "X-Forwarded-Clientcert-subjectdn-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-subjectdn头字段获取访问负载均衡实例客户端证书的所有者信息。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-subjectdn-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-subjectdn头字段名称。\n\n**约束限制**:只有当 X-Forwarded-Clientcert-subjectdn-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-issuerdn-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-issuerdn头字段获取访问负载均衡实例客户端证书的发行者信息。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-issuerdn-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-issuerdn头字段名称。\n\n**约束限制**:只有当 X-Forwarded-Clientcert-issuerdn-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-fingerprint-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-fingerprint头字段获取访问负载均衡实例客户端证书的指纹取值。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-fingerprint-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-fingerprint头字段名称。\n\n**约束限制**:只有当 X-Forwarded-Clientcert-fingerprint-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-clientverify-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-clientverify头字段获取对访问负载均衡实例客户端证书的校验结果。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-clientverify-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-clientverify头字段名称。\n\n**约束限制**:只有当 X-Forwarded-Clientcert-clientverify-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-serialnumber-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-serialnumber 头字段获取客户端证书的序列号信息。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-serialnumber-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-serialnumber头字段名称。\n\n**约束限制**:只有当X-Forwarded-Clientcert-serialnumber-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert 头字段获取客户端证书的内容。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert头字段名称。\n\n**约束限制**:只有当X-Forwarded-Clientcert-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC、TLS协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-ciphers-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-ciphers 头字段获取客户端支持的TLS加密套件。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段。\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-ciphers-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-ciphers头字段名称。\n\n**约束限制**:只有当X-Forwarded-Clientcert-ciphers-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Clientcert-end-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Clientcert-end 头字段获取客户端证书的结束日期。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段。\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Clientcert-end-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Clientcert-end头字段名称。\n\n**约束限制**:只有当X-Forwarded-Clientcert-end-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC、TLS协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Tls-Alpn-Protocol-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Tls-Alpn-Protocol 头字段获取客户端和服务器之间ALPN(Application-Layer Protocol Negotiation)协商的应用层协议。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段。\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Tls-Alpn-Protocol-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Tls-Alpn-Protocol头字段名称。\n\n**约束限制**:只有当X-Forwarded-Tls-Alpn-Protocol-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Tls-Sni-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Tls-Sni 头字段获取客户端访问的sni证书的域名。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段。\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Tls-Sni-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Tls-Sni头字段名称。\n\n**约束限制**:只有当X-Forwarded-Tls-Sni-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Tls-Ja3-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Tls-Ja3头字段获取访问负载均衡实例客户端的ja3指纹。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段。\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Tls-Ja3-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Tls-Ja3头字段名称。\n\n**约束限制**:只有当X-Forwarded-Tls-Ja3-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        },
+        "X-Forwarded-Tls-Ja4-enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否通过X-Forwarded-Tls-Ja4头字段获取访问负载均衡实例客户端的ja4指纹。\n\n**约束限制**:仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段。\n\n**取值范围**:true、false\n\n**默认取值**:false",
+          "enum": [
+            true,
+            false
+          ]
+        },
+        "X-Forwarded-Tls-Ja4-alias": {
+          "type": "string",
+          "description": "**参数解释**:自定义X-Forwarded-Tls-Ja4头字段名称。\n\n**约束限制**:只有当X-Forwarded-Tls-Ja4-enable 的值为 true 时,此值才会生效。仅HTTPS、TERMINATED_HTTPS、QUIC协议的监听器支持该字段\n\n**取值范围**:1~40 个字符。支持字母 a~z、短划线(-)、下划线(_)和数字。\n\n**默认取值**:无"
+        }
+      },
+      "type": "object"
+    },
+    "PortRange": {
+      "type": "object",
+      "properties": {
+        "start_port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "type": "integer",
+          "description": "**参数解释**:起始端口。\n\n**约束限制**:不涉及\n\n**取值范围**:1-65535\n\n**默认取值**:不涉及",
+          "format": "int32"
+        },
+        "end_port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "type": "integer",
+          "description": "**参数解释**:结束端口。\n\n**约束限制**:大于等于起始端口。\n\n**取值范围**:1-65535\n\n**默认取值**:不涉及",
+          "format": "int32"
+        }
+      }
+    },
+    "Listener": {
+      "properties": {
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "**参数解释**:监听器的管理状态。\n\n**取值范围**:true"
+        },
+        "client_ca_tls_container_ref": {
+          "type": "string",
+          "description": "**参数解释**:监听器使用的CA证书ID。当且仅当type=client时,才会使用该字段对应的证书。\n\n**取值范围**:不涉及"
+        },
+        "connection_limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:监听器的最大连接数。\n\n**取值范围**:大于等于-1的整数。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释**:监听器的创建时间。\n\n**取值范围**:不涉及\n格式:yyyy-MM-dd'T'HH:mm:ss'Z',如:2021-07-30T12:03:44Z"
+        },
+        "default_pool_id": {
+          "type": "string",
+          "description": "**参数解释**:监听器的默认后端服务器组ID。当请求没有匹配的转发策略时,转发到默认后端服务器组上处理。\n\n**取值范围**:不涉及"
+        },
+        "default_tls_container_ref": {
+          "type": "string",
+          "description": "**参数解释**:监听器使用的服务器证书ID。\n\n**取值范围**:不涉及"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:监听器的描述信息。\n\n**取值范围**:不涉及"
+        },
+        "http2_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:客户端与LB之间的HTTPS请求的HTTP2功能的开启状态。\n开启后,可提升客户端与LB间的访问性能,但LB与后端服务器间仍采用HTTP1.X协议。\n\n**取值范围**:不涉及"
+        },
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:监听器ID。\n\n**取值范围**:不涉及"
+        },
+        "insert_headers": {
+          "$ref": "#/definitions/ListenerInsertHeaders",
+          "description": "**参数解释**:附加的HTTP头字段,ELB会将特定的HTTP头字段写入到请求头中,并随报文传递到后端服务器。例如可通过X-Forwarded-ELB-IP开关,将负载均衡器的弹性公网IP传到后端服务器。"
+        },
+        "loadbalancers": {
+          "type": "array",
+          "description": "**参数解释**:监听器所属的负载均衡器的ID列表。实际上一个监听器只支持关联到一个LB。",
+          "items": {
+            "$ref": "#/definitions/LoadBalancerRef"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:监听器的名称。若名称为空,则在控制台的监听器列表无法选择并查看监听器详情。\n\n**取值范围**:不涉及"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:监听器所在的项目ID。\n\n**取值范围**:不涉及"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "**参数解释**:企业项目ID。\n\n**取值范围**:不涉及"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "**参数解释**:监听器的监听协议。\n\n**取值范围**:TCP、UDP、HTTP、HTTPS、TERMINATED_HTTPS、QUIC、TLS、IP。IP为网关型LB上的监听器独有的协议。"
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:监听器的监听端口。\n\n**取值范围**:不涉及",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "sni_container_refs": {
+          "type": "array",
+          "description": "**参数解释**:监听器使用的SNI证书(带域名的服务器证书)ID列表。\n\n**取值范围**:不涉及",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sni_match_algo": {
+          "type": "string",
+          "description": "**参数解释**:监听器使用的SNI证书泛域名匹配方式。\n\n**取值范围**:longest_suffix表示最长尾缀匹配;wildcard表示标准域名分级匹配。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "**参数解释**:标签列表。",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释**:监听器的更新时间。\n\n**取值范围**:\n\n格式:yyyy-MM-dd'T'HH:mm:ss'Z',如:2021-07-30T12:03:44Z"
+        },
+        "tls_ciphers_policy": {
+          "type": "string",
+          "description": "**参数解释**:监听器使用的安全策略。\n\n**取值范围**:tls-1-0-inherit、tls-1-0、tls-1-1、tls-1-2、tls-1-2-strict、tls-1-2-fs、tls-1-0-with-1-3、tls-1-2-fs-with-1-3、hybrid-policy-1-0、tls-1-2-strict-no-cbc,默认:tls-1-2。"
+        },
+        "security_policy_id": {
+          "type": "string",
+          "description": "**参数解释**:自定义安全策略的ID。\n\n**取值范围**:不涉及"
+        },
+        "enable_member_retry": {
+          "type": "boolean",
+          "description": "**参数解释**:是否开启后端服务器的重试。\n\n**取值范围**:true 开启重试,false 不开启重试。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "keepalive_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:客户端连接空闲超时时间。在超过keepalive_timeout时长一直没有请求,负载均衡会暂时中断当前连接,直到下一次请求时重新建立新的连接。\n\n**取值范围**:\n- TCP、UDP和IP监听器:10-4000s,默认值为300s。\n- HTTP、HTTPS和TERMINATED_HTTPS监听器:0-4000s,默认值为60s。"
+        },
+        "client_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:等待客户端请求超时时间,包括两种情况:\n- 读取整个客户端请求头的超时时长:如果客户端未在超时时长内发送完整个请求头,则请求将被中断\n- 两个连续body体的数据包到达LB的时间间隔,超出client_timeout将会断开连接。\n\n**取值范围**:1-300,单位:秒。"
+        },
+        "member_timeout": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:等待后端服务器响应超时时间。请求转发后端服务器后,在等待超时member_timeout时长没有响应,负载均衡将终止等待,并返回HTTP504错误码。\n\n**取值范围**:1-300,单位:秒。"
+        },
+        "ipgroup": {
+          "$ref": "#/definitions/ListenerIpGroup",
+          "description": "**参数解释**:listener对象中的ipgroup信息。"
+        },
+        "transparent_client_ip_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否透传客户端IP地址。开启后客户端IP地址将透传到后端服务器。\n仅作用于共享型LB的TCP/UDP监听器。\n\n**取值范围**:\n- 共享型LB的TCP/UDP监听器可设置为true或false,不传默认为false。\n- 共享型LB的HTTP/HTTPS监听器只支持设置为true,不传默认为true。\n- 独享型负载均衡器所有协议的监听器只支持设置为true,不传默认为true。"
+        },
+        "proxy_protocol_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否开启proxy_protocol。仅TLS监听器可指定,其他协议的监听器该字段不生效,proxy_protocol不开启。\n\n**取值范围**:true 开启,false 不开启。"
+        },
+        "enhance_l7policy_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:是否开启高级转发策略功能。开启高级转发策略后,支持更灵活的转发策略和转发规则设置。\n开启后支持如下场景:\n- 转发策略的action字段支持指定为REDIRECT_TO_URL、FIXED_RESPONSE,即支持URL重定向和响应固定的内容给客户端。\n- 转发策略支持指定priority、redirect_url_config、fixed_response_config字段。\n- 转发规则rule的type可以指定METHOD, HEADER, QUERY_STRING, SOURCE_IP这几种取值。\n- 转发规则rule的type为HOST_NAME时,转发规则rule的value支持通配符*。\n- 转发规则支持指定conditions字段。\n\n**取值范围**:true开启,false不开启。",
+          "default": false
+        },
+        "quic_config": {
+          "$ref": "#/definitions/ListenerQuicConfig",
+          "description": "**参数解释**:当前监听器关联的QUIC监听器配置信息。"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "**参数解释**:修改保护状态。\n\n**取值范围**:\n- nonProtection: 不保护。\n- consoleProtection: 控制台修改保护。",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ],
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "**参数解释**:设置保护的原因。作为protection_status的转态设置的原因。\n\n**取值范围**:除'<'和'>'外通用Unicode字符集字符,最大255个字符。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk"
+        },
+        "gzip_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:ELB是否开启gzip压缩。\n\n**取值范围**:true开启,false不开启。"
+        },
+        "port_ranges": {
+          "type": "array",
+          "description": "**参数解释**:全端口监听,指定端口监听范围(闭区间)。",
+          "items": {
+            "$ref": "#/definitions/PortRange"
+          }
+        },
+        "ssl_early_data_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:监听器0-RTT能力开关\n\n**约束限制**:仅HTTPS类型监听器支持配置,需要依赖TLSv1.3安全策略协议。",
+          "x-open-region-cloud": "hc,hk"
+        },
+        "cps": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:监听器新建限速。当该限速值大于LB的限速值时,以LB的限速值生效。\n\n**取值范围**:0-1000000"
+        },
+        "connection": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:监听器并发限速。当该限速值大于LB的限速值时,以LB的限速值生效。\n\n**取值范围**:0-1000000"
+        },
+        "nat64_enable": {
+          "type": "boolean",
+          "description": "**参数解释**:监听器地址转换能力开关,可以实现客户端通过访问LB的IPv4或者IPv6地址,来访问IPv4后端和IPv6后端。\n\n**取值范围**:\n- true:开启地址转换功能。\n- false:关闭地址转换功能。",
+          "default": false
+        }
+      },
+      "description": "监听器信息。",
+      "required": [
+        "admin_state_up",
+        "client_ca_tls_container_ref",
+        "connection_limit",
+        "created_at",
+        "default_pool_id",
+        "default_tls_container_ref",
+        "description",
+        "http2_enable",
+        "id",
+        "insert_headers",
+        "loadbalancers",
+        "name",
+        "project_id",
+        "enterprise_project_id",
+        "protocol",
+        "protocol_port",
+        "sni_container_refs",
+        "sni_match_algo",
+        "tags",
+        "updated_at",
+        "tls_ciphers_policy",
+        "security_policy_id",
+        "enable_member_retry",
+        "keepalive_timeout",
+        "client_timeout",
+        "member_timeout",
+        "ipgroup",
+        "transparent_client_ip_enable",
+        "enhance_l7policy_enable"
+      ],
+      "type": "object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

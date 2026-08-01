@@ -1,0 +1,305 @@
+{
+  "name": "ListObjects",
+  "summary": "列举桶内对象",
+  "tags": "桶的基础操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "桶的基础操作"
+        ],
+        "operationId": "ListObjects",
+        "summary": "列举桶内对象",
+        "description": "对桶拥有读权限的用户可以执行获取桶内对象列表的操作。\n用户也可以请求参数中添加versions参数来执行列举桶内多版本对象的操作。\n如果用户在请求的URI里只指定了桶名,即GET /BucketName,则返回信息中会包含桶内部分或所有对象的描述信息(一次最多返回1000个对象信息);如果用户还指定了prefix、marker、max-keys、delimiter参数中的一个或多个,则返回的对象列表将按照如表1所示规定的语义返回指定的对象。\n",
+        "produces": [
+          "application/xml"
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "/",
+        "x-request-examples-1": "GET / HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 02:28:25 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:KiyoYze4pmRNPYfmlXBfRTVxt8c=\n",
+        "x-request-examples-url-2": "/?versions",
+        "x-request-examples-2": "GET / HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 02:28:25 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:KiyoYze4pmRNPYfmlXBfRTVxt8c=\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "versions",
+            "in": "query",
+            "description": "添加versions表示请求列举桶内对象(多版本)。\n",
+            "type": "string",
+            "required": false,
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "prefix",
+            "in": "query",
+            "description": "列举以指定的字符串prefix开头的对象。\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "列举桶内对象列表时,指定一个标识符,从该标识符以后按字典顺序返回对象列表。\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "max-keys",
+            "in": "query",
+            "description": "指定返回的最大对象数,返回的对象列表将是按照字典顺序的最多前max-keys个对象,范围是[1,1000],超出范围时,按照默认的1000进行处理。\n",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 1000,
+            "required": false
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "description": "将对象名进行分组的分隔符。如果指定了prefix,从prefix到第一次出现delimiter间具有相同字符串的对象名会被分成一组,形成一条CommonPrefixes;如果没有指定prefix,从对象名的首字符到第一次出现delimiter间具有相同字符串的对象名会被分成一组,形成一条CommonPrefixes。\n\n例如,桶中有3个对象,分别为abcd、abcde、bbcde。如果指定delimiter为d,prefix为a,abcd、abcde会被分成一组,形成一条前缀为abcd的CommonPrefixes;如果只指定delimiter为d,abcd、abcde会被分成一组,形成一条前缀为abcd的CommonPrefixes,而bbcde会被单独分成一组,形成一条前缀为bbcd的CommonPrefixes。\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "key-marker",
+            "in": "query",
+            "description": "列举对象时的起始位置。\n有效值:上次请求返回体的NextKeyMarker值\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "version-id-marker",
+            "in": "query",
+            "description": "本参数只适用于多版本例举场景\n\n与请求中的key-marker配合使用,返回的对象列表将是按照字典顺序排序后在该标识符以后的对象(单次返回最大为1000个)。如果version-id-marker不是key-marker对应的一个版本号,则该参数无效。\n\n有效值:对象的版本号,即上次请求返回体的NextVersionIdMarker值\n",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "encoding-type",
+            "in": "query",
+            "description": "对响应中的部分元素进行指定类型的编码。如果Delimiter、Marker(或KeyMarker)、Prefix、NextMarker(或NextKeyMarker)和Key包含xml 1.0标准不支持的控制字符,可通过设置encoding-type对响应中的Delimiter、Marker(或KeyMarker)、Prefix(包括CommonPrefixes中的Prefix)、NextMarker(或NextKeyMarker)和Key进行编码。\n\n可选值:url\n",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应消息\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-bucket-type": {
+                "description": "通过此消息头明确获取的列表内容。\n\n取值:\nOBJECT:获取所有桶列表。\nPOSIX:获取所有并行文件系统列表。\n不带此消息头则获取所有桶和并行文件系统列表。\n",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListBucketResult"
+            },
+            "examples": {
+              "application/xml": "HTTP/1.1 200 OK\nServer: OBS\nx-obs-request-id: BF260000016435D758FBA857E0801874\nx-obs-id-2: 32AAAQAAEAABAAAQAAEAABAAAQAAEAABCShn/xAyk/xHBX6qgGSB36WXrbco0X80\nContent-Type: application/xml\nDate: WED, 01 Jul 2015 02:29:48 GMT\nContent-Length: 707\n\n普通列举\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ListBucketResult xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n<Name>examplebucket</Name>\n<Prefix></Prefix>\n<Marker></Marker>\n<MaxKeys>1000</MaxKeys>\n<IsTruncated>false</IsTruncated>\n<Contents>\n<Key>object001</Key>\n<LastModified>2015-07-01T00:32:16.482Z</LastModified>\n<ETag>\"2fa3bcaaec668adc5da177e67a122d7c\"</ETag>\n<Size>12041</Size>\n<Owner>\n<ID>b4bf1b36d9ca43d984fbcb9491b6fce9</ID>\n<DisplayName>ObjectOwnerName</DisplayName>\n</Owner>\n<StorageClass>STANDARD</StorageClass>\n</Contents>\n</ListBucketResult>\n\n多版本列举\n<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<ListVersionsResult xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n <Name>bucket02</Name>\n  <Prefix/>\n  <KeyMarker/>\n  <VersionIdMarker/>\n  <MaxKeys>1000</MaxKeys>\n  <IsTruncated>false</IsTruncated>\n  <Contents>\n    <Key>object001</Key>\n    <VersionId>00011000000000013F16000001643A22E476FFFF9046024ECA3655445346485a</VersionId>\n    <IsLatest>true</IsLatest>\n    <LastModified>2015-07-01T00:32:16.482Z</LastModified>\n    <ETag>\"2fa3bcaaec668adc5da177e67a122d7c\"</ETag>\n    <Size>12041</Size>\n    <Owner>\n      <ID>b4bf1b36d9ca43d984fbcb9491b6fce9</ID>\n    </Owner>\n    <StorageClass>STANDARD</StorageClass>\n  </Contents>\n</ListVersionsResult>\n"
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Contents": {
+      "description": "对象的元数据信息。\n",
+      "properties": {
+        "Owner": {
+          "$ref": "#/definitions/Owner"
+        },
+        "ETag": {
+          "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。(当对象是服务端加密的对象时,ETag值不是对象的MD5值,而是通过服务端加密计算出的唯一标识。)\n",
+          "type": "string"
+        },
+        "Type": {
+          "description": "对象类型,非Normal对象时返回。\n",
+          "type": "string"
+        },
+        "Key": {
+          "description": "对象名。\n",
+          "type": "string"
+        },
+        "LastModified": {
+          "description": "对象最近一次被修改的时间(UTC时间)。\n",
+          "type": "string"
+        },
+        "Size": {
+          "description": "对象的字节数。\n",
+          "type": "string"
+        },
+        "StorageClass": {
+          "description": "对象的存储类型。\n",
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "WARM",
+            "COLD"
+          ]
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "CommonPrefixes": {
+      "description": "请求中带delimiter参数时,返回消息带CommonPrefixes分组信息。\n",
+      "properties": {
+        "Prefix": {
+          "type": "string"
+        }
+      }
+    },
+    "ListBucketResult": {
+      "description": "桶中对象列表。\n",
+      "properties": {
+        "Contents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Contents"
+          }
+        },
+        "CommonPrefixes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CommonPrefixes"
+          }
+        },
+        "Delimiter": {
+          "description": "请求中携带的delimiter参数。\n",
+          "type": "string"
+        },
+        "EncodingType": {
+          "description": "对响应中的部分元素进行指定类型的编码。如果请求中设置了encoding-type,那响应中的Delimiter、Marker、Prefix(包括CommonPrefixes中的Prefix)、NextMarker和Key会被编码。\n",
+          "type": "string"
+        },
+        "IsTruncated": {
+          "description": "表明是否本次返回的ListBucketResult结果列表被截断。“true”表示本次没有返回全部结果;“false”表示本次已经返回了全部结果。\n",
+          "type": "boolean"
+        },
+        "Marker": {
+          "description": "列举对象时的起始位置标识符。\n",
+          "type": "string"
+        },
+        "NextMarker": {
+          "description": "如果本次没有返回全部结果,响应请求中将包含此字段,用于标明本次请求列举到的最后一个对象。后续请求可以指定Marker等于该值来列举剩余的对象。\n",
+          "type": "string"
+        },
+        "MaxKeys": {
+          "description": "列举时最多返回的对象个数。\n",
+          "type": "string"
+        },
+        "Name": {
+          "description": "本次请求的桶名。\n",
+          "type": "string"
+        },
+        "Prefix": {
+          "description": "对象名的前缀,表示本次请求只列举对象名能匹配该前缀的所有对象。\n",
+          "type": "string"
+        }
+      }
+    },
+    "Owner": {
+      "description": "桶拥有者信息,包含租户ID。\n",
+      "properties": {
+        "ID": {
+          "description": "用户的DomainID(帐号ID)。\n",
+          "type": "string",
+          "example": "id"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "get",
+  "uri": null
+}

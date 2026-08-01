@@ -1,0 +1,92 @@
+{
+  "name": "ShowRealNameAuthStatus",
+  "summary": "查询实名认证状态",
+  "tags": "实名认证(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/customers/real-name-auth-status": {
+      "get": {
+        "summary": "查询实名认证状态",
+        "description": "功能描述:客户在agent使用时查询自己的实名认证状态和类型",
+        "tags": [
+          "实名认证(客户)"
+        ],
+        "operationId": "ShowRealNameAuthStatus",
+        "x-externalAPI": true,
+        "x-openAPI": true,
+        "x-constraint": "该接口只允许使用客户Token调用",
+        "x-externalURL": "/v2/customers/real-name-auth-status",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": 1000,
+        "x-operation-data-level": "L2",
+        "x-IAM5-OpenAPI": true,
+        "x-hc": "Y",
+        "x-apigateway-request-type": "public",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "|客户token|",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "|查询实名认证状态响应| |成功:success| |参数约束及描述:查询实名认证状态响应|",
+            "schema": {
+              "$ref": "#/definitions/RealNameAuthStatusRsp"
+            },
+            "examples": {
+              "application/json": {
+                "verified_status": 2,
+                "verified_type": 1
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误|"
+          }
+        },
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/customers/real-name-auth-status"
+      }
+    }
+  },
+  "definitions": {
+    "RealNameAuthStatusRsp": {
+      "properties": {
+        "verified_status": {
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "description": "实名认证状态。enum:-1,0,1,2。 -1未实名认证、0实名认证审核中、1实名认证不通过、2已实名认证",
+          "example": 2
+        },
+        "verified_type": {
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "description": "实名认证类型。实名认证状态为-1未实名认证返回null。enum:0,1。 0个人实名认证、1企业实名认证",
+          "example": 0
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

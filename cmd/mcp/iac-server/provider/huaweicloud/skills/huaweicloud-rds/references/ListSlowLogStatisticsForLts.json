@@ -1,0 +1,219 @@
+{
+  "name": "ListSlowLogStatisticsForLts",
+  "summary": "查询实例慢日志的统计数据",
+  "tags": "日志",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.1/{project_id}/instances/{instance_id}/slow-logs/statistics": {
+      "post": {
+        "x-constraint": "该接口仅支持MySQL引擎和PostgreSQL引擎。",
+        "x-publishpath": "getlog",
+        "tags": [
+          "日志"
+        ],
+        "description": "查询实例慢日志的统计数据。",
+        "operationId": "ListSlowLogStatisticsForLts",
+        "summary": "查询实例慢日志的统计数据",
+        "x-support-sdk": "Y",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "租户在某一region下的project ID。获取方法请参见获取项目ID。"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID。"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言。默认en-us。",
+            "type": "string",
+            "enum": [
+              "zh-cn",
+              "en-us"
+            ]
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "用户token。",
+            "type": "string"
+          },
+          {
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "description": "查询条件。",
+            "schema": {
+              "$ref": "#/definitions/SlowLogStatisticsForLtsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/MysqlSlowLogStatisticsResponse"
+            },
+            "examples": {
+              "application/json": {
+                "slow_log_list": [
+                  {
+                    "count": "9 (100.00%)",
+                    "time": "3.00018 s",
+                    "lock_time": "0.00000 s",
+                    "rows_sent": 1,
+                    "rows_examined": 0,
+                    "database": "test_db",
+                    "users": "root",
+                    "query_sample": "SELECT sleep(N) LIMIT N, N;",
+                    "client_ip": "100.*.*.247",
+                    "type": "SELECT"
+                  }
+                ],
+                "total_count": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MysqlSlowLogStatisticsResponse": {
+      "type": "object",
+      "properties": {
+        "slow_log_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MysqlSlowLogStatisticsItem"
+          },
+          "description": "数据集合。"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "总条数。"
+        }
+      }
+    },
+    "MysqlSlowLogStatisticsItem": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "description": "执行次数。"
+        },
+        "time": {
+          "type": "string",
+          "description": "执行时间。"
+        },
+        "lock_time": {
+          "type": "string",
+          "description": "等待锁时间。mysql支持"
+        },
+        "rows_sent": {
+          "type": "integer",
+          "format": "int64",
+          "description": "结果行数量。mysql支持"
+        },
+        "rows_examined": {
+          "type": "integer",
+          "format": "int64",
+          "description": "扫描的行数量。mysql支持"
+        },
+        "database": {
+          "type": "string",
+          "description": "所属数据库。"
+        },
+        "users": {
+          "type": "string",
+          "description": "帐号。"
+        },
+        "query_sample": {
+          "type": "string",
+          "description": "执行语法。"
+        },
+        "client_ip": {
+          "type": "string",
+          "description": "IP地址。"
+        },
+        "type": {
+          "type": "string",
+          "description": "语句类型。"
+        }
+      }
+    },
+    "SlowLogStatisticsForLtsRequest": {
+      "type": "object",
+      "description": "查询实例的慢日志对象",
+      "required": [
+        "start_time",
+        "end_time"
+      ],
+      "properties": {
+        "start_time": {
+          "description": "开始日期,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。",
+          "type": "string"
+        },
+        "end_time": {
+          "description": "结束时间,格式为“yyyy-mm-ddThh:mm:ssZ”。\n其中,T指某个时间的开始;Z指时区偏移量,例如北京时间偏移显示为+0800。只能查询当前时间前一个月内的慢日志。",
+          "type": "string"
+        },
+        "offset": {
+          "description": "索引位置,偏移量。默认为0,表示从第一条数据开始查询。",
+          "type": "integer"
+        },
+        "limit": {
+          "description": "每页多少条记录(查询结果),取值范围是1~100,不填时默认为10。",
+          "type": "integer"
+        },
+        "type": {
+          "description": "语句类型,取空值,表示查询所有语句类型。",
+          "type": "string",
+          "enum": [
+            "INSERT",
+            "UPDATE",
+            "SELECT",
+            "DELETE",
+            "CREATE",
+            "ALL"
+          ]
+        },
+        "database": {
+          "description": "数据库名称。",
+          "type": "string"
+        },
+        "sort": {
+          "description": "指定排序字段。\"executeTime\",表示按照执行时间降序排序。字段为空或传入其他值,表示按照执行次数降序排序。",
+          "type": "string"
+        },
+        "order": {
+          "description": "排序顺序。默认desc。",
+          "type": "string",
+          "enum": [
+            "desc",
+            "asc"
+          ]
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

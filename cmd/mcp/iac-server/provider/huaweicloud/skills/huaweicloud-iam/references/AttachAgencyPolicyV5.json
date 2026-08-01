@@ -1,0 +1,93 @@
+{
+  "name": "AttachAgencyPolicyV5",
+  "summary": "为委托或信任委托附加身份策略",
+  "tags": "权限管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/policies/{policy_id}/attach-agency": {
+      "post": {
+        "tags": [
+          "PolicyAttachment"
+        ],
+        "operationId": "AttachAgencyPolicyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "为委托或信任委托附加身份策略",
+        "description": "该接口可以用于为指定委托或信任委托附加指定身份策略。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PolicyId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttachAgencyPolicyReqBody"
+              },
+              "example": {
+                "agency_id": "xxx"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "为委托xxx附加指定身份策略。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v5/policies/{policy_id}/attach-agency",
+        "x-request-examples-1": {
+          "agency_id": "xxx"
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。"
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "未找到相应的资源。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "post",
+  "uri": null
+}

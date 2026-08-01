@@ -1,0 +1,134 @@
+{
+  "name": "UpdateSubEnterpriseAmount",
+  "summary": "企业主账号向企业子账号拨款",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/transfer-amount": {
+      "post": {
+        "summary": "企业主账号向企业子账号拨款",
+        "description": "企业主账号在自建平台向企业子账号拨款。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "UpdateSubEnterpriseAmount",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/transfer-amount",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "企业主账号向企业子账号拨款请求体",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransferEnterpriseMultiAccountReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "POST https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/transfer-amount",
+        "x-request-examples-1": {
+          "customer_id": "06a29c********400fc0c01027684d40",
+          "amount": "100",
+          "trans_id": "2020042401",
+          "balance_type": "BALANCE_TYPE_DEBIT",
+          "expire_time": "2020-05-28T14:45:38Z"
+        },
+        "responses": {
+          "204": {
+            "description": "默认返回:no content"
+          },
+          "400": {
+            "description": "|CBC.0100:parameter error||CBC.99007004:发起的业务操作存在不满足的业务检查项。||CBC.99007181:划拨或回收的信用额度的有效期已过期。||CBC.99007009:交易事务ID重复。|",
+            "schema": {
+              "$ref": "#/definitions/FailCheckItems"
+            }
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "FailCheckItems": {
+      "properties": {
+        "fail_check_items": {
+          "description": "不满足的业务规则检查项。 当错误码为CBC.99007004时返回。具体检查项参见”表1”。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TransferEnterpriseMultiAccountReq": {
+      "required": [
+        "customer_id",
+        "amount"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "企业子账号的客户ID。您可以调用查询企业子账号列表接口,获取响应参数“id”的返回值。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": "06a29ceaae80d2400fc0c01027684d40"
+        },
+        "amount": {
+          "type": "string",
+          "description": "现金账户总划拨金额。 单位:元。取值大于0且精确到小数点后2位。",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": "100"
+        },
+        "trans_id": {
+          "type": "string",
+          "description": "交易序列号,用于防止重复提交。 如果接口调用方不传此参数的值,则系统自动生成。如果接口调用方传入此参数的值,请采用UUID保证全局唯一。",
+          "minLength": 0,
+          "maxLength": 32,
+          "example": "2020042401"
+        },
+        "balance_type": {
+          "type": "string",
+          "description": "账户类型: BALANCE_TYPE_DEBIT:余额账户(默认)BALANCE_TYPE_CREDIT:信用账户",
+          "minLength": 0,
+          "maxLength": 64,
+          "example": "BALANCE_TYPE_DEBIT"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "账户到期时间,UTC时间,格式为:2016-03-28T14:45:38Z。 只对信用账户有效,用于限制针对有效期到期时间等于该时间的信用账户余额进行拨款,精确到秒。如果查询信用账户可拨款余额的查询结果没有失效时间,表示永久有效,对于这种账本拨款的情况无需填写。",
+          "minLength": 0,
+          "maxLength": 20,
+          "example": "2020-05-28T14:45:38Z"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

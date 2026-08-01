@@ -1,0 +1,239 @@
+{
+  "name": "SetObjectAcl",
+  "summary": "设置对象ACL",
+  "tags": "对象操作",
+  "productshort": "OBS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/{object_key}": {
+      "put": {
+        "tags": [
+          "对象操作"
+        ],
+        "operationId": "SetObjectAcl",
+        "summary": "设置对象ACL",
+        "description": "OBS支持对对象的操作进行权限控制。默认情况下,只有对象的创建者才有该对象的读写权限。用户也可以设置其他的访问策略,比如对一个对象可以设置公共访问策略,允许所有人对其都有读权限。SSE-KMS方式加密的对象即使设置了ACL,跨租户也不生效。\n\nOBS用户在上传对象时可以设置权限控制策略,也可以通过ACL操作API接口对已存在的对象更改或者获取ACL(access control list) 。一个对象的ACL最多支持100条Grant授权。\n\n本节将介绍如何更改对象ACL,改变对象的访问权限。\n\n#### 多版本 ####\n默认情况下,更改的是最新版本的对象ACL。要设置指定版本的对象ACL,请求可以带参数versionId。\n",
+        "consumes": [
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml"
+        ],
+        "x-is-registered": "Y",
+        "x-support-sdk": "N",
+        "x-request-examples-url-1": "/ObjectName?acl",
+        "x-request-examples-1": "PUT /obj2?acl HTTP/1.1\nUser-Agent: curl/7.29.0\nHost: examplebucket.obs.cn-north-4.myhuaweicloud.com\nAccept: */*\nDate: WED, 01 Jul 2015 04:42:34 GMT\nAuthorization: OBS H4IPJX0TQTHTHEBQQCEC:8xAODun1ofjkwHm8YhtN0QEcy9M=\nContent-Length: 727\n\n<AccessControlPolicy xmlns=\"http://obs.cn-north-4.myhuaweicloud.com/doc/2015-06-30/\">\n  <Owner>\n    <ID>b4bf1b36d9ca43d984fbcb9491b6fce9</ID>\n  </Owner>\n  <Delivered>false</Delivered>\n  <AccessControlList>\n    <Grant>\n      <Grantee>\n        <ID>b4bf1b36d9ca43d984fbcb9491b6fce9</ID>\n      </Grantee>\n      <Permission>FULL_CONTROL</Permission>\n    </Grant>\n    <Grant>\n      <Grantee>\n        <ID>783fc6652cf246c096ea836694f71855</ID>\n      </Grantee>\n      <Permission>READ</Permission>\n    </Grant>\n    <Grant>\n      <Grantee>\n        <Canned>Everyone</Canned>\n      </Grantee>\n      <Permission>READ</Permission>\n    </Grant>\n  </AccessControlList>\n</AccessControlPolicy>\n",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "请求消息中可带的签名信息。\n",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Date",
+            "in": "header",
+            "description": "请求发起端的日期和时间,例如:Wed, 27 Jun 2018 13:39:15 +0000。\n默认值:无。\n条件:如果消息头中带了x-obs-date字段,则可以不带该字段,其他情况下必选。\n",
+            "type": "string",
+            "required": false,
+            "x-apiexplorer-format": "date-gmt"
+          },
+          {
+            "name": "bucket_name",
+            "in": "query",
+            "required": true,
+            "description": "请求的桶名称。\n",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 63,
+            "x-location-cname": true
+          },
+          {
+            "name": "object_key",
+            "in": "path",
+            "required": true,
+            "description": "设置ACL对象的名称。\n",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          {
+            "name": "acl",
+            "in": "query",
+            "required": true,
+            "description": "表示请求 对象acl api。\n",
+            "type": "string",
+            "allowEmptyValue": true,
+            "minLength": 0,
+            "maxLength": 0
+          },
+          {
+            "name": "versionId",
+            "in": "query",
+            "required": false,
+            "description": "指定设置ACL对象的版本号。\n",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "SetObjectAclRequestBody",
+            "required": true,
+            "description": "访问控制列表,包含Grant、 Grantee、Permission三个元素。\n",
+            "schema": {
+              "$ref": "#/definitions/SetObjectAclRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功响应消息。\n",
+            "headers": {
+              "Content-Length": {
+                "type": "string",
+                "description": "响应消息体的字节长度。\n"
+              },
+              "Connection": {
+                "type": "string",
+                "description": "指明与服务器的连接是长连接还是短连接。\n"
+              },
+              "Date": {
+                "type": "string",
+                "description": "OBS系统响应的时间。\n"
+              },
+              "ETag": {
+                "description": "对象的128位MD5摘要,通过十六进制字符串表示。ETag是对象内容的唯一标识,可以通过该值识别对象内容是否有变化。比如上传对象时ETag为A,下载对象时ETag为B,则说明对象内容发生了变化。实际的ETag是对象的哈希值。ETag只反映变化的内容,而不是其元数据。上传的对象或拷贝操作创建的对象,通过MD5加密后都有唯一的ETag。如果通过多段上传对象,则无论加密方法如何,MD5会拆分ETag,此类情况ETag就不是MD5的摘要。\n",
+                "type": "string"
+              },
+              "x-obs-id-2": {
+                "description": "帮助定位问题的特殊符号。\n",
+                "type": "string"
+              },
+              "x-obs-request-id": {
+                "description": "由OBS创建来唯一确定本次请求的值,可以通过该值来定位问题。\n",
+                "type": "string"
+              },
+              "x-obs-version-id": {
+                "description": "被更改ACL的对象的版本号。\n",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "请求失败响应消息。\n",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SetObjectAclRequestBody": {
+      "xml": {
+        "name": "ObjectAccessControlPolicy"
+      },
+      "description": "访问控制策略。\n",
+      "required": [
+        "Owner"
+      ],
+      "properties": {
+        "Owner": {
+          "$ref": "#/definitions/Owner"
+        },
+        "Delivered": {
+          "description": "对象ACL是否继承桶的ACL。\n类型:布尔类型。默认true。\n",
+          "type": "boolean"
+        },
+        "AccessControlList": {
+          "description": "访问控制列表,包含Grant、 Grantee、Permission三个元素。\n",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Grant"
+          }
+        }
+      }
+    },
+    "Error": {
+      "description": "错误响应消息体\n",
+      "properties": {
+        "Code": {
+          "type": "string",
+          "description": "错误响应消息体XML中错误响应对应的HTTP消息返回码,具体的错误码请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "Message": {
+          "type": "string",
+          "description": "错误响应消息体XML中具体错误更全面、详细的英文解释,具体的错误消息请参见[错误码-表2](https://support.huaweicloud.com/api-obs/obs_04_0115.html#obs_04_0115__d0e843)。\n"
+        },
+        "RequestId": {
+          "type": "string",
+          "description": "本次错误请求的请求ID,用于错误定位。\n"
+        },
+        "HostId": {
+          "type": "string",
+          "description": "返回该消息的服务端ID。\n"
+        },
+        "Resource": {
+          "type": "string",
+          "description": "该错误相关的桶或对象资源。\n"
+        }
+      }
+    },
+    "Grant": {
+      "description": "用于标记用户及用户的权限。单个桶的ACL,Grant元素不能超过100个\n",
+      "properties": {
+        "Grantee": {
+          "description": "用于标记用户及用户的权限。单个桶的ACL,Grant元素不能超过100个\n",
+          "$ref": "#/definitions/Grantee"
+        },
+        "Permission": {
+          "type": "string",
+          "description": "授予的权限\n",
+          "enum": [
+            "READ",
+            "WRITE",
+            "FULL_CONTROL"
+          ]
+        },
+        "Delivered": {
+          "type": "boolean",
+          "description": "桶的ACL是否向桶内对象传递\n"
+        }
+      }
+    },
+    "Grantee": {
+      "description": "记录用户信息\n",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "被授权用户的租户Id\n"
+        },
+        "Canned": {
+          "type": "string",
+          "enum": [
+            "Everyone"
+          ],
+          "description": "向所有人授予权限。\n"
+        }
+      }
+    },
+    "Owner": {
+      "description": "桶拥有者信息,包含租户ID。\n",
+      "properties": {
+        "ID": {
+          "description": "用户的DomainID(帐号ID)。\n",
+          "type": "string",
+          "example": "id"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "obs.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "put",
+  "uri": null
+}

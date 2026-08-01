@@ -1,0 +1,107 @@
+{
+  "name": "ListSslCertDownloadLink",
+  "summary": "获取SSL证书下载地址",
+  "tags": "实例管理",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/ssl-cert/download-link": {
+      "get": {
+        "x-support-sdk": "Y",
+        "x-request-examples-url-1": "GET https://rds.cn-north-1.myhuaweicloud.com/v3/054e292c9880d4992f02c0196d3ea468/instances/3d39c18788b54a919bab633874c159dfin01/ssl-cert/download-link",
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "获取SSL证书下载地址",
+        "description": "获取SSL证书下载地址",
+        "operationId": "ListSslCertDownloadLink",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": false,
+            "description": "用户Token。",
+            "type": "string"
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/DownloadSslCertRsp"
+            },
+            "examples": {
+              "application/json": {
+                "cert_info_list": [
+                  {
+                    "category": "international",
+                    "download_link": "https://dbs-cert-download-cn-north-1.obs.cn-north-1.huaweicloud.com/rds/Certificate_Download.zip"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DownloadInfoRsp": {
+      "type": "object",
+      "required": [
+        "download_link",
+        "category"
+      ],
+      "properties": {
+        "download_link": {
+          "type": "string",
+          "description": "证书下载地址"
+        },
+        "category": {
+          "type": "string",
+          "description": "证书类型"
+        }
+      }
+    },
+    "DownloadSslCertRsp": {
+      "type": "object",
+      "required": [
+        "cert_info_list"
+      ],
+      "properties": {
+        "cert_info_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DownloadInfoRsp"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

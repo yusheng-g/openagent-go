@@ -1,0 +1,253 @@
+{
+  "name": "ShowUser",
+  "summary": "查询IAM用户详情(推荐)",
+  "tags": "IAM用户管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3.0/OS-USER/users/{user_id}": {
+      "get": {
+        "tags": [
+          "IAM用户管理"
+        ],
+        "summary": "查询IAM用户详情(推荐)",
+        "description": "该接口可以用于[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户详情,或IAM用户查询自己的详情。\n\n该接口可以使用全局区域的Endpoint和其他区域的Endpoint调用。IAM的Endpoint请参见:[地区和终端节点](https://developer.huaweicloud.com/endpoint?IAM)。",
+        "operationId": "ShowUser",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "待查询的IAM用户ID,获取方式请参见:[获取账号、IAM用户、项目、用户组、委托的名称和ID](https://support.huaweicloud.com/api-iam/iam_17_0002.html)。",
+            "required": true,
+            "type": "string",
+            "x-example": "b95b78b67fa045b38104...",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "[管理员](https://support.huaweicloud.com/usermanual-iam/iam_01_0001.html)查询IAM用户详情:拥有Security Administrator权限的token。\n\nIAM用户查询自己的详情:URL中user_id所对应IAM用户的token(无需特殊权限)。",
+            "required": true,
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXX...",
+            "x-order": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "examples": {
+              "application/json": {
+                "user": {
+                  "pwd_strength": "Strong",
+                  "create_time": "2020-07-08 02:19:03.0",
+                  "last_login_time": null,
+                  "last_pwd_auth_time": null,
+                  "areacode": "",
+                  "enabled": true,
+                  "domain_id": "086ba757f90089cf0fe5c000dbe7f4e0",
+                  "xuser_id": "",
+                  "pwd_status": false,
+                  "update_time": null,
+                  "phone": "-",
+                  "is_domain_owner": false,
+                  "access_mode": "default",
+                  "name": "autotest1",
+                  "links": {
+                    "next": null,
+                    "previous": null,
+                    "self": "https://iam.huaweicloud.com/v3.0/OS-USER/users/093f75808b8089ba1f6dc000c7cac021"
+                  },
+                  "id": "093f75808b8089ba1f6dc000c7cac021",
+                  "xuser_type": "",
+                  "email": "",
+                  "description": "aaa"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowUserResponseBody"
+            }
+          },
+          "401": {
+            "description": "认证失败。"
+          },
+          "403": {
+            "description": "没有操作权限。"
+          },
+          "404": {
+            "description": "未找到相应的资源。"
+          },
+          "500": {
+            "description": "内部服务错误。"
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询IAM用户详情(推荐)",
+        "x-constraint": "",
+        "x-version": "v3.0",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "",
+        "x-request-examples-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-USER/users/{user_id}",
+        "x-request-examples-text-1": "GET https://iam.myhuaweicloud.com/v3.0/OS-USER/users/{user_id}",
+        "x-publishpath": "",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ShowUserResult": {
+      "required": [
+        "enabled",
+        "id",
+        "domain_id",
+        "name",
+        "links",
+        "is_domain_owner",
+        "access_mode",
+        "description"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "IAM用户是否启用。true表示启用,false表示停用,默认为true。"
+        },
+        "id": {
+          "type": "string",
+          "example": "076652f08880266a1f0bc003ec005cd2",
+          "description": "IAM用户ID。"
+        },
+        "domain_id": {
+          "type": "string",
+          "example": "d78cbac186b744899480f25bd022f468",
+          "description": "IAM用户所属账号ID。"
+        },
+        "name": {
+          "type": "string",
+          "example": "IAMUser",
+          "description": "IAM用户名。"
+        },
+        "links": {
+          "$ref": "#/definitions/Links"
+        },
+        "xuser_id": {
+          "type": "string",
+          "example": "57e9bd87d4394fa380056250a7eb231b",
+          "description": "IAM用户在外部系统中的ID。"
+        },
+        "xuser_type": {
+          "type": "string",
+          "example": "AGC",
+          "description": "IAM用户在外部系统中的类型。"
+        },
+        "areacode": {
+          "type": "string",
+          "example": "0086",
+          "description": "IAM用户手机号的国家码。"
+        },
+        "email": {
+          "type": "string",
+          "example": "IAMEmail@huawei.com",
+          "description": "IAM用户邮箱。"
+        },
+        "phone": {
+          "type": "string",
+          "example": "12345678910",
+          "description": "IAM用户手机号。"
+        },
+        "pwd_status": {
+          "type": "boolean",
+          "description": "IAM用户密码状态。true:需要修改密码,false:不需要修改密码。"
+        },
+        "update_time": {
+          "type": "string",
+          "example": "2020-01-04 03:15:03.0",
+          "description": "IAM用户更新时间。"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "IAM用户创建时间。"
+        },
+        "last_login_time": {
+          "type": "string",
+          "description": "IAM用户最后登录时间。"
+        },
+        "last_pwd_auth_time": {
+          "type": "string",
+          "description": "IAM用户最后使用密码认证时间。"
+        },
+        "pwd_strength": {
+          "type": "string",
+          "description": "IAM用户密码强度。结果为Low/Middle/High/None,分别表示密码强度低/中/高/无。"
+        },
+        "is_domain_owner": {
+          "type": "boolean",
+          "description": "IAM用户是否为根用户。"
+        },
+        "access_mode": {
+          "type": "string",
+          "description": "IAM用户访问模式。"
+        },
+        "description": {
+          "type": "string",
+          "description": "IAM用户描述信息"
+        },
+        "pwd_create_time": {
+          "type": "string",
+          "description": "IAM用户密码创建更新时间。"
+        },
+        "modify_pwd_time": {
+          "type": "string",
+          "description": "IAM用户更新时间。"
+        }
+      },
+      "description": ""
+    },
+    "ShowUserResponseBody": {
+      "required": [
+        "user"
+      ],
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/ShowUserResult"
+        }
+      },
+      "description": ""
+    },
+    "Links": {
+      "required": [
+        "next",
+        "previous",
+        "self"
+      ],
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "资源链接地址。"
+        },
+        "previous": {
+          "type": "string",
+          "example": "null",
+          "description": "前一邻接资源链接地址。"
+        },
+        "next": {
+          "type": "string",
+          "example": "null",
+          "description": "后一邻接资源链接地址。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

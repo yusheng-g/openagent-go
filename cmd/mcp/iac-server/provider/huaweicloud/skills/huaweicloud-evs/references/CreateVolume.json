@@ -1,0 +1,369 @@
+{
+  "name": "CreateVolume",
+  "summary": "创建云硬盘",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/cloudvolumes": {
+      "post": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "创建云硬盘",
+        "description": "创建按需或包周期云硬盘。\n在创建包周期云硬盘的场景下:\n- 如果您需要查看订单可用的优惠券,请参考\"[查询订单可用优惠券](https://support.huaweicloud.com/api-oce/zh-cn_topic_0092953630.html)\"。\n- 如果您需要支付订单,请参考\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/zh-cn_topic_0075746561.html)\"。\n- 如果您需要查询订单的资源开通详情,请参考\"[查询订单的资源开通详情](https://support.huaweicloud.com/api-oce/api_order_00001.html)\"。\n- 如果您需要退订该包周期资源,请参考“[退订包周期资源](https://support.huaweicloud.com/api-oce/zh-cn_topic_0082522030.html)”。",
+        "operationId": "CreateVolume",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "CreateVolumeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateVolumeRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "X-Client-Token",
+            "in": "header",
+            "description": "请求的幂等标识。",
+            "required": false,
+            "x-example": "7a1bb31b-ccad-4beb-9340-3a0de70cadb4",
+            "type": "string",
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-order": 3
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b",
+                "volume_ids": [
+                  "e1fa3e72-8c92-4871-9152-bf66fef0afe9"
+                ]
+              },
+              "application/json-1": {
+                "order_id": "CS1711152257C60TL",
+                "volume_ids": [
+                  "e1fa3e72-8c92-4871-9152-bf66fef0afe9"
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateVolumeResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "创建云硬盘",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/{project_id}/cloudvolumes",
+        "x-request-examples-1": {
+          "volume": {
+            "name": "test_volume_3",
+            "availability_zone": "az1.dc1",
+            "volume_type": "SATA",
+            "size": 120,
+            "description": "test",
+            "multiattach": true,
+            "count": 1,
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            }
+          },
+          "bssParam": {
+            "chargingMode": "prePaid",
+            "periodType": "year",
+            "periodNum": 1,
+            "isAutoPay": "true",
+            "isAutoRenew": "true"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"volume\":{\n        \"name\":\"test_volume_3\",\n        \"availability_zone\":\"az1.dc1\",\n        \"volume_type\":\"SATA\",\n        \"size\":120,\n        \"description\":\"test\",\n        \"multiattach\":true,\n        \"count\":1,\n        \"tags\":{\n            \"key1\":\"value1\",\n            \"key2\":\"value2\"\n        }\n    },\n    \"bssParam\":{\n        \"chargingMode\":\"prePaid\",\n        \"periodType\":\"year\",\n        \"periodNum\":1,\n        \"isAutoPay\":\"true\",\n        \"isAutoRenew\":\"true\"\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2017/9/30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateVolumeOption": {
+      "required": [
+        "availability_zone",
+        "volume_type",
+        "size"
+      ],
+      "properties": {
+        "availability_zone": {
+          "type": "string",
+          "description": "指定要创建云硬盘的可用区。\n获取方法请参见\"[获取可用区](https://apiexplorer.developer.huaweicloud.com/apiexplorer/sdk?product=EVS&api=CinderListAvailabilityZones)\"。"
+        },
+        "backup_id": {
+          "type": "string",
+          "description": "备份ID,从备份创建云硬盘时为必选。"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "批量创云硬盘的个数。如果无该参数,表明只创建1个云硬盘,目前最多支持批量创建100个。\n从备份创建云硬盘时,不支持批量创建,数量只能为“1”。\n\n如果发送请求时,将参数值设置为小数,则默认取小数点前的整数。"
+        },
+        "description": {
+          "type": "string",
+          "description": "云硬盘的描述。最大支持255个字节。"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。创建云硬盘时,给云硬盘绑定企业项目ID。"
+        },
+        "imageRef": {
+          "type": "string",
+          "description": "镜像ID,指定该参数表示创建云硬盘方式为从镜像创建云硬盘。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "metadata": {
+          "type": "object",
+          "description": "创建云硬盘的metadata信息  \n \n可选参数如下:   \n[\\_\\_system\\_\\_cmkid]  \nmetadata中的加密cmkid字段,与\\_\\_system\\_\\_encrypted配合表示需要加密,cmkid长度固定为36个字节。\n> 说明:\n> \n> 请求获取密钥ID的方法请参考:\"[查询密钥列表](https://support.huaweicloud.com/api-dew/ListKeys.html)\"。 \n\n[\\_\\_system\\_\\_encrypted]  \nmetadata中的表示加密功能的字段,0代表不加密,1代表加密。不指定该字段时,云硬盘的加密属性与数据源保持一致,如果不是从数据源创建的场景,则默认不加密。  \n\n[full_clone]  \n从快照创建云硬盘时,如需使用link克隆方式,请指定该字段的值为0。  \n\n[hw:passthrough]  \n\n* true表示云硬盘的设备类型为SCSI类型,即允许ECS操作系统直接访问底层存储介质。支持SCSI锁命令。  \n* false表示云硬盘的设备类型为VBD (虚拟块存储设备 , Virtual Block Device)类型,即为默认类型,VBD只能支持简单的SCSI读写命令。  \n* 该字段不存在时,云硬盘默认为VBD类型。  \n\n[create\\_for\\_volume\\_id]\n\n* true表示接口响应中会通过volume_ids字段返回本次创建的云硬盘ID。\n* false表示接口响应中不会返回本次创建的云硬盘ID。\n\n该字段不存在时,默认为false。",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "x-huawei-extraAnnotation": ""
+        },
+        "multiattach": {
+          "type": "boolean",
+          "description": "是否为共享云硬盘。true为共享盘,false为普通云硬盘。"
+        },
+        "name": {
+          "type": "string",
+          "description": "云硬盘名称。\n如果为创建单个云硬盘,name为云硬盘名称。最大支持255个字节。\n创建的云硬盘数量(count字段对应的值)大于1时,为区分不同云硬盘,创建过程中系统会自动在名称后加“-0000”的类似标记。例如:volume-0001、volume-0002。最大支持250个字节。"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "云硬盘大小,单位为GB,其限制如下:\n系统盘:1GB-1024GB\n数据盘:10GB-32768GB\n创建空白云硬盘和从 镜像/快照 创建云硬盘时,size为必选,且云硬盘大小不能小于 镜像/快照 大小。\n从备份创建云硬盘时,size为可选,不指定size时,云硬盘大小和备份大小一致。"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "description": "快照ID,指定该参数表示创建云硬盘方式为从快照创建云硬盘"
+        },
+        "volume_type": {
+          "type": "string",
+          "description": "云硬盘类型。\n\n目前支持\"SATA\",\"SAS\",\"GPSSD\",\"SSD\",\"ESSD\",\"GPSSD2\"和\"ESSD2\"七种。\n\n- \"SATA\"为普通IO云硬盘(已售罄)\n- \"SAS\"为高IO云硬盘\n- \"GPSSD\"为通用型SSD云硬盘\n- \"SSD\"为超高IO云硬盘\n- \"ESSD\"为极速IO云硬盘\n- \"GPSSD2\"为通用型SSD V2云硬盘\n- \"ESSD2\"为极速型SSD V2云硬盘\n当指定的云硬盘类型在avaliability_zone内不存在时,则创建云硬盘失败。\n\n说明:\n从快照创建云硬盘时,volume_type字段必须和快照源云硬盘保持一致。\n了解不同磁盘类型的详细信息,请参见 [磁盘类型及性能介绍](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n获取region可用的卷类型,请参见[查询云硬盘类型列表](https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=EVS&api=CinderListVolumeTypes)",
+          "enum": [
+            "SSD",
+            "GPSSD",
+            "SAS",
+            "SATA",
+            "ESSD",
+            "GPSSD2",
+            "ESSD2"
+          ]
+        },
+        "tags": {
+          "type": "object",
+          "description": "云硬盘标签信息。",
+          "additionalProperties": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "iops": {
+          "type": "integer",
+          "format": "int32",
+          "description": "给云硬盘配置iops,购买GPSSD2、ESSD2类型的云硬盘时必填,其他类型不能设置。\n\n说明:\n1、了解GPSSD2、ESSD2类型的iops大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n2、只支持按需计费。",
+          "x-admin": "False"
+        },
+        "throughput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "给云硬盘配置吞吐量,单位是MiB/s,购买GPSSD2类型云盘时必填,其他类型不能设置。\n\n说明:\n1、了解GPSSD2类型的吞吐量大小范围,请参见 [云硬盘类型及性能介绍里面的云硬盘性能数据表](https://support.huaweicloud.com/productdesc-evs/zh-cn_topic_0044524691.html)。\n2、只支持按需计费。",
+          "x-admin": "False"
+        }
+      },
+      "description": "创建云硬盘的信息。"
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "BssParamForCreateVolume": {
+      "properties": {
+        "chargingMode": {
+          "type": "string",
+          "description": "功能说明:计费模式。默认值为postPaid。\n取值范围:\n* prePaid:包年包月\n* postPaid:按需",
+          "enum": [
+            "postPaid",
+            "prePaid"
+          ],
+          "default": "postPaid"
+        },
+        "isAutoPay": {
+          "type": "string",
+          "description": "功能说明:是否立即支付。chargingMode为PrePaid时该参数会生效。默认值为false。\n取值范围:\n* true:立即支付,从帐户余额中自动扣费\n* false:不立即支付,创建订单暂不支付",
+          "enum": [
+            "true",
+            "false"
+          ],
+          "default": "false"
+        },
+        "isAutoRenew": {
+          "type": "string",
+          "description": "功能说明:是否自动续订。chargingMode为prePaid时该参数会生效。默认值为false。\n取值范围:\n* true:自动续订,自动续订周期与订购周期相同\n* false:不自动续订",
+          "enum": [
+            "true",
+            "false"
+          ],
+          "default": "false"
+        },
+        "periodNum": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:订购周期数,chargingMode为prePaid时该参数会生效,并且该参数为为必选。\n取值范围:\n* periodType为month时,为[1-9]\n* periodType为year时,为[1-1]"
+        },
+        "periodType": {
+          "type": "string",
+          "description": "功能说明:订购周期单位。chargingMode为prePaid时该参数会生效,并且该参数为必选。\n取值范围:\n* month:月\n* year:年",
+          "enum": [
+            "month",
+            "year"
+          ],
+          "x-huawei-extraAnnotation": ""
+        }
+      },
+      "description": "包周期创卷的计费策略参数。"
+    },
+    "CreateVolumeSchedulerHints": {
+      "properties": {
+        "dedicated_storage_id": {
+          "type": "string",
+          "description": "指定专属存储池ID,表示将云硬盘创建在该ID对应的存储池中。"
+        }
+      },
+      "description": "创建云硬盘的调度参数。"
+    },
+    "CreateVolumeResponseBody": {
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID,云硬盘为按需计费时返回该参数。\n> 说明:\n> \n> 如果需要查询job的状态,请参考:\"[查询job的状态](https://support.huaweicloud.com/api-evs/evs_04_0054.html)\"。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID,云硬盘为包周期计费时返回该参数。\n> 说明:\n> 直接在包周期云服务器上新增云硬盘,系统会自动将云硬盘挂载到包周期云服务器上。该情形下也会返回该参数。 \n> - 如果您需要支付订单,请参考:\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/zh-cn_topic_0075746561.html)\"。"
+        },
+        "volume_ids": {
+          "type": "array",
+          "description": "待创建的云硬盘ID列表。\n> 说明:\n> 通过云硬盘ID查询云硬盘详情 ,若返回404 可能云硬盘正在创建中或者已经创建失败。\n> 通过JobId查询云硬盘创建任务是否完成[查询job的状态](https://support.huaweicloud.com/api-evs/evs_04_0054.html)。",
+          "items": {
+            "type": "string",
+            "description": ""
+          }
+        }
+      },
+      "description": ""
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "CreateVolumeRequestBody": {
+      "required": [
+        "volume"
+      ],
+      "properties": {
+        "bssParam": {
+          "example": "{        \"chargingMode\": \"prePaid\",         \"periodType\": \"year\",         \"periodNum\": 1,         \"isAutoPay\": \"true\",         \"isAutoRenew\": \"true\"    }",
+          "description": "按需和包周期的扩展参数",
+          "$ref": "#/definitions/BssParamForCreateVolume"
+        },
+        "volume": {
+          "example": "{        \"name\": \"test_volume_3\",         \"availability_zone\": \"az1.dc1\",         \"volume_type\": \"SATA\",         \"size\": 120,         \"description\": \"hehehe\",         \"multiattach\": true,         \"count\": 1    }",
+          "description": "待创建的云硬盘信息",
+          "$ref": "#/definitions/CreateVolumeOption"
+        },
+        "server_id": {
+          "type": "string",
+          "description": "创建云硬盘并挂载到目标虚拟机。\n创建的云硬盘的计费模式会与虚拟机的计费模式保持一致。\n目前只支持ECS服务的虚拟机,暂不支持BMS的裸金属服务器。"
+        },
+        "OS-SCH-HNT:scheduler_hints": {
+          "description": "云硬盘调度参数,可用于指定云硬盘创建到某个专属存储池中",
+          "$ref": "#/definitions/CreateVolumeSchedulerHints"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

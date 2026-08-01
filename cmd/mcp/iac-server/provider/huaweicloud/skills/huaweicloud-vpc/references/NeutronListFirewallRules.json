@@ -1,0 +1,495 @@
+{
+  "name": "NeutronListFirewallRules",
+  "summary": "查询所有网络ACL规则",
+  "tags": "OpenStack - 网络ACL",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.0/fwaas/firewall_rules": {
+      "get": {
+        "tags": [
+          "OpenStack - 网络ACL"
+        ],
+        "summary": "查询所有网络ACL规则",
+        "description": "查询提交请求的租户有权限操作的所有网络ACL规则信息。单次查询最多返回2000条数据,超过2000后会返回分页标记。",
+        "operationId": "NeutronListFirewallRules",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询起始的资源ID,为空时查询第一页",
+            "required": false,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-example": "bdc3126d-d624-4752-9e5c-9d34eb7f0eb4",
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "每页返回的个数",
+            "required": false,
+            "type": "integer",
+            "default": 2000,
+            "format": "int32",
+            "x-example": 5,
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "使用网络ACL规则ID过滤网络ACL规则",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 4,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "使用网络ACL规则name过滤网络ACL规则",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 5,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "使用网络ACL规则的description过滤网络ACL规则",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "x-order": 6,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "description": "使用action过滤查询网络ACL规则",
+            "required": false,
+            "type": "string",
+            "x-order": 7,
+            "x-admin": "False",
+            "x-internal": "False"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "description": "使用tenant_id过滤查询网络ACL规则",
+            "required": false,
+            "type": "string",
+            "x-order": 8,
+            "x-admin": "False",
+            "x-internal": "False"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "正常返回",
+            "examples": {
+              "application/json": {
+                "firewall_rules": [
+                  {
+                    "protocol": "tcp",
+                    "name": "crhfwruleupdate",
+                    "mode": "normal",
+                    "tenant_id": "f480f5d250824e5fafedcf05acf1419c",
+                    "rule_profile": "",
+                    "enabled": true,
+                    "source_port": null,
+                    "source_ip_address": null,
+                    "destination_ip_address": null,
+                    "firewall_policy_id": "b4f81251-c47a-4fe1-8579-6f9271d015d1",
+                    "action": "deny",
+                    "position": 1,
+                    "ip_version": 4,
+                    "shared": false,
+                    "destination_port": null,
+                    "id": "2a193015-4a88-4aa1-84ad-d4955adae707",
+                    "description": "",
+                    "project_id": "f480f5d250824e5fafedcf05acf1419c"
+                  },
+                  {
+                    "protocol": "tcp",
+                    "name": "update_firewall-role-tommy",
+                    "mode": "mix",
+                    "tenant_id": "a1c6f90c94334bd2953d9a61b8031a68",
+                    "rule_profile": "",
+                    "enabled": false,
+                    "source_port": "20:50",
+                    "source_ip_address": null,
+                    "destination_ip_address": null,
+                    "firewall_policy_id": null,
+                    "action": "deny",
+                    "position": null,
+                    "ip_version": 4,
+                    "shared": true,
+                    "destination_port": "40:60",
+                    "id": "db7a204c-9eb1-40a2-9bd6-ed5cfd3cff32",
+                    "description": "update check parameter"
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/NeutronListFirewallRulesResponseBody"
+            }
+          },
+          "400": {
+            "description": "服务器未能处理请求。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "401": {
+            "description": "被请求的页面需要用户名和密码。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "403": {
+            "description": "对被请求页面的访问被禁止。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "404": {
+            "description": "服务器无法找到被请求的页面。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "409": {
+            "description": "由于冲突,请求无法被完成。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          },
+          "500": {
+            "description": "请求未完成。服务异常。",
+            "schema": {
+              "$ref": "#/definitions/NeutronErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询所有网络ACL规则",
+        "x-constraint": "",
+        "x-version": "v2.0",
+        "x-scope": "Commercial",
+        "x-order": 110,
+        "x-request-examples-description-1": "查询网络ACL规则列表",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v2.0/fwaas/firewall_rules",
+        "x-request-examples-1": "",
+        "x-request-examples-text-1": "",
+        "x-request-examples-description-2": "分页过滤查询结果,每页返回的个数为limit",
+        "x-request-examples-url-2": "GET https://{Endpoint}/v2.0/fwaas/firewall_rules?limit=1",
+        "x-request-examples-2": "",
+        "x-request-examples-text-2": "",
+        "x-request-examples-description-3": "分页过滤查询结果,每页返回limit个数据,从第marker数据之后返回",
+        "x-request-examples-url-3": "GET https://{Endpoint}/v2.0/fwaas/firewall_rules?limit=10&marker=10b932da-f95c-4003-a77d-4064b7d101cd",
+        "x-request-examples-3": "",
+        "x-request-examples-text-3": "",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-3-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NeutronFirewallRule": {
+      "required": [
+        "action",
+        "description",
+        "destination_ip_address",
+        "destination_port",
+        "enabled",
+        "id",
+        "ip_version",
+        "name",
+        "project_id",
+        "protocol",
+        "public",
+        "source_ip_address",
+        "source_port",
+        "tenant_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "a7dea4c9-21db-4640-aaca-da0209c9ad62",
+          "description": "功能说明:网络ACL规则的uuid标识。",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "name": {
+          "type": "string",
+          "example": "name-01",
+          "description": "功能说明:网络ACL规则名称。\n取值范围:0-255个字符",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "description": {
+          "type": "string",
+          "example": "description-01",
+          "description": "功能说明:网络ACL规则描述\n取值范围:0-255个字符长度",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "action": {
+          "type": "string",
+          "example": "DENY",
+          "description": "功能说明:对通过网络ACL的流量执行的操作。\n取值范围:DENY(拒绝)/ALLOW(允许)",
+          "enum": [
+            "DENY",
+            "ALLOW"
+          ],
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "protocol": {
+          "type": "string",
+          "example": "TCP",
+          "description": "功能说明:IP协议\n取值范围:支持TCP,UDP,ICMP, ICMPV6或者IP协议号(0-255)",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "example": 4,
+          "description": "功能说明:IP协议版本\n取值范围:Ipv4/Ipv6",
+          "minimum": 4,
+          "maximum": 6,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "功能说明:是否使能网络ACL规则。\n取值范围:true/false",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "public": {
+          "type": "boolean",
+          "example": false,
+          "description": "功能说明:是否支持跨租户共享\n取值范围:true/false",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "destination_ip_address": {
+          "type": "string",
+          "example": "192.168.0.0/24",
+          "description": "功能说明:目的地址或者CIDR。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "destination_port": {
+          "type": "string",
+          "example": "20:50",
+          "description": "功能说明:目的端口号或者一段端口范围。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "source_ip_address": {
+          "type": "string",
+          "example": "192.168.0.0/24",
+          "description": "功能说明:源地址或者CIDR。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "source_port": {
+          "type": "string",
+          "example": "20:50",
+          "description": "功能说明:源端口号或者一段端口范围。",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "tenant_id": {
+          "type": "string",
+          "example": "b433fedb577940bfa59abff86482ed1a",
+          "description": "功能说明:项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        },
+        "project_id": {
+          "type": "string",
+          "example": "b433fedb577940bfa59abff86482ed1a",
+          "description": "功能说明:项目ID",
+          "pattern": "[0-9a-fA-F]{32}",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc"
+        }
+      },
+      "description": ""
+    },
+    "NeutronPageLink": {
+      "required": [
+        "href",
+        "rel"
+      ],
+      "properties": {
+        "href": {
+          "type": "string",
+          "example": "https://vpc.cn-north-1.myhuaweicloud.com/v2.0",
+          "description": "API链接",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "rel": {
+          "type": "string",
+          "example": "self",
+          "description": "API链接与该API版本的关系",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorResponseBody": {
+      "required": [
+        "NeutronError"
+      ],
+      "properties": {
+        "NeutronError": {
+          "description": "错误信息返回体",
+          "$ref": "#/definitions/NeutronErrorBody",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronErrorBody": {
+      "required": [
+        "detail",
+        "message",
+        "type"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "错误请求返回的错误信息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "type": {
+          "type": "string",
+          "description": "错误请求返回的错误类型",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "detail": {
+          "type": "string",
+          "description": "错误请求返回的错误详情",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "NeutronListFirewallRulesResponseBody": {
+      "required": [
+        "firewall_rules"
+      ],
+      "properties": {
+        "firewall_rules": {
+          "type": "array",
+          "description": "firewall_rule对象列表",
+          "items": {
+            "$ref": "#/definitions/NeutronFirewallRule"
+          },
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "firewall_rules_links": {
+          "type": "array",
+          "description": "分页信息",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/NeutronPageLink"
+          },
+          "x-huawei-extraAnnotation": "",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

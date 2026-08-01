@@ -1,0 +1,113 @@
+{
+  "name": "ExecutePrivilegeDatabaseUserRole",
+  "summary": "授予用户角色",
+  "tags": "管理数据库和用户(PostgreSQL)",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/db-user-role": {
+      "post": {
+        "x-request-examples-url-1": "https://{Endpoint}/v3/8b3d99b2fb1148c69be8fe37bb896f27/instances/51986c9a48df43839a3ba300d6c5e91fin03/db-user-role",
+        "x-request-examples-text-1": {
+          "user": "user1",
+          "roles": [
+            "user3",
+            "user4"
+          ]
+        },
+        "x-request-examples-1": {
+          "user": "user1",
+          "roles": [
+            "user3",
+            "user4"
+          ]
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-file": "Y3",
+        "tags": [
+          "管理数据库和用户(PostgreSQL)"
+        ],
+        "summary": "授予用户角色",
+        "description": "授予用户角色",
+        "operationId": "ExecutePrivilegeDatabaseUserRole",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目ID"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例ID"
+          },
+          {
+            "name": "ExecutePrivilegeDatabaseUserRoleRequestBody",
+            "in": "body",
+            "required": false,
+            "description": "请求信息",
+            "schema": {
+              "$ref": "#/definitions/DatabaseUserRoleRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DatabaseUserRoleResponse"
+            },
+            "examples": {
+              "application/json": {
+                "resp": "successful"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DatabaseUserRoleResponse": {
+      "type": "object",
+      "properties": {
+        "resp": {
+          "type": "string",
+          "description": "调用正常时,返回“successful”。"
+        }
+      }
+    },
+    "DatabaseUserRoleRequest": {
+      "type": "object",
+      "required": [
+        "user",
+        "roles"
+      ],
+      "properties": {
+        "user": {
+          "type": "string",
+          "description": "用户名称"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "角色名称"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

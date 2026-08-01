@@ -1,0 +1,268 @@
+{
+  "name": "CreateGroupScheduledTask",
+  "summary": "创建计划任务",
+  "tags": "计划任务",
+  "productshort": "AS",
+  "region_id": "af-north-1",
+  "paths": {
+    "/autoscaling-api/v1/{project_id}/scaling-groups/{scaling_group_id}/scheduled-tasks": {
+      "post": {
+        "tags": [
+          "计划任务"
+        ],
+        "summary": "创建计划任务",
+        "description": "创建计划任务",
+        "operationId": "CreateGroupScheduledTask",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "租户ID",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-example": "0513757xxxxxd5eb2f08xxxb93ef4f0f"
+          },
+          {
+            "name": "scaling_group_id",
+            "in": "path",
+            "description": "伸缩组ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "in": "body",
+            "name": "bodyparam",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateScheduledTaskOption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Normal",
+            "examples": {
+              "application/json": {
+                "task_id": "0h327883-324n-4dzd-9c61-68d03ee191dd"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ScheduledTaskId"
+            }
+          },
+          "400": {
+            "description": "Bad Request 服务器未能处理请求。"
+          },
+          "401": {
+            "description": "Unauthorized 被请求的页面需要用户名和密码。"
+          },
+          "403": {
+            "description": "Forbidden 对被请求的页面访问禁止。"
+          },
+          "404": {
+            "description": "Not Found 服务器无法找到被请求的页面。"
+          },
+          "405": {
+            "description": "Method Not Allowed 请求中指定的方法不被允许。"
+          },
+          "406": {
+            "description": "Not Acceptable 服务器生成的响应无法被客户端所接受。"
+          },
+          "407": {
+            "description": "Proxy Authentication 用户必须首先使用代理服务器进行验证,这样请求才会被处理"
+          },
+          "408": {
+            "description": "Request Timeout 请求超出了服务器的等待时间。"
+          },
+          "409": {
+            "description": "Conflict 由于冲突,请求无法被完成。"
+          },
+          "500": {
+            "description": "Internal Server Error 请求未完成。服务异常。"
+          },
+          "501": {
+            "description": "Not Implemented 请求未完成。服务器不支持所请求的功能。"
+          },
+          "502": {
+            "description": "Bad Gateway 请求未完成。服务器从上游服务器收到一个无效的响应。"
+          },
+          "503": {
+            "description": "Service Unavailable 请求未完成。系统暂时异常。"
+          },
+          "504": {
+            "description": "Gateway Timeout 网关超时。"
+          }
+        },
+        "x-request-examples-description-1": "本示例为伸缩组5bc3aa02-b83e-454c-aba1-4d2095c68f8b,创建了一个每天16:00执行的计划任务,将伸缩组的最大实例数设置为10,最小实例数设置为5",
+        "x-request-examples-text-1": {
+          "name": "as-scheduled-task-7a75",
+          "scheduled_policy": {
+            "start_time": "2015-12-14T03:34Z",
+            "end_time": "2033-12-27T03:34Z",
+            "launch_time": "16:00",
+            "recurrence_type": "DAILY"
+          },
+          "instance_number": {
+            "max": 10,
+            "min": 5
+          }
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-name": "Creating an AS Scheduled Task",
+        "x-constraint": "",
+        "x-version": "v1",
+        "x-scope": "Commercial",
+        "x-iftype": "Public Api",
+        "x-order": 1,
+        "x-request-examples-url-1": "POST https://{Endpoint}/autoscaling-api/v1/{project_id}/scaling-groups/5bc3aa02-b83e-454c-aba1-4d2095c68f8b/scheduled-tasks",
+        "x-request-examples-1": {
+          "name": "as-scheduled-task-7a75",
+          "scheduled_policy": {
+            "start_time": "2015-12-14T03:34Z",
+            "end_time": "2033-12-27T03:34Z",
+            "launch_time": "16:00",
+            "recurrence_type": "DAILY"
+          },
+          "instance_number": {
+            "max": 10,
+            "min": 5
+          }
+        },
+        "x-flow_control_group": "as",
+        "x-in_cli": "",
+        "x-tenant_flow_time": "1",
+        "x-hk": "Y",
+        "x-first_open_time": "2016-06-30",
+        "x-tenant_flow_value": "52",
+        "x-hybridcloud": "true",
+        "x-source": "SelfDeveloped",
+        "x-apigateway-request-type": "",
+        "x-source_url": "",
+        "x-timeout": "10s",
+        "x-tlf": "Y",
+        "x-is_calling": "Y",
+        "x-obc": "Y",
+        "x-multi_tenant_flow_time": "1",
+        "x-ctc": "Y",
+        "x-apigateway-auth-type": "",
+        "x-call_frequency": "",
+        "x-hc": "Y",
+        "x-un_cli": "",
+        "x-multi_tenant_flow_value": "520",
+        "x-apigateway-match-mode": "",
+        "x-otc": "Y",
+        "x-apiErrorCodes": ""
+      }
+    }
+  },
+  "definitions": {
+    "CreateScheduledTaskOption": {
+      "type": "object",
+      "required": [
+        "instance_number",
+        "name",
+        "scheduled_policy"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "计划任务名称",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "scheduled_policy": {
+          "$ref": "#/definitions/ScheduledTaskPolicy"
+        },
+        "instance_number": {
+          "$ref": "#/definitions/IntegerRange"
+        }
+      }
+    },
+    "IntegerRange": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "伸缩组最大实例数"
+        },
+        "min": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1,
+          "description": "伸缩组最小实例数"
+        },
+        "desire": {
+          "type": "integer",
+          "format": "int32",
+          "description": "伸缩组期望实例数"
+        }
+      }
+    },
+    "ScheduledTaskId": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "example": "0h327883-324n-4dzd-9c61-68d03ee191dd",
+          "description": "计划任务ID",
+          "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}"
+        }
+      }
+    },
+    "ScheduledTaskPolicy": {
+      "type": "object",
+      "required": [
+        "launch_time"
+      ],
+      "properties": {
+        "start_time": {
+          "type": "string",
+          "description": "非必选,仅当recurrence_type不为空时生效,表示计划任务的生效开始时间,格式为yyyy-MM-ddTHH:mmZ,不填写时默认为任务创建成功的时间"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "仅当recurrence_type不为空时生效且必选,表示计划任务的生效结束时间,格式为yyyy-MM-ddTHH:mmZ"
+        },
+        "launch_time": {
+          "type": "string",
+          "description": "必选,执行时间,采用UTC时间,recurrence_type不填写或为空时,格式为yyyy-MM-ddTHH:mmZ, recurrence_type不为空时,格式为 HH:mm"
+        },
+        "recurrence_type": {
+          "type": "string",
+          "description": "非必选,不填写时计划任务为定时执行, 填写时,为周期执行,且只能填写DAILY,WEEKLY,MONTHLY 中的一种,分别为按天,按周,按月周期执行",
+          "enum": [
+            "DAILY",
+            "WEEKLY",
+            "MONTHLY"
+          ]
+        },
+        "recurrence_value": {
+          "type": "string",
+          "description": "仅当recurrence_type为WEEKLY,MONTHLY时必选,表示周期执行的具体日期,多个日期用,分割。recurrence_type为WEEKLY时,可填入1-7, recurrence_type为MONTHLY时,可填入1-31",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "as.af-north-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v1",
+  "method": "post",
+  "uri": null
+}

@@ -1,0 +1,165 @@
+{
+  "name": "ListXellogFiles",
+  "summary": "查询扩展日志文件列表",
+  "tags": "获取扩展日志文件列表",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/xellog-files": {
+      "get": {
+        "tags": [
+          "获取扩展日志文件列表"
+        ],
+        "x-publishpath": "xellog",
+        "x-is-registered": "Y",
+        "x-apigateway-ratelimit": "rds_default_policy",
+        "operationId": "ListXellogFiles",
+        "summary": "查询扩展日志文件列表",
+        "description": "查询扩展日志文件列表。\n查询扩展日志文件列表,可以调用接口/v3/{project_id}/instances/{instance_id}/xellog-download 获取扩展日志下载链接",
+        "x-support-sdk": "Y",
+        "x-constraint": "该接口仅支持SQLServer数据库引擎。",
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。",
+            "type": "string",
+            "x-example": "******",
+            "required": false
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "description": "语言",
+            "type": "string",
+            "x-example": "zh-cn",
+            "required": false
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "054b93101a00d3a02fe3c01fb31462ac"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "description": "实例ID。",
+            "required": true,
+            "type": "string",
+            "x-example": "37de2fd8a533405f86dce46fff15e7b0in04"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "integer",
+            "required": false,
+            "description": "索引位置,偏移量。\n\n从第一条数据偏移offset条数据后开始查询,默认为0(偏移0条数据,表示从第一条数据开始查询),必须为数字,不能为负数。",
+            "format": "int32",
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "type": "integer",
+            "description": "查询记录数。取值范围[1, 100]。",
+            "format": "int32",
+            "default": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/ListXelLogResponseBody"
+            },
+            "examples": {
+              "application/json": {
+                "list": [
+                  {
+                    "file_name": "SQLTrace.xel",
+                    "file_size": "1024"
+                  },
+                  {
+                    "file_name": "SQLTrace2.xel",
+                    "file_size": "1024"
+                  }
+                ],
+                "count": 2
+              }
+            }
+          },
+          "default": {
+            "description": "Client or server error.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-request-examples-url-1": "GET https://{endpoint}/v3/054b93101a00d3a02fe3c01fb31462ac/instances/37de2fd8a533405f86dce46fff15e7b0in04/xellog-files?limit=10&offset=1"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "required": [
+        "error_code",
+        "error_msg"
+      ],
+      "properties": {
+        "error_code": {
+          "description": "错误码。",
+          "type": "string",
+          "example": "DBS.200022"
+        },
+        "error_msg": {
+          "description": "错误消息。",
+          "type": "string",
+          "example": "实例名称已存在。"
+        }
+      }
+    },
+    "ListXelLogResponseResult": {
+      "description": "扩展日志信息",
+      "required": [
+        "file_name",
+        "file_size"
+      ],
+      "properties": {
+        "file_name": {
+          "description": "文件名",
+          "type": "string"
+        },
+        "file_size": {
+          "description": "日志大小,单位:KB",
+          "type": "string"
+        }
+      }
+    },
+    "ListXelLogResponseBody": {
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListXelLogResponseResult"
+          },
+          "description": "扩展日志文件返回体"
+        },
+        "count": {
+          "type": "integer",
+          "description": "扩展日志文件数量"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "get",
+  "uri": null
+}

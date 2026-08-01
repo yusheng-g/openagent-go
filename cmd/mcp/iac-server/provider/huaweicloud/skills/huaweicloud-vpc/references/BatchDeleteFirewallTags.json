@@ -1,0 +1,201 @@
+{
+  "name": "BatchDeleteFirewallTags",
+  "summary": "批量删除ACL资源标签",
+  "tags": "网络ACL资源标签管理",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/firewalls/{firewall_id}/tags/delete": {
+      "post": {
+        "tags": [
+          "网络ACL资源标签管理"
+        ],
+        "summary": "批量删除ACL资源标签",
+        "description": "为指定的网络ACL资源实例批量删除标签。\n此接口为幂等接口:删除时,如果删除的标签不存在,默认处理成功;删除时不对标签字符集范围做校验。删除时tags结构体不能缺失,key不能为空,或者空字符串。",
+        "operationId": "BatchDeleteFirewallTags",
+        "parameters": [
+          {
+            "name": "firewall_id",
+            "in": "path",
+            "description": "功能说明:ACL唯一标识\n取值范围:合法UUID\n约束:ID对应的ACL必须存在",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 2,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-example": "05137572fa00d5eb2fdcc014b0f5c751",
+            "x-order": 1,
+            "x-open-region-cloud": ""
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 3,
+            "x-open-region-cloud": ""
+          },
+          {
+            "in": "body",
+            "name": "BatchDeleteFirewallTagsRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/BatchDeleteFirewallTagsRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "请求正常返回"
+          },
+          "400": {
+            "description": "参数非法",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "401": {
+            "description": "鉴权失败",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "403": {
+            "description": "权限不足",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "404": {
+            "description": "资源未找到",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          },
+          "500": {
+            "description": "系统异常",
+            "schema": {
+              "$ref": "#/definitions/ErrorResp"
+            }
+          }
+        },
+        "x-name": "批量删除ACL资源标签",
+        "x-version": "v3",
+        "x-scope": "Commercial",
+        "x-order": 8,
+        "x-request-examples-description-1": "批量删除网络ACL标签,标签key为keyxxx,value为value1。",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v3/{project_id}/firewalls/{firewall_id}/tags/delete",
+        "x-request-examples-1": {
+          "tags": [
+            {
+              "key": "keyxxx",
+              "value": "value1"
+            }
+          ]
+        },
+        "x-request-examples-text-1": "{\n    \"tags\": [\n        {\n            \"key\": \"keyxxx\",\n            \"value\": \"value1\"\n        }\n    ]\n}",
+        "x-api-type": "inner-public-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResp": {
+      "required": [
+        "error_code",
+        "error_msg",
+        "request_id"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "请求ID",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_msg": {
+          "type": "string",
+          "description": "错误消息",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "error_code": {
+          "type": "string",
+          "description": "错误码",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso,sbc,obc",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": ""
+    },
+    "DeleteResourceTagRequestBody": {
+      "required": [
+        "key"
+      ],
+      "type": "object",
+      "properties": {
+        "key": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "value": {
+          "maxLength": 255,
+          "type": "string",
+          "description": "功能说明:标签值",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    },
+    "BatchDeleteFirewallTagsRequestBody": {
+      "required": [
+        "tags"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "标签列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/DeleteResourceTagRequestBody"
+          },
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": ""
+        }
+      },
+      "description": "This is a auto create Body Object"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

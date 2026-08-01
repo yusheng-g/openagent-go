@@ -1,0 +1,184 @@
+{
+  "name": "ListEnterpriseOrganizations",
+  "summary": "查询企业组织结构",
+  "tags": "管理企业多账号(客户)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/enterprises/multi-accounts/enterprise-organizations": {
+      "get": {
+        "summary": "查询企业组织结构",
+        "description": "企业主账号在自建平台查询企业组织结构。",
+        "tags": [
+          "管理企业多账号(客户)"
+        ],
+        "operationId": "ListEnterpriseOrganizations",
+        "x-constraint": "该接口只允许使用企业主账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/enterprises/multi-accounts/enterprise-organizations",
+        "x-open-region-cloud": "hc",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-08-31",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L2",
+        "x-importanceLevel": "high",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "recursive_query",
+            "in": "query",
+            "required": false,
+            "description": "是否递归查询。0:不递归(默认)1:递归如果不递归,只返回起始节点的直接子节点。此参数不携带或携带值为空时,不作为筛选条件。",
+            "type": "integer",
+            "format": "int32",
+            "x-example": "1",
+            "x-allowNull": true,
+            "default": 0,
+            "maximum": 1,
+            "minimum": 0
+          },
+          {
+            "name": "parent_id",
+            "in": "query",
+            "required": false,
+            "description": "指定的节点ID。为空则从根节点查起。此参数不携带或携带值为空时,不作为筛选条件。 说明: 此参数须由纯数字组成。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "121",
+            "x-allowNull": false
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/enterprises/multi-accounts/enterprise-organizations?recursive_query=1&parent_id=392",
+        "responses": {
+          "200": {
+            "description": "查询企业组织结构响应",
+            "schema": {
+              "$ref": "#/definitions/QueryEnterpriseOrganizationsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "root_id": null,
+                "root_name": null,
+                "child_nodes": [
+                  {
+                    "relation_id": "849",
+                    "id": "933",
+                    "name": "组织",
+                    "child_nodes": []
+                  },
+                  {
+                    "relation_id": "734",
+                    "id": "817",
+                    "name": "组织1",
+                    "child_nodes": [
+                      {
+                        "relation_id": "735",
+                        "id": "818",
+                        "name": "组织2",
+                        "child_nodes": []
+                      },
+                      {
+                        "relation_id": "736",
+                        "id": "819",
+                        "name": "组织3",
+                        "child_nodes": []
+                      },
+                      {
+                        "relation_id": "740",
+                        "id": "823",
+                        "name": "组织4",
+                        "child_nodes": []
+                      },
+                      {
+                        "relation_id": "741",
+                        "id": "824",
+                        "name": "组织5",
+                        "child_nodes": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败,参数范围超限,非法值或格式错误||CBC.0199:请求参数错误|"
+          }
+        },
+        "x-category": "管理企业多账号(客户)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "QueryEnterpriseOrganizationsRsp": {
+      "properties": {
+        "root_id": {
+          "type": "string",
+          "description": "根节点ID,如果请求有parent_id,则该参数无值。",
+          "example": "121"
+        },
+        "root_name": {
+          "type": "string",
+          "description": "根节点名称,如果请求有parent_id,则该参数无值。  说明: 组织根节点没有设置组织名称时,可能为空。",
+          "example": "ruantong"
+        },
+        "child_nodes": {
+          "description": "子节点列表。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmChildNodeV2"
+          }
+        }
+      }
+    },
+    "EmChildNodeV2": {
+      "properties": {
+        "relation_id": {
+          "type": "string",
+          "description": "实体关系ID。",
+          "example": "163"
+        },
+        "id": {
+          "type": "string",
+          "description": "节点ID(即组织单元的Party ID)。",
+          "example": "370"
+        },
+        "name": {
+          "type": "string",
+          "description": "节点名称。",
+          "example": "afd"
+        },
+        "child_nodes": {
+          "description": "子节点列表。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmChildNodeV2"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

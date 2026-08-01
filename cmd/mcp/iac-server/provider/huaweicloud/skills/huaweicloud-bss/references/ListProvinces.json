@@ -1,0 +1,195 @@
+{
+  "name": "ListProvinces",
+  "summary": "查询省份信息",
+  "tags": "查询国家省市信息(公共)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/systems/configs/provinces": {
+      "get": {
+        "summary": "查询省份信息",
+        "description": "伙伴在伙伴销售平台上查询省份信息。",
+        "tags": [
+          "查询国家省市信息(公共)"
+        ],
+        "operationId": "ListProvinces",
+        "x-constraint": "该接口可以使用合作伙伴AK/SK或者Token调用,也可以使用客户AK/SK或者Token调用。",
+        "x-externalURL": "/v2/systems/configs/provinces",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-operation-data-level": "L1",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴或客户Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "X-Language",
+            "in": "header",
+            "required": false,
+            "description": "语言,字段预留,目前仅支持中文。默认zh_cn,枚举:zh_cn:中文 en_us:英文",
+            "x-maxLength": 10,
+            "x-minLength": 0,
+            "type": "string",
+            "default": "zh_cn"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每次查询的数量,最大1000。",
+            "maximum": 1000,
+            "minimum": 1,
+            "default": 10,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/systems/configs/provinces",
+        "responses": {
+          "200": {
+            "description": "查询省份信息响应",
+            "schema": {
+              "$ref": "#/definitions/QueryProvincesRsp"
+            },
+            "examples": {
+              "application/json": {
+                "count": 31,
+                "provinces": [
+                  {
+                    "code": "CN-11",
+                    "name": "北京市"
+                  },
+                  {
+                    "code": "CN-12",
+                    "name": "天津市"
+                  },
+                  {
+                    "code": "CN-13",
+                    "name": "河北省"
+                  },
+                  {
+                    "code": "CN-14",
+                    "name": "山西省"
+                  },
+                  {
+                    "code": "CN-15",
+                    "name": "内蒙古自治区"
+                  },
+                  {
+                    "code": "CN-21",
+                    "name": "辽宁省"
+                  },
+                  {
+                    "code": "CN-22",
+                    "name": "吉林省"
+                  },
+                  {
+                    "code": "CN-23",
+                    "name": "黑龙江省"
+                  },
+                  {
+                    "code": "CN-31",
+                    "name": "上海市"
+                  },
+                  {
+                    "code": "CN-32",
+                    "name": "江苏省"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误"
+          }
+        },
+        "x-category": "查询国家省市信息(公共)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Province": {
+      "required": [
+        "code",
+        "name"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "省份的编码。",
+          "minLength": 0,
+          "maxLength": 100,
+          "example": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "省份的名称,根据请求的语言会传递回对应的语言的名称,目前仅支持中文。",
+          "minLength": 0,
+          "maxLength": 100,
+          "example": ""
+        }
+      }
+    },
+    "QueryProvincesRsp": {
+      "required": [
+        "count",
+        "provinces"
+      ],
+      "properties": {
+        "count": {
+          "description": "查询个数,成功的时候返回。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "",
+          "maximum": 1000,
+          "minimum": 0
+        },
+        "provinces": {
+          "description": "省份信息列表,成功的时候返回,具体参见表3。",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 1000,
+          "items": {
+            "$ref": "#/definitions/Province"
+          }
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

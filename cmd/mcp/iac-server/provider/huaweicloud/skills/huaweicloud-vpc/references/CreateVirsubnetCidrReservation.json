@@ -1,0 +1,244 @@
+{
+  "name": "CreateVirsubnetCidrReservation",
+  "summary": "创建子网预留网段",
+  "tags": "子网预留网段",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/virsubnet-cidr-reservations": {
+      "post": {
+        "tags": [
+          "子网预留网段"
+        ],
+        "summary": "创建子网预留网段",
+        "description": "子网预留网段是子网网段范围的IP网段,此IP网段内的IP不会被子网内的实例占用。用户可以通过创建子网预留网段来预留某个IP网段,用于后续的特殊场景使用。",
+        "operationId": "CreateVirsubnetCidrReservation",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "**参数解释**:\n项目ID。\n**取值范围**:\n不涉及。",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2
+          },
+          {
+            "in": "body",
+            "name": "CreateVirsubnetCidrReservationRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateVirsubnetCidrReservationRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "POST操作正常返回,更多状态码请参见[状态码](vpc_api_0002.xml)。",
+            "examples": {
+              "application/json": "{\n    \"virsubnet_cidr_reservation\": {\n        \"id\": \"ed4edb94-754c-7848-bb77-2d381906c535\",\n        \"virsubnet_id\": \"fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19\",\n        \"vpc_id\": \"cef5d621-6c20-d5df-74e8-746271fba734\",\n        \"ip_version\": 4,\n        \"cidr\": \"192.168.21.96/28\",\n        \"name\": \"test\",\n        \"description\": \"for test\",\n        \"project_id\": \"11e8dd119c77479db890e266e68c1ecf\",\n        \"created_at\": \"2024-09-09T11:56:27Z\",\n        \"updated_at\": \"2024-09-09T11:56:27Z\",\n    },\n    \"request_id\": \"fd48620df5f57b04917f2cc5ebeaf277\"\n}"
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateVirsubnetCidrReservationResponseBody"
+            }
+          }
+        },
+        "x-is-translated": "N",
+        "x-name": "创建子网预留网段",
+        "x-version": "v3",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "创建子网预留网段,所属虚拟子网ID为fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19,IPv4版本,指定预留网段cidr为192.168.21.96/28,指定名称为test,描述为for test。",
+        "x-request-examples-url-1": "POST https://{Endpoint}/v3/{project_id}/vpc/virsubnet-cidr-reservations",
+        "x-request-examples-1": {
+          "virsubnet_cidr_reservation": {
+            "virsubnet_id": "fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19",
+            "ip_version": 4,
+            "cidr": "192.168.21.96/28",
+            "name": "test",
+            "description": "for test"
+          }
+        },
+        "x-request-examples-text-1": {
+          "virsubnet_cidr_reservation": {
+            "virsubnet_id": "fb0e2bd6-190f-0d1a-7728-a5f6b1d8dd19",
+            "ip_version": 4,
+            "cidr": "192.168.21.96/28",
+            "name": "test",
+            "description": "for test"
+          }
+        },
+        "x-api-type": "open-api",
+        "x-publishpath": "",
+        "x-hybridcloud": "false",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hws,hws_hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "CreateVirsubnetCidrReservationRequestBody": {
+      "type": "object",
+      "required": [
+        "virsubnet_cidr_reservation"
+      ],
+      "properties": {
+        "dry_run": {
+          "type": "boolean",
+          "description": "**参数解释**:\n是否只预检此次请求。\n**约束限制**:\n不涉及。\n**取值范围**:\n- true:发送检查请求,不会创建子网预留网段。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应码202。\n- false:发送正常请求,并直接创建子网预留网段。\n**默认取值**:\nfalse",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_cidr_reservation": {
+          "description": "**参数解释**:\n创建子网预留网段的请求体。\n**约束限制**:\n不涉及。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。",
+          "$ref": "#/definitions/CreateVirsubnetCidrReservationOption"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "CreateVirsubnetCidrReservationResponseBody": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "virsubnet_cidr_reservation"
+      ],
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "description": "**参数解释**:\n请求ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_cidr_reservation": {
+          "description": "**参数解释**:\n创建子网预留网段的响应体。\n**取值范围**:\n不涉及。",
+          "$ref": "#/definitions/VirsubnetCidrReservation"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "VirsubnetCidrReservation": {
+      "type": "object",
+      "required": [
+        "cidr",
+        "created_at",
+        "description",
+        "id",
+        "ip_version",
+        "name",
+        "project_id",
+        "updated_at",
+        "virsubnet_id",
+        "vpc_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的资源ID。子网预留网段创建成功后,会生成一个子网预留网段 ID,是子网预留网段对应的唯一标识。\n**取值范围**:\n带“-”的标准UUID格式。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所在子网的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "vpc_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所在VPC的ID。\n**取值范围**:\n带“-”的标准UUID格式。"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n子网预留网段的IP版本。\n**取值范围**:\n- 4:IPv4\n- 6:IPv6"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的IP网段。\n**取值范围**:\nCIDR格式,掩码长度最小值为“所属子网的网段掩码 + 2”,最大值为32(IPv4)或128(IPv6)。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的名称。\n**取值范围**:\n1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的描述信息。\n**取值范围**:\n0-255个字符,不能包含“<”和“>”。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所属的项目ID。\n**取值范围**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网预留网段的创建时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ssZ。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "**参数解释**:\n子网预留网段最近一次更新的时间。\n**取值范围**:\nUTC时间格式,yyyy-MM-ddTHH:mm:ssZ。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    },
+    "CreateVirsubnetCidrReservationOption": {
+      "type": "object",
+      "required": [
+        "ip_version",
+        "virsubnet_id"
+      ],
+      "properties": {
+        "virsubnet_id": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段所属的子网ID。\n**约束限制**:\n不涉及。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n子网预留网段的IP版本,支持IPv4和IPv6。\n**约束限制**:\n不涉及。\n**取值范围**:\n- 4:表示IPv4。\n- 6:表示IPv6。\n**默认取值**:\n不涉及。"
+        },
+        "cidr": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的IP网段。\n**约束限制**:\n- CIDR格式,掩码长度最小值为“所属子网的网段掩码 + 2”,最大值为32(IPv4)或128(IPv6)。\n- cidr和mask参数必须输入一个,两者同时输入时不能冲突。\n- 子网预留网段不能包含所属子网的已使用的地址和系统预留地址(子网的第1个和最后2个地址)。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。"
+        },
+        "mask": {
+          "type": "integer",
+          "format": "int32",
+          "description": "**参数解释**:\n子网预留网段的IP网段掩码长度。\n**约束限制**:\n- 整数,预留网段的掩码长度最小值为“所属子网的网段掩码 + 2”,最大值为32(IPv4)或128(IPv6)。\n- cidr和mask参数必须输入一个,两者同时输入时不能冲突。\n- 子网预留网段不能包含所属子网的已使用的地址和系统预留地址(子网的第1个和最后2个地址)。\n- 指定掩码长度创建预留网段,最后mask与子网掩码的差值长度的bit位由系统自动分配,例如子网cidr为192.168.21.0/24,子网掩码长度24,指定预留网段长度为27,差值长度27 - 24 = 3,即第25,26,27这3个bit位由系统自动分配。例如:\n  - 第25-27的bit位分配为011,最终创建出的子网预留网段cidr是192.168.21.96/27,其中96转为二进制是0110 0000;\n  - 第25-27的bit位分配为110,最终创建出的子网预留网段cidr是192.168.21.192/27,其中192转为二进制是1100 0000。\n\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的名称。\n**约束限制**:\n1-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释**:\n子网预留网段的描述信息。\n**约束限制**:\n0-255个字符,不能包含“<”和“>”。\n**取值范围**:\n不涉及。\n**默认取值**:\n不涉及。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "post",
+  "uri": null
+}

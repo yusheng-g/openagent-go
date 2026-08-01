@@ -1,0 +1,338 @@
+{
+  "name": "ShowListener",
+  "summary": "查询监听器详情",
+  "tags": "监听器",
+  "productshort": "ELB",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/elb/listeners/{listener_id}": {
+      "get": {
+        "tags": [
+          "监听器"
+        ],
+        "summary": "查询监听器详情",
+        "description": "根据指定ID查询监听器详情。",
+        "operationId": "ShowListener",
+        "parameters": [
+          {
+            "name": "listener_id",
+            "in": "path",
+            "description": "监听器id",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目id",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户token",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "listener": {
+                  "protocol_port": 8000,
+                  "protocol": "TCP",
+                  "description": "",
+                  "client_ca_tls_container_ref": null,
+                  "default_tls_container_ref": null,
+                  "admin_state_up": true,
+                  "http2_enable": false,
+                  "loadbalancers": [
+                    {
+                      "id": "3d77894d-2ffe-4411-ac0a-0d57689779b8"
+                    }
+                  ],
+                  "tenant_id": "1867112d054b427e808cc6096d8193a1",
+                  "project_id": "1867112d054b427e808cc6096d8193a1",
+                  "sni_container_refs": [],
+                  "connection_limit": -1,
+                  "default_pool_id": "b7e53dbd-62ab-4505-a280-5c066078a5c9",
+                  "id": "09e64049-2ab0-4763-a8c5-f4207875dc3e",
+                  "tags": [],
+                  "name": "listener-2",
+                  "created_at": "2018-07-25T01:54:13",
+                  "updated_at": "2018-07-25T01:54:14",
+                  "insert_headers": {
+                    "X-Forwarded-ELB-IP": true
+                  },
+                  "protection_status": null,
+                  "protection_reason": null
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowListenerResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/ElbError"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询监听器详情",
+        "x-constraint": "",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 41,
+        "x-request-examples-1": "GET https://{ELB_Endpoint}/v2/1867112d054b427e808cc6096d8193a1/elb/listeners/165b6a38-5278-4569-b747-b2ee65ea84a4",
+        "x-request-examples-text-1": "GET https://{ELB_Endpoint}/v2/1867112d054b427e808cc6096d8193a1/elb/listeners/165b6a38-5278-4569-b747-b2ee65ea84a4",
+        "x-publishpath": "",
+        "x-hybridcloud": "true",
+        "x-source": "Native",
+        "x-first-open-time": "2017-03-30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk,otc,ctc,ct,ocb",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ElbError": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "string",
+          "description": "错误信息"
+        }
+      },
+      "description": "错误信息响应体"
+    },
+    "ShowListenerResponseBody": {
+      "required": [
+        "listener"
+      ],
+      "properties": {
+        "listener": {
+          "description": "监听器对象",
+          "$ref": "#/definitions/ListenerResp"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceList": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "资源ID"
+        }
+      },
+      "description": "资源对象id列表。"
+    },
+    "ListenerResp": {
+      "required": [
+        "id",
+        "tenant_id",
+        "name",
+        "description",
+        "admin_state_up",
+        "loadbalancers",
+        "connection_limit",
+        "http2_enable",
+        "protocol",
+        "protocol_port",
+        "default_pool_id",
+        "default_tls_container_ref",
+        "client_ca_tls_container_ref",
+        "sni_container_refs",
+        "tags",
+        "created_at",
+        "updated_at",
+        "insert_headers",
+        "project_id",
+        "tls_ciphers_policy"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "监听器ID"
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "监听器所在的项目ID。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "name": {
+          "type": "string",
+          "description": "监听器名称。",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "description": "监听器的描述信息",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "监听器的管理状态。只支持设定为true,该字段的值无实际意义。"
+        },
+        "loadbalancers": {
+          "type": "array",
+          "description": "监听器绑定的负载均衡器ID的列表。",
+          "items": {
+            "$ref": "#/definitions/ResourceList"
+          }
+        },
+        "connection_limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "监听器的最大连接数。该字段为预留字段,暂未启用。默认为-1。",
+          "minimum": -1
+        },
+        "http2_enable": {
+          "type": "boolean",
+          "description": "HTTP2功能的开启状态。该字段只有当监听器的协议是TERMINATED_HTTPS时生效。"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "监听器的监听协议",
+          "enum": [
+            "UDP",
+            "TCP",
+            "HTTP",
+            "TERMINATED_HTTPS"
+          ]
+        },
+        "protocol_port": {
+          "type": "integer",
+          "format": "int32",
+          "description": "监听器的监听端口。",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "default_pool_id": {
+          "type": "string",
+          "description": "监听器的默认后端云服务器组ID。当请求没有匹配的转发策略时,转发到默认后端云服务器上处理。"
+        },
+        "default_tls_container_ref": {
+          "type": "string",
+          "description": "监听器使用的服务器证书ID。"
+        },
+        "client_ca_tls_container_ref": {
+          "type": "string",
+          "description": "监听器使用的CA证书ID。"
+        },
+        "sni_container_refs": {
+          "type": "array",
+          "description": "监听器使用的SNI证书(带域名的服务器证书)ID的列表。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "description": "监听器的标签。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "description": "监听器的创建时间。",
+          "minLength": 0,
+          "maxLength": 19
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "监听器的更新时间。",
+          "minLength": 0,
+          "maxLength": 19
+        },
+        "insert_headers": {
+          "description": "可选的HTTP头插入,可以将从负载均衡器到后端云服务器的路径中需要被后端云服务器用到的信息写入HTTP中,随报文传递到后端云服务器使。例如可通过X-Forwarded-ELB-IP开关,将负载均衡器的弹性公网IP传到后端云服务器",
+          "$ref": "#/definitions/InsertHeader"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "监听器所在的项目ID。"
+        },
+        "tls_ciphers_policy": {
+          "type": "string",
+          "description": "监听器使用的安全策略,仅对TERMINATED_HTTPS协议类型的监听器有效,且默认值为tls-1-0。\n\n取值包括:tls-1-0, tls-1-1, tls-1-2, tls-1-2-strict多种安全策略"
+        },
+        "protection_status": {
+          "type": "string",
+          "description": "修改保护状态, 取值:\n- nonProtection: 不保护,默认值为nonProtection\n- consoleProtection: 控制台修改保护",
+          "enum": [
+            "nonProtection",
+            "consoleProtection"
+          ],
+          "x-open-region-cloud": "hc,hk"
+        },
+        "protection_reason": {
+          "type": "string",
+          "description": "设置保护的原因。\n>仅当protection_status为consoleProtection时有效。",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": "监听器响应体",
+      "type": "object"
+    },
+    "InsertHeader": {
+      "properties": {
+        "X-Forwarded-ELB-IP": {
+          "type": "boolean",
+          "description": "负载均衡器弹性公网IP透传开关。"
+        },
+        "X-Forwarded-Host": {
+          "type": "boolean",
+          "description": "X-Forwarded-Host设为true可以将客户请求头的第一个X-Forwarded-Host设置为请求头的Host带到后端云服务器。",
+          "default": true
+        }
+      },
+      "description": "监听器HTTP扩展头部对象。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "elb.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

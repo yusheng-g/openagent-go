@@ -1,0 +1,253 @@
+{
+  "name": "ChangeEnterpriseRealnameAuthentication",
+  "summary": "申请实名认证变更",
+  "tags": "实名认证(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/customers/realname-auths/enterprise": {
+      "put": {
+        "summary": "申请实名认证变更",
+        "description": "客户可以进行实名认证变更申请。\n\n个人客户登录帐号中心通过实名认证变更为企业帐号的方式及流程请参见[这里](https://support.huaweicloud.com/usermanual-account/zh-cn_topic_0103532632.html)。",
+        "tags": [
+          "实名认证(伙伴)"
+        ],
+        "operationId": "ChangeEnterpriseRealnameAuthentication",
+        "x-constraint": "接口只允许使用合作伙伴账号AK/SK或者Token调用。",
+        "x-externalURL": "/v2/customers/realname-auths/enterprise",
+        "x-open-region-cloud": "hc,hk",
+        "x-readOnly": false,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-04-13",
+        "x-low-frequency-scene": "Operation",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "req",
+            "in": "body",
+            "description": "实名认证变更申请请求",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangeEnterpriseRealnameAuthsReq"
+            }
+          }
+        ],
+        "x-request-examples-url-1": "PUT https://bss.myhuaweicloud.com/v2/customers/realname-auths/enterprise",
+        "x-request-examples-1": {
+          "verified_number": "371812********8888",
+          "verified_file_url": [
+            "gerenshiming/zhengmian001.jpg",
+            "gerenshiming/fanmian002.jpg",
+            "gerenshiming/chizheng003.jpg"
+          ],
+          "reg_address": "北京",
+          "reg_country": "CN",
+          "customer_id": "4505ce********de8263e33b57e76abc",
+          "certificate_type": 0,
+          "corp_name": "test001",
+          "enterprise_person": {
+            "certifier_role": "legalPerson",
+            "legel_name": "wangmoumou",
+            "legel_id_number": "371812********8888"
+          },
+          "identify_type": 1,
+          "xaccount_type": "***_IDP",
+          "change_type": 1
+        },
+        "responses": {
+          "200": {
+            "description": "实名认证变更申请响应",
+            "schema": {
+              "$ref": "#/definitions/ChangeEnterpriseRealnameAuthsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "is_review": 1
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败parameter error| |CBC.99007004:发起的业务操作存在不满足的业务检查项| |CBC.99007202:实名认证校验失败| |CBC.99007188:该客户已经实名认证或者实名认证在审核中| |CBC.99007191:客户实名认证次数超过最大配置值| |CBC.99007253:无效的证件照或者证件照模糊| |CBC.99007256:法人信息不正确| |CBC.99007257:企业信息不正确| |CBC.99007267:企业子账号正在被邀请关联,不允许重新实名认证| |CBC.99000035:合作伙伴子用户不存在the customer does not exist| |CBC.99000000:无对该客户的操作权限|",
+            "schema": {
+              "$ref": "#/definitions/FailCheckItems"
+            }
+          }
+        },
+        "x-category": "实名认证(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "FailCheckItems": {
+      "properties": {
+        "fail_check_items": {
+          "description": "不满足的业务规则检查项。 当错误码为CBC.99007004时返回。具体检查项参见”表1”。",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ChangeEnterpriseRealnameAuthsReq": {
+      "required": [
+        "customer_id",
+        "identify_type",
+        "verified_file_url",
+        "corp_name",
+        "verified_number",
+        "change_type",
+        "xaccount_type"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        },
+        "identify_type": {
+          "description": "认证方案: 1:单位证件扫描",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 32,
+          "minimum": 0
+        },
+        "certificate_type": {
+          "description": "单位证件类型: 0:企业营业执照1:事业单位法人证书2:社会团体法人登记证书3:行政执法主体资格证4:组织机构代码证99:其他 此参数不携带或携带值为null时,不赋值。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 99,
+          "minimum": 0
+        },
+        "verified_file_url": {
+          "description": "单位证件认证时证件附件的文件URL。 附件地址必须按照顺序填写,先填写单位证件的附件,如果存在单位人员信息,再填写单位人员的身份证附件。 单位证件顺序为: 第1张单位证件照附件, 单位人员的证件顺序为: 第1张个人身份证的人像面 第2张个人身份证的国徽面 以营业执照举例,假设存在法人的情况下,第1张上传的是营业执照扫描件abc.023,第2张是法人的身份证人像面照片def004,第3张是法人的国徽面照片gh007,那么上传顺序需要是: abc023 def004 gh007 的顺序填写URL(文件名称区分大小写) 证件附件目前仅仅支持jpg、jpeg、bmp、png、gif、pdf格式,单个文件最大不超过10M。 这个URL是相对URL,不需要包含桶名和download目录,只要包含download目录下的子目录和对应文件名称即可。举例如下: 如果上传的证件附件在桶中的位置是: https://bucketname.obs.Endpoint.myhuaweicloud.com/download/abc023.jpg,该字段填写abc023.jpg; 如果上传的证件附件在桶中的位置是: https://bucketname.obs.Endpoint.myhuaweicloud.com/download/test/abc023.jpg,该字段填写test/abc023.jpg。",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "x-maxLength": 4,
+          "x-minLength": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "corp_name": {
+          "type": "string",
+          "description": "单位名称。 不能全是数字、特殊字符、空格。",
+          "minLength": 1,
+          "maxLength": 255,
+          "example": ""
+        },
+        "verified_number": {
+          "type": "string",
+          "description": "单位证件号码。",
+          "minLength": 1,
+          "maxLength": 32,
+          "example": ""
+        },
+        "reg_country": {
+          "type": "string",
+          "description": "实名认证填写的注册国家。国家的两位字母简码。 例如:注册国家为“中国”请填写“CN”。 此参数不携带或携带值为null时,不赋值;携带值为空串时,赋值空串。",
+          "minLength": 0,
+          "maxLength": 10,
+          "example": ""
+        },
+        "reg_address": {
+          "type": "string",
+          "description": "实名认证企业注册地址。 此参数不携带或携带值为null时,不赋值;携带值为空串时,赋值空串。",
+          "minLength": 0,
+          "maxLength": 256,
+          "example": ""
+        },
+        "change_type": {
+          "description": "变更类型: 1:个人变企业",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "",
+          "maximum": 1,
+          "minimum": 1
+        },
+        "xaccount_type": {
+          "type": "string",
+          "description": "华为分给合作伙伴的平台标识。 该标识的具体值由华为分配。获取方法请参见如何获取xaccountType的取值。",
+          "minLength": 1,
+          "maxLength": 64,
+          "example": ""
+        },
+        "enterprise_person": {
+          "description": "单位人员信息,请参见表1。",
+          "$ref": "#/definitions/EnterprisePersonNew"
+        }
+      }
+    },
+    "ChangeEnterpriseRealnameAuthsRsp": {
+      "properties": {
+        "is_review": {
+          "description": "是否需要转人工审核,只有状态码为200才返回该参数。 0:不需要1:需要",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": ""
+        }
+      }
+    },
+    "EnterprisePersonNew": {
+      "required": [
+        "legel_name",
+        "legel_id_number"
+      ],
+      "properties": {
+        "legel_name": {
+          "description": "法人姓名。",
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "example": "wangmoumou"
+        },
+        "legel_id_number": {
+          "description": "法人身份证号。",
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 1,
+          "example": "3713xx1986xxxxxxxx"
+        },
+        "certifier_role": {
+          "description": "认证人角色。 legalPerson :法人代表。",
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 0,
+          "example": "legalPerson"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "put",
+  "uri": null
+}

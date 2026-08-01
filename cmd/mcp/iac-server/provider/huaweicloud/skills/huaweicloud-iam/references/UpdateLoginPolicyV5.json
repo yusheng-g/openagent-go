@@ -1,0 +1,144 @@
+{
+  "name": "UpdateLoginPolicyV5",
+  "summary": "修改账号登录策略",
+  "tags": "安全设置",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/login-policy": {
+      "put": {
+        "tags": [
+          "SecurityControl"
+        ],
+        "operationId": "UpdateLoginPolicyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "修改账号登录策略",
+        "description": "该接口可以用于修改账号登录策略。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoginPolicyReqBody"
+              },
+              "example": {
+                "user_validity_period": 0,
+                "custom_info_for_login": "info",
+                "lockout_duration": 15,
+                "login_failed_times": 5,
+                "period_with_login_failures": 15,
+                "session_timeout": 60,
+                "show_recent_login_info": false,
+                "allow_address_netmasks": [
+                  {
+                    "address_netmask": "192.168.0.1/24",
+                    "description": "description"
+                  }
+                ],
+                "allow_ip_ranges": [
+                  {
+                    "ip_range": "0.0.0.0-255.255.255.255",
+                    "description": "description"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "修改账号登录策略。",
+        "x-request-examples-url-1": "PUT https://{endpoint}/v5/login-policy",
+        "x-request-examples-1": {
+          "user_validity_period": 0,
+          "custom_info_for_login": "info",
+          "lockout_duration": 15,
+          "login_failed_times": 5,
+          "period_with_login_failures": 15,
+          "session_timeout": 60,
+          "show_recent_login_info": false,
+          "allow_address_netmasks": [
+            {
+              "address_netmask": "192.168.0.1/24",
+              "description": "description"
+            }
+          ],
+          "allow_ip_ranges": [
+            {
+              "ip_range": "0.0.0.0-255.255.255.255",
+              "description": "description"
+            }
+          ]
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateLoginPolicyResp"
+                },
+                "example": {
+                  "login_policy": {
+                    "user_validity_period": 0,
+                    "custom_info_for_login": "info",
+                    "lockout_duration": 15,
+                    "login_failed_times": 5,
+                    "period_with_login_failures": 15,
+                    "session_timeout": 60,
+                    "show_recent_login_info": false,
+                    "allow_address_netmasks": [
+                      {
+                        "address_netmask": "192.168.0.1/24",
+                        "description": "description"
+                      }
+                    ],
+                    "allow_ip_ranges": [
+                      {
+                        "ip_range": "0.0.0.0-255.255.255.255",
+                        "description": "description"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResp"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "put",
+  "uri": null
+}

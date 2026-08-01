@@ -1,0 +1,531 @@
+{
+  "name": "ListIssuedPartnerCoupons",
+  "summary": "查询已发放的优惠券",
+  "tags": "管理优惠券(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v2/promotions/benefits/partner-coupons": {
+      "get": {
+        "summary": "查询已发放的优惠券",
+        "description": "合作伙伴可以查询已发放的优惠券列表。\n\n伙伴登录伙伴中心,进入“客户业务** **\\> 代金券管理”,选择“已发放代金券”页签,即可查询已发放的代金券。\n\n伙伴登录伙伴中心,进入“客户业务 \\> 现金券管理”,选择“已发放现金券”页签,即可查询已发放的现金券。\n\n>![](public_sys-resources/icon-note.gif) **说明:** \n>-   只可查到失效时间在12个月内的代金/现金劵。\n>-   在API只可以查询代售子客户已发放的代金/现金劵,在伙伴中心可以查询代售和顾问销售已发放的代金/现金劵,对比一致性时需要注意关联模式是否一致。",
+        "tags": [
+          "管理优惠券(伙伴)"
+        ],
+        "operationId": "ListIssuedPartnerCoupons",
+        "x-constraint": "该接口只能给合作伙伴使用,调用的时候必须传递合作伙伴的AK/SK或者Token。",
+        "x-externalURL": "/v2/promotions/benefits/partner-coupons",
+        "x-open-region-cloud": "hc",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2020-05-20",
+        "x-operation-data-level": "L3",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "coupon_id",
+            "in": "query",
+            "required": false,
+            "description": "优惠券ID。此参数不携带或携带值为空时,不作为筛选条件;携带值为null时,作为筛选条件;不支持携带值为空串。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "CP190912081601OJDA",
+            "x-allowNull": false
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)接口获取customer_id。此参数不携带或携带值为空时,不作为筛选条件;携带值为空串或携带值为null时,作为筛选条件。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "CS19040119281JMYC",
+            "x-allowNull": false
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": false,
+            "description": "订单ID。此参数不携带或携带值为空时,不作为筛选条件;携带值为null时,作为筛选条件;不支持携带值为空串。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "promotionPlanId5322584",
+            "x-allowNull": false
+          },
+          {
+            "name": "coupon_type",
+            "in": "query",
+            "required": false,
+            "description": "优惠券类型。1:代金券4:现金券此参数不携带或携带值为空或携带值为null时,不作为筛选条件。",
+            "maximum": 4,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "1",
+            "x-allowNull": true
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "客户优惠券实例状态:1:未激活2:可使用3:已使用4:已过期5:已回收此参数不携带或携带值为空或携带值为null时,不作为筛选条件。",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "1",
+            "x-allowNull": true
+          },
+          {
+            "name": "create_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "创建时间(开始)。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。输入这个条件,会查询出创建时间大于这个时间的记录。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2017-12-17T10:32:02Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "create_time_end",
+            "in": "query",
+            "required": false,
+            "description": "创建时间(结束)。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。输入这个条件,会查询出创建时间小于这个时间的记录。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2017-12-17T10:32:02Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "effective_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "生效时间(开始)。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。输入这个条件,会查询出生效时间大于这个时间的记录。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "0",
+            "x-allowNull": false
+          },
+          {
+            "name": "effective_time_end",
+            "in": "query",
+            "required": false,
+            "description": "生效时间(结束)。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。输入这个条件,会查询出生效时间小于这个时间的记录。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "10",
+            "x-allowNull": false
+          },
+          {
+            "name": "expire_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "失效时间(开始)。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。输入这个条件,会查询出失效时间大于这个时间的记录。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "c9e731c4663646988ef4cdb3122837b6",
+            "x-allowNull": false
+          },
+          {
+            "name": "expire_time_end",
+            "in": "query",
+            "required": false,
+            "description": "失效时间(结束)。UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。其中,HH范围是0~23,mm和ss范围是0~59。输入这个条件,会查询出失效时间小于这个时间的记录。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483646,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "查询的每页数量。默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "",
+            "x-allowNull": true,
+            "default": 10
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。华为云总经销商(一级经销商)查询云经销商发放给子客户的优惠券时,需要携带该参数;否则只能查询发放给自己子客户的优惠券。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "",
+            "x-allowNull": false,
+            "x-site": "HC"
+          }
+        ],
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v2/promotions/benefits/partner-coupons?coupon_id=CP190912081601OJDA&customer_id=CS19040119281JMYC&order_id=promotionPlanId5322584&coupon_type=1&status=1&create_time_begin=2017-12-17T10:32:02Z&create_time_end=2017-12-17T10:32:02Z&effective_time_begin=2017-12-17T10:32:02Z&effective_time_end=2017-12-17T10:32:02Z&expire_time_begin=2017-12-17T10:32:02Z&expire_time_end=2017-12-17T10:32:02Z&offset=0&limit=10&indirect_partner_id=5c2ec3bd80c9462aad432f5566e9feb1",
+        "responses": {
+          "200": {
+            "description": "查询已发放的优惠券响应",
+            "schema": {
+              "$ref": "#/definitions/QueryPartnerCouponsV2Rsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 1,
+                "user_coupons": [
+                  {
+                    "coupon_id": "CP200518080955A7LU",
+                    "status": 2,
+                    "customer_id": "051b9c187500d5340f0cc00f45000440",
+                    "coupon_type": 1,
+                    "measure_id": 1,
+                    "face_value": 1.11,
+                    "effective_time": "2020-04-08T08:53:05Z",
+                    "expire_time": "2021-04-30T15:59:59Z",
+                    "order_id": null,
+                    "promotion_plan_id": null,
+                    "promotion_plan_name": "华为云产品代金券",
+                    "promotion_plan_desc": null,
+                    "media_type": null,
+                    "fetch_method": null,
+                    "use_limits": [
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "simultaneousUseWithPromotionProduct",
+                        "value1": "1",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "cycleType",
+                        "value1": "1|2|5",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "cycleNum",
+                        "value1": "2,1,3||",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "in",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "couponClass",
+                        "value1": "0",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "simultaneousUseWithDiscountCoupon",
+                        "value1": "1",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "simultaneousUseWithPromotionDiscount",
+                        "value1": "1",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "usageTimes",
+                        "value1": "0",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": null,
+                        "limit_key": "simultaneousUseWithEmpowerDiscount",
+                        "value1": "1",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": "=",
+                        "promotion_plan_id": null
+                      },
+                      {
+                        "use_limiti_info_id": "CP200518080955A7LU",
+                        "limit_key": "serviceTypeBlackList",
+                        "value1": "hws.service.type.webscan,hws.service.type.cpts6",
+                        "value2": null,
+                        "value_unit": null,
+                        "limit_type": null,
+                        "promotion_plan_id": null
+                      }
+                    ],
+                    "active_time": "2020-05-18T08:09:55Z",
+                    "last_used_time": null,
+                    "promotion_id": null,
+                    "create_time": "2020-05-18T08:09:55Z",
+                    "balance": 1.11,
+                    "lock_order_id": "",
+                    "is_frozen": "0"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "|CBC.0100:输入参数校验失败parameter error|"
+          }
+        },
+        "x-category": "管理优惠券(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "ICouponUseLimitInfoV2": {
+      "properties": {
+        "use_limiti_info_id": {
+          "type": "string",
+          "description": "使用限制ID,主键。",
+          "example": "CP19092406014086E3"
+        },
+        "limit_key": {
+          "type": "string",
+          "description": "折扣限制,key的取值请参考表4。",
+          "example": "simultaneousUseWithDiscountCoupon"
+        },
+        "value1": {
+          "type": "string",
+          "description": "value1。",
+          "example": "90301-175003-0--0,90301-393012-0--0,90301-179002-0--0,90301-187039-0--0"
+        },
+        "value2": {
+          "type": "string",
+          "description": "value2。",
+          "example": "TE10-720aaP30-C0,TE10-720P30-C0,TE20-5X-00,TE10-720P30-C0,TE10-720P30-C0"
+        },
+        "value_unit": {
+          "type": "string",
+          "description": "value单位。",
+          "example": ""
+        },
+        "limit_type": {
+          "type": "string",
+          "description": "限制类型。",
+          "example": "="
+        },
+        "promotion_plan_id": {
+          "type": "string",
+          "description": "促销计划ID。",
+          "example": "promotionPlanId5322584"
+        }
+      }
+    },
+    "QueryPartnerCouponsV2Rsp": {
+      "required": [
+        "total_count"
+      ],
+      "properties": {
+        "total_count": {
+          "description": "总数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": "10"
+        },
+        "user_coupons": {
+          "description": "发放的优惠券记录。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IQueryUserPartnerCouponsResultV2"
+          }
+        }
+      }
+    },
+    "IQueryUserPartnerCouponsResultV2": {
+      "properties": {
+        "coupon_id": {
+          "type": "string",
+          "description": "优惠券ID。",
+          "example": "CP19092406014086E3"
+        },
+        "status": {
+          "description": "优惠券状态: 1:未激活2:可使用3:已使用4:已过期5:已回收",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "2"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": "c9e731c4663646988ef4cdb3122837b6"
+        },
+        "coupon_type": {
+          "description": "优惠券类别: 1:代金券4:现金券",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "measure_id": {
+          "description": "优惠券面额单位。 1:元。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "face_value": {
+          "description": "优惠券面值。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "100"
+        },
+        "effective_time": {
+          "type": "string",
+          "description": "生效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2019-09-16T16:00:00Z"
+        },
+        "expire_time": {
+          "type": "string",
+          "description": "失效时间。 UTC时间,格式:yyyy-MM-dd'T'HH:mm:ss'Z',如“2019-05-06T08:05:01Z”。",
+          "example": "2019-09-16T16:00:00Z"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID。",
+          "example": "CS1904011928GIBHC"
+        },
+        "promotion_plan_id": {
+          "type": "string",
+          "description": "促销计划ID。",
+          "example": "promotionPlanId5322584"
+        },
+        "promotion_plan_name": {
+          "type": "string",
+          "description": "促销计划名称。",
+          "example": "532元优惠券name"
+        },
+        "promotion_plan_desc": {
+          "type": "string",
+          "description": "促销计划描述。",
+          "example": "532元优惠券desc"
+        },
+        "media_type": {
+          "description": "介质类型。 1:电子券2:纸质券",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "fetch_method": {
+          "description": "获取方式。 1:线上领取2:线上兑换3:线上发放4:线下获取5:事件赠送",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": "1"
+        },
+        "use_limits": {
+          "description": "优惠券限制。 具体请参见表3。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ICouponUseLimitInfoV2"
+          }
+        },
+        "active_time": {
+          "type": "string",
+          "description": "优惠券的激活时间。",
+          "example": "2019-09-16T16:00:00Z"
+        },
+        "last_used_time": {
+          "type": "string",
+          "description": "优惠券的使用时间。",
+          "example": "2019-09-16T16:00:00Z"
+        },
+        "promotion_id": {
+          "type": "string",
+          "description": "促销活动ID。",
+          "example": "promotionPlanId5322584"
+        },
+        "create_time": {
+          "type": "string",
+          "description": "优惠券的创建时间。",
+          "example": "2019-09-16T16:00:00Z"
+        },
+        "balance": {
+          "description": "优惠券余额。",
+          "type": "number",
+          "format": "bigdecimal",
+          "x-allowNull": true,
+          "example": "100"
+        },
+        "lock_order_id": {
+          "type": "string",
+          "description": "锁定优惠券的订单ID。 如果为老版本优惠券,该值为空。",
+          "example": "CS1904011928GIBHC"
+        },
+        "is_frozen": {
+          "type": "string",
+          "description": "优惠券是否冻结。 0:否1:是 可用优惠券接口返回时不包括冻结状态的优惠券。",
+          "example": "0"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

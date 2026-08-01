@@ -1,0 +1,275 @@
+{
+  "name": "UpdatePrivateZone",
+  "summary": "修改内网域名",
+  "tags": "内网域名管理",
+  "productshort": "DNS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/zones/{zone_id}": {
+      "patch": {
+        "tags": [
+          "内网域名管理"
+        ],
+        "x-request-examples-description-1": "修改内网域名的邮箱和描述信息,设置TTL为300秒。",
+        "x-request-examples-url-1": "PATCH https://v2/zones/{zone_id}",
+        "x-request-examples-1": {
+          "description": "This is an example zone.",
+          "email": "xx@example.org",
+          "ttl": 300
+        },
+        "operationId": "UpdatePrivateZone",
+        "summary": "修改内网域名",
+        "description": "当您的内网域名创建成功后,您可以通过调用此接口修改内网域名的基本信息,包括TTL、描述等。",
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-Auth-Token"
+          },
+          {
+            "$ref": "#/parameters/ZoneIdInPath"
+          },
+          {
+            "name": "UpdatePrivateZoneInfoReq",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateZoneInfoReq"
+            },
+            "description": "修改内网域名请求。"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "修改内网域名响应。",
+            "schema": {
+              "$ref": "#/definitions/UpdatePrivateZoneResp"
+            },
+            "examples": {
+              "application/json": {
+                "id": "ff8080825b8fc86c015b94bc6f8712c3",
+                "name": "example.com.",
+                "description": "This is an example zone.",
+                "email": "xx@example.com",
+                "ttl": 300,
+                "serial": 1,
+                "masters": [],
+                "status": "ACTIVE",
+                "links": {
+                  "self": "https://Endpoint/v2/zones/ff8080825b8fc86c015b94bc6f8712c3"
+                },
+                "pool_id": "ff8080825ab738f4015ab7513298010e",
+                "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
+                "zone_type": "private",
+                "created_at": "2017-04-22T08:17:08.997",
+                "updated_at": "2017-04-22T08:17:10.849",
+                "record_num": 2,
+                "routers": [
+                  {
+                    "status": "ACTIVE",
+                    "router_id": "19664294-0bf6-4271-ad3a-94b8c79c6558",
+                    "router_region": "xx"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "接口错误响应。",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-order": 4
+      }
+    }
+  },
+  "definitions": {
+    "UpdatePrivateZoneInfoReq": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "**参数解释:**\n域名的描述信息。\n**约束限制:**\n不涉及。\n**取值范围:**\n长度不超过255个字符。\n**默认取值:**\n默认为空,表示维持原值。"
+        },
+        "email": {
+          "type": "string",
+          "description": "**参数解释:**\n管理该域名的管理员邮箱,用于生成该域名的SOA记录。  \n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n默认为空,表示维持原值。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "**参数解释:**\n用于填写默认生成的SOA记录中有效缓存时间,以秒为单位。\n**约束限制:**\n不涉及。\n**取值范围:**\n1~2147483647。\n**默认取值:**\n默认为空,表示维持原值。",
+          "format": "int32"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "**参数解释:**\n失败时返回的错误对象。\n**取值范围:**\n不涉及。",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "description": "**参数解释:**\n错误码。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 36
+        },
+        "message": {
+          "description": "**参数解释:**\n错误描述。\n**取值范围:**\n不涉及。",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 512
+        }
+      }
+    },
+    "pageLink": {
+      "properties": {
+        "self": {
+          "type": "string",
+          "description": "**参数解释:**\n当前页面的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        },
+        "next": {
+          "type": "string",
+          "description": "**参数解释:**\n下一页的链接。\n**取值范围:**\n不涉及。",
+          "readOnly": true
+        }
+      },
+      "description": "**参数解释:**\n指向当前页或者其他页的链接。当查询需要分页时,需要包含一个next链接指向下一页。\n**取值范围:**\n不涉及。"
+    },
+    "UpdatePrivateZoneResp": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "**参数解释:**\n域名的ID,UUID形式的一个资源标识。\n**取值范围:**\n不涉及。"
+        },
+        "name": {
+          "type": "string",
+          "description": "**参数解释:**\n域名。\n**取值范围:**\n不涉及。"
+        },
+        "description": {
+          "type": "string",
+          "description": "**参数解释:**\n域名的描述信息。\n**取值范围:**\n长度不超过255个字符。"
+        },
+        "email": {
+          "type": "string",
+          "description": "**参数解释:**\n管理该域名的管理员邮箱,用于生成该域名的SOA记录。\n**取值范围:**\n不涉及。"
+        },
+        "zone_type": {
+          "type": "string",
+          "description": "**参数解释:**\n域名类型。\n**取值范围:**\nprivate:内网域名。"
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "**参数解释:**\n该域名下SOA记录中的有效缓存时间,以秒为单位。\n**取值范围:**\n1~2147483647。",
+          "format": "int32"
+        },
+        "serial": {
+          "type": "integer",
+          "description": "**参数解释:**\n该域名下SOA记录中用于标识域名文件变更的序列值,用于主从节点同步。\n该参数暂未使用。\n**取值范围:**\n不涉及。",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n内网域名状态。\n**取值范围:**\n- ACTIVE:正常\n- PENDING_CREATE:创建中\n- PENDING_UPDATE:更新中\n- PENDING_DELETE:删除中\n- PENDING_FREEZE:冻结中\n- FREEZE:冻结\n- ILLEGAL:违规冻结\n- POLICE:公安冻结\n- PENDING_DISABLE:暂停中\n- DISABLE:暂停\n- ERROR:失败"
+        },
+        "record_num": {
+          "type": "integer",
+          "description": "**参数解释:**\n该域名下的记录集个数。\n**取值范围:**\n不涉及。",
+          "format": "int32"
+        },
+        "pool_id": {
+          "type": "string",
+          "description": "**参数解释:**\n托管该域名的pool,由系统分配。\n**取值范围:**\n不涉及。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "**参数解释:**\n域名所属的项目ID。\n**取值范围:**\n不涉及。"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "**参数解释:**\n域名的创建时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "**参数解释:**\n域名的最近一次修改时间。\n格式:yyyy-MM-dd'T'HH:mm:ss.SSS。\n**取值范围:**\n不涉及。"
+        },
+        "links": {
+          "$ref": "#/definitions/pageLink"
+        },
+        "masters": {
+          "type": "array",
+          "description": "**参数解释:**\n主从模式中,从DNS服务器获取DNS信息。\n目前暂未使用。\n**取值范围:**\n不涉及。",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routers": {
+          "type": "array",
+          "description": "**参数解释:**\n与该域名关联的Router(VPC)列表。\n**取值范围:**\n不涉及。",
+          "items": {
+            "$ref": "#/definitions/RouterWithStatus"
+          }
+        }
+      }
+    },
+    "RouterWithStatus": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "**参数解释:**\n关联VPC的状态。\n**取值范围:**\n不涉及。"
+        },
+        "router_id": {
+          "type": "string",
+          "description": "**参数解释:**\n关联VPC的ID。\n**取值范围:**\n不涉及。"
+        },
+        "router_region": {
+          "type": "string",
+          "description": "**参数解释:**\n关联VPC所在的region。\n**取值范围:**\n不涉及。"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {
+    "ZoneIdInPath": {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32,
+      "description": "**参数解释:**\n域名ID。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。"
+    },
+    "X-Auth-Token": {
+      "name": "X-Auth-Token",
+      "in": "header",
+      "description": "**参数解释:**\n用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。\n获取用户Token请参见[获取用户Token](https://support.huaweicloud.com/api-dns/dns_api_30003.html)。\n**约束限制:**\n不涉及。\n**取值范围:**\n不涉及。\n**默认取值:**\n不涉及。",
+      "required": true,
+      "type": "string",
+      "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+    }
+  },
+  "host": "dns.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "patch",
+  "uri": null
+}

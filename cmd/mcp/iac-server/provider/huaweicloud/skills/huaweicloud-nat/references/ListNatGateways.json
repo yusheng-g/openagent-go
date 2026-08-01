@@ -1,0 +1,488 @@
+{
+  "name": "ListNatGateways",
+  "summary": "查询公网NAT网关列表",
+  "tags": "公网NAT网关",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/nat_gateways": {
+      "get": {
+        "tags": [
+          "公网NAT网关"
+        ],
+        "summary": "查询公网NAT网关列表",
+        "description": "查询公网NAT网关实例列表。",
+        "operationId": "ListNatGateways",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n用户Token也就是调用获取用户Token获取请求认证接口的响应值,该接口是唯一不需要认证的接口。\n请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 2,
+            "minLength": 1,
+            "maxLength": 10240
+          },
+          {
+            "name": "tenant_id",
+            "type": "string",
+            "description": "项目的ID。",
+            "in": "query",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "公网NAT网关实例的ID。",
+            "required": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "enterprise_project_id",
+            "in": "query",
+            "description": "企业项目ID。创建公网NAT网关实例时,关联的企业项目ID。",
+            "required": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36,
+            "default": 0
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "公网NAT网关实例的描述,长度范围小于等于255个字符,不能包含“<”和“>”。",
+            "required": false,
+            "type": "string",
+            "x-order": 5,
+            "minLength": 0,
+            "maxLength": 255
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "description": "公网NAT网关实例的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+            "required": false,
+            "type": "string",
+            "format": "date-time",
+            "x-order": 6,
+            "minLength": 1,
+            "maxLength": 36
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "公网NAT网关实例的名字,长度限制为64。\n公网NAT网关实例的名字仅支持数字、字母、_(下划线)、-(中划线)、中文",
+            "required": false,
+            "type": "string",
+            "x-order": 7,
+            "minLength": 1,
+            "maxLength": 64
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "公网NAT网关实例的状态。\n取值为: \n- ACTIVE: 可用\n- PENDING_CREATE: 创建中\n- PENDING_UPDATE: 更新中\n- PENDING_DELETE: 删除中\n- INACTIVE: 不可用",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "PENDING_CREATE",
+                "PENDING_UPDATE",
+                "PENDING_DELETE",
+                "INACTIVE"
+              ]
+            },
+            "x-order": 8,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "spec",
+            "in": "query",
+            "description": "公网NAT网关实例的规格。\n取值为:\n- 1:小型,SNAT最大连接数10000\n- 2:中型,SNAT最大连接数50000\n- 3:大型,SNAT最大连接数200000\n- 4:超大型,SNAT最大连接数1000000\n- 5:企业型,SNAT最大连接数10000000",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            },
+            "x-order": 9,
+            "minItems": 1,
+            "maxItems": 10
+          },
+          {
+            "name": "admin_state_up",
+            "in": "query",
+            "description": "解冻/冻结状态。\n取值范围: \n- true: 解冻\n- false: 冻结",
+            "required": false,
+            "type": "boolean",
+            "x-order": 10
+          },
+          {
+            "name": "internal_network_id",
+            "in": "query",
+            "description": "公网NAT网关下行口(DVR的下一跳)所属的network id。",
+            "required": false,
+            "type": "string",
+            "x-order": 11,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "router_id",
+            "in": "query",
+            "description": "VPC的id。",
+            "required": false,
+            "type": "string",
+            "x-order": 12,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "功能说明:每页返回的个数。\n取值范围:1~2000。\n默认值:2000。",
+            "required": false,
+            "type": "integer",
+            "default": "2000",
+            "x-order": 13,
+            "minimum": 1,
+            "maximum": 2000
+          },
+          {
+            "name": "marker",
+            "in": "query",
+            "description": "分页查询的起始资源ID,表示从指定资源的下一条记录开始查询。\n- 若不传入marker和limit参数,查询结果返回第一页全部资源记录(默认2000条)。\n- 若不传入marker参数,limit为10,查询结果返回第1~10条资源记录。\n- 若marker为第10条记录的资源ID,limit为10,查询结果返回第11~20条资源记录。\n- 若marker为第10条记录的资源ID,不传入limit参数,查询结果返回第11条及之后的资源记录(默认2000条)。",
+            "required": false,
+            "type": "string",
+            "x-order": 14,
+            "minLength": 36,
+            "maxLength": 36
+          },
+          {
+            "name": "sort_key",
+            "in": "query",
+            "description": "排序使用的key",
+            "enum": [
+              "id",
+              "name",
+              "status",
+              "created_at"
+            ],
+            "required": false,
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          {
+            "name": "sort_dir",
+            "in": "query",
+            "description": "返回结果按照升序或降序排列,默认降序desc,升序为asc",
+            "type": "string",
+            "default": "desc",
+            "enum": [
+              "desc",
+              "asc"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询公网NAT网关实例列表成功",
+            "examples": {
+              "application/json": {
+                "nat_gateways": [
+                  {
+                    "id": "a253be25-ae7c-4013-978b-3c0785eccd63",
+                    "router_id": "b1d81744-5165-48b8-916e-e56626feb88f",
+                    "status": "ACTIVE",
+                    "description": "nat01",
+                    "admin_state_up": true,
+                    "tenant_id": "27e25061336f4af590faeabeb7fcd9a3",
+                    "created_at": "2017-11-15 14:50:39.505112",
+                    "spec": "2",
+                    "internal_network_id": "5930796a-6026-4d8b-8790-6c6bfc9f87e8",
+                    "name": "wj3",
+                    "enterprise_project_id": "0aad99bc-f5f6-4f78-8404-c598d76b0ed2",
+                    "billing_info": null,
+                    "dnat_rules_limit": 200,
+                    "snat_rule_public_ip_limit": 20,
+                    "ngport_ip_address": "192.168.0.138",
+                    "session_conf": {
+                      "tcp_session_expire_time": 900,
+                      "udp_session_expire_time": 300,
+                      "icmp_session_expire_time": 10,
+                      "tcp_time_wait_time": 5
+                    }
+                  },
+                  {
+                    "id": "e824f1b4-4290-4ebc-8322-cfff370dbd1e",
+                    "router_id": "305dc52f-13dd-429b-a2d4-444a1039ba0b",
+                    "status": "ACTIVE",
+                    "description": "1234",
+                    "admin_state_up": true,
+                    "tenant_id": "27e25061336f4af590faeabeb7fcd9a3",
+                    "created_at": "2017-11-17 07:41:07.538062",
+                    "spec": "2",
+                    "internal_network_id": "fc09463b-4ef8-4c7a-93c8-92d9ca6daf9d",
+                    "name": "lyl001",
+                    "enterprise_project_id": "0",
+                    "billing_info": null,
+                    "dnat_rules_limit": 200,
+                    "snat_rule_public_ip_limit": 20,
+                    "ngport_ip_address": "192.168.5.210",
+                    "session_conf": {
+                      "tcp_session_expire_time": 900,
+                      "udp_session_expire_time": 300,
+                      "icmp_session_expire_time": 10,
+                      "tcp_time_wait_time": 5
+                    }
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ListNatGatewaysResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "查询公网NAT网关列表",
+        "x-constraint": "可以在URI后面用'?'和'&'添加不同的查询条件组合。支持参数说明中所有非必选参数过滤,请参考请求样例。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 1,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "GET https://{Endpoint}/v2/27e25061336f4af590faeabeb7fcd9a3/nat_gateways?status=ACTIVE",
+        "x-request-examples-1": null,
+        "x-request-examples-text-1": "  ",
+        "x-obc": "N",
+        "x-hybridcloud": "false",
+        "x-publishpath": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "2019/08/30",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "NatGatewayResponseBody": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "公网NAT网关实例的ID。",
+          "example": "14338426-6afe-4019-996b-3a9525296e11",
+          "minLength": 36,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "tenant_id": {
+          "type": "string",
+          "description": "项目的ID。",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "name": {
+          "type": "string",
+          "description": "公网NAT网关实例的名字,长度限制为64。",
+          "example": "nat-name",
+          "minLength": 1,
+          "maxLength": 64,
+          "x-huawei-extraAnnotation": ""
+        },
+        "description": {
+          "type": "string",
+          "description": "公网NAT网关实例的描述,长度范围小于等于255个字符,不能包含“<”和“>”。",
+          "example": "nat-description",
+          "minLength": 0,
+          "maxLength": 255,
+          "x-huawei-extraAnnotation": ""
+        },
+        "spec": {
+          "type": "string",
+          "description": "公网NAT网关的规格。\n取值为:\n- 1:小型,SNAT最大连接数10000\n- 2:中型,SNAT最大连接数50000\n- 3:大型,SNAT最大连接数200000\n- 4:超大型,SNAT最大连接数1000000\n- 5:企业型,SNAT最大连接数10000000",
+          "example": "1",
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "status": {
+          "type": "string",
+          "description": "公网NAT网关实例的状态。\n取值为:  \n- ACTIVE: 可用\n- PENDING_CREATE: 创建中\n- PENDING_UPDATE: 更新中\n- PENDING_DELETE: 删除中\n- INACTIVE: 不可用",
+          "example": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "PENDING_CREATE",
+            "PENDING_UPDATE",
+            "PENDING_DELETE",
+            "INACTIVE"
+          ],
+          "x-huawei-extraAnnotation": ""
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "解冻/冻结状态。\n取值范围: \n- true: 解冻\n- false: 冻结",
+          "x-is_admin": "True"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2019-04-22T08:47:13Z",
+          "description": "公网NAT网关实例的创建时间,遵循UTC时间,格式是yyyy-mm-ddThh:mm:ssZ。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "router_id": {
+          "type": "string",
+          "description": "VPC的id。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "internal_network_id": {
+          "type": "string",
+          "description": "公网NAT网关下行口(DVR的下一跳)所属的network id。",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "企业项目ID。\n创建公网NAT网关实例时,关联的企业项目ID。",
+          "example": "0",
+          "minLength": 1,
+          "maxLength": 36,
+          "x-huawei-extraAnnotation": ""
+        },
+        "session_conf": {
+          "$ref": "#/definitions/SessionConfiguration",
+          "description": "公网NAT网关会话参数配置。"
+        },
+        "ngport_ip_address": {
+          "type": "string",
+          "description": "公网NAT网关私有IP地址,由VPC中子网分配。",
+          "minLength": 7,
+          "maxLength": 15
+        },
+        "billing_info": {
+          "type": "string",
+          "description": "订单信息。此字段只有在订购包周期资源时才会有订单信息,而在订购按需资源时则为空。",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        "dnat_rules_limit": {
+          "type": "integer",
+          "format": "int64",
+          "description": "公网NAT网关下DNAT规则数量限制,默认为200。",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "snat_rule_public_ip_limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "公网NAT网关下SNAT规则EIP池中EIP数量限制,默认为20。",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "pps_max": {
+          "type": "integer",
+          "description": "网关每秒能够接收或发送的数据包数量,代表网络设备的流量处理能力。",
+          "default": 2000000,
+          "minimum": 0,
+          "maximum": 100000000
+        },
+        "bps_max": {
+          "type": "integer",
+          "description": "网关每秒能够接收或发送的带宽大小,代表网络设备的流量处理能力。单位M",
+          "default": 20480,
+          "minimum": 0,
+          "maximum": 102400
+        }
+      },
+      "description": "公网NAT网关实例的响应体。"
+    },
+    "SessionConfiguration": {
+      "properties": {
+        "tcp_session_expire_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TCP会话过期时间。",
+          "minimum": 40,
+          "maximum": 7200
+        },
+        "udp_session_expire_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "UDP会话过期时间。",
+          "minimum": 40,
+          "maximum": 7200
+        },
+        "icmp_session_expire_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "ICMP会话过期时间。",
+          "minimum": 10,
+          "maximum": 7200
+        },
+        "tcp_time_wait_time": {
+          "type": "integer",
+          "format": "int32",
+          "description": "TCP连接关闭时TIME_WAIT状态持续时间。",
+          "minimum": 0,
+          "maximum": 1800
+        }
+      }
+    },
+    "ListNatGatewaysResponseBody": {
+      "properties": {
+        "nat_gateways": {
+          "type": "array",
+          "description": "查询公网NAT网关实例列表的响应体。\n详见NatGateway字段说明。",
+          "items": {
+            "$ref": "#/definitions/NatGatewayResponseBody"
+          },
+          "maxItems": 0,
+          "minItems": 2000
+        }
+      },
+      "description": "查询公网NAT网关实例列表的响应体。"
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

@@ -1,0 +1,83 @@
+{
+  "name": "ListNatGatewaySpecs",
+  "summary": "支持创建的NAT网关规格列表",
+  "tags": "公网NAT网关",
+  "productshort": "NAT",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2/{project_id}/nat_gateway_specs": {
+      "get": {
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "x-open-region-cloud": "hc,hk",
+        "x-first-open-time": "2025/08/30",
+        "x-request-examples-url-1": "GET https://{NAT_endpoint}/v2/27e25061336f4af590faeabeb7fcd9a3/nat_gateway_specs",
+        "operationId": "ListNatGatewaySpecs",
+        "tags": [
+          "公网NAT网关"
+        ],
+        "summary": "支持创建的NAT网关规格列表",
+        "description": "支持创建的NAT网关规格列表。",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目的ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "minLength": 1,
+            "maxLength": 36
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询支持创建的NAT网关规格列表成功。",
+            "schema": {
+              "$ref": "#/definitions/ListNatGatewaySpecsResponseBody"
+            },
+            "examples": {
+              "specs": [
+                "1",
+                "2",
+                "3",
+                "4"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListNatGatewaySpecsResponseBody": {
+      "properties": {
+        "specs": {
+          "type": "array",
+          "description": "可创建的NAT网关实例列表\n取值范围:\n- 1:小型,SNAT最大连接数10000\n- 2:中型,SNAT最大连接数50000\n- 3:大型,SNAT最大连接数200000\n- 4:超大型,SNAT最大连接数1000000\n- 5:企业型,SNAT最大连接数10000000",
+          "items": {
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ]
+          },
+          "maxItems": 20,
+          "minItems": 0
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "nat.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

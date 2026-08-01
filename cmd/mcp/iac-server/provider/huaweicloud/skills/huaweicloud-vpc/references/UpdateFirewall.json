@@ -1,0 +1,429 @@
+{
+  "name": "UpdateFirewall",
+  "summary": "更新网络ACL",
+  "tags": "网络ACL",
+  "productshort": "VPC",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/vpc/firewalls/{firewall_id}": {
+      "put": {
+        "tags": [
+          "网络ACL"
+        ],
+        "summary": "更新网络ACL",
+        "description": "更新网络ACL",
+        "operationId": "UpdateFirewall",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "UpdateFirewallRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateFirewallRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n获取Token,请参考《统一身份认证服务API参考》的“获取用户Token”章节。请求响应成功后在响应消息头中包含的“X-Subject-Token”的值即为Token值。",
+            "required": true,
+            "type": "string",
+            "x-order": 1,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+          },
+          {
+            "name": "firewall_id",
+            "in": "path",
+            "description": "网络ACL的唯一标识",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}",
+            "x-order": 3,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID",
+            "required": true,
+            "type": "string",
+            "pattern": "[0-9a-fA-F]{32}",
+            "x-order": 2,
+            "x-admin": "False",
+            "x-internal": "False",
+            "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+          }
+        ],
+        "deprecated": false,
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "firewall": {
+                  "id": "e9a7731d-5bd9-4250-a524-b9a076fd5629",
+                  "name": "network_acl_test1",
+                  "description": "network_acl_test1",
+                  "project_id": "9476ea5a8a9849c38358e43c0c3a9e12",
+                  "created_at": "2022-04-07T07:30:46",
+                  "updated_at": "2022-04-07T07:30:46",
+                  "admin_state_up": true,
+                  "enterprise_project_id": "158ad39a-dab7-45a3-9b5a-2836b3cf93f9",
+                  "status": "ACTIVE",
+                  "tags": [],
+                  "ingress_rules": [
+                    {
+                      "id": "e9a7731d-5bd9-4250-a524-b9a076fd5629",
+                      "name": "network_acl_rule test",
+                      "description": "network_acl_rule test",
+                      "action": "allow",
+                      "enabled": true,
+                      "project_id": "9476ea5a8a9849c38358e43c0c3a9e12",
+                      "protocol": "tcp",
+                      "ip_version": "4",
+                      "source_ip_address": "192.168.3.0/24",
+                      "destination_ip_address": "192.168.6.0/24",
+                      "source_port": "30-40,60-90",
+                      "destination_port": "40-60,70-90",
+                      "source_address_group_id": null,
+                      "destination_address_group_id": null
+                    }
+                  ],
+                  "egress_rules": [
+                    {
+                      "id": "f9a7731d-5bd9-4250-a524-b9a076fd5629",
+                      "name": "network_acl_rule test",
+                      "description": "network_acl_rule test",
+                      "action": "allow",
+                      "enabled": true,
+                      "project_id": "9476ea5a8a9849c38358e43c0c3a9e12",
+                      "protocol": "tcp",
+                      "ip_version": "4",
+                      "source_ip_address": "192.168.3.0/24",
+                      "destination_ip_address": "192.168.6.0/24",
+                      "source_port": "30-40,60-90",
+                      "destination_port": "40-60,70-90",
+                      "source_address_group_id": null,
+                      "destination_address_group_id": null
+                    }
+                  ],
+                  "associations": [
+                    {
+                      "virsubnet_id": "8359e5b0-353f-4ef3-a071-98e67a34a143"
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateFirewallResponseBody"
+            }
+          }
+        },
+        "x-name": "更新网络ACL",
+        "x-constraint": "",
+        "x-scope": "Commercial",
+        "x-order": 4,
+        "x-request-examples-description-1": "更新id为e9a7731d-5bd9-4250-a524-b9a076fd5629的网络ACL,名称更新为network_acl_test1,描述更新为network_acl_test1,开启ACL。",
+        "x-request-examples-url-1": "PUT https://{Endpoint}/v3/9476ea5a8a9849c38358e43c0c3a9e12/vpc/firewalls/e9a7731d-5bd9-4250-a524-b9a076fd5629",
+        "x-request-examples-1": {
+          "firewall": {
+            "name": "network_acl_test1",
+            "description": "network_acl_test1",
+            "admin_state_up": true
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"firewall\": {\n        \"name\": \"network_acl_test1\",\n        \"description\": \"network_acl_test1\",\n        \"admin_state_up\": true\n    }\n}",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-support-sdk": "Y",
+        "x-first-open-time": "",
+        "x-open-region-cloud": "hc,hk,g42",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "UpdateFirewallRequestBody": {
+      "required": [
+        "firewall"
+      ],
+      "properties": {
+        "firewall": {
+          "description": "更新ACL的请求体",
+          "$ref": "#/definitions/UpdateFirewallOption",
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "dry_run": {
+          "type": "boolean",
+          "description": "功能说明:是否只预检此次请求\n取值范围:\n-true:发送检查请求,不会更新网络ACL。检查项包括是否填写了必需参数、请求格式、业务限制。如果检查不通过,则返回对应错误。如果检查通过,则返回响应码202。\n-false(默认值):发送正常请求,并直接更新网络ACL。",
+          "x-admin": "False",
+          "x-internal": "False"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "UpdateFirewallResponseBody": {
+      "required": [
+        "firewall",
+        "request_id"
+      ],
+      "properties": {
+        "firewall": {
+          "description": "更新ACL响应体",
+          "$ref": "#/definitions/FirewallDetail"
+        },
+        "request_id": {
+          "type": "string",
+          "description": "请求ID"
+        }
+      },
+      "description": "This is a auto create Response Object"
+    },
+    "ResourceTag": {
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "功能说明:标签键\n约束:同一资源的key值不能重复。",
+          "minLength": 1,
+          "maxLength": 128,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        },
+        "value": {
+          "type": "string",
+          "description": "功能说明:标签值",
+          "maxLength": 255,
+          "x-admin": "False",
+          "x-internal": "False",
+          "x-open-region-cloud": "hc,hk,otc,tlf,ctc,hcso"
+        }
+      },
+      "description": ""
+    },
+    "FirewallAssociation": {
+      "required": [
+        "virsubnet_id"
+      ],
+      "properties": {
+        "virsubnet_id": {
+          "type": "string",
+          "description": "功能说明:ACL绑定的子网ID"
+        }
+      },
+      "description": ""
+    },
+    "FirewallDetail": {
+      "required": [
+        "admin_state_up",
+        "associations",
+        "created_at",
+        "description",
+        "egress_rules",
+        "enterprise_project_id",
+        "id",
+        "ingress_rules",
+        "name",
+        "project_id",
+        "status",
+        "tags",
+        "type",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:ACL唯一标识\n取值范围:合法UUID的字符串"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:ACL名称\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:ACL描述信息\n取值范围:0-255个字符\n约束:不能包含“<”和“>”。"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:资源所属项目ID"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "功能说明:ACL创建时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss;系统自动生成"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "功能描述:ACL最近一次更新资源的时间\n取值范围:UTC时间格式:yyyy-MM-ddTHH:mm:ss;系统自动生成"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:ACL是否开启\n取值范围:true表示ACL开启;false表示ACL关闭"
+        },
+        "status": {
+          "type": "string",
+          "description": "功能说明:网络ACL的状态"
+        },
+        "enterprise_project_id": {
+          "type": "string",
+          "description": "功能说明:ACL企业项目ID。\n取值范围:最大长度36字节,带“-”连字符的UUID格式,或者是字符串“0”。“0”表示默认企业项目。"
+        },
+        "tags": {
+          "type": "array",
+          "description": "功能描述:ACL资源标签",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/ResourceTag"
+          }
+        },
+        "associations": {
+          "type": "array",
+          "description": "功能说明:ACL绑定的子网列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/FirewallAssociation"
+          }
+        },
+        "ingress_rules": {
+          "type": "array",
+          "description": "功能说明:ACL入方向规则列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/FirewallRuleDetail"
+          }
+        },
+        "egress_rules": {
+          "type": "array",
+          "description": "功能说明:ACL出方向规则列表",
+          "items": {
+            "description": "",
+            "$ref": "#/definitions/FirewallRuleDetail"
+          }
+        },
+        "type": {
+          "type": "string",
+          "description": "参数解释:\n网络ACL支持绑定的子网类型。\n取值范围:\nnormal:默认值,表示网络ACL支持绑定普通子网。\nCloudDCN:表示网络ACL支持绑定CloudDCN子网。",
+          "x-open-region-cloud": "hc,hk"
+        }
+      },
+      "description": ""
+    },
+    "UpdateFirewallOption": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "功能说明:ACL名称\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:ACL描述信息\n取值范围:0-255个字符\n约束:不能包含“<”和“>”"
+        },
+        "admin_state_up": {
+          "type": "boolean",
+          "description": "功能说明:ACL是否开启\n取值范围:true表示ACL开启;false表示ACL关闭"
+        }
+      },
+      "description": ""
+    },
+    "FirewallRuleDetail": {
+      "required": [
+        "action",
+        "description",
+        "destination_address_group_id",
+        "destination_ip_address",
+        "destination_port",
+        "enabled",
+        "id",
+        "ip_version",
+        "name",
+        "project_id",
+        "protocol",
+        "source_address_group_id",
+        "source_ip_address",
+        "source_port"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "功能说明:ACL规则唯一标识\n取值范围:合法UUID的字符串"
+        },
+        "name": {
+          "type": "string",
+          "description": "功能说明:ACL规则名称\n取值范围:0-64个字符,支持数字、字母、中文、_(下划线)、-(中划线)、.(点)"
+        },
+        "description": {
+          "type": "string",
+          "description": "功能说明:ACL规则描述信息\n取值范围:0-255个字符\n约束:不能包含“<”和“>”。"
+        },
+        "action": {
+          "type": "string",
+          "description": "功能说明:ACL规则对流量执行的操作放通或拒绝\n取值范围:allow放通;deny拒绝"
+        },
+        "project_id": {
+          "type": "string",
+          "description": "功能说明:资源所属项目ID"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "功能说明:ACL规则协议\n取值范围:支持TCP,UDP,ICMP, ICMPV6或者IP协议号(0-255)"
+        },
+        "ip_version": {
+          "type": "integer",
+          "format": "int32",
+          "description": "功能说明:ACL规则的ip版本\n取值范围:4, 表示ipv4;6, 表示ipv6"
+        },
+        "source_ip_address": {
+          "type": "string",
+          "description": "功能说明:ACL规则源IP地址或者CIDR\n约束:source_ip_address和source_address_group_id不能同时设置"
+        },
+        "destination_ip_address": {
+          "type": "string",
+          "description": "功能说明:ACL规则目的IP地址或者CIDR\n约束:destination_ip_address和destination_address_group_id不能同时设置"
+        },
+        "source_port": {
+          "type": "string",
+          "description": "功能说明:ACL规则的源端口\n取值范围:支持端口号,一段端口范围,多个以逗号分隔\n约束:支持的端口组的数量默认为20"
+        },
+        "destination_port": {
+          "type": "string",
+          "description": "功能说明:ACL规则的目的端口\n取值范围:支持端口号,一段端口范围,多个以逗号分隔\n约束:支持的端口组的数量默认为20"
+        },
+        "source_address_group_id": {
+          "type": "string",
+          "description": "功能说明:ACL规则的源地址组ID\n约束:source_ip_address和source_address_group_id不能同时设置"
+        },
+        "destination_address_group_id": {
+          "type": "string",
+          "description": "功能说明:ACL规则的目的地址组ID\n约束:destination_ip_address和destination_address_group_id不能同时设置"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "功能说明:是否启用ACL规则。\n取值范围:true,表示启用;false,表示停用。\n默认值:true。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "vpc.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

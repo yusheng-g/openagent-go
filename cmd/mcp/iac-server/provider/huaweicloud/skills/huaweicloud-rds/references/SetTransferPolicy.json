@@ -1,0 +1,115 @@
+{
+  "name": "SetTransferPolicy",
+  "summary": "设置自动转储策略",
+  "tags": "备份与恢复",
+  "productshort": "RDS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v3/{project_id}/instances/{instance_id}/backups/transfer/policy": {
+      "put": {
+        "x-request-examples-url-1": "/v3/{project_id}/instances/{instance_id}/backups/transfer/policys",
+        "x-request-examples-description-1": "设置转储策略示例",
+        "x-request-examples-text-1": "{\"policy\":[{\"prefix\":\"aaa/\",\n\"destination\":\"xxxbucket\",\n\"period\":\"* * 1,2,3,4,5,6,7\",\n\"backup_type\" :\"db\"}, {\"prefix\":\"aaa/\",\n\"destination:\"xxxbucket\",\n\"period\":\"* * 1,2,3,4,5,6,7\",\n\"backup_type\" :\"log\"}]\n}\n",
+        "x-request-examples-1": "{\"policy\":[{\"prefix\":\"aaa/\",\n\"destination\":\"xxxbucket\",\n\"period\":\"* * 1,2,3,4,5,6,7\",\n\"backup_type\" :\"db\"}, {\"prefix\":\"aaa/\",\n\"destination:\"xxxbucket\",\n\"period\":\"* * 1,2,3,4,5,6,7\",\n\"backup_type\" :\"log\"}]\n}\n",
+        "x-is-registered": "Y",
+        "x-api-type": "open-api",
+        "x-support-sdk": "Y",
+        "tags": [
+          "备份与恢复"
+        ],
+        "summary": "设置自动转储策略",
+        "description": "设置自动转储策略",
+        "operationId": "SetTransferPolicy",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "项目id"
+          },
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "实例id"
+          },
+          {
+            "name": "SetTransferPolicyRequestBody",
+            "in": "body",
+            "required": false,
+            "description": "设置转储策略请求体",
+            "schema": {
+              "$ref": "#/definitions/SetTransferPolicyRequestBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "TransferPolicyParam": {
+      "type": "object",
+      "description": "转储策略信息",
+      "required": [
+        "destination",
+        "period",
+        "backup_type"
+      ],
+      "properties": {
+        "prefix": {
+          "type": "string",
+          "description": "转储目标前缀",
+          "maxLength": 128
+        },
+        "destination": {
+          "type": "string",
+          "description": "转储目标桶",
+          "maxLength": 128
+        },
+        "period": {
+          "type": "string",
+          "description": "自动转储周期",
+          "example": "\"* * 1,2,3,4,5,6,7\""
+        },
+        "backup_type": {
+          "type": "string",
+          "description": "转储备份类型, db:自动备份 log:增量备份, snapshot:手动备份\nsnapshot:手动备份\ndb:自动备份\nlog:日志备份",
+          "enum": [
+            "db",
+            "log"
+          ]
+        }
+      }
+    },
+    "SetTransferPolicyRequestBody": {
+      "type": "object",
+      "description": "转储策略请求体",
+      "properties": {
+        "policy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransferPolicyParam"
+          },
+          "description": "自动转储策略"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "rds.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v3",
+  "method": "put",
+  "uri": null
+}

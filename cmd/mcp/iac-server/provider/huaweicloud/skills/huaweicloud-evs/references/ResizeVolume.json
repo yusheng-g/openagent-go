@@ -1,0 +1,208 @@
+{
+  "name": "ResizeVolume",
+  "summary": "扩容云硬盘",
+  "tags": "云硬盘",
+  "productshort": "EVS",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v2.1/{project_id}/cloudvolumes/{volume_id}/action": {
+      "post": {
+        "tags": [
+          "云硬盘"
+        ],
+        "summary": "扩容云硬盘",
+        "description": "对按需或者包周期云硬盘进行扩容。\n在扩容包周期云硬盘的场景下:\n- 如果您需要查看订单可用的优惠券,请参考\"[查询订单可用优惠券](https://support.huaweicloud.com/api-oce/zh-cn_topic_0092953630.html)\"。\n- 如果您需要支付订单,请参考\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/zh-cn_topic_0075746561.html)\"。\n- 如果您需要查询订单的资源开通详情,请参考\"[查询订单的资源开通详情](https://support.huaweicloud.com/api-oce/api_order_00001.html)\"。\n- 如果您需要退订该包周期资源,请参考“[退订包周期资源](https://support.huaweicloud.com/api-oce/zh-cn_topic_0082522030.html)”。",
+        "operationId": "ResizeVolume",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ResizeVolumeRequestBody",
+            "description": "This is a auto create Body Object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResizeVolumeRequestBody"
+            }
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "用户Token。\n通过调用IAM服务获取用户Token接口获取(响应消息头中X-Subject-Token的值)。",
+            "required": true,
+            "type": "string",
+            "x-order": 1
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "项目ID。\n获取方法请参见\"[获取项目ID](https://support.huaweicloud.com/api-evs/evs_04_0046.html)\"。",
+            "required": true,
+            "type": "string",
+            "x-order": 2
+          },
+          {
+            "name": "volume_id",
+            "in": "path",
+            "description": "云硬盘ID。",
+            "required": true,
+            "type": "string",
+            "x-order": 3
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "examples": {
+              "application/json": {
+                "job_id": "70a599e0-31e7-49b7-b260-868f441e862b"
+              },
+              "application/json-1": {
+                "order_id": "CS1711152257C60TL"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ResizeVolumeResponseBody"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "message": "XXXX",
+                  "code": "XXX"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseBody"
+            }
+          }
+        },
+        "deprecated": false,
+        "x-name": "扩容云硬盘",
+        "x-constraint": "* 扩容状态为available的云硬盘时,没有约束限制。\n* 扩容状态为in-use的云硬盘时,有以下约束:\n    * 不支持共享云硬盘,即multiattach参数值必须为false。\n    * 云硬盘所挂载的云服务器状态必须为ACTIVE、PAUSED、SUSPENDED、SHUTOFF才支持扩容。",
+        "x-version": "v2",
+        "x-scope": "Commercial",
+        "x-order": 3,
+        "x-request-examples-description-1": "",
+        "x-request-examples-url-1": "POST https://{endpoint}/v2.1/{project_id}/cloudvolumes/{volume_id}/action",
+        "x-request-examples-1": {
+          "os-extend": {
+            "new_size": 100
+          },
+          "bssParam": {
+            "isAutoPay": "true"
+          }
+        },
+        "x-request-examples-text-1": "{\n    \"os-extend\": {\n        \"new_size\": 100\n    }, \n    \"bssParam\": {\n        \"isAutoPay\": \"true\"\n    }\n}\n",
+        "x-publishpath": "",
+        "x-hybridcloud": "",
+        "x-source": "SelfDeveloped",
+        "x-first-open-time": "2017/9/30",
+        "x-support-sdk": "Y",
+        "x-open-region-cloud": "hc,hk",
+        "x-apiexplorer-hide": "false",
+        "x-is-registered": "Y"
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "出现错误时,返回的错误码。\n错误码和其对应的含义请[参考错误码说明](https://support.huaweicloud.com/api-evs/evs_04_0038.html)。"
+        },
+        "message": {
+          "type": "string",
+          "description": "错误提示信息。"
+        }
+      },
+      "description": "出现错误时,返回的错误信息。"
+    },
+    "BssParamForResizeVolume": {
+      "properties": {
+        "isAutoPay": {
+          "type": "string",
+          "description": "功能说明:是否立即支付。该参数只有在云硬盘为包周期的情况下有意义。默认值为false\n取值范围:\n* true:立即支付,从帐户余额中自动扣费\n* false:不立即支付,创建订单暂不支付",
+          "enum": [
+            "false",
+            "true"
+          ],
+          "default": "false"
+        }
+      },
+      "description": "包周期扩容计费策略参数。"
+    },
+    "ErrorResponseBody": {
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "出现错误时,返回的错误信息",
+          "$ref": "#/definitions/Error"
+        }
+      },
+      "description": "错误信息。"
+    },
+    "OsExtend": {
+      "required": [
+        "new_size"
+      ],
+      "properties": {
+        "new_size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "扩容后的云硬盘大小,单位为GB。扩容的大小必须大于原有云硬盘容量且小于云硬盘最大容量。\n云硬盘最大容量:\n* 数据盘:32768GB\n* 系统盘:1024GB"
+        }
+      },
+      "description": ""
+    },
+    "ResizeVolumeRequestBody": {
+      "required": [
+        "os-extend"
+      ],
+      "properties": {
+        "bssParam": {
+          "example": "{         \"chargingMode\": \"prePaid\",          \"isAutoPay\": \"true\"     }",
+          "description": "按需和包周期的扩展参数。",
+          "$ref": "#/definitions/BssParamForResizeVolume"
+        },
+        "os-extend": {
+          "example": "{        \"new_size\": 100    }",
+          "description": "标记扩容云硬盘操作。",
+          "$ref": "#/definitions/OsExtend"
+        }
+      },
+      "description": "This is a auto create Body Object"
+    },
+    "ResizeVolumeResponseBody": {
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "任务ID,云硬盘为按需计费时返回该参数。\n> 说明:\n> \n> 如果需要查询job的状态,请参考:\"[查询job的状态](https://support.huaweicloud.com/api-evs/evs_04_0054.html)\"。",
+          "x-huawei-extraAnnotation": ""
+        },
+        "order_id": {
+          "type": "string",
+          "description": "订单ID,云硬盘为包周期计费时返回该参数。\n> 说明:\n> \n> - 如果您需要支付订单,请参考:\"[支付包周期产品订单](https://support.huaweicloud.com/api-oce/zh-cn_topic_0075746561.html)\"。"
+        }
+      },
+      "description": ""
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "evs.ae-ad-1.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "post",
+  "uri": null
+}

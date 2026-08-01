@@ -1,0 +1,253 @@
+{
+  "name": "ListPartnerAdjustRecords",
+  "summary": "查询调账记录",
+  "tags": "管理客户账户(伙伴)",
+  "productshort": "BSS",
+  "region_id": "cn-north-1",
+  "paths": {
+    "/v3/accounts/partner-accounts/adjust-records": {
+      "get": {
+        "summary": "查询调账记录",
+        "description": "伙伴在伙伴销售平台查询向客户及关联的云经销商(二级经销商)拨款或回收的调账记录。\n\n伙伴登录伙伴中心,在“拨款”或“回收”页面,单击“调账记录”,可以查看一级经销商为二级经销商调账的记录。",
+        "tags": [
+          "管理客户账户(伙伴)"
+        ],
+        "operationId": "ListPartnerAdjustRecords",
+        "x-constraint": "该接口只允许使用合作伙伴AK/SK或者Token调用。当伙伴查询非其名下云经销商的子客户、垫付子客户、推荐子客户调账记录时,HTTP状态码为200,响应为空。",
+        "x-externalURL": "/v3/accounts/partner-accounts/adjust-records",
+        "x-open-region-cloud": "hc",
+        "x-flowControl": 20,
+        "x-lastAnalysisDate": "2021-08-26",
+        "x-readOnly": true,
+        "x-delayTime": "1000ms",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "description": "合作伙伴Token调用",
+            "type": "string",
+            "x-example": "MIIDkgYJKoZIhvcNAQcCoIIDgzCCXXXXXX..."
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "description": "客户账号ID。您可以调用[查询客户列表](https://support.huaweicloud.com/api-bpconsole/mc_00021.html)获取customer_id。为空表示查询所有的调账记录。不为空表示仅查询与该客户相关的调账记录。此参数不携带或携带值为空时,默认查询所有客户的调账记录。 说明: 此处的客户包含伙伴的子客户,以及华为云总经销商关联的云经销商(二级经销商)。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "05f2c7aa8400d50d0f2bc002c46e3020",
+            "x-allowNull": false
+          },
+          {
+            "name": "operation_type",
+            "in": "query",
+            "required": false,
+            "description": "操作类型。SOURCE_OPERATION_BEADJUST:拨款,SOURCE_OPERATION_BERETRIEVE:回收,SOURCE_OPERATION_BEUNBIND:解绑回收,此参数不携带或携带值为空时,默认查询所有类型。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "SOURCE_OPERATION_BEADJUST",
+            "x-allowNull": false
+          },
+          {
+            "name": "operation_time_begin",
+            "in": "query",
+            "required": false,
+            "description": "调账起始时间。UTC时间,格式为:2016-03-28T14:45:38Z。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2021-08-24T00:00:00Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "operation_time_end",
+            "in": "query",
+            "required": false,
+            "description": "调账截止时间。UTC时间,格式为:2016-03-28T14:45:38Z。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 20,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "2021-08-25T00:00:00Z",
+            "x-allowNull": false
+          },
+          {
+            "name": "trans_id",
+            "in": "query",
+            "required": false,
+            "description": "事务ID。此参数不携带或携带值为空时,不作为筛选条件。",
+            "x-maxLength": 128,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "AD2021082411140208f4fa",
+            "x-allowNull": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "偏移量,从0开始。默认值为0。 说明: offset用于分页处理,如不涉及分页,请使用默认值0。offset表示相对于满足条件的第一个数据的偏移量。如offset = 1,则返回满足条件的第二个数据至最后一个数据。例如,满足查询条件的结果共10条数据,limit取值为10,offset取值为1,则返回的数据为2~10,第一条数据不返回。",
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "0",
+            "x-allowNull": true,
+            "default": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "每页的显示条数。默认值为10。",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "x-example": "10",
+            "x-allowNull": true,
+            "default": 10
+          },
+          {
+            "name": "indirect_partner_id",
+            "in": "query",
+            "required": false,
+            "description": "云经销商ID。获取方法请参见[查询云经销商列表](https://support.huaweicloud.com/api-bpconsole/espp_00003.html)。华为云总经销商(一级经销商)查询云经销商(二级经销商)的子客户调账记录时,需携带此参数;除此之外,此参数不做处理。否则只能查询自己的子客户调账记录。",
+            "x-maxLength": 64,
+            "x-minLength": 0,
+            "type": "string",
+            "x-example": "0c1de2afca00d4d20f5ec011e6417760",
+            "x-allowNull": false,
+            "x-site": "HC"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询调账记录响应",
+            "schema": {
+              "$ref": "#/definitions/ListPartnerAdjustRecordsRsp"
+            },
+            "examples": {
+              "application/json": {
+                "total_count": 352,
+                "records": [
+                  {
+                    "customer_id": "0549d1c9de00d50e0fe9c00f8d684880",
+                    "customer_name": "groot_cn_subbp24",
+                    "operation_type": "SOURCE_OPERATION_BEADJUST",
+                    "amount": "671.0",
+                    "currency": "CNY",
+                    "apply_scene": null,
+                    "operation_time": "2020-06-15T04:21:49Z",
+                    "measure_id": 1,
+                    "trans_id": "AD2020061504210203c128"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误 |CBC.0100:参数错误||CBC.99000037:您没有操作该云经销商的权限|"
+          }
+        },
+        "x-category": "管理客户账户(伙伴)",
+        "x-support-sdk": "Y",
+        "x-is-registered": "Y",
+        "x-request-examples-url-1": "GET https://bss.myhuaweicloud.com/v3/accounts/partner-accounts/adjust-records?indirect_partner_id=051a8a834180d3fb0f25c006b1998800&offset=0&limit=10&operation_type=SOURCE_OPERATION_BEADJUST&customer_id=051a8a834180d3fb0f25c006b1998801&operation_time_begin=2016-03-28T14:45:38Z&operation_time_end=2016-03-28T14:45:38Z&trans_id=AD2020061504210203c128"
+      }
+    }
+  },
+  "definitions": {
+    "ListPartnerAdjustRecordsRsp": {
+      "properties": {
+        "records": {
+          "description": "调账记录列表。 具体请参见表2。",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AdjustRecordV3"
+          }
+        },
+        "total_count": {
+          "description": "返回总条数。",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": true,
+          "example": 1
+        }
+      }
+    },
+    "AdjustRecordV3": {
+      "properties": {
+        "customer_id": {
+          "type": "string",
+          "description": "客户账号ID。",
+          "example": "05f2c7aa8400d50d0f2bc002c46e3020"
+        },
+        "customer_name": {
+          "type": "string",
+          "description": "客户名称。",
+          "example": "erji_xiejjtj02"
+        },
+        "operation_type": {
+          "type": "string",
+          "description": "调账类型。 SOURCE_OPERATION_BEADJUST:拨款SOURCE_OPERATION_BERETRIEVE:回收SOURCE_OPERATION_BEUNBIND:解绑回收",
+          "example": "SOURCE_OPERATION_BEADJUST"
+        },
+        "amount": {
+          "type": "string",
+          "description": "调账的总金额。",
+          "example": "3000"
+        },
+        "currency": {
+          "type": "string",
+          "description": "币种。 CNY:人民币",
+          "example": "CNY"
+        },
+        "apply_scene": {
+          "type": "string",
+          "description": "使用场景。",
+          "example": ""
+        },
+        "operation_time": {
+          "type": "string",
+          "description": "调账操作的时间。 UTC时间,格式为:2016-03-28T14:45:38Z",
+          "example": "2021-08-24T11:14:03Z"
+        },
+        "measure_id": {
+          "description": "调账单位。 1:元",
+          "type": "integer",
+          "format": "int32",
+          "x-allowNull": false,
+          "example": 1
+        },
+        "trans_id": {
+          "type": "string",
+          "description": "事务ID。",
+          "example": "AD2021082411140208f4fa"
+        },
+        "memo": {
+          "type": "string",
+          "description": "备注。",
+          "maxLength": 512,
+          "minLength": 0,
+          "example": "example"
+        }
+      }
+    }
+  },
+  "version": "2.0",
+  "parameters": {},
+  "host": "bss.myhuaweicloud.com",
+  "base_path": "/",
+  "info_version": "v2",
+  "method": "get",
+  "uri": null
+}

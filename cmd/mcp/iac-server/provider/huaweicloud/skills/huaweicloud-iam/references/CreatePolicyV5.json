@@ -1,0 +1,115 @@
+{
+  "name": "CreatePolicyV5",
+  "summary": "创建自定义身份策略",
+  "tags": "身份策略管理",
+  "productshort": "IAM",
+  "region_id": "ae-ad-1",
+  "paths": {
+    "/v5/policies": {
+      "post": {
+        "tags": [
+          "Policy"
+        ],
+        "operationId": "CreatePolicyV5",
+        "security": [
+          {
+            "apig-auth-iam-used-authn5": []
+          }
+        ],
+        "summary": "创建自定义身份策略",
+        "description": "该接口可以用于创建一个默认版本为v1的新自定义身份策略。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePolicyReqBody"
+              },
+              "example": {
+                "policy_name": "name",
+                "path": "",
+                "policy_document": "{\"Version\":\"5.0\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"*\"]}]}",
+                "description": "description"
+              }
+            }
+          }
+        },
+        "x-request-examples-description-1": "创建一个名为name的新自定义身份策略。",
+        "x-request-examples-url-1": "POST https://{endpoint}/v5/policies",
+        "x-request-examples-1": {
+          "policy_name": "name",
+          "path": "",
+          "policy_document": "{\"Version\":\"5.0\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"*\"]}]}",
+          "description": "description"
+        },
+        "x-is-registered": "Y",
+        "x-support-sdk": "Y",
+        "x-apiexplorer-hide": "N",
+        "responses": {
+          "201": {
+            "description": "请求成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePolicyResp"
+                },
+                "example": {
+                  "policy": {
+                    "policy_type": "custom",
+                    "policy_name": "name",
+                    "policy_id": "string",
+                    "urn": "iam::accountid:policy:name",
+                    "path": "",
+                    "default_version_id": "v1",
+                    "attachment_count": 0,
+                    "description": "description",
+                    "created_at": "2023-09-25T07:49:11.582Z",
+                    "updated_at": "2023-09-25T07:49:11.582Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求体异常。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResp"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有操作权限。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenErrorResp"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "请求冲突。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConflictErrorResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": null,
+  "version": "3.0.3",
+  "parameters": null,
+  "host": "iam.ae-ad-1.myhuaweicloud.com",
+  "base_path": null,
+  "info_version": "v5",
+  "method": "post",
+  "uri": null
+}
