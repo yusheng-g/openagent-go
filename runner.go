@@ -22,6 +22,7 @@ type runner struct {
 	agent *Agent
 
 	// Cached state
+	skillsMu     sync.RWMutex         // protects skills and loadedSkills
 	skills       []SkillInfo          // Discover result, refreshed by reload_skills
 	loadedSkills map[string]string    // name → body, populated by load_skill
 	builtinTools []FunctionDefinition // auto-injected tools (load_skill, reload_skills)
@@ -74,8 +75,10 @@ func (r *runner) run(ctx context.Context, session Session, prefix []Message, inp
 	// Init: cache skills if loader present
 	if r.agent.SkillLoader != nil {
 		skills, _ := r.agent.SkillLoader.Discover(ctx)
+		r.skillsMu.Lock()
 		r.skills = skills
 		r.loadedSkills = make(map[string]string)
+		r.skillsMu.Unlock()
 		r.builtinTools = builtinSkillToolDefs()
 	}
 	if r.agent.Memory != nil {
@@ -637,12 +640,14 @@ func (r *runner) estimatePromptOverhead(ctx context.Context, session Session, mo
 	}
 
 	// Dynamic context — same assembly order as buildPrompt.
+	r.skillsMu.RLock()
 	if len(r.skills) > 0 {
 		n += tokenizer.Count(modelID, buildSkillsSection(r.skills)) + 4
 	}
 	for name, body := range r.loadedSkills {
 		n += tokenizer.Count(modelID, "## Loaded Skill: "+name+"\n\n"+body) + 4
 	}
+	r.skillsMu.RUnlock()
 	if session.DynamicContext != "" {
 		n += tokenizer.Count(modelID, session.DynamicContext) + 4
 	}
@@ -684,6 +689,7 @@ Date: %s
 `, runtime.GOOS, runtime.GOARCH, time.Now().Format("2006-01-02")))
 
 	// Skills catalog + loaded skill bodies.
+	r.skillsMu.RLock()
 	if len(r.skills) > 0 {
 		dynamicParts = append(dynamicParts, buildSkillsSection(r.skills))
 	} else {
@@ -696,6 +702,7 @@ Date: %s
 	for name, body := range r.loadedSkills {
 		dynamicParts = append(dynamicParts, "## Loaded Skill: "+name+"\n\n"+body)
 	}
+	r.skillsMu.RUnlock()
 
 	// ACP / plan-mode context (injected by Session.DynamicContext).
 	if session.DynamicContext != "" {
@@ -1436,7 +1443,9 @@ func (r *runner) executeLoadSkill(ctx context.Context, call ToolCall) Message {
 	}
 
 	// Idempotent: return cached
+	r.skillsMu.RLock()
 	if body, ok := r.loadedSkills[args.Name]; ok {
+		r.skillsMu.RUnlock()
 		return Message{Role: RoleTool, ToolCallID: call.ID, Content: body}
 	}
 
@@ -1450,6 +1459,7 @@ func (r *runner) executeLoadSkill(ctx context.Context, call ToolCall) Message {
 			break
 		}
 	}
+	r.skillsMu.RUnlock()
 	if !found {
 		return Message{
 			Role:       RoleTool,
@@ -1468,7 +1478,9 @@ func (r *runner) executeLoadSkill(ctx context.Context, call ToolCall) Message {
 	}
 
 	full := "**Directory:** " + info.Path + "\n\n" + body
+	r.skillsMu.Lock()
 	r.loadedSkills[args.Name] = full
+	r.skillsMu.Unlock()
 
 	return Message{Role: RoleTool, ToolCallID: call.ID, Content: full}
 }
@@ -1483,6 +1495,7 @@ func (r *runner) executeReloadSkills(ctx context.Context, call ToolCall) Message
 		}
 	}
 
+	r.skillsMu.Lock()
 	r.skills = skills
 
 	// Prune loaded skills that have been removed from disk
@@ -1504,6 +1517,7 @@ func (r *runner) executeReloadSkills(ctx context.Context, call ToolCall) Message
 		}
 		summary += fmt.Sprintf(", %d loaded: %v", len(r.loadedSkills), names)
 	}
+	r.skillsMu.Unlock()
 
 	return Message{Role: RoleTool, ToolCallID: call.ID, Content: summary}
 }

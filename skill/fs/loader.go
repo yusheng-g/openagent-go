@@ -26,51 +26,74 @@ import (
 	openagent "github.com/yusheng-g/openagent-go"
 )
 
-// Loader discovers and loads skills from a directory tree.
+// Loader discovers and loads skills from one or more directory trees.
+// When multiple roots are given, Discover scans them in order and skills
+// in later roots override same-name skills from earlier roots (the
+// earlier entry keeps its position in the result, only its content is
+// replaced). This lets a project-level root (<cwd>/.agents/skills) take
+// priority over a user-level root (~/.agents/skills) when the project
+// root is passed last.
 type Loader struct {
-	root string
+	roots []string
 }
 
-// New creates a Loader rooted at the given directory.
-func New(root string) *Loader {
-	return &Loader{root: root}
+// New creates a Loader rooted at the given directories. With a single
+// root it behaves as a classic single-tree loader; passing multiple
+// roots enables the override semantics described on Loader.
+func New(roots ...string) *Loader {
+	return &Loader{roots: roots}
 }
 
-// Discover scans root for subdirectories containing SKILL.md, reads each
-// file's YAML frontmatter, and returns a SkillInfo for each valid skill.
-// Skills missing name or description are skipped.
+// Discover scans each root for subdirectories containing SKILL.md, reads
+// each file's YAML frontmatter, and returns a SkillInfo for each valid
+// skill. Roots are processed in order; a skill from a later root with
+// the same name as one from an earlier root replaces the earlier entry
+// in place (preserving its position), while skills with new names are
+// appended. Skills missing name or description are skipped. A root that
+// cannot be read is treated as empty rather than failing the whole call.
 func (l *Loader) Discover(ctx context.Context) ([]openagent.SkillInfo, error) {
-	entries, err := os.ReadDir(l.root)
-	if err != nil {
-		return nil, fmt.Errorf("read skills dir: %w", err)
-	}
-
 	var skills []openagent.SkillInfo
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
-		}
-		skillDir := filepath.Join(l.root, entry.Name())
-		mdPath := filepath.Join(skillDir, "SKILL.md")
+	indexByName := make(map[string]int)
 
-		fm, body, err := parseFrontmatter(mdPath)
+	for _, root := range l.roots {
+		entries, err := os.ReadDir(root)
 		if err != nil {
+			// Missing/unreadable root contributes nothing.
 			continue
 		}
+		for _, entry := range entries {
+			if !entry.IsDir() {
+				continue
+			}
+			skillDir := filepath.Join(root, entry.Name())
+			mdPath := filepath.Join(skillDir, "SKILL.md")
 
-		name, _ := fm["name"].(string)
-		desc, _ := fm["description"].(string)
-		if name == "" || desc == "" {
-			continue
+			fm, body, err := parseFrontmatter(mdPath)
+			if err != nil {
+				continue
+			}
+
+			name, _ := fm["name"].(string)
+			desc, _ := fm["description"].(string)
+			if name == "" || desc == "" {
+				continue
+			}
+
+			info := openagent.SkillInfo{
+				Name:        name,
+				Description: desc,
+				Frontmatter: fm,
+				Path:        skillDir,
+			}
+			_ = body
+
+			if idx, ok := indexByName[name]; ok {
+				skills[idx] = info // override in place, keep position
+			} else {
+				indexByName[name] = len(skills)
+				skills = append(skills, info)
+			}
 		}
-
-		skills = append(skills, openagent.SkillInfo{
-			Name:        name,
-			Description: desc,
-			Frontmatter: fm,
-			Path:        skillDir,
-		})
-		_ = body
 	}
 
 	return skills, nil

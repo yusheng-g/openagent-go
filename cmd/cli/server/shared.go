@@ -248,32 +248,52 @@ func resolveProfileFile(profiles, cwd, filename, defaultText string) string {
 
 // ── Optional capability builders ──
 
-// openSkillLoader creates a file-system skill loader. Directories are tried
-// in priority order:
-//  1. <workspace>/.openagent/skills  (project-level)
-//  2. ~/.openagent/skills            (user-level)
+// openSkillLoader creates a file-system skill loader spanning the skill
+// directories that exist. Roots are passed to fs.New in priority order
+// (least authoritative first), so skills in a later root override
+// same-name skills from an earlier root:
 //
-// Returns nil if no directory exists.
+//  1. ~/.agents/skills            (user-level)
+//  2. <workspace>/.agents/skills  (project-level, overrides user-level)
+//
+// Directories that do not exist are skipped. Returns nil if none exist.
 func openSkillLoader() openagent.SkillLoader {
+	var roots []string
 	for _, dir := range skillDirs() {
 		if info, err := os.Stat(dir); err == nil && info.IsDir() {
-			return fs.New(dir)
+			roots = append(roots, dir)
 		}
 	}
-	return nil
+	if len(roots) == 0 {
+		return nil
+	}
+	return fs.New(roots...)
 }
 
+// skillDirs returns the skill directory candidates in override order:
+// least authoritative first (~/.agents/skills), then most authoritative
+// last (<cwd>/.agents/skills). When home equals cwd the two resolve to
+// the same path and only one entry is returned.
 func skillDirs() []string {
 	var dirs []string
+	seen := make(map[string]struct{})
+
 	home, err := os.UserHomeDir()
 	if err == nil {
-		dirs = append(dirs, filepath.Join(home, ".openagent", "skills"))
-		dirs = append(dirs, filepath.Join(home, ".agents", "skills"))
+		d := filepath.Join(home, ".agents", "skills")
+		if _, ok := seen[d]; !ok {
+			seen[d] = struct{}{}
+			dirs = append(dirs, d)
+		}
 	}
+
 	cwd, err := os.Getwd()
-	if err == nil && home != cwd {
-		dirs = append(dirs, filepath.Join(cwd, ".agents", "skills"))
-		dirs = append(dirs, filepath.Join(cwd, ".openagent", "skills"))
+	if err == nil {
+		d := filepath.Join(cwd, ".agents", "skills")
+		if _, ok := seen[d]; !ok {
+			seen[d] = struct{}{}
+			dirs = append(dirs, d)
+		}
 	}
 	return dirs
 }
