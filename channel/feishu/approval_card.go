@@ -8,11 +8,11 @@ import (
 	"github.com/yusheng-g/openagent-go/utils"
 )
 
-// approvalButtonRow builds the column_set element containing the two
-// approval buttons (同意 / 拒绝). The approvalID is embedded in
-// every button's value so the card action callback can correlate clicks.
-// Shared by buildApprovalCard (standalone card) and BuildCard (integrated
-// run card approval section).
+// approvalButtonRow builds the column_set element containing the three
+// ACP-style approval buttons (Allow Once / Allow Always / Deny).
+// The approvalID is embedded in every button's value so the card action
+// callback can correlate clicks. "allow_always" remembers the decision
+// for the session (same tool+args won't ask again).
 func approvalButtonRow(approvalID string) map[string]any {
 	btn := func(label, name, btnType string) map[string]any {
 		return map[string]any{
@@ -29,15 +29,16 @@ func approvalButtonRow(approvalID string) map[string]any {
 		"flex_mode":          "flow",
 		"horizontal_spacing": "8px",
 		"columns": []map[string]any{
-			{"tag": "column", "width": "auto", "elements": []map[string]any{btn("同意", "agree", "primary_filled")}},
-			{"tag": "column", "width": "auto", "elements": []map[string]any{btn("拒绝", "reject", "danger_filled")}},
+			{"tag": "column", "width": "auto", "elements": []map[string]any{btn("Allow Once", "allow_once", "primary_filled")}},
+			{"tag": "column", "width": "auto", "elements": []map[string]any{btn("Allow Always", "allow_always", "primary_filled")}},
+			{"tag": "column", "width": "auto", "elements": []map[string]any{btn("Deny", "deny", "danger_filled")}},
 		},
 	}
 }
 
 // buildApprovalCard constructs the Feishu interactive card JSON for a tool
 // call approval request. The card shows the tool name and arguments, then
-// two action buttons (同意 / 拒绝).
+// three ACP-style action buttons (Allow Once / Allow Always / Deny).
 //
 // approvalID is embedded in every button's "value" field so the card action
 // callback can correlate the click back to the pending approval. The card

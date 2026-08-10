@@ -46,10 +46,10 @@ func TestBuildApprovalCard(t *testing.T) {
 		t.Error("approval ID should be embedded in button values")
 	}
 
-	// Count buttons with approval_id — should be 2 (同意/拒绝).
+	// Count buttons with approval_id — should be 3 (Allow Once/Allow Always/Deny).
 	count := strings.Count(cardJSON, `"approval_id":"abc123"`)
-	if count != 2 {
-		t.Errorf("expected 2 buttons with approval_id, got %d", count)
+	if count != 3 {
+		t.Errorf("expected 3 buttons with approval_id, got %d", count)
 	}
 }
 
@@ -75,23 +75,20 @@ func TestBuildApprovalCardButtonStructure(t *testing.T) {
 
 	colSet, _ := elems[2].(map[string]any)
 	if colSet["tag"] != "column_set" {
-		t.Error("third element should be column_set")
+		t.Errorf("third element should be column_set, got %v", colSet["tag"])
 	}
 
 	cols, _ := colSet["columns"].([]any)
-	if len(cols) != 2 {
-		t.Fatalf("expected 2 columns (buttons), got %d", len(cols))
+	if len(cols) != 3 {
+		t.Fatalf("expected 3 columns (buttons), got %d", len(cols))
 	}
 
-	// No form, no input, no submit button.
+	// No form or hint — Feishu schema V2 doesn't support them.
 	if strings.Contains(cardJSON, `"tag":"form"`) {
 		t.Error("card should not contain a form")
 	}
-	if strings.Contains(cardJSON, `"tag":"input"`) {
-		t.Error("card should not contain an input")
-	}
-	if strings.Contains(cardJSON, `"form_action_type"`) {
-		t.Error("card should not contain a submit button")
+	if strings.Contains(cardJSON, "/mode") {
+		t.Error("card should not contain /mode hint")
 	}
 }
 
@@ -190,8 +187,9 @@ func TestHandleCardAction(t *testing.T) {
 		wantAction string
 		wantReason string
 	}{
-		{"agree", "agree", "allow", ""},
-		{"reject", "reject", "deny", "rejected by user"},
+		{"allow_once", "allow_once", "allow", ""},
+		{"allow_always", "allow_always", "allow", ""},
+		{"deny", "deny", "deny", "rejected by user"},
 	}
 
 	for _, tt := range tests {
@@ -245,8 +243,8 @@ func TestHandleCardActionExpired(t *testing.T) {
 	event := &callback.CardActionTriggerEvent{
 		Event: &callback.CardActionTriggerRequest{
 			Action: &callback.CallBackAction{
-				Name:  "agree",
-				Value: map[string]any{"approval_id": "nonexistent", "action": "agree"},
+				Name:  "allow_once",
+				Value: map[string]any{"approval_id": "nonexistent", "action": "allow_once"},
 			},
 		},
 	}
@@ -278,8 +276,8 @@ func TestHandleCardActionIntegrated(t *testing.T) {
 	event := &callback.CardActionTriggerEvent{
 		Event: &callback.CardActionTriggerRequest{
 			Action: &callback.CallBackAction{
-				Name:  "agree",
-				Value: map[string]any{"approval_id": "int-1", "action": "agree"},
+				Name:  "allow_once",
+				Value: map[string]any{"approval_id": "int-1", "action": "allow_once"},
 			},
 		},
 	}
@@ -373,6 +371,32 @@ func TestResolvedDisplay(t *testing.T) {
 		if toast != tt.wantToast {
 			t.Errorf("toast = %q, want %q", toast, tt.wantToast)
 		}
+	}
+}
+
+func TestBuildApprovalCardACPButtons(t *testing.T) {
+	cardJSON, err := buildApprovalCard("abc", "shell", `{"command":"ls"}`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !strings.Contains(cardJSON, "Allow Once") {
+		t.Error("card should contain Allow Once button")
+	}
+	if !strings.Contains(cardJSON, "Allow Always") {
+		t.Error("card should contain Allow Always button")
+	}
+	if !strings.Contains(cardJSON, "Deny") {
+		t.Error("card should contain Deny button")
+	}
+	if !strings.Contains(cardJSON, `"action":"allow_once"`) {
+		t.Error("card should contain allow_once action")
+	}
+	if !strings.Contains(cardJSON, `"action":"allow_always"`) {
+		t.Error("card should contain allow_always action")
+	}
+	if !strings.Contains(cardJSON, `"action":"deny"`) {
+		t.Error("card should contain deny action")
 	}
 }
 

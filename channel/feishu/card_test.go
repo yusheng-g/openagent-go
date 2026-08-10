@@ -162,7 +162,7 @@ func TestBuildCardWithApproval(t *testing.T) {
 	body, _ := m["body"].(map[string]any)
 	elems, _ := body["elements"].([]any)
 
-	// Last three elements: hr, markdown (approval context), column_set (buttons).
+	// Last three elements: hr, markdown (approval context), column_set (3 buttons).
 	n := len(elems)
 	if n < 3 {
 		t.Fatalf("expected at least 3 elements, got %d", n)
@@ -187,10 +187,10 @@ func TestBuildCardWithApproval(t *testing.T) {
 		t.Errorf("expected column_set for buttons, got %v", colSet["tag"])
 	}
 
-	// Approval ID embedded in all 2 button values.
+	// Approval ID embedded in all 3 button values.
 	count := strings.Count(result, `"approval_id":"abc123"`)
-	if count != 2 {
-		t.Errorf("expected 2 buttons with approval_id, got %d", count)
+	if count != 3 {
+		t.Errorf("expected 3 buttons with approval_id, got %d", count)
 	}
 }
 

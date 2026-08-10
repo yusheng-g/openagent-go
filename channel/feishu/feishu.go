@@ -133,7 +133,8 @@ func modeCardContent(currentMode string) string {
 
 // Approver returns the Feishu-card-based human approver for this channel.
 // May be called before Start; the lark client is wired in Start.
-func (c *Channel) Approver(_ governance.ApprovalMemory) governance.HumanApprover {
+func (c *Channel) Approver(mem governance.ApprovalMemory) governance.HumanApprover {
+	c.approver.memory = mem
 	return c.approver
 }
 
@@ -549,15 +550,27 @@ func (c *Channel) CardSize(card *channel.Card) int {
 
 // ── Card action routing ──
 
-// handleCardAction routes a Feishu card action trigger event to either
-// mode-switch handling (when value["type"]=="mode_switch") or the
-// existing approval flow (delegated to feishuApprover).
+// handleCardAction routes a Feishu card action trigger event by the
+// "type" field in the action value. "mode_switch" is handled inline;
+// all other actions (approval buttons) are delegated to
+// handleApprovalAction.
 func (c *Channel) handleCardAction(ctx context.Context, event *callback.CardActionTriggerEvent) (*callback.CardActionTriggerResponse, error) {
-	if event != nil && event.Event != nil && event.Event.Action != nil {
-		if typ, _ := event.Event.Action.Value["type"].(string); typ == "mode_switch" {
-			return c.handleModeSwitch(ctx, event)
-		}
+	if event == nil || event.Event == nil || event.Event.Action == nil {
+		return c.approver.handleCardAction(ctx, event)
 	}
+
+	actionType, _ := event.Event.Action.Value["type"].(string)
+	switch actionType {
+	case "mode_switch":
+		return c.handleModeSwitch(ctx, event)
+	default:
+		return c.handleApprovalAction(ctx, event)
+	}
+}
+
+// handleApprovalAction resolves the pending approval via the approver.
+// The approver handles allow_always remembering internally.
+func (c *Channel) handleApprovalAction(ctx context.Context, event *callback.CardActionTriggerEvent) (*callback.CardActionTriggerResponse, error) {
 	return c.approver.handleCardAction(ctx, event)
 }
 

@@ -428,10 +428,17 @@ loop:
 				"type", evt.Type,
 				"thoughtLen", thoughtBuf.Len(),
 				"blocks", len(blocks))
-			// Clear approval buttons on any event except StreamToolCall.
-			// StreamToolCall arrives BEFORE Ask (the callback), so clearing
-			// on it would race with the callback setting the buttons.
-			if evt.Type != openagent.StreamToolCall {
+			// Clear approval buttons only on events that indicate the
+			// stream has advanced past the approval point (tool result,
+			// text output, done/error). StreamThought and StreamToolCall
+			// can be buffered in the stream channel while the event loop
+			// is blocked in pq.create; processing them after the Ask
+			// callback has set pendingApproval would wrongly clear the
+			// approval buttons (race with pq.create blocking).
+			switch evt.Type {
+			case openagent.StreamToolResult, openagent.StreamTextDelta,
+				openagent.StreamRetrying, openagent.StreamDone,
+				openagent.StreamError, openagent.StreamAborted:
 				clearApproval()
 			}
 			switch evt.Type {

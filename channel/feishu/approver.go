@@ -2,6 +2,7 @@ package feishu
 
 import (
 	"context"
+	"encoding/json"
 	"log/slog"
 	"strconv"
 	"strings"
@@ -26,6 +27,7 @@ import (
 // (created in Channel.Start).
 type feishuApprover struct {
 	client *lark.Client
+	memory governance.ApprovalMemory // set by Channel.Approver; used by "allow_always"
 
 	mu      sync.Mutex
 	pending map[string]*pendingApproval // approvalID → pending entry
@@ -153,9 +155,13 @@ func (a *feishuApprover) handleCardAction(_ context.Context, event *callback.Car
 
 	var r approvalResult
 	switch buttonAction {
-	case "agree":
+	case "allow_once":
 		r = approvalResult{action: "allow"}
-	case "reject":
+	case "allow_always":
+		r = approvalResult{action: "allow"}
+		// Remember for the session — same tool+args won't ask again.
+		a.rememberAllowAlways(event, entry)
+	case "deny":
 		r = approvalResult{action: "deny", reason: "rejected by user"}
 	default:
 		return toastResponse("warning", "未知操作: "+buttonAction), nil
@@ -179,6 +185,32 @@ func (a *feishuApprover) handleCardAction(_ context.Context, event *callback.Car
 	}
 
 	return resp, nil
+}
+
+// rememberAllowAlways persists the approval decision for the session so
+// the same tool+args won't ask again (ACP "Allow Always" semantics).
+func (a *feishuApprover) rememberAllowAlways(event *callback.CardActionTriggerEvent, entry *pendingApproval) {
+	if a.memory == nil {
+		return
+	}
+	chatID := ""
+	if event.Event.Context != nil {
+		chatID = event.Event.Context.OpenChatID
+	}
+	if chatID == "" {
+		return
+	}
+	sessionID := "feishu_" + chatID
+	d := governance.Decision{Action: governance.Allow}
+	keys := governance.MemoryKeys(entry.toolName, json.RawMessage(entry.args))
+	if len(keys) == 0 {
+		keys = []string{governance.ApprovalKey(entry.toolName, json.RawMessage(entry.args))}
+	}
+	for _, key := range keys {
+		if err := a.memory.Remember(context.Background(), sessionID, key, d); err != nil {
+			slog.Warn("feishu: approve always persistence failed", "session", sessionID, "error", err)
+		}
+	}
 }
 
 // patchResolved fire-and-forgets a PATCH to update the approval card with

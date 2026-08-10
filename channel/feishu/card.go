@@ -96,7 +96,8 @@ func BuildCard(c *channel.Card) (string, error) {
 		})
 	}
 
-	// Approval section: separator + context (tool name + args) + buttons.
+	// Approval section: separator + context (tool name + args) + buttons
+	// (同意 / 同意并后续自动执行 / 拒绝) + hint.
 	// Rendered at the very bottom so it's visible without expanding any
 	// collapsed panels.
 	if c.Approval != nil {
