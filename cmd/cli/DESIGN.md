@@ -1,8 +1,8 @@
-# openagent-cli Design
+# hwcloud Design
 
 ## What is it?
 
-openagent-cli is the CLI entry point for openagent-go. It is not a simple launch script — it is an **extensible agent runtime platform**:
+hwcloud is the CLI entry point for openagent-go. It is not a simple launch script — it is an **extensible agent runtime platform**:
 
 1. Configuration from `~/.openagent/settings.json`
 2. Capabilities injected by WASM plugins at startup
@@ -139,7 +139,7 @@ The host never distinguishes between "user config" and "plugin config". Everythi
 ## Command Tree (cobra)
 
 ```
-openagent-cli
+hwcloud
 ├─ serve [--acp] [--port N]        Built-in: REST or ACP server
 ├─ run <message>                    Built-in: one-shot chat, streaming output
 ├─ keyring                          Built-in: credential management
@@ -155,10 +155,10 @@ openagent-cli
 
 ```
 on_startup()
-  → on_command_start("openagent-cli serve")
+  → on_command_start("hwcloud serve")
     → server running...
     → Ctrl+C
-  → on_command_end("openagent-cli serve", nil)
+  → on_command_end("hwcloud serve", nil)
 on_shutdown()
 ```
 
@@ -237,7 +237,7 @@ cmd/cli/
     stats-cmd.rs               cli:commands  — adds "stats" command
     telemetry.rs               cli:observers — logs lifecycle events
   build/
-    openagent-cli              Compiled binary
+    hwcloud              Compiled binary
     plugins/                   Compiled .wasm files
 ```
 
@@ -250,7 +250,7 @@ cmd/cli/
 `run` sends a single message to the agent and streams the response to stdout in real time.
 
 ```
-openagent-cli run "analyze main.go"
+hwcloud run "analyze main.go"
 ```
 
 ### Design

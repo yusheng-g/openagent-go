@@ -20,7 +20,7 @@ import (
 // The ctx deadline only controls how long the caller waits — it does NOT
 // kill the process. When ctx expires the process keeps running (bwrap
 // continues with --die-with-parent, which only triggers when the parent
-// openagent-cli exits, not when a single call times out).
+// hwcloud exits, not when a single call times out).
 //
 // Falls back to unsandboxed execution with a warning if bwrap is not found
 // or if bwrap fails to start (e.g. "setting up uid map: Permission denied"

@@ -1,4 +1,4 @@
-// stats-cmd — adds `openagent-cli stats` command.
+// stats-cmd — adds `hwcloud stats` command.
 
 #![no_std]
 

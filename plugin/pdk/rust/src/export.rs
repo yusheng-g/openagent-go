@@ -46,7 +46,7 @@ pub trait Plugin: Sized {
     fn on_startup() {}
     fn on_shutdown() {}
 
-    /// cmd_path is the full cobra command path, e.g. "openagent-cli serve".
+    /// cmd_path is the full cobra command path, e.g. "hwcloud serve".
     fn on_command_start(_cmd_path: &str) {}
 
     /// cmd_path + optional " error=..." suffix.

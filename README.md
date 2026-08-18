@@ -20,7 +20,7 @@ A fully pluggable, multi-agent AI agent framework in Go.
 - **WASM plugins** — agent-level: `agent:tools` and `agent:observers` plug into the tool/observer pipeline. CLI-level: `cli:settings`, `cli:commands`, `cli:observers`, `cli:http` for settings injection, command extension, lifecycle monitoring, and custom HTTP routes. Any plugin can declare cron-scheduled jobs.
 - **Static context profiles** — `AGENTS.md` (working rules) and `SOUL.md` (persona & limits) with user-level and project-level resolution
 - **Slash commands** — built-in `/help`, `/mode`, `/model`, `/compact`, `/context`, `/cwd`, `/clear`, `/rename`, `/sessions`, extensible via `slash/` registry
-- **Full CLI** — `openagent-cli` with cobra commands, config-driven models, keyring secrets, WASM plugin runtime
+- **Full CLI** — `hwcloud` with cobra commands, config-driven models, keyring secrets, WASM plugin runtime
 - **IM channels** — Feishu/Lark (WebSocket, card-based streaming output with markdown and tool call cards, one-click QR setup, inline approval buttons, /clear and /mode commands), personal WeChat (Tencent ilinkai channel, QR login with pairing code, /clear command), and WeCom 企业微信 (official long connection, native streaming replies, QR robot auto-creation, /clear command)
 - **RunHooks with state** — start/end callbacks share opaque state; OTEL spans nest, slog logs duration
 - **Dynamic context** — session-level plan status and mode injected into every prompt turn
@@ -29,32 +29,32 @@ A fully pluggable, multi-agent AI agent framework in Go.
 
 ```bash
 # Build CLI
-go build -o openagent-cli ./cmd/cli/
+go build -o hwcloud ./cmd/cli/
 
 # Show version
-./openagent-cli -v
+./hwcloud -v
 
 # ACP mode (stdio — for VSCode/Zed ACP plugins)
-./openagent-cli serve --acp
+./hwcloud serve --acp
 
 # REST mode (HTTP + SSE)
-./openagent-cli serve --port 8080
+./hwcloud serve --port 8080
 
 # One-shot chat with streaming output
-./openagent-cli run "Hello, introduce yourself briefly"
+./hwcloud run "Hello, introduce yourself briefly"
 
 # Enable OS-native sandbox for shell commands
-./openagent-cli serve --sandbox --port 8080
+./hwcloud serve --sandbox --port 8080
 
 # Toggle capabilities on/off (defaults: memory/summarizer/skills/mcp/embedder on, guard/approver off)
-./openagent-cli serve --guard on --approver on
+./hwcloud serve --guard on --approver on
 
 # Suppress all log output
-./openagent-cli serve -q --port 8080
+./hwcloud serve -q --port 8080
 
 # Manage secrets in the system keyring
-./openagent-cli keyring set mykey keyvalue
-./openagent-cli keyring get mykey
+./hwcloud keyring set mykey keyvalue
+./hwcloud keyring get mykey
 ```
 
 ### Configuration
@@ -101,7 +101,7 @@ Connect your agent to Feishu (Lark) so users can chat with it in IM — group ch
 **First-time setup (no credentials needed):**
 
 ```bash
-./openagent-cli serve --channel feishu
+./hwcloud serve --channel feishu
 ```
 
 A QR code will appear in your terminal. Open Feishu on your phone, scan it, and confirm the app creation. The SDK automatically provisions a bot app with the correct permissions (`im:message`, `im:message:send_as_bot`, `im.message.receive_v1` event, `card.action.trigger` for approval/mode button callbacks) and saves the credentials locally.
@@ -127,7 +127,7 @@ A QR code will appear in your terminal. Open Feishu on your phone, scan it, and 
 Then run with the flag to enable the channel:
 
 ```bash
-./openagent-cli serve --channel feishu
+./hwcloud serve --channel feishu
 ```
 
 The `--channel` flag is always required to start the bot — settings.json alone won't auto-start it. If your credentials are in settings.json, the setup step is skipped automatically.
@@ -146,10 +146,10 @@ The `--channel` flag is always required to start the bot — settings.json alone
 
 ```bash
 # REST API + Feishu bot
-./openagent-cli serve --channel feishu
+./hwcloud serve --channel feishu
 
 # ACP mode (stdio for VSCode/Zed) + Feishu bot
-./openagent-cli serve --acp --channel feishu
+./hwcloud serve --acp --channel feishu
 ```
 
 **Frontend control panel:**
@@ -229,7 +229,7 @@ Connect your agent to your **personal WeChat** via Tencent's official ilinkai ch
 **First-time setup (scan to create the bot):**
 
 ```bash
-./openagent-cli serve --channel wechat
+./hwcloud serve --channel wechat
 ```
 
 A QR code appears in the terminal — scan it with WeChat and confirm. The bot is created automatically; if the server asks for a **pairing code** (digits shown on your phone), type it in the terminal. Credentials are saved to settings.json.
@@ -254,7 +254,7 @@ Connect your agent to a **WeCom smart robot** via the official long-connection A
 **First-time setup (scan to auto-create the robot):**
 
 ```bash
-./openagent-cli serve --channel wecom
+./hwcloud serve --channel wecom
 ```
 
 A QR code appears — scan it with the WeCom app; the robot is created automatically and the BotID/Secret are saved to settings.json. Alternatively, create the robot manually in the WeCom admin console (安全与管理 → 管理工具 → 智能机器人 → API 模式 → 长连接) and configure it via the settings endpoint:

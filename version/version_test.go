@@ -33,8 +33,8 @@ func TestPopulated(t *testing.T) {
 func TestDefaultName(t *testing.T) {
 	// We can't distinguish ldflags-injected Name from the default here,
 	// so only assert it's non-empty (covered by TestPopulated). If it's
-	// the default, it must be exactly "openagent-cli".
-	const defaultName = "openagent-cli"
+	// the default, it must be exactly "hwcloud".
+	const defaultName = "hwcloud"
 	if Name == defaultName {
 		return // expected default
 	}

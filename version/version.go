@@ -9,14 +9,14 @@
 //	-X github.com/yusheng-g/openagent-go/version.Version=v1.2.3
 //
 // When ldflags are absent (development build), init fills Name with
-// "openagent-cli" and Version with "0.0.0-dev.<build-timestamp>".
+// "hwcloud" and Version with "0.0.0-dev.<build-timestamp>".
 package version
 
 import "time"
 
 // Name is the agent implementation name reported to peers (e.g. in ACP
 // initialize agentInfo.name and MCP client identity). Inject via
-// -X ...version.Name=<name>; defaults to "openagent-cli" in init.
+// -X ...version.Name=<name>; defaults to "hwcloud" in init.
 var Name = ""
 
 // Version is the build version reported to peers and via `--version`.
@@ -26,7 +26,7 @@ var Version = ""
 
 func init() {
 	if Name == "" {
-		Name = "openagent-cli"
+		Name = "hwcloud"
 	}
 	if Version == "" {
 		Version = "0.0.0-dev." + time.Now().Format("20060102150405")

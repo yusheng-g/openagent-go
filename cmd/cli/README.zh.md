@@ -1,4 +1,4 @@
-# openagent-cli
+# hwcloud
 
 [openagent-go](https://github.com/yusheng-g/openagent-go) 的命令行入口。通过配置驱动模型和 WASM 插件，启动一个 LLM Agent 服务器（REST 或 ACP）。
 
@@ -7,7 +7,7 @@
 编译并运行：
 
 ```bash
-go build -o openagent-cli ./cmd/cli/
+go build -o hwcloud ./cmd/cli/
 mkdir -p ~/.openagent/plugins
 ```
 
@@ -31,7 +31,7 @@ mkdir -p ~/.openagent/plugins
 启动服务器：
 
 ```bash
-./openagent-cli serve
+./hwcloud serve
 ```
 
 REST API 运行在 `http://localhost:8080`。连接任何 OpenAI 兼容客户端。
@@ -39,7 +39,7 @@ REST API 运行在 `http://localhost:8080`。连接任何 OpenAI 兼容客户端
 ACP（Agent 通信协议）模式：
 
 ```bash
-./openagent-cli serve --acp
+./hwcloud serve --acp
 ```
 
 ## 配置
@@ -64,9 +64,9 @@ ACP（Agent 通信协议）模式：
 不应写在 settings.json 中的凭证（API 密钥、JWT 等）存入系统密钥环：
 
 ```bash
-./openagent-cli keyring set my_provider_api_key sk-xxx
-./openagent-cli keyring set my_provider_base_url https://api.example.com/v1
-./openagent-cli keyring set my_provider_models model-a,model-b
+./hwcloud keyring set my_provider_api_key sk-xxx
+./hwcloud keyring set my_provider_base_url https://api.example.com/v1
+./hwcloud keyring set my_provider_models model-a,model-b
 ```
 
 插件在启动时读取这些密钥。支持：Linux Secret Service（gnome-keyring/kwallet）、macOS Keychain、Windows Credential Manager。
@@ -78,7 +78,7 @@ ACP（Agent 通信协议）模式：
 | 类型 | `metadata.type` | 功能 |
 |------|----------------|------|
 | 设置注入 | `cli:settings` | 启动时修改 settings.json：读 keyring、添加 provider、注入环境变量 |
-| 命令注入 | `cli:commands` | 添加新的 `openagent-cli` 命令（如 `openagent-cli stats`） |
+| 命令注入 | `cli:commands` | 添加新的 `hwcloud` 命令（如 `hwcloud stats`） |
 | 生命周期观察 | `cli:observers` | 钩入启动、关闭、命令执行过程，用于遥测监控 |
 
 一个插件可混搭多种类型：`"type": "cli:settings,cli:commands,cli:observers"`。
@@ -150,7 +150,7 @@ pub extern "C" fn run_my_cmd(p: u32, l: u32) -> u64 {
 ## 命令
 
 ```
-openagent-cli
+hwcloud
 ├─ serve [--acp] [--port N] [--sandbox]   REST 或 ACP 服务
 ├─ keyring                                 凭证管理
 │  ├─ set <key> <value>

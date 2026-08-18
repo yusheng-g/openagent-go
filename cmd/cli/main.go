@@ -1,4 +1,4 @@
-// openagent-cli — openagent-go CLI.
+// hwcloud — openagent-go CLI.
 
 package main
 
@@ -241,7 +241,7 @@ func parseArgRule(rule string) cobra.PositionalArgs {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "openagent-cli",
+	Use:   "hwcloud",
 	Short: "openagent CLI",
 }
 
@@ -366,9 +366,9 @@ func buildRunCmd(cfg config.Config) *cobra.Command {
 		Long: `Send a message to the AI Agent and stream the response to stdout in real time.
 
 Wrap your message in quotes when it contains spaces:
-  openagent-cli run "analyze main.go"`,
-		Example: `  openagent-cli run "Hello, introduce yourself briefly"
-  openagent-cli run "analyze cmd/cli/main.go and summarize"`,
+  hwcloud run "analyze main.go"`,
+		Example: `  hwcloud run "Hello, introduce yourself briefly"
+  hwcloud run "analyze cmd/cli/main.go and summarize"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return server.RunCLI(cmd.Context(), &cfg, args[0])

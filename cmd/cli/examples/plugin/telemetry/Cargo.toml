@@ -1,5 +1,5 @@
 [package]
-name = "openagent-cli-plugin-telemetry"
+name = "hwcloud-plugin-telemetry"
 version = "0.1.0"
 edition = "2021"
 

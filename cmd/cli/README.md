@@ -1,4 +1,4 @@
-# openagent-cli
+# hwcloud
 
 The command-line entry point for [openagent-go](https://github.com/yusheng-g/openagent-go). Start an LLM agent server (REST or ACP) with config-driven models and WASM-powered plugins.
 
@@ -7,7 +7,7 @@ The command-line entry point for [openagent-go](https://github.com/yusheng-g/ope
 Build and run:
 
 ```bash
-go build -o openagent-cli ./cmd/cli/
+go build -o hwcloud ./cmd/cli/
 mkdir -p ~/.openagent/plugins
 ```
 
@@ -31,7 +31,7 @@ Create `~/.openagent/settings.json`:
 Start the server:
 
 ```bash
-./openagent-cli serve
+./hwcloud serve
 ```
 
 The REST API is now on `http://localhost:8080`. Connect any OpenAI-compatible client.
@@ -39,7 +39,7 @@ The REST API is now on `http://localhost:8080`. Connect any OpenAI-compatible cl
 For ACP (Agent Communication Protocol) over stdio:
 
 ```bash
-./openagent-cli serve --acp
+./hwcloud serve --acp
 ```
 
 ## Configuration
@@ -64,9 +64,9 @@ All configuration lives in `~/.openagent/settings.json`. The path can be overrid
 Credentials that shouldn't live in settings.json (API keys, JWTs, anything sensitive) go into your system keychain:
 
 ```bash
-./openagent-cli keyring set my_provider_api_key sk-xxx
-./openagent-cli keyring set my_provider_base_url https://api.example.com/v1
-./openagent-cli keyring set my_provider_models model-a,model-b
+./hwcloud keyring set my_provider_api_key sk-xxx
+./hwcloud keyring set my_provider_base_url https://api.example.com/v1
+./hwcloud keyring set my_provider_models model-a,model-b
 ```
 
 Plugins read these at startup. Supported backends: Linux Secret Service (gnome-keyring/kwallet), macOS Keychain, Windows Credential Manager.
@@ -78,7 +78,7 @@ Plugins are `.wasm` files loaded at startup. There are three types:
 | Type | `metadata.type` | What it does |
 |------|----------------|--------------|
 | Settings injection | `cli:settings` | Transforms `settings.json` at startup — reads keyring, adds providers, injects env vars |
-| Command injection | `cli:commands` | Adds new `openagent-cli` commands (e.g. `openagent-cli stats`) |
+| Command injection | `cli:commands` | Adds new `hwcloud` commands (e.g. `hwcloud stats`) |
 | Lifecycle observer | `cli:observers` | Hooks into startup, shutdown, and command execution for telemetry |
 
 A single plugin can mix types: `"type": "cli:settings,cli:commands,cli:observers"`.
@@ -150,7 +150,7 @@ pub extern "C" fn run_my_cmd(p: u32, l: u32) -> u64 {
 ## Commands
 
 ```
-openagent-cli
+hwcloud
 ├─ serve [--acp] [--port N] [--sandbox]   REST or ACP server
 ├─ keyring                                 Credential management
 │  ├─ set <key> <value>

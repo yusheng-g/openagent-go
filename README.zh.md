@@ -20,7 +20,7 @@
 - **WASM 插件** — Agent 级：`agent:tools` 和 `agent:observers` 接入工具/观测器管线。CLI 级：`cli:settings`、`cli:commands`、`cli:observers`、`cli:http`，用于设置注入、命令扩展、生命周期监控和自定义 HTTP 路由。任意插件均可声明 cron 定时任务。
 - **静态上下文配置** — `AGENTS.md`（工作规则）和 `SOUL.md`（性格与底线），支持用户级和项目级覆盖
 - **Slash 命令** — 内置 `/help`、`/mode`、`/model`、`/compact`、`/context`、`/cwd`、`/clear`、`/rename`、`/sessions`，通过 `slash/` 注册表扩展
-- **完整 CLI** — `openagent-cli`，cobra 命令、配置驱动模型、keyring 密钥管理、WASM 插件运行时
+- **完整 CLI** — `hwcloud`，cobra 命令、配置驱动模型、keyring 密钥管理、WASM 插件运行时
 - **IM 频道** — 飞书/Lark（WebSocket，卡片式流式输出：Markdown 渲染、工具调用卡片，一键扫码创建应用，内嵌审批按钮、/clear 和 /mode 命令）、个人微信（腾讯 ilinkai 官方通道，扫码登录 + 配对码，/clear 命令）、企业微信（官方长连接，原生流式回复，扫码自动创建机器人，/clear 命令）
 - **RunHooks 状态传递** — Start/End 回调共享不透明状态，OTEL 正确嵌套 span，slog 精确计时
 - **动态上下文** — 会话级 plan 状态和 mode 指令每轮自动注入 prompt
@@ -29,32 +29,32 @@
 
 ```bash
 # 编译 CLI
-go build -o openagent-cli ./cmd/cli/
+go build -o hwcloud ./cmd/cli/
 
 # 查看版本号
-./openagent-cli -v
+./hwcloud -v
 
 # ACP 模式（stdio — 配合 VSCode/Zed ACP 插件使用）
-./openagent-cli serve --acp
+./hwcloud serve --acp
 
 # REST 模式（HTTP + SSE）
-./openagent-cli serve --port 8080
+./hwcloud serve --port 8080
 
 # 一次性流式对话
-./openagent-cli run "你好，请介绍一下你自己"
+./hwcloud run "你好，请介绍一下你自己"
 
 # 启用 OS 原生沙箱执行 shell 命令
-./openagent-cli serve --sandbox --port 8080
+./hwcloud serve --sandbox --port 8080
 
 # 按需开关能力（默认：memory/summarizer/skills/mcp/embedder 开，guard/approver 关）
-./openagent-cli serve --guard on --approver on
+./hwcloud serve --guard on --approver on
 
 # 静默所有日志输出
-./openagent-cli serve -q --port 8080
+./hwcloud serve -q --port 8080
 
 # 管理系统密钥环里
-./openagent-cli keyring set mykey keyvalue
-./openagent-cli keyring get mykey
+./hwcloud keyring set mykey keyvalue
+./hwcloud keyring get mykey
 ```
 
 ### 配置
@@ -101,7 +101,7 @@ export BOCHA_API_KEY=<你的-key>   # 在 https://open.bochaai.com 获取
 **首次使用（无需凭据）：**
 
 ```bash
-./openagent-cli serve --channel feishu
+./hwcloud serve --channel feishu
 ```
 
 终端会出现二维码。打开飞书 App 扫码，确认创建应用即可。SDK 会自动创建机器人应用并配置好权限（`im:message`、`im:message:send_as_bot`、`im.message.receive_v1` 事件、`card.action.trigger` 审批/模式按钮回调），凭据保存在本地。
@@ -127,7 +127,7 @@ export BOCHA_API_KEY=<你的-key>   # 在 https://open.bochaai.com 获取
 然后带 flag 启动：
 
 ```bash
-./openagent-cli serve --channel feishu
+./hwcloud serve --channel feishu
 ```
 
 `--channel` flag 是必须的 — 仅配置 settings.json 不会自动启动 bot。如果凭据已在 settings.json 中，启动时会跳过扫码步骤。
@@ -146,10 +146,10 @@ export BOCHA_API_KEY=<你的-key>   # 在 https://open.bochaai.com 获取
 
 ```bash
 # REST API + 飞书机器人
-./openagent-cli serve --channel feishu
+./hwcloud serve --channel feishu
 
 # ACP 模式（stdio，配合 VSCode/Zed）+ 飞书机器人
-./openagent-cli serve --acp --channel feishu
+./hwcloud serve --acp --channel feishu
 ```
 
 **前端控制面板：**
@@ -229,7 +229,7 @@ Manual 模式下的审批请求直接内嵌在运行卡片中（无独立审批�
 **首次设置（扫码自动创建 bot）：**
 
 ```bash
-./openagent-cli serve --channel wechat
+./hwcloud serve --channel wechat
 ```
 
 终端出现二维码，用微信扫码确认即可自动创建 bot；如果服务端要求**配对码**（手机微信上显示的数字），在终端输入。凭据保存到 settings.json。
@@ -254,7 +254,7 @@ Manual 模式下的审批请求直接内嵌在运行卡片中（无独立审批�
 **首次设置（扫码自动创建机器人）：**
 
 ```bash
-./openagent-cli serve --channel wecom
+./hwcloud serve --channel wecom
 ```
 
 出现二维码后用企微 App 扫码，机器人自动创建，BotID/Secret 保存到 settings.json。也可以在企微管理后台手动创建（安全与管理 → 管理工具 → 智能机器人 → API 模式 → 长连接），再通过设置接口配置：

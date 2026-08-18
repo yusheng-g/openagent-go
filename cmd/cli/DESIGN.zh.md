@@ -1,8 +1,8 @@
-# openagent-cli 设计文档
+# hwcloud 设计文档
 
 ## 这是什么？
 
-openagent-cli 是 openagent-go 的命令行入口。不是简单的启动脚本，而是一个**可扩展的 Agent 运行时平台**：
+hwcloud 是 openagent-go 的命令行入口。不是简单的启动脚本，而是一个**可扩展的 Agent 运行时平台**：
 
 1. 配置来自 `~/.openagent/settings.json`
 2. 能力由 WASM 插件在启动时动态注入
@@ -124,7 +124,7 @@ log_error(msg_ptr, msg_len)
 ## 命令树 (cobra)
 
 ```
-openagent-cli
+hwcloud
 ├─ serve [--acp] [--port N]        内置: REST 或 ACP 服务
 ├─ run <message>                    内置: 单轮对话，流式输出
 ├─ keyring                          内置: 凭证管理
@@ -140,10 +140,10 @@ openagent-cli
 
 ```
 on_startup()
-  → on_command_start("openagent-cli serve")
+  → on_command_start("hwcloud serve")
     → server 运行中...
     → Ctrl+C
-  → on_command_end("openagent-cli serve", nil)
+  → on_command_end("hwcloud serve", nil)
 on_shutdown()
 ```
 
@@ -222,7 +222,7 @@ cmd/cli/
     stats-cmd.rs              cli:commands  — 添加 "stats" 命令
     telemetry.rs              cli:observers — 记录生命周期事件
   build/
-    openagent-cli             编译后的二进制
+    hwcloud             编译后的二进制
     plugins/                  编译后的 .wasm 文件
 ```
 
@@ -235,7 +235,7 @@ cmd/cli/
 `run` 发送一条消息给 Agent，实时流式输出回复到终端。
 
 ```
-openagent-cli run "分析 main.go 文件"
+hwcloud run "分析 main.go 文件"
 ```
 
 ### 设计要点
