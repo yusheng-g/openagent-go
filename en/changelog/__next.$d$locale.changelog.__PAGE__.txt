@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[97367,["/openagent-go/_next/static/chunks/05-c3ty_6dwfk.js","/openagent-go/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","article",null,{"className":"mx-auto max-w-3xl px-6 py-20","children":[["$","h1",null,{"className":"mb-4 text-3xl font-bold text-text","children":"Changelog"}],["$","p",null,{"className":"mb-6 text-base text-muted","children":"Releases and release notes live on GitHub."}],["$","a",null,{"href":"https://github.com/yusheng-g/openagent-go/releases","target":"_blank","rel":"noopener noreferrer","className":"inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-accent-hover","children":"View releases →"}]]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"nen-Uuzx4EF3k2vVXquRI"}
+4:null
