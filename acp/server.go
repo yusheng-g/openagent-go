@@ -128,6 +128,19 @@ type AgentServer struct {
 	// (approval-based safe default). Configured via settings
 	// "default_mode": "auto" | "manual" | "plan".
 	DefaultMode string
+
+	// sessionObservers receives session lifecycle events (create / close /
+	// delete).  Set via SetSessionObservers at assembly time.  nil = events
+	// are silently dropped.  The server does NOT import track — only the
+	// assembly layer wires concrete observers.
+	sessionObservers openagent.SessionObserver
+}
+
+// SetSessionObservers wires a SessionObserver into the server.  Call once at
+// assembly time (e.g. in BuildACPServer).  Pass nil to disable.  Safe to
+// call before the server starts serving.
+func (s *AgentServer) SetSessionObservers(obs openagent.SessionObserver) {
+	s.sessionObservers = obs
 }
 
 // defaultMode resolves the configured default mode.
@@ -1174,6 +1187,16 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 		})
 	}
 
+	// Emit session lifecycle event for observers (tracking, telemetry, etc.).
+	if s.sessionObservers != nil {
+		s.sessionObservers.OnSessionCreate(ctx, openagent.SessionLifecycleEvent{
+			SessionID:   string(id),
+			EntryPoint:  "acp",
+			SessionMode: ss.Mode(),
+			CreatedAt:   ss.createdAt,
+		})
+	}
+
 	return &openacp.NewSessionResponse{
 		Meta:          map[string]any{"created_at": time.Now().UTC().Format(time.RFC3339Nano)},
 		SessionID:     id,
@@ -1413,6 +1436,17 @@ func (s *AgentServer) OnCloseSession(ctx context.Context, req openacp.CloseSessi
 		s.disconnectMCP(ss.mcpSessions)
 		s.killSubAgents(ss)
 	}
+	if s.sessionObservers != nil {
+		evt := openagent.SessionLifecycleEvent{
+			SessionID:  string(req.SessionID),
+			EntryPoint: "acp",
+		}
+		if ss != nil && !ss.createdAt.IsZero() {
+			evt.DurationMs = time.Since(ss.createdAt).Milliseconds()
+			evt.SessionMode = ss.Mode()
+		}
+		s.sessionObservers.OnSessionClose(ctx, evt)
+	}
 	s.removeSession(req.SessionID)
 	return &openacp.CloseSessionResponse{}, nil
 }
@@ -1425,6 +1459,25 @@ func (s *AgentServer) OnDeleteSession(ctx context.Context, req openacp.DeleteSes
 		if ss.processMgr != nil {
 			ss.processMgr.Cleanup()
 		}
+	}
+	if s.sessionObservers != nil {
+		evt := openagent.SessionLifecycleEvent{
+			SessionID:  string(req.SessionID),
+			EntryPoint: "acp",
+		}
+		if ss != nil && !ss.createdAt.IsZero() {
+			evt.DurationMs = time.Since(ss.createdAt).Milliseconds()
+			evt.SessionMode = ss.Mode()
+		} else {
+			// Session already removed from map (e.g. after close) — try
+			// loading persisted state for mode/createdAt.
+			mode, _, createdAt, _ := s.loadSessionState(ctx, string(req.SessionID))
+			if mode != "" && !createdAt.IsZero() {
+				evt.SessionMode = mode
+				evt.DurationMs = time.Since(createdAt).Milliseconds()
+			}
+		}
+		s.sessionObservers.OnSessionDelete(ctx, evt)
 	}
 	s.removeSession(req.SessionID)
 	// Runtime.Delete removes metadata and messages together.

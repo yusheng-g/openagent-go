@@ -890,3 +890,16 @@ func buildRuntimeDeps(caps config.Capabilities, sensitive config.SensitiveConfig
 func channelDir(name string) string {
 	return filepath.Join(configDir(), "channel", name)
 }
+
+// sessionObserver is the process-wide session lifecycle observer, wired at
+// startup by main.go via SetSessionObservers.  nil = no observers (events
+// silently dropped).  Used by RunCLI and the ACP/REST servers to emit
+// session create/close/delete events.
+var sessionObserver openagent.SessionObserver
+
+// SetSessionObservers wires the process-wide session lifecycle observer.
+// Call once at startup (e.g. in main.go after track.Init()).  Pass nil to
+// disable.
+func SetSessionObservers(obs openagent.SessionObserver) {
+	sessionObserver = obs
+}

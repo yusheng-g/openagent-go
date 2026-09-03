@@ -24,6 +24,7 @@ import (
 	"github.com/yusheng-g/openagent-go/keyring"
 	plugin "github.com/yusheng-g/openagent-go/plugin/cli"
 	cliwasm "github.com/yusheng-g/openagent-go/plugin/cli/wasm"
+	"github.com/yusheng-g/openagent-go/track"
 	"github.com/yusheng-g/openagent-go/version"
 )
 
@@ -137,6 +138,13 @@ func main() {
 		// SetupLog reinstalled the default slog handler — re-apply quiet.
 		applyQuiet()
 	}
+
+	// 5b. Initialize event tracking and wire the session observer.
+	// track.Init is a no-op when EventPostUrl is empty (bare `go build`),
+	// so dev builds and tests are unaffected.  Only ldflags-injected builds
+	// (make x86 / make arm) emit events.
+	track.Init()
+	server.SetSessionObservers(track.GetObserver())
 
 	// 6. Build cobra tree.
 	rootCmd.AddCommand(buildServeCmd(cfg))

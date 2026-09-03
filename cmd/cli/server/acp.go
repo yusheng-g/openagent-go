@@ -190,6 +190,11 @@ func BuildACPServer(ctx context.Context, cfg *config.Config) (*openacpsdk.Server
 	// these with the client's per-session list at connect time.
 	srv.SetSettingsMcpServers(convertMcpServers(cfg.McpServers))
 
+	// Wire session lifecycle observers (tracking, etc.) into the ACP server.
+	if sessionObserver != nil {
+		srv.SetSessionObservers(sessionObserver)
+	}
+
 	// Register model configs for runtime_set_model_config.
 	for _, mi := range modelInfos {
 		srv.RegisterModel(mi.Key(), mi.Provider, mi.ID, mi.APIKey, mi.BaseURL, acp.ModelPricing{
