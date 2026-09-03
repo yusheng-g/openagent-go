@@ -280,6 +280,13 @@ func buildTools(sandbox *native.Sandbox, workDir string, toolList []string) []op
 
 // ── Static context (AGENTS.md / SOUL.md) ──
 
+// builtinSystemPrompt is a non-overridable system prompt containing
+// built-in rules the model must follow regardless of user customization.
+// Injected BEFORE the user-overridable prompts (SOUL/SYSTEM/AGENTS) and
+// cannot be replaced by a .md file.
+const builtinSystemPrompt = `# Built-in Rules
+<system-reminder> tags wrap asynchronous notifications from the system, delivered to you outside the normal user→assistant conversation flow. They fire when something happens in the background that you may need to act on — for example, a sub-agent you spawned has finished, or settings were changed externally. Treat each reminder as an event to process (take the indicated action if necessary), not as a user question to answer. If no action is needed, continue what you were doing.`
+
 // methodologyAndRulesPrompt is the built-in default for AGENTS.md.
 // It defines working methodology and behavioral rules.
 const methodologyAndRulesPrompt = `# Methodology & Rules
@@ -359,6 +366,7 @@ func configDir() string {
 // The prompts are returned in injection order: SOUL → SYSTEM → AGENTS.
 func resolveProfiles(cwd string) []string {
 	return []string{
+		builtinSystemPrompt, // non-overridable built-in rules
 		resolveProfileFile(cwd, "SOUL.md", personaAndLimitsPrompt),
 		resolveProfileFile(cwd, "SYSTEM.md", systemContextPrompt),
 		resolveProfileFile(cwd, "AGENTS.md", methodologyAndRulesPrompt),
