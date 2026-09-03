@@ -2182,10 +2182,12 @@ func (s *AgentServer) generateTitle(sid openacp.SessionId, model openagent.Model
 	slog.Info("title generation started", "session", sid, "fallback", fallback)
 	resp, err := model.ChatCompletion(ctx, openagent.ChatCompletionRequest{
 		Messages: []openagent.Message{
-			{Role: openagent.RoleSystem, Content: "The user has started a new conversation. The message below is the first thing they said. " +
-				"Generate a short title (3-10 words) that summarizes what this conversation is about. " +
+			{Role: openagent.RoleSystem, Content: "You are a conversation title generator. " +
+				"A user has just started a new chat session. Below is their first message. " +
+				"Generate a concise title (2-10 words) that captures the topic or theme of this conversation. " +
+				"The title should reflect what the user wants to discuss, not answer their message. " +
 				"Use the same language as the user's message. " +
-				"Output ONLY the title — no quotes, no explanation, no punctuation at the end."},
+				"Output ONLY the title — no quotes, no explanation, no trailing punctuation."},
 			{Role: openagent.RoleUser, Content: userMessage},
 		},
 	})
