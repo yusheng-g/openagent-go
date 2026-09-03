@@ -349,7 +349,9 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent, s
 
 		// When the card exceeds the platform's size limit, fold the
 		// old card to a collapsed "done" state, then start a fresh
-		// one keeping only the last few blocks.
+		// one. Progressively trim blocks (last 1 → 0) until the
+		// rebuilt card fits; runCard's internal thought cap guarantees
+		// the card fits once blocks are empty.
 		if runCardID != "" && cardTooLarge(sizer, card) {
 			slog.Info("cardTooLarge triggered",
 				"cardSize", cardSize,
@@ -363,10 +365,16 @@ func streamReply(reply channel.ReplyFunc, stream <-chan openagent.StreamEvent, s
 				Fold:   channel.FoldCollapsed,
 			})
 			runCardID = ""
-			if len(blocks) > 3 {
-				blocks = blocks[len(blocks)-3:]
+			for cardTooLarge(sizer, card) {
+				if len(blocks) > 1 {
+					blocks = blocks[len(blocks)-1:]
+				} else if len(blocks) == 1 {
+					blocks = nil
+				} else {
+					break
+				}
+				card = runCard(stage, thoughtBuf.String(), blocks, lastErr)
 			}
-			card = runCard(stage, thoughtBuf.String(), blocks, lastErr)
 			approvalMu.Lock()
 			card.Approval = pendingApproval
 			approvalMu.Unlock()
