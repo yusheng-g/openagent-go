@@ -1900,6 +1900,7 @@ func (s *AgentServer) OnPrompt(ctx context.Context, req openacp.PromptRequest, s
 			"cwd":                   ss.cwd,
 			"additionalDirectories": ss.additionalDirectories,
 			"mcpServers":            ss.mcpServers,
+			"mode":                  ss.Mode(),
 		},
 		DynamicContext: s.buildDynamicContext(ss),
 	}
@@ -2390,8 +2391,8 @@ func (s *AgentServer) applyModeTools(sid openacp.SessionId, ss *agentSession, rt
 		add = append(add, s.executionTools(sid, ss)...)
 		add = append(add, ss.subAgentTools...)
 
-		if ss.mode == "manual" && s.clientRPC != nil {
-			rt.SetHumanApprover(&acpApprover{client: s.clientRPC, sessionID: sid, memory: s.approvalMemory})
+		if s.clientRPC != nil {
+			rt.SetHumanApprover(&acpApprover{client: s.clientRPC, sessionID: sid, memory: s.approvalMemory, modeFn: ss.Mode})
 		} else {
 			rt.SetHumanApprover(nil)
 		}
@@ -2811,6 +2812,7 @@ type acpApprover struct {
 	client    openacp.ClientRequester
 	sessionID openacp.SessionId
 	memory    governance.ApprovalMemory // session-scoped "allow always" persistence
+	modeFn    func() string             // returns the session's current mode (live, not a snapshot)
 }
 
 // Ask implements governance.HumanApprover. The ACP permission response
@@ -2829,8 +2831,13 @@ func (a *acpApprover) Ask(ctx context.Context, call openagent.ToolCall, def open
 	var params struct {
 		RiskNote string `json:"risk_note"`
 	}
-	if json.Unmarshal([]byte(call.Function.Arguments), &params) == nil && strings.TrimSpace(params.RiskNote) != "" {
+	hasRisk := json.Unmarshal([]byte(call.Function.Arguments), &params) == nil && strings.TrimSpace(params.RiskNote) != ""
+	if hasRisk {
 		meta = map[string]any{"_risk_note": params.RiskNote}
+	} else if a.modeFn != nil && a.modeFn() == "auto" {
+		// Auto mode: auto-allow all calls without a risk_note. risk_note
+		// calls fall through to the normal approval prompt below.
+		return governance.Decision{Action: governance.Allow, Reason: "auto mode"}, nil
 	}
 
 	resp, err := a.client.RequestPermission(ctx, openacp.RequestPermissionRequest{

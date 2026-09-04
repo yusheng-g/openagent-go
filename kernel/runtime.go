@@ -346,10 +346,17 @@ func (rt *Runtime) decisionObserver() openagent.DecisionObserver {
 	return nil
 }
 
-// allowAllPolicy is the no-approver policy: every call executes.
+// allowAllPolicy is the no-approver policy: every call executes, EXCEPT
+// calls with a non-empty risk_note — those are denied (fail-closed) because
+// there is no human to approve them. This prevents destructive commands
+// (rm -rf, terraform apply) from silently executing in modes without an
+// interactive approver (REST, CLI one-shot).
 type allowAllPolicy struct{}
 
-func (allowAllPolicy) Evaluate(context.Context, openagent.ToolCall, openagent.FunctionDefinition, openagent.Session) (governance.Decision, error) {
+func (allowAllPolicy) Evaluate(_ context.Context, call openagent.ToolCall, _ openagent.FunctionDefinition, _ openagent.Session) (governance.Decision, error) {
+	if governance.HasRiskNote(call) {
+		return governance.Decision{Action: governance.Deny, Reason: "risk_note present and no approver configured — destructive command requires approval"}, nil
+	}
 	return governance.Decision{Action: governance.Allow, Reason: "no approver configured"}, nil
 }
 

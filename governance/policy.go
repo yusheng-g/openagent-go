@@ -197,6 +197,18 @@ func (e *Engine) Evaluate(ctx context.Context, call openagent.ToolCall, def open
 		}
 	}
 
+	// 0) Risk-note bypass: if the tool call carries a non-empty risk_note
+	// (shell tool's risk_note param for destructive commands), force human
+	// approval BEFORE any other layer — including "allow all" rules (auto
+	// mode) and remembered "allow always" (Memory layer). A destructive
+	// command (rm -rf, terraform apply) must not silently execute just
+	// because the session is in auto mode or a similar safe command was
+	// remembered.
+	if HasRiskNote(call) {
+		emit(openagent.DecisionPolicyRule, openagent.OutcomeAsk, map[string]any{"reason": "risk_note present — forcing approval"})
+		return e.askHuman(ctx, call, def, session, "risk_note present")
+	}
+
 	// 1) Rules layer.
 	for _, rule := range e.Rules {
 		if !matchesRule(rule, call) {
@@ -223,17 +235,6 @@ func (e *Engine) Evaluate(ctx context.Context, call openagent.ToolCall, def open
 			return Decision{Action: Allow, Reason: "read-only tool"}, nil
 		}
 		emit(openagent.DecisionPolicySafety, openagent.OutcomeSkipped, nil)
-	}
-
-	// 2.5) Risk-note bypass: if the tool call carries a non-empty risk_note
-	// (shell tool's risk_note param for destructive commands), skip the
-	// Memory layer and force human approval — even if the user previously
-	// chose "allow always". A destructive command (rm -rf, terraform apply)
-	// must not silently execute from memory just because a similar safe
-	// command was remembered.
-	if hasRiskNote(call) {
-		emit(openagent.DecisionPolicyRule, openagent.OutcomeAsk, map[string]any{"reason": "risk_note present — forcing approval"})
-		return e.askHuman(ctx, call, def, session, "risk_note present")
 	}
 
 	// 3) Memory layer: remembered decision for this call (tool + args —
@@ -342,10 +343,12 @@ func (c *ToolClassifier) Classify(def openagent.FunctionDefinition) SafetyClass 
 	return Dangerous
 }
 
-// hasRiskNote reports whether the tool call's arguments include a non-empty
-// "risk_note" field. Used to bypass the Memory layer and force human approval
-// for destructive commands even when "allow always" was previously granted.
-func hasRiskNote(call openagent.ToolCall) bool {
+// HasRiskNote reports whether the tool call's arguments include a non-empty
+// "risk_note" field. Used by the policy engine (layer 0 bypass) and
+// allowAllPolicy (fail-closed deny) to force human approval for destructive
+// commands even when "allow always" was previously granted or no approver
+// is configured.
+func HasRiskNote(call openagent.ToolCall) bool {
 	var params struct {
 		RiskNote string `json:"risk_note"`
 	}
