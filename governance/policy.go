@@ -225,6 +225,17 @@ func (e *Engine) Evaluate(ctx context.Context, call openagent.ToolCall, def open
 		emit(openagent.DecisionPolicySafety, openagent.OutcomeSkipped, nil)
 	}
 
+	// 2.5) Risk-note bypass: if the tool call carries a non-empty risk_note
+	// (shell tool's risk_note param for destructive commands), skip the
+	// Memory layer and force human approval — even if the user previously
+	// chose "allow always". A destructive command (rm -rf, terraform apply)
+	// must not silently execute from memory just because a similar safe
+	// command was remembered.
+	if hasRiskNote(call) {
+		emit(openagent.DecisionPolicyRule, openagent.OutcomeAsk, map[string]any{"reason": "risk_note present — forcing approval"})
+		return e.askHuman(ctx, call, def, session, "risk_note present")
+	}
+
 	// 3) Memory layer: remembered decision for this call (tool + args —
 	// a changed argument is a different operation and asks again). A
 	// remembered Ask never short-circuits — it still routes to the human
@@ -329,4 +340,17 @@ func (c *ToolClassifier) Classify(def openagent.FunctionDefinition) SafetyClass 
 		return ReadOnly
 	}
 	return Dangerous
+}
+
+// hasRiskNote reports whether the tool call's arguments include a non-empty
+// "risk_note" field. Used to bypass the Memory layer and force human approval
+// for destructive commands even when "allow always" was previously granted.
+func hasRiskNote(call openagent.ToolCall) bool {
+	var params struct {
+		RiskNote string `json:"risk_note"`
+	}
+	if err := json.Unmarshal([]byte(call.Function.Arguments), &params); err != nil {
+		return false
+	}
+	return strings.TrimSpace(params.RiskNote) != ""
 }

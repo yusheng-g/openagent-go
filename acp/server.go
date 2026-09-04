@@ -2822,8 +2822,20 @@ func (a *acpApprover) Ask(ctx context.Context, call openagent.ToolCall, def open
 		// allowed — an unapprovable call should never auto-execute.
 		return governance.Decision{Action: governance.Deny, Reason: "no approval client configured"}, nil
 	}
+
+	// If the call carries a risk_note (destructive command), mark it in
+	// _meta so the frontend can display a high-risk warning.
+	var meta map[string]any
+	var params struct {
+		RiskNote string `json:"risk_note"`
+	}
+	if json.Unmarshal([]byte(call.Function.Arguments), &params) == nil && strings.TrimSpace(params.RiskNote) != "" {
+		meta = map[string]any{"_risk_note": params.RiskNote}
+	}
+
 	resp, err := a.client.RequestPermission(ctx, openacp.RequestPermissionRequest{
 		SessionID: a.sessionID,
+		Meta:      meta,
 		ToolCall: openacp.ToolCallUpdate{
 			ToolCallID: call.ID,
 			Title:      opentool.ToolTitle(def.Name, call.Function.Arguments),
