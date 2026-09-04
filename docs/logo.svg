@@ -1,0 +1,19 @@
+<svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- "oa" mark — two interlocking shapes representing pluggable components -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00ADD8"/>
+      <stop offset="100%" stop-color="#0080FF"/>
+    </linearGradient>
+  </defs>
+  <!-- left ring (o) -->
+  <circle cx="22" cy="30" r="16" stroke="url(#g)" stroke-width="5" fill="none"/>
+  <!-- right arc (a) — open ring suggesting pluggability -->
+  <path d="M 46 30 A 16 16 0 1 1 62 14" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- connector dot — the "plug" -->
+  <circle cx="54" cy="30" r="4" fill="url(#g)"/>
+  <!-- wordmark: open in white, agent in cyan, -go dimmed -->
+  <text x="80" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="#ffffff">
+    open<tspan fill="#00ADD8">agent</tspan><tspan fill="#ffffff" opacity="0.4" font-weight="500">-go</tspan>
+  </text>
+</svg>

@@ -1,8 +1,19 @@
-# openagent-go
+<div align="center">
+  <img src="docs/logo.svg" alt="openagent-go" width="240">
 
-> [English](README.md) | [Architecture](DESIGN.md) | [架构 (中文)](DESIGN.zh.md)
+  Go 语言实现的 AI Agent 运行时内核 — 可插拔、沙箱隔离、原生 ACP 协议。
 
-一个完全可插拔的多智能体 AI Agent 框架，Go 语言实现。
+  [![Go Reference](https://pkg.go.dev/badge/github.com/yusheng-g/openagent-go.svg)](https://pkg.go.dev/github.com/yusheng-g/openagent-go)
+  [![Go Report Card](https://goreportcard.com/badge/github.com/yusheng-g/openagent-go)](https://goreportcard.com/report/github.com/yusheng-g/openagent-go)
+  [![GitHub Stars](https://img.shields.io/github/stars/yusheng-g/openagent-go?style=social)](https://github.com/yusheng-g/openagent-go/stargazers)
+  [![GitHub Discussions](https://img.shields.io/github/discussions/yusheng-g/openagent-go)](https://github.com/yusheng-g/openagent-go/discussions)
+  [![GitHub PRs](https://img.shields.io/github/issues-pr/yusheng-g/openagent-go)](https://github.com/yusheng-g/openagent-go/pulls)
+  [![License](https://img.shields.io/github/license/yusheng-g/openagent-go)](LICENSE)
+
+  [English](README.md) · [Architecture](DESIGN.md) · [架构 (中文)](DESIGN.zh.md)
+
+  如果 openagent-go 对你有帮助，请在 GitHub 上点个 ⭐！
+</div>
 
 ## 特性
 

@@ -1,8 +1,19 @@
-# openagent-go
+<div align="center">
+  <img src="docs/logo.svg" alt="openagent-go" width="240">
 
-> [中文](README.zh.md) | [Architecture](DESIGN.md) | [架构 (中文)](DESIGN.zh.md)
+  An AI agent runtime kernel in Go — pluggable, sandboxed, ACP-native.
 
-A fully pluggable, multi-agent AI agent framework in Go.
+  [![Go Reference](https://pkg.go.dev/badge/github.com/yusheng-g/openagent-go.svg)](https://pkg.go.dev/github.com/yusheng-g/openagent-go)
+  [![Go Report Card](https://goreportcard.com/badge/github.com/yusheng-g/openagent-go)](https://goreportcard.com/report/github.com/yusheng-g/openagent-go)
+  [![GitHub Stars](https://img.shields.io/github/stars/yusheng-g/openagent-go?style=social)](https://github.com/yusheng-g/openagent-go/stargazers)
+  [![GitHub Discussions](https://img.shields.io/github/discussions/yusheng-g/openagent-go)](https://github.com/yusheng-g/openagent-go/discussions)
+  [![GitHub PRs](https://img.shields.io/github/issues-pr/yusheng-g/openagent-go)](https://github.com/yusheng-g/openagent-go/pulls)
+  [![License](https://img.shields.io/github/license/yusheng-g/openagent-go)](LICENSE)
+
+  [中文](README.zh.md) · [Architecture](DESIGN.md) · [架构 (中文)](DESIGN.zh.md)
+
+  If you find openagent-go useful, give it a ⭐ on GitHub!
+</div>
 
 ## Features
 
