@@ -137,6 +137,16 @@ func (s *calcServer) OnListSessions(ctx context.Context, req openacp.ListSession
 	return &openacp.ListSessionsResponse{Sessions: sessions}, nil
 }
 
+func (s *calcServer) OnListMessages(ctx context.Context, req openacp.ListMessagesRequest) (*openacp.ListMessagesResponse, error) {
+	// The example stores no conversation history; report an empty list.
+	return &openacp.ListMessagesResponse{Messages: []openacp.Message{}}, nil
+}
+
+func (s *calcServer) OnListConfigOptions(ctx context.Context, req openacp.ListConfigOptionsRequest) (*openacp.ListConfigOptionsResponse, error) {
+	// The example exposes no session config options.
+	return &openacp.ListConfigOptionsResponse{ConfigOptions: []openacp.SessionConfigOption{}}, nil
+}
+
 func (s *calcServer) OnSetSessionMode(ctx context.Context, req openacp.SetSessionModeRequest) (*openacp.SetSessionModeResponse, error) {
 	return &openacp.SetSessionModeResponse{}, nil
 }

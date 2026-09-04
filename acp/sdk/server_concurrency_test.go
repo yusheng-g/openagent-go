@@ -64,6 +64,12 @@ func (floodHandler) OnDeleteSession(context.Context, DeleteSessionRequest) (*Del
 func (floodHandler) OnListSessions(context.Context, ListSessionsRequest) (*ListSessionsResponse, error) {
 	return &ListSessionsResponse{Sessions: []SessionInfo{}}, nil
 }
+func (floodHandler) OnListMessages(context.Context, ListMessagesRequest) (*ListMessagesResponse, error) {
+	return &ListMessagesResponse{Messages: []Message{}}, nil
+}
+func (floodHandler) OnListConfigOptions(context.Context, ListConfigOptionsRequest) (*ListConfigOptionsResponse, error) {
+	return &ListConfigOptionsResponse{}, nil
+}
 func (floodHandler) OnSetSessionMode(context.Context, SetSessionModeRequest) (*SetSessionModeResponse, error) {
 	return &SetSessionModeResponse{}, nil
 }

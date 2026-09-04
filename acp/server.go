@@ -1456,7 +1456,58 @@ func (s *AgentServer) OnListSessions(ctx context.Context, req openacp.ListSessio
 	return &openacp.ListSessionsResponse{Sessions: out}, nil
 }
 
+// OnListMessages returns a session's stored messages (oldest first) without
+// loading or resuming the session — a paginated window over the same
+// SessionStore the load-replay reads, mirroring REST /sessions/{id}/messages.
+// nil memory (--memory=off) or an unknown session yields an empty list.
+func (s *AgentServer) OnListMessages(ctx context.Context, req openacp.ListMessagesRequest) (*openacp.ListMessagesResponse, error) {
+	if s.Mem == nil {
+		return &openacp.ListMessagesResponse{Messages: []openacp.Message{}}, nil
+	}
+	limit := req.Limit
+	if limit <= 0 {
+		limit = 50
+	}
+	if limit > 200 {
+		limit = 200
+	}
+	before := max(0, req.Before)
+
+	msgs, err := s.Mem.Recent(ctx, string(req.SessionID), limit, before)
+	if err != nil {
+		return nil, fmt.Errorf("list messages: %w", err)
+	}
+	out := make([]openacp.Message, 0, len(msgs))
+	for _, m := range msgs {
+		item := openacp.Message{
+			Role:             string(m.Role),
+			Content:          m.Content,
+			ReasoningContent: m.ReasoningContent,
+			ToolCallID:       m.ToolCallID,
+		}
+		for _, tc := range m.ToolCalls {
+			item.ToolCalls = append(item.ToolCalls, openacp.ToolCallRef{
+				ID: tc.ID, Name: tc.Function.Name, Args: tc.Function.Arguments,
+			})
+		}
+		if m.CreatedAt != nil {
+			item.CreatedAt = m.CreatedAt.UTC().Format(time.RFC3339Nano)
+		}
+		out = append(out, item)
+	}
+	return &openacp.ListMessagesResponse{Messages: out}, nil
+}
+
 // ── Config & modes ──
+
+// OnListConfigOptions returns the config options a fresh session would
+// receive (mode, thought level, model selector), without creating one:
+// session/list_config_options. buildConfigOptions already degrades to
+// defaults when the session is unknown, so an empty id yields the
+// "what you would get" snapshot.
+func (s *AgentServer) OnListConfigOptions(ctx context.Context, req openacp.ListConfigOptionsRequest) (*openacp.ListConfigOptionsResponse, error) {
+	return &openacp.ListConfigOptionsResponse{ConfigOptions: s.buildConfigOptions("")}, nil
+}
 
 func (s *AgentServer) buildConfigOptions(sid openacp.SessionId) []openacp.SessionConfigOption {
 	ss := s.getSession(sid)

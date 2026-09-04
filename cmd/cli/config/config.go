@@ -64,8 +64,8 @@ type TUIConfig struct {
 	Logo string `json:"logo,omitempty"`
 	// LogoGradient, when non-empty, renders the logo with a vertical color
 	// gradient (top→bottom) interpolated across the listed hex stops, e.g.
-	// ["#007aff","#ff00ff","#ff3b30"]. Empty = single LogoColor (or the
-	// default text_ash).
+	// ["#ffffff","#d0d0d0"]. Empty = single LogoColor (or the default white
+	// gradient).
 	LogoGradient []string `json:"logo_gradient,omitempty"`
 }
 

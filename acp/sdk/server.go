@@ -31,6 +31,8 @@ type AgentHandler interface {
 	OnCloseSession(ctx context.Context, req CloseSessionRequest) (*CloseSessionResponse, error)
 	OnDeleteSession(ctx context.Context, req DeleteSessionRequest) (*DeleteSessionResponse, error)
 	OnListSessions(ctx context.Context, req ListSessionsRequest) (*ListSessionsResponse, error)
+	OnListMessages(ctx context.Context, req ListMessagesRequest) (*ListMessagesResponse, error)
+	OnListConfigOptions(ctx context.Context, req ListConfigOptionsRequest) (*ListConfigOptionsResponse, error)
 	OnSetSessionMode(ctx context.Context, req SetSessionModeRequest) (*SetSessionModeResponse, error)
 	OnSetSessionConfigOption(ctx context.Context, req SetSessionConfigOptionRequest) (*SetSessionConfigOptionResponse, error)
 	OnPrompt(ctx context.Context, req PromptRequest, sender SessionEventSender) (*PromptResponse, error)
@@ -413,6 +415,18 @@ func (m *mux) route(msg jsonrpcMessage) {
 		if isReq {
 			dispatch(m, msg, func(ctx context.Context, req ListSessionsRequest) (*ListSessionsResponse, error) {
 				return m.handler.OnListSessions(ctx, req)
+			})
+		}
+	case "session/list_messages":
+		if isReq {
+			dispatch(m, msg, func(ctx context.Context, req ListMessagesRequest) (*ListMessagesResponse, error) {
+				return m.handler.OnListMessages(ctx, req)
+			})
+		}
+	case "session/list_config_options":
+		if isReq {
+			dispatch(m, msg, func(ctx context.Context, req ListConfigOptionsRequest) (*ListConfigOptionsResponse, error) {
+				return m.handler.OnListConfigOptions(ctx, req)
 			})
 		}
 	case "session/prompt":

@@ -6,10 +6,10 @@ import (
 	"github.com/yusheng-g/openagent-go/version"
 )
 
-// Package-level logo handling. The built-in logo renders version.Name as a
-// 5x7 pixel-block font (█). A user override (SetLogo) replaces it verbatim.
-// Coloring (single color or gradient) is applied by the caller in
-// view_welcome.go, so GetLogo returns unstyled art.
+// Package-level logo handling. The built-in logo renders version.Name in
+// the classic 3-row × 4-col half-block banner face (█ ▀ ▄). A user override
+// (SetLogo) replaces it verbatim. Coloring (single color or gradient) is
+// applied by the caller in view_welcome.go, so GetLogo returns unstyled art.
 
 // logoOverride holds a user-supplied logo (raw multi-line string). When
 // non-empty, GetLogo returns it verbatim instead of the built-in art.
@@ -24,17 +24,19 @@ func SetLogo(logo string) {
 
 // GetLogo returns the logo as unstyled multi-line art. When a user override
 // is set it is returned as-is; otherwise version.Name is rendered with the
-// 5x7 block font. width is the available content width — if the block art
-// would overflow it, the bare name string is returned instead so it never
-// wraps. width <= 0 skips the check.
+// 3-row half-block banner face (kept small so the welcome page stays airy).
+// The name keeps its original case — glyphs are uppercase by default, with
+// lowercase letterforms (e.g. 'g') where defined. width is the available
+// content width — if the block art would overflow it, the bare name string
+// is returned instead so it never wraps. width <= 0 skips the check.
 func GetLogo(width int) string {
 	if logoOverride != "" {
 		return logoOverride
 	}
 
-	name := strings.ToUpper(version.Name)
-	art := RenderBlock(name)
-	if width > 0 && BlockWidth(name) > width {
+	name := version.Name
+	art := RenderBlockMini(name)
+	if width > 0 && BlockWidthMini(name) > width {
 		// Too wide for the terminal — fall back to the plain name.
 		return name
 	}

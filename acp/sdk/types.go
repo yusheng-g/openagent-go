@@ -325,6 +325,59 @@ type SessionInfo struct {
 	AdditionalDirectories []string       `json:"additionalDirectories,omitempty"`
 }
 
+// ── ListMessages ──
+
+// ListMessagesRequest requests the most recent messages of a session
+// without loading it. Messages are returned oldest-first (the store order);
+// Before skips the most recent Before messages to page further back, and
+// Limit caps the window (default 50, max 200).
+type ListMessagesRequest struct {
+	Meta      map[string]any `json:"_meta,omitempty"`
+	SessionID SessionId      `json:"sessionId"`
+	Limit     int            `json:"limit,omitempty"`
+	Before    int            `json:"before,omitempty"`
+}
+
+// ListMessagesResponse is the result of listing a session's messages.
+type ListMessagesResponse struct {
+	Meta     map[string]any `json:"_meta,omitempty"`
+	Messages []Message      `json:"messages"`
+}
+
+// ── ListConfigOptions ──
+
+// ListConfigOptionsRequest asks for the session config options (mode,
+// thought level, model selector) a fresh session would receive, without
+// creating one: session/list_config_options. Cold-start pickers read this
+// instead of paying a session/new round-trip.
+type ListConfigOptionsRequest struct {
+	Meta map[string]any `json:"_meta,omitempty"`
+}
+
+// ListConfigOptionsResponse is the result of listing config options.
+type ListConfigOptionsResponse struct {
+	Meta          map[string]any        `json:"_meta,omitempty"`
+	ConfigOptions []SessionConfigOption `json:"configOptions,omitempty"`
+}
+
+// Message is a lightweight ACP view of one stored conversation message,
+// kept protocol-independent of the kernel's message types.
+type Message struct {
+	Role             string        `json:"role"`
+	Content          string        `json:"content,omitempty"`
+	ReasoningContent string        `json:"reasoningContent,omitempty"`
+	ToolCalls        []ToolCallRef `json:"toolCalls,omitempty"`
+	ToolCallID       string        `json:"toolCallId,omitempty"` // tool results
+	CreatedAt        string        `json:"createdAt,omitempty"`  // ISO 8601
+}
+
+// ToolCallRef is a compact tool-call reference inside a listed message.
+type ToolCallRef struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	Args string `json:"args,omitempty"` // raw JSON arguments
+}
+
 // ── Prompt ──
 
 // PromptRequest is the input for a prompt turn.

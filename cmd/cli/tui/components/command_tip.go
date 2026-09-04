@@ -1,6 +1,8 @@
 package components
 
 import (
+	"image/color"
+
 	"charm.land/lipgloss/v2"
 	"github.com/yusheng-g/openagent-go/cmd/cli/tui/theme"
 )
@@ -13,8 +15,17 @@ func RenderCommandTipSecondary(cmd string, desc string) string {
 	return theme.BaseStyle().Background(theme.BgSecondary).Foreground(theme.TextNormal).Render(" "+cmd) + theme.BaseStyle().Background(theme.BgSecondary).Foreground(theme.TextAsh).Render(" "+desc)
 }
 
+// RenderCommandTipSurface styles key hints inside floating panels, which
+// sit on the popup background.
 func RenderCommandTipSurface(cmd string, desc string) string {
-	return theme.BaseStyle().Background(theme.BgSurface).Foreground(theme.TextNormal).Render(" "+cmd) + theme.BaseStyle().Background(theme.BgSurface).Foreground(theme.TextAsh).Render(" "+desc)
+	return RenderCommandTipOn(cmd, desc, theme.BgPanel)
+}
+
+// RenderCommandTipOn styles key hints on an explicit popup background, so
+// panels with a non-standard surface (e.g. the slash-command card) can keep
+// their hint row on the same fill.
+func RenderCommandTipOn(cmd string, desc string, bg color.Color) string {
+	return theme.BaseStyle().Background(bg).Foreground(theme.TextNormal).Render(" "+cmd) + theme.BaseStyle().Background(bg).Foreground(theme.TextAsh).Render(" "+desc)
 }
 
 func NewTips() []Command {

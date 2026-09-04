@@ -2,6 +2,7 @@ package chat
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	tea "charm.land/bubbletea/v2"
@@ -44,21 +45,45 @@ func (h *acpEventHandler) OnAgentThought(text string) {
 	h.program.Send(agentThoughtMsg{text: text})
 }
 
-func (h *acpEventHandler) OnUserMessage(text string) {}
+func (h *acpEventHandler) OnUserMessage(text string) {
+	h.program.Send(userMessageMsg{text: text})
+}
 
-func (h *acpEventHandler) OnToolCall(tc openacp.ToolCallUpdate) {}
+func (h *acpEventHandler) OnToolCall(tc openacp.ToolCallUpdate) {
+	msg := toolCallMsg{id: tc.ToolCallID, title: tc.Title, status: toolRunning}
+	switch tc.Status {
+	case "completed":
+		msg.status = toolDone
+	case "failed":
+		msg.status = toolFailed
+	}
+	if b, err := json.Marshal(tc.RawInput); err == nil && string(b) != "null" {
+		msg.input = string(b)
+	}
+	if b, err := json.Marshal(tc.RawOutput); err == nil && string(b) != "null" {
+		msg.output = string(b)
+	}
+	h.program.Send(msg)
+}
 
-func (h *acpEventHandler) OnPlan(plan openacp.Plan) {}
+func (h *acpEventHandler) OnPlan(plan openacp.Plan) {
+	h.program.Send(planMsg{entries: plan.Entries})
+}
 
 func (h *acpEventHandler) OnAvailableCommandsUpdate(cmds []openacp.AvailableCommand) {
 }
 
-func (h *acpEventHandler) OnModeUpdate(modeID openacp.SessionModeId) {}
-
-func (h *acpEventHandler) OnConfigOptionUpdate(opts []openacp.SessionConfigOption) {
+func (h *acpEventHandler) OnModeUpdate(modeID openacp.SessionModeId) {
+	h.program.Send(modeUpdateMsg{mode: string(modeID)})
 }
 
-func (h *acpEventHandler) OnUsageUpdate(used, total int, cost *openacp.Cost) {}
+func (h *acpEventHandler) OnConfigOptionUpdate(opts []openacp.SessionConfigOption) {
+	h.program.Send(configOptionsMsg{opts: opts})
+}
+
+func (h *acpEventHandler) OnUsageUpdate(used, total int, cost *openacp.Cost) {
+	h.program.Send(usageUpdateMsg{used: used, total: total})
+}
 
 func (h *acpEventHandler) OnSessionInfo(title string, metadata map[string]any) {}
 

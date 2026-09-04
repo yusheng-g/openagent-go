@@ -21,6 +21,12 @@ const (
 	glyphWidth  = 7
 	glyphHeight = 9  // rendered rows (█/▀▄)
 	subHeight   = 18 // bitmap sub-rows (2 per rendered row)
+
+	// compactGlyphWidth/Height render the same glyphs at a smaller 5×7 size
+	// (used for the welcome logo); the smaller bitmaps are derived from the
+	// 7×9 glyphs by box-merging, so the pixel style is preserved.
+	compactGlyphWidth  = 5
+	compactGlyphHeight = 7
 )
 
 // blockGlyphs maps each rune to a 126-bit bitmap (7 wide × 18 sub-rows).
@@ -118,11 +124,60 @@ func sanitizeLogo(text string) (string, int) {
 	return s, len([]rune(s))
 }
 
+// boxDownsample scales a '0'/'1' bitmap (w1 wide × h1 tall, row-major) down
+// to w2 × h2 by OR-merging the covered input cells, so no ink disappears.
+func boxDownsample(bits string, w1, h1, w2, h2 int) string {
+	var b strings.Builder
+	b.Grow(w2 * h2)
+	for r := 0; r < h2; r++ {
+		rs := r * h1 / h2
+		re := (r + 1) * h1 / h2
+		if re <= rs {
+			re = rs + 1
+		}
+		for c := 0; c < w2; c++ {
+			cs := c * w1 / w2
+			ce := (c + 1) * w1 / w2
+			if ce <= cs {
+				ce = cs + 1
+			}
+			one := false
+			for rr := rs; rr < re && rr < h1; rr++ {
+				for cc := cs; cc < ce && cc < w1; cc++ {
+					if bits[rr*w1+cc] == '1' {
+						one = true
+						break
+					}
+				}
+				if one {
+					break
+				}
+			}
+			if one {
+				b.WriteByte('1')
+			} else {
+				b.WriteByte('0')
+			}
+		}
+	}
+	return b.String()
+}
+
 // RenderBlock renders text as a multi-line string using the 7×9 half-block
 // font. Each rune's 126-bit bitmap is decoded into a bit matrix (rows ×
 // cols, each cell holds upper+lower bits), then consecutive empty rows and
 // columns are collapsed to single lines/gaps before rendering to █/▀/▄/space.
 func RenderBlock(text string) string {
+	return renderBlock(text, glyphWidth, glyphHeight)
+}
+
+// RenderBlockCompact renders text with the same half-block face at the
+// smaller 5×7 size (glyphs box-merged from the 7×9 bitmaps).
+func RenderBlockCompact(text string) string {
+	return renderBlock(text, compactGlyphWidth, compactGlyphHeight)
+}
+
+func renderBlock(text string, gw, gh int) string {
 	if text == "" {
 		return ""
 	}
@@ -131,13 +186,13 @@ func RenderBlock(text string) string {
 		return ""
 	}
 
-	// Build the bit matrix: glyphHeight rows × (n*(glyphWidth+1)-1) cols.
-	// Each glyph occupies glyphWidth cols, followed by 1 spacer col of zeros
-	// (except after the last glyph). The spacer ensures adjacent glyphs
-	// (e.g. "HH") never touch; the empty-col collapse keeps it to exactly 1.
+	// Build the bit matrix: gh rows × (n*(gw+1)-1) cols. Each glyph occupies
+	// gw cols, followed by 1 spacer col of zeros (except after the last
+	// glyph). The spacer ensures adjacent glyphs (e.g. "HH") never touch;
+	// the empty-col collapse keeps it to exactly 1.
 	n := len(filtered)
-	cols := n*(glyphWidth+1) - 1
-	matrix := make([][]byte, glyphHeight) // [row][col] → 0..3
+	cols := n*(gw+1) - 1
+	matrix := make([][]byte, gh) // [row][col] → 0..3
 	for r := range matrix {
 		matrix[r] = make([]byte, cols)
 	}
@@ -146,11 +201,14 @@ func RenderBlock(text string) string {
 		if !ok {
 			bits = blockGlyphs[' ']
 		}
-		base := i * (glyphWidth + 1)
-		for pr := 0; pr < glyphHeight; pr++ {
-			upper := bits[pr*14 : pr*14+7]
-			lower := bits[pr*14+7 : pr*14+14]
-			for c := 0; c < glyphWidth; c++ {
+		if gw != glyphWidth || gh != glyphHeight {
+			bits = boxDownsample(bits, glyphWidth, subHeight, gw, gh*2)
+		}
+		base := i * (gw + 1)
+		for pr := 0; pr < gh; pr++ {
+			upper := bits[pr*2*gw : pr*2*gw+gw]
+			lower := bits[pr*2*gw+gw : pr*2*gw+2*gw]
+			for c := 0; c < gw; c++ {
 				val := byte(0)
 				if upper[c] == '1' {
 					val |= 1
@@ -160,15 +218,15 @@ func RenderBlock(text string) string {
 				}
 				matrix[pr][base+c] = val
 			}
-			// col base+glyphWidth is the spacer — left as 0 (already zeroed)
+			// col base+gw is the spacer — left as 0 (already zeroed)
 		}
 	}
 
 	// Collapse consecutive empty rows: keep a row if it's non-empty, or if
 	// it's the first empty row after a non-empty run.
-	keepRow := make([]bool, glyphHeight)
+	keepRow := make([]bool, gh)
 	prevEmpty := false
-	for r := 0; r < glyphHeight; r++ {
+	for r := 0; r < gh; r++ {
 		empty := true
 		for c := 0; c < cols; c++ {
 			if matrix[r][c] != 0 {
@@ -192,7 +250,7 @@ func RenderBlock(text string) string {
 	prevEmpty = false
 	for c := 0; c < cols; c++ {
 		empty := true
-		for r := 0; r < glyphHeight; r++ {
+		for r := 0; r < gh; r++ {
 			if matrix[r][c] != 0 {
 				empty = false
 				break
@@ -211,7 +269,7 @@ func RenderBlock(text string) string {
 
 	// Render the kept rows/cols into a string.
 	var out []string
-	for r := 0; r < glyphHeight; r++ {
+	for r := 0; r < gh; r++ {
 		if !keepRow[r] {
 			continue
 		}
@@ -236,13 +294,23 @@ func RenderBlock(text string) string {
 	return strings.Join(out, "\n")
 }
 
-// BlockWidth returns the rendered width (in terminal columns) of text in
-// the block font, after sanitizing: (glyphWidth + 1 spacer) per surviving
-// rune, minus the final spacer.
-func BlockWidth(text string) int {
+// blockWidth returns the rendered width (in terminal columns) of text in
+// the block font after sanitizing: (gw + 1 spacer) per surviving rune,
+// minus the final spacer.
+func blockWidth(text string, gw int) int {
 	_, n := sanitizeLogo(text)
 	if n == 0 {
 		return 0
 	}
-	return n*(glyphWidth+1) - 1
+	return n*(gw+1) - 1
+}
+
+// BlockWidth returns the rendered width of text in the 7×9 block font.
+func BlockWidth(text string) int {
+	return blockWidth(text, glyphWidth)
+}
+
+// BlockWidthCompact returns the rendered width in the compact 5×7 font.
+func BlockWidthCompact(text string) int {
+	return blockWidth(text, compactGlyphWidth)
 }

@@ -292,6 +292,27 @@ func (s *Session) ListSessions(ctx context.Context, req ListSessionsRequest) (*L
 	return &resp, nil
 }
 
+// ListMessages returns the most recent messages of a session without
+// loading it: session/list_messages.
+func (s *Session) ListMessages(ctx context.Context, req ListMessagesRequest) (*ListMessagesResponse, error) {
+	var resp ListMessagesResponse
+	if err := s.call(ctx, "session/list_messages", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// ListConfigOptions returns the config options a fresh session would
+// receive (mode, thought level, model selector), without creating one:
+// session/list_config_options.
+func (s *Session) ListConfigOptions(ctx context.Context, req ListConfigOptionsRequest) (*ListConfigOptionsResponse, error) {
+	var resp ListConfigOptionsResponse
+	if err := s.call(ctx, "session/list_config_options", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // SetSessionMode changes the active session mode: session/set_mode.
 func (s *Session) SetSessionMode(ctx context.Context, req SetSessionModeRequest) (*SetSessionModeResponse, error) {
 	var resp SetSessionModeResponse

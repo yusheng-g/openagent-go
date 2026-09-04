@@ -146,7 +146,9 @@ func whitespace(length int) string {
 
 var (
 	ScrimColor = "rgba(0,0,0,0.8)"
-	DefaultBg  = "#1a1818"
+	// DefaultBg is the page black the scrim darkens toward, so the popup
+	// backdrop stays the same black as the page instead of a warm gray.
+	DefaultBg = "#000000"
 )
 
 var sgrResetRe = regexp.MustCompile(`\x1b\[(0(;\d+)*)?m`)

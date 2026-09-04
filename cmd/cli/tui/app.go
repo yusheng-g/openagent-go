@@ -2,9 +2,11 @@ package tui
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/colorprofile"
 
 	openacp "github.com/yusheng-g/openagent-go/acp/sdk"
 	"github.com/yusheng-g/openagent-go/cmd/cli/config"
@@ -15,6 +17,20 @@ import (
 	"github.com/yusheng-g/openagent-go/version"
 )
 
+// Mouse tracking is driven by hand instead of bubbletea's built-in modes.
+// tea.MouseModeCellMotion emits \x1b[?1002h (button-event tracking), which
+// forwards every button drag to the app and disables the terminal emulator's
+// native text selection. Enabling \x1b[?1000h (normal tracking) instead
+// still delivers wheel and click events — ultraviolet parses SGR mouse codes
+// regardless of the rendered mode — but leaves drags free so the user can
+// box-select text (e.g. to copy from the transcript). The tracking is
+// enabled before the program starts rendering and reset right after it
+// exits, so the mode never lingers in the shell.
+const (
+	mouseTrackingEnable  = "\x1b[?1000h\x1b[?1006h"
+	mouseTrackingDisable = "\x1b[?1000l\x1b[?1006l"
+)
+
 // StartInteractiveTUI launches the fullscreen interactive TUI. It runs the
 // ACP server in-process via os.Pipe (no subprocess), connects as an ACP
 // client, and streams agent responses into the chat transcript.
@@ -23,6 +39,14 @@ import (
 // a cancelable child so ctrl+c kills both the TUI and the ACP server.
 // cfg provides everything: models, memory, capabilities, and the TUI section.
 func StartInteractiveTUI(ctx context.Context, cfg config.Config) error {
+	// Some environments (SSH sessions, tmux-derived TERMs, sanitized
+	// sandboxes) lack a usable TERM; fall back to xterm-256color so
+	// lipgloss renders colors and box drawing correctly. An existing
+	// valid value is kept untouched.
+	if os.Getenv("TERM") == "" {
+		_ = os.Setenv("TERM", "xterm-256color")
+	}
+
 	tuiCfg := cfg.TUI
 	ver := version.Version
 
@@ -36,8 +60,21 @@ func StartInteractiveTUI(ctx context.Context, cfg config.Config) error {
 	workDir, _ := os.Getwd()
 
 	model := chat.NewModel(ctx, cancel, workDir, ver, tuiCfg.Mode, tuiCfg.Colors.LogoColor, tuiCfg.LogoGradient)
-	p := tea.NewProgram(model)
+	// Force truecolor: the TUI theme is 24-bit hex, and bubbletea's default
+	// colorprofile.Detect can resolve to NoTTY/ASCII on some PTYs (e.g. a
+	// headless/terminal-use emulator), which makes the renderer strip every
+	// foreground and background color from the frame. Pinning TrueColor keeps
+	// the theme (transcript cards, panel surfaces, selected-row highlight)
+	// rendering as authored. See cmd/cli/tui/views/chat for the styling.
+	p := tea.NewProgram(model, tea.WithColorProfile(colorprofile.TrueColor))
 	model.SetProgram(p)
+
+	// See the mouseTracking* consts above: 1000h tracking (not tea's 1002h
+	// CellMotion) keeps wheel/click handling while freeing drags for native
+	// text selection. Written before the renderer starts and reset after the
+	// program exits, so there is no write interleaving with rendered frames.
+	fmt.Fprint(os.Stdout, mouseTrackingEnable)
+	defer fmt.Fprint(os.Stdout, mouseTrackingDisable)
 
 	go startACPInProcess(ctx, model, p, cfg, ver, workDir)
 
@@ -84,17 +121,14 @@ func startACPInProcess(ctx context.Context, model *chat.Model, p *tea.Program, c
 		return
 	}
 
-	resp, err := sess.NewSession(ctx, openacp.NewSessionRequest{Cwd: workDir})
-	if err != nil {
-		p.Send(chat.AcpErrorMsg(err))
-		return
-	}
-
 	handler := chat.NewAcpEventHandler(p)
 	sess.SetEventHandler(handler)
 	sess.SetClientRequestHandler(handler)
 	model.SetACPSession(sess)
-	p.Send(chat.AcpReadyMsg(string(resp.SessionID)))
+	// The ACP session is created lazily on the user's first prompt — merely
+	// opening the program (and the welcome page) must not persist a session.
+	// ActiveSessionID stays empty until the first NewSession lands.
+	p.Send(chat.AcpSessionReadyMsg("", nil))
 }
 
 // tuiColorMap translates config.TUIColors into the flat map shape
