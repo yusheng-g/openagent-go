@@ -228,13 +228,47 @@ func BuildACPServer(ctx context.Context, cfg *config.Config) (*openacpsdk.Server
 	server := openacpsdk.NewServer(version.Name, version.Version, srv)
 	server.SetLogger(slog.Default())
 
-	// Start settings watcher for hot-reload (telemetry/log-level/models).
-	go watchSettings(ctx, &settingsWatcher{
+	// Register the settings watcher so the settings tool's reload action
+	// can apply changes on demand. fsnotify auto-reload is disabled —
+	// settings changes are applied only via explicit reload (agent calls
+	// set → reload, or operator runs `openagent settings reload`).
+	// TODO: re-enable fsnotify with a non-broadcast notification mechanism
+	// (e.g. DynamicContext injection on next user turn) instead of
+	// broadcasting idle turns to all sessions.
+	activeWatcher.Store(&settingsWatcher{
 		cfgPath:  config.Path(),
 		prev:     cfg,
 		holder:   holder,
 		shutdown: telemetryShutdown,
 		srv:      srv,
+	})
+	// Inject settings callbacks so /settings slash commands and the settings
+	// tool can operate on settings.json without acp importing cmd/cli/config.
+	reloadFn := func(ctx context.Context) acp.ReloadResult {
+		sw := activeWatcher.Load()
+		if sw == nil {
+			return acp.ReloadResult{ParseError: "no settings watcher configured"}
+		}
+		r := sw.reload(ctx)
+		return acp.ReloadResult{
+			Applied:    r.Applied,
+			Violations: r.Violations,
+			ParseError: r.ParseError,
+		}
+	}
+	settingsReloadFn.Store(&reloadFn)
+	srv.SetSettingsCallbacks(acp.SettingsCallbacks{
+		List: config.ListSettings,
+		Get:  config.GetSetting,
+		Set:  config.SetSetting,
+		Validate: func() (warnings, violations []string, err error) {
+			report, err := config.ValidateSettings()
+			if err != nil {
+				return nil, nil, err
+			}
+			return report.Warnings, report.EnumViolations, nil
+		},
+		Reload: reloadFn,
 	})
 
 	// Channel agent: clone the template and inject a default Model + Tools

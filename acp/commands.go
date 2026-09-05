@@ -142,5 +142,83 @@ func (s *AgentServer) buildCommandRegistry() *slash.Registry {
 			return out, nil
 		})
 
+	r.Register("settings", "Manage settings.json (list/validate/reload/get/set)", &slash.InputHint{Hint: "list|validate|reload|get <key>|set <key> <value>"},
+		func(ctx slash.Context, args string) (string, error) {
+			parts := strings.Fields(args)
+			if len(parts) == 0 {
+				return "Usage: /settings list|validate|reload|get <key>|set <key> <value>\n", nil
+			}
+			switch parts[0] {
+			case "list":
+				if ctx.SettingsList == nil {
+					return "Settings unavailable (no server running).\n", nil
+				}
+				return ctx.SettingsList()
+			case "validate":
+				if ctx.SettingsValidate == nil {
+					return "Settings unavailable (no server running).\n", nil
+				}
+				warnings, violations, err := ctx.SettingsValidate()
+				if err != nil {
+					return "FAIL: " + err.Error() + "\n", nil
+				}
+				var out string
+				for _, w := range warnings {
+					out += "WARN: env var " + w + " referenced but not set\n"
+				}
+				for _, v := range violations {
+					out += "WARN: " + v + "\n"
+				}
+				if err == nil && len(warnings) == 0 && len(violations) == 0 {
+					out = "OK: settings.json is valid\n"
+				}
+				return out, nil
+			case "reload":
+				if ctx.SettingsReload == nil {
+					return "Settings unavailable (no server running).\n", nil
+				}
+				applied, violations, parseError := ctx.SettingsReload()
+				if parseError != "" {
+					return "reload FAILED: " + parseError + "\n", nil
+				}
+				if len(violations) > 0 {
+					var out string
+					out += "reload BLOCKED by validation violations:\n"
+					for _, v := range violations {
+						out += "  " + v + "\n"
+					}
+					return out, nil
+				}
+				var out string
+				out += "reload OK. Applied:\n"
+				for _, a := range applied {
+					out += "  " + a + "\n"
+				}
+				return out, nil
+			case "get":
+				if len(parts) < 2 {
+					return "Usage: /settings get <key>\n", nil
+				}
+				if ctx.SettingsGet == nil {
+					return "Settings unavailable (no server running).\n", nil
+				}
+				return ctx.SettingsGet(parts[1])
+			case "set":
+				if len(parts) < 3 {
+					return "Usage: /settings set <key> <value>\n", nil
+				}
+				if ctx.SettingsSet == nil {
+					return "Settings unavailable (no server running).\n", nil
+				}
+				value := strings.Join(parts[2:], " ")
+				if err := ctx.SettingsSet(parts[1], value); err != nil {
+					return "Error: " + err.Error() + "\n", nil
+				}
+				return "set " + parts[1] + " = " + value + ". Call /settings reload to apply.\n", nil
+			default:
+				return "Unknown subcommand: " + parts[0] + "\nUsage: /settings list|validate|reload|get <key>|set <key> <value>\n", nil
+			}
+		})
+
 	return r
 }

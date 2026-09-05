@@ -161,15 +161,11 @@ func (t *settingsTool) Execute(ctx context.Context, args json.RawMessage) *opena
 		}
 		return &openagent.ToolResult{Content: msg}
 	case "reload":
-		// Explicit reload: validates then applies the on-disk settings
-		// immediately (no 500ms debounce wait). Returns what was applied
-		// so the agent can confirm the change took effect — this is the
-		// explicit "apply" step after set (write) + validate (check).
-		sw := activeWatcher.Load()
-		if sw == nil {
+		fn := loadSettingsReloadFn()
+		if fn == nil {
 			return openagent.ErrorResult(fmt.Errorf("settings reload: no server running (reload is only available when a server is live)"), false, "")
 		}
-		result := sw.reload(ctx)
+		result := fn(ctx)
 		var parts []string
 		if result.ParseError != "" {
 			parts = append(parts, "reload FAILED: "+result.ParseError)
@@ -192,6 +188,7 @@ func (t *settingsTool) Execute(ctx context.Context, args json.RawMessage) *opena
 
 // newSettingsTool returns the settings tool. It is server-level (not
 // scoped to a session cwd) because settings.json is a global file.
+// The reload action uses the shared settingsReloadFn (set at startup).
 func newSettingsTool() openagent.Tool {
 	return &settingsTool{}
 }

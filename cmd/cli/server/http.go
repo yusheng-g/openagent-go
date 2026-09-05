@@ -10,6 +10,7 @@ import (
 	"time"
 
 	openagent "github.com/yusheng-g/openagent-go"
+	"github.com/yusheng-g/openagent-go/acp"
 	"github.com/yusheng-g/openagent-go/agent"
 	"github.com/yusheng-g/openagent-go/guard/llm"
 	"github.com/yusheng-g/openagent-go/keyring"
@@ -196,15 +197,32 @@ func RunREST(ctx context.Context, cfg *config.Config) error {
 		srv.Shutdown(shutdownCtx)
 	}()
 
-	// Start settings watcher for hot-reload (telemetry/log-level).
-	// REST mode has no AgentServer so model registry updates are skipped.
-	go watchSettings(ctx, &settingsWatcher{
+	// Register the settings watcher for the reload action. REST mode has
+	// no AgentServer (srv=nil) so model registry updates are skipped.
+	// fsnotify auto-reload is disabled — see acp.go for rationale.
+	activeWatcher.Store(&settingsWatcher{
 		cfgPath:  config.Path(),
 		prev:     cfg,
 		holder:   holder,
 		shutdown: telemetryShutdown,
 		srv:      nil,
 	})
+	// Set the shared reload function for the settings tool's reload action.
+	// REST has no AgentServer so slash commands are unavailable, but the
+	// settings tool (if wired via capabilities) still uses this.
+	reloadFn := func(ctx context.Context) acp.ReloadResult {
+		sw := activeWatcher.Load()
+		if sw == nil {
+			return acp.ReloadResult{ParseError: "no settings watcher configured"}
+		}
+		r := sw.reload(ctx)
+		return acp.ReloadResult{
+			Applied:    r.Applied,
+			Violations: r.Violations,
+			ParseError: r.ParseError,
+		}
+	}
+	settingsReloadFn.Store(&reloadFn)
 
 	slog.Info("REST server listening", "addr", addr)
 	err = srv.ListenAndServe()

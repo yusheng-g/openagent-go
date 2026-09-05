@@ -45,6 +45,25 @@ import (
 //	srv := acp.NewAgentServer(agent, mem, sessionStore)
 //	server := openacpsdk.NewServer("my-agent", "1.0.0", srv)
 //	server.Run(ctx)
+//
+// ReloadResult describes what happened during a settings reload.
+type ReloadResult struct {
+	Applied    []string // changes applied (e.g. "log level: info→trace")
+	Violations []string // enum violations found (reload blocked if non-empty)
+	ParseError string   // non-empty if the config failed to parse
+}
+
+// SettingsCallbacks are injected by the server package so the /settings
+// slash command and the settings tool can operate on settings.json without
+// the acp package importing cmd/cli/config.
+type SettingsCallbacks struct {
+	List     func() (string, error)                            // list all settings
+	Get      func(key string) (string, error)                  // get a setting by dotted path
+	Set      func(key, value string) error                     // set a setting (dotted path + value)
+	Validate func() (warnings, violations []string, err error) // validate settings
+	Reload   func(ctx context.Context) ReloadResult            // reload settings (validate + apply)
+}
+
 type AgentServer struct {
 	Cfg     *agent.Agent // template configuration (cloned per turn)
 	Deps    kernel.Deps  // template runtime deps (derived per turn)
@@ -66,6 +85,12 @@ type AgentServer struct {
 	// sub-agent completions. nil when no trigger is wired (CLI one-shot).
 	turnTriggerMu sync.RWMutex
 	turnTrigger   openacp.TurnTrigger
+
+	// settingsCB is injected by the server package so the /settings slash
+	// command and the settings tool can operate on settings.json without
+	// the acp package importing cmd/cli/config. Guarded by settingsCBMu.
+	settingsCBMu sync.RWMutex
+	settingsCB   SettingsCallbacks
 
 	// clientCaps holds the capabilities advertised by the client during
 	// initialize. Guarded by mu. Used to gate Agent→Client RPC tool
@@ -508,6 +533,16 @@ func (s *AgentServer) SetClientRequester(r openacp.ClientRequester) {
 var _ openacp.ClientRPCUser = (*AgentServer)(nil)
 var _ openacp.AgentHandler = (*AgentServer)(nil)
 var _ openacp.TurnTriggerUser = (*AgentServer)(nil)
+
+// SetSettingsCallbacks injects the settings operation callbacks so the
+// /settings slash command can list/get/set/validate settings.json without
+// the acp package importing cmd/cli/config. Called by the server package
+// at startup.
+func (s *AgentServer) SetSettingsCallbacks(cb SettingsCallbacks) {
+	s.settingsCBMu.Lock()
+	defer s.settingsCBMu.Unlock()
+	s.settingsCB = cb
+}
 
 // SetTurnTrigger implements openacp.TurnTriggerUser. The SDK mux injects a
 // function the server calls to start an idle turn (no client prompt) — used
@@ -1557,23 +1592,6 @@ func (s *AgentServer) BroadcastConfigOptions() {
 			SessionUpdate: "config_option_update",
 			ConfigOptions: s.buildConfigOptions(sid),
 		})
-	}
-}
-
-// BroadcastSystemReminder sends a <system-reminder> to all active sessions
-// via triggerIdleTurn. Used by the settings watcher to notify the model that
-// settings.json was externally modified. triggerIdleTurn sends an
-// "idle_turn_end" session/update after the turn ends so the frontend knows
-// the idle turn is over and can re-enable user input.
-func (s *AgentServer) BroadcastSystemReminder(text string) {
-	s.mu.Lock()
-	ids := make([]openacp.SessionId, 0, len(s.sessions))
-	for sid := range s.sessions {
-		ids = append(ids, sid)
-	}
-	s.mu.Unlock()
-	for _, sid := range ids {
-		s.triggerIdleTurn(sid, text)
 	}
 }
 
@@ -2782,6 +2800,52 @@ func (s *AgentServer) buildSlashContext(ctx context.Context, sid openacp.Session
 				WorkingTokens: working,
 				Window:        window,
 			}, nil
+		},
+		SettingsList: func() (string, error) {
+			s.settingsCBMu.RLock()
+			cb := s.settingsCB
+			s.settingsCBMu.RUnlock()
+			if cb.List == nil {
+				return "", fmt.Errorf("settings unavailable (no server running)")
+			}
+			return cb.List()
+		},
+		SettingsGet: func(key string) (string, error) {
+			s.settingsCBMu.RLock()
+			cb := s.settingsCB
+			s.settingsCBMu.RUnlock()
+			if cb.Get == nil {
+				return "", fmt.Errorf("settings unavailable (no server running)")
+			}
+			return cb.Get(key)
+		},
+		SettingsSet: func(key, value string) error {
+			s.settingsCBMu.RLock()
+			cb := s.settingsCB
+			s.settingsCBMu.RUnlock()
+			if cb.Set == nil {
+				return fmt.Errorf("settings unavailable (no server running)")
+			}
+			return cb.Set(key, value)
+		},
+		SettingsValidate: func() (warnings, violations []string, err error) {
+			s.settingsCBMu.RLock()
+			cb := s.settingsCB
+			s.settingsCBMu.RUnlock()
+			if cb.Validate == nil {
+				return nil, nil, fmt.Errorf("settings unavailable (no server running)")
+			}
+			return cb.Validate()
+		},
+		SettingsReload: func() (applied, violations []string, parseError string) {
+			s.settingsCBMu.RLock()
+			cb := s.settingsCB
+			s.settingsCBMu.RUnlock()
+			if cb.Reload == nil {
+				return nil, nil, "no server running (reload is only available when a server is live)"
+			}
+			result := cb.Reload(ctx)
+			return result.Applied, result.Violations, result.ParseError
 		},
 	}
 }

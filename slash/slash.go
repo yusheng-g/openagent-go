@@ -75,8 +75,15 @@ type Context struct {
 	ListModels func() []string            // available model IDs
 
 	// Compaction.
-	Compact      func() (*CompactStats, error)  // compacts all history into a summary
-	ContextStats func() (*ContextStats, error)  // per-layer context usage (nil = unavailable)
+	Compact      func() (*CompactStats, error) // compacts all history into a summary
+	ContextStats func() (*ContextStats, error) // per-layer context usage (nil = unavailable)
+
+	// Settings operations (wired by the server package).
+	SettingsList     func() (string, error)                                   // list all settings
+	SettingsGet      func(key string) (string, error)                         // get a setting by dotted path
+	SettingsSet      func(key, value string) error                            // set a setting (dotted path + value)
+	SettingsValidate func() (warnings, violations []string, err error)        // validate settings
+	SettingsReload   func() (applied, violations []string, parseError string) // reload settings
 }
 
 // CompactStats reports the outcome of a manual /compact.

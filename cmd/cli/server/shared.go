@@ -14,8 +14,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
-
 	openagent "github.com/yusheng-g/openagent-go"
 	"github.com/yusheng-g/openagent-go/acp"
 	"github.com/yusheng-g/openagent-go/agent"
@@ -556,17 +554,6 @@ func setupTelemetry(ctx context.Context, cfg config.Config) (*otelhooks.TracerHo
 
 // ── Settings hot-reload ──
 
-// ReloadResult describes what happened during a reload — returned by
-// reload() and surfaced to the agent/user via the `reload` action so they
-// can see what was applied (vs. the opaque "hot-reloaded if a server is
-// running" message).
-type ReloadResult struct {
-	Applied    []string // changes applied (e.g. "log level: info→trace")
-	Skipped    []string // changes skipped (e.g. "sandbox.enabled: restart required")
-	Violations []string // enum violations found (reload blocked if non-empty)
-	ParseError string   // non-empty if the config failed to parse
-}
-
 // settingsWatcher holds the state needed to hot-reload settings.json at
 // runtime: the previous config (for diffing), the TracerHolder (for
 // telemetry reconfiguration), and the ACP AgentServer (for model registry
@@ -582,102 +569,39 @@ type settingsWatcher struct {
 }
 
 // activeWatcher is the process-wide settings watcher, set when the server
-// starts. The settings tool's `reload` action uses it to trigger an
-// immediate reload (vs. waiting for the 500ms fsnotify debounce). nil when
-// no server is running (CLI mode, or before watchSettings starts).
+// starts. The settings tool's `reload` action and the /settings reload
+// slash command use it to apply changes on demand. nil when no server is
+// running (CLI mode).
 //
 // atomic.Pointer provides happens-before synchronization between the writer
-// (watchSettings goroutine) and readers (settings tool reload action in ACP
-// session goroutines) — a plain global var would be a data race.
+// (server startup) and readers (settings tool reload action in ACP session
+// goroutines) — a plain global var would be a data race.
 var activeWatcher atomic.Pointer[settingsWatcher]
 
-// onExternalChange is called by the fsnotify watcher when settings.json
-// changes. In ACP mode, it broadcasts a <system-reminder> to all sessions
-// so the model can decide whether to reload. In REST mode (no srv), it
-// falls back to auto-reload (no model to notify).
-//
-// The notification is sent for ALL file changes, including writes by the
-// settings tool itself. The model is smart enough to ignore the notification
-// when it just called set+reload (it knows the change was its own). This
-// avoids the need for a suppression flag (which would be a workaround with
-// a race window: if an external edit happens within the 500ms debounce
-// after a tool write, the flag would swallow it).
-func (sw *settingsWatcher) onExternalChange(ctx context.Context) {
-	if sw.srv != nil {
-		// ACP: notify all active sessions via idle turn. triggerIdleTurn
-		// sends an "idle_turn_end" session/update after the turn ends so
-		// the frontend re-enables user input (same pattern as
-		// context_compacting / available_skills_update — a custom
-		// session/update subtype).
-		sw.srv.BroadcastSystemReminder(kernel.FormatSettingsChangeNote())
-	} else {
-		// REST: no sessions/model to notify — auto-reload.
-		sw.reload(ctx)
-	}
-}
+// settingsReloadFn is the single reload entry point shared by the settings
+// tool's reload action and the /settings reload slash command. Set at
+// server startup (ACP and REST). atomic.Pointer for thread safety —
+// written once at startup, read from session goroutines.
+var settingsReloadFn atomic.Pointer[func(ctx context.Context) acp.ReloadResult]
 
-// watchSettings starts an fsnotify watcher on the settings file. When the
-// file changes, it debounces 500ms then either notifies the model (ACP) or
-// auto-reloads (REST). Returns immediately; runs until ctx is cancelled.
-func watchSettings(ctx context.Context, sw *settingsWatcher) {
-	// Register as the process-wide watcher so the settings tool's `reload`
-	// action can trigger an immediate reload.
-	activeWatcher.Store(sw)
-
-	w, err := fsnotify.NewWatcher()
-	if err != nil {
-		slog.Warn("settings watcher: fsnotify init failed", "error", err)
-		return
+// loadSettingsReloadFn returns the current reload function or nil.
+func loadSettingsReloadFn() func(ctx context.Context) acp.ReloadResult {
+	fn := settingsReloadFn.Load()
+	if fn == nil {
+		return nil
 	}
-	defer w.Close()
-
-	// Watch the directory (not the file) — atomic rename (temp → rename)
-	// replaces the inode, so a file-level watch would miss the change.
-	// Directory-level watch catches the rename event.
-	dir := filepath.Dir(sw.cfgPath)
-	if err := w.Add(dir); err != nil {
-		slog.Warn("settings watcher: cannot watch directory", "dir", dir, "error", err)
-		return
-	}
-
-	var debounce *time.Timer
-	for {
-		select {
-		case <-ctx.Done():
-			if debounce != nil {
-				debounce.Stop()
-			}
-			return
-		case event := <-w.Events:
-			// Only react to writes/creates on the settings file itself.
-			if event.Name != sw.cfgPath {
-				continue
-			}
-			if event.Op&(fsnotify.Write|fsnotify.Create|fsnotify.Rename) == 0 {
-				continue
-			}
-			// Debounce: editors may save multiple times in quick succession.
-			if debounce != nil {
-				debounce.Stop()
-			}
-			debounce = time.AfterFunc(500*time.Millisecond, func() {
-				sw.onExternalChange(ctx)
-			})
-		case err := <-w.Errors:
-			slog.Warn("settings watcher error", "error", err)
-		}
-	}
+	return *fn
 }
 
 // reload reads the new settings.json, parses it, diffs against the previous
 // config, and applies changes to telemetry/log-level/models. Returns a
-// ReloadResult describing what was applied/skipped. Called by the fsnotify
+// acp.ReloadResult describing what was applied/skipped. Called by the
 // watcher (auto) and by the settings tool's `reload` action (explicit).
-func (sw *settingsWatcher) reload(ctx context.Context) ReloadResult {
+func (sw *settingsWatcher) reload(ctx context.Context) acp.ReloadResult {
 	sw.mu.Lock()
 	defer sw.mu.Unlock()
 
-	var result ReloadResult
+	var result acp.ReloadResult
 
 	raw, err := os.ReadFile(sw.cfgPath)
 	if err != nil {
