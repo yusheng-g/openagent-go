@@ -111,8 +111,19 @@ func RunCLI(ctx context.Context, cfg *config.Config, message string) error {
 		CreatedAt: time.Now(),
 	}
 
+	// Emit session lifecycle events for observers (tracking, telemetry, etc.).
+	if sessionObserver != nil {
+		sessionObserver.OnSessionCreate(ctx, openagent.SessionLifecycleEvent{
+			SessionID:   session.ID,
+			EntryPoint:  "cli",
+			SessionMode: "",
+			CreatedAt:   session.CreatedAt,
+		})
+	}
+
 	// 7. Run and stream events to terminal
 	ch := kernel.New(agentCfg, deps).RunStream(ctx, session, openagent.UserMessage(message))
+	var runErr error
 	for evt := range ch {
 		switch evt.Type {
 		case openagent.StreamTextDelta:
@@ -128,14 +139,32 @@ func RunCLI(ctx context.Context, cfg *config.Config, message string) error {
 			}
 
 		case openagent.StreamError:
-			return evt.Error
+			runErr = evt.Error
 
 		case openagent.StreamAborted:
 			if evt.Error != nil {
-				return evt.Error
+				runErr = evt.Error
+			} else {
+				runErr = ctx.Err()
 			}
-			return ctx.Err()
 		}
 	}
-	return nil
+
+	if sessionObserver != nil {
+		closeEvt := openagent.SessionLifecycleEvent{
+			SessionID:  session.ID,
+			EntryPoint: "cli",
+			DurationMs: time.Since(session.CreatedAt).Milliseconds(),
+		}
+		if runErr != nil {
+			closeEvt.Err = runErr
+		}
+		// Use a fresh context — ctx may be cancelled (Ctrl+C) but we
+		// still want the close event to reach the tracking endpoint.
+		closeCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		sessionObserver.OnSessionClose(closeCtx, closeEvt)
+	}
+
+	return runErr
 }
