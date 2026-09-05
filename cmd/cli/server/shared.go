@@ -285,7 +285,7 @@ func buildTools(sandbox *native.Sandbox, workDir string, toolList []string) []op
 // Injected BEFORE the user-overridable prompts (SOUL/SYSTEM/AGENTS) and
 // cannot be replaced by a .md file.
 const builtinSystemPrompt = `# Built-in Rules
-<system-reminder> tags wrap asynchronous notifications from the system, delivered to you outside the normal user→assistant conversation flow. They fire when something happens in the background that you may need to act on — for example, a sub-agent you spawned has finished, or settings were changed externally. Treat each reminder as an event to process (take the indicated action if necessary), not as a user question to answer. If no action is needed, continue what you were doing.`
+<system-reminder> tags wrap system events, not user messages. They are delivered asynchronously when something happens in the background (e.g. a sub-agent completed, settings were modified). A system event is not a request from the user to continue working — take the indicated action if needed, otherwise stop and wait for the user.`
 
 // methodologyAndRulesPrompt is the built-in default for AGENTS.md.
 // It defines working methodology and behavioral rules.
