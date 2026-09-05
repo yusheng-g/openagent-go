@@ -14,7 +14,7 @@ import (
 // with a non-empty agent_id and a "sub-" prefixed sessionID.
 func TestChildRegistry_SpawnReturnsStableID(t *testing.T) {
 	reg := newChildRegistry()
-	cfg := agent.New("explore")
+	cfg := agent.New("explorer")
 	child := reg.spawn(Deps{}, cfg, nil)
 
 	if child.id == "" {
@@ -32,7 +32,7 @@ func TestChildRegistry_SpawnReturnsStableID(t *testing.T) {
 // that spawn registered.
 func TestChildRegistry_GetHitsSameChild(t *testing.T) {
 	reg := newChildRegistry()
-	cfg := agent.New("explore")
+	cfg := agent.New("explorer")
 	child := reg.spawn(Deps{}, cfg, nil)
 
 	got, ok := reg.get(child.id)
@@ -57,7 +57,7 @@ func TestChildRegistry_GetUnknownIDReturnsFalse(t *testing.T) {
 // distinct ids with incrementing counters.
 func TestChildRegistry_SpawnIncrementsCounter(t *testing.T) {
 	reg := newChildRegistry()
-	cfg := agent.New("explore")
+	cfg := agent.New("explorer")
 	c1 := reg.spawn(Deps{}, cfg, nil)
 	c2 := reg.spawn(Deps{}, cfg, nil)
 	if c1.id == c2.id {
@@ -71,13 +71,13 @@ func TestMemSessionStore_AppendAndRecent(t *testing.T) {
 	store := newMemSessionStore(nil)
 	ctx := context.Background()
 	for i := 0; i < 5; i++ {
-		_ = store.Append(ctx, "sub-explore-1", openagent.UserMessage("msg"))
+		_ = store.Append(ctx, "sub-explorer-1", openagent.UserMessage("msg"))
 	}
-	n, _ := store.Count(ctx, "sub-explore-1")
+	n, _ := store.Count(ctx, "sub-explorer-1")
 	if n != 5 {
 		t.Errorf("Count = %d, want 5", n)
 	}
-	recent, _ := store.Recent(ctx, "sub-explore-1", 3, 0)
+	recent, _ := store.Recent(ctx, "sub-explorer-1", 3, 0)
 	if len(recent) != 3 {
 		t.Errorf("Recent len = %d, want 3", len(recent))
 	}
@@ -109,12 +109,12 @@ func TestMemSessionStore_RecentAfter(t *testing.T) {
 func TestMemSessionStore_IsolatedFromParent(t *testing.T) {
 	childStore := newMemSessionStore(nil)
 	ctx := context.Background()
-	_ = childStore.Append(ctx, "sub-explore-1", openagent.UserMessage("child msg"))
+	_ = childStore.Append(ctx, "sub-explorer-1", openagent.UserMessage("child msg"))
 
 	// A fresh store (simulating the parent's sqlite store) should not see
 	// the child's messages.
 	other := newMemSessionStore(nil)
-	n, _ := other.Count(ctx, "sub-explore-1")
+	n, _ := other.Count(ctx, "sub-explorer-1")
 	if n != 0 {
 		t.Errorf("parent store should not see child messages; Count = %d", n)
 	}
@@ -200,7 +200,7 @@ func TestSendTool_UnknownAgentID(t *testing.T) {
 func TestSendTool_ConcurrentBusy(t *testing.T) {
 	reg := newChildRegistry()
 	// Pre-register a child and mark it running to simulate an in-flight call.
-	child := reg.spawn(Deps{}, agent.New("explore"), nil)
+	child := reg.spawn(Deps{}, agent.New("explorer"), nil)
 	child.running = true
 	child.mu.Lock()
 	child.running = true

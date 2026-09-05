@@ -144,13 +144,13 @@ func ToolTitle(name string, args string) string {
 			return name + " " + params.Action
 		}
 	}
-	// Sub-agent delegation tools (explore, general, user-defined): the tool
+	// Sub-agent delegation tools (explorer, general, user-defined): the tool
 	// name is the agent name, identified by the presence of a "task" field
 	// (which no built-in tool uses). MCP tools have "servername_" prefix
 	// and don't carry "task", so they won't match here.
 	if params.Task != "" {
 		if params.Description != "" {
-			return "subagent " + params.Description
+			return "subagent " + name + "(" + params.Description + ")"
 		}
 		return "subagent " + name
 	}
@@ -170,11 +170,19 @@ func StripURLQuery(rawURL string) string {
 	return u.String()
 }
 
-// TruncateToolArg truncates s to n characters, adding "..." at the end.
+// TruncateToolArg truncates s to n runes, adding "..." at the end.
+// Truncates by rune, not byte: byte-slicing can cut a multi-byte UTF-8
+// sequence in half, producing invalid UTF-8 (e.g. a 3-byte CJK rune cut
+// at byte 2 leaves a stray byte that renders as a replacement character).
 func TruncateToolArg(s string, n int) string {
 	s = strings.TrimSpace(s)
-	if len(s) <= n {
+	runes := []rune(s)
+	if len(runes) <= n {
 		return s
 	}
-	return s[:n-3] + "..."
+	// n < 3 means the ellipsis itself doesn't fit — return just "...".
+	if n < 3 {
+		return "..."
+	}
+	return string(runes[:n-3]) + "..."
 }

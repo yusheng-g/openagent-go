@@ -12,11 +12,11 @@ import (
 )
 
 // maxConcurrentSubAgents caps how many async sub-agents may run at once, so a
-// model that fires off a large fan-out of explore calls can't spawn an
+// model that fires off a large fan-out of explorer calls can't spawn an
 // unbounded number of concurrent agent loops (each making API calls). New
 // spawns past the cap are rejected with a clear error so the model waits for
 // some to finish (it'll be notified via onExit).
-const maxConcurrentSubAgents = 8
+const maxConcurrentSubAgents = 16
 
 // childRegistry holds live resumable sub-agents for one Runtime (one session).
 // Shared between subAgentTool (spawn) and sendTool (continue) via Deps.
@@ -25,7 +25,7 @@ const maxConcurrentSubAgents = 8
 type childRegistry struct {
 	mu          sync.Mutex
 	counter     int
-	live        map[string]*liveChild // keyed by agent_id (e.g. "explore-1")
+	live        map[string]*liveChild // keyed by agent_id (e.g. "explorer-1")
 	activeAsync int                   // running async spawns, for the concurrency cap
 
 	// onExit is called when an async sub-agent completes. The ACP layer
@@ -70,8 +70,8 @@ func (r *childRegistry) hasOnExit() bool {
 // set — the parent's tools may change between the spawn and a later continue
 // (plan-mode transitions, dynamic injection).
 type liveChild struct {
-	id         string // agent_id shown to model (e.g. "explore-1")
-	sessionID  string // stable child session.ID ("sub-explore-1")
+	id         string // agent_id shown to model (e.g. "explorer-1")
+	sessionID  string // stable child session.ID ("sub-explorer-1")
 	cfg        *agent.Agent
 	deps       Deps                    // deps.SessionStore = child's memSessionStore; Compressor = same store; Tools resolved per-run
 	toolFilter func() []openagent.Tool // nil = use deps.Tools as-is
@@ -211,7 +211,7 @@ func (r *childRegistry) spawn(parentDeps Deps, cfg *agent.Agent, toolFilter func
 	r.mu.Unlock()
 
 	// One in-memory store per child, backed by the parent's summarizer so the
-	// child gets full compaction support (long explores won't overflow). The
+	// child gets full compaction support (long delegations won't overflow). The
 	// store implements both SessionStore and Compressor.
 	store := newMemSessionStore(parentDeps.Summarizer)
 
@@ -220,7 +220,7 @@ func (r *childRegistry) spawn(parentDeps Deps, cfg *agent.Agent, toolFilter func
 	deps.SessionStore = store
 	deps.Compressor = store
 	// Sub-agent tool calls are NOT gated by the parent's approver — the child
-	// runs with its own tool scope (read-only for explore) and its own policy.
+	// runs with its own tool scope (read-only for explorer) and its own policy.
 	// Inheriting the parent's manual-mode approver would prompt the user for
 	// every read/grep the child does, defeating the point of delegation.
 	deps.HumanApprover = nil
@@ -252,7 +252,7 @@ func (r *childRegistry) get(id string) (*liveChild, bool) {
 
 // memSessionStore is an in-memory SessionStore+Compressor for sub-agent
 // history. One instance per child; never persists to disk. Implements both
-// interfaces so the child gets full compaction support (100-turn explores
+// interfaces so the child gets full compaction support (100-turn runs
 // won't overflow the context window).
 //
 // The summarizer is the same one the parent uses (built from the same model)

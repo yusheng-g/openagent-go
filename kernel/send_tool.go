@@ -9,7 +9,7 @@ import (
 )
 
 // sendTool implements the "sub_agent_send" tool: it delivers a follow-up
-// message to a sub-agent launched earlier (via a subAgentTool like explore),
+// message to a sub-agent launched earlier (via a subAgentTool like explorer),
 // reusing the child's accumulated conversation history. The child keeps its
 // in-memory SessionStore across calls, so the model can ask follow-up
 // questions without re-explaining context from the original delegation.
@@ -28,7 +28,7 @@ func newSendTool(reg *childRegistry) *sendTool {
 func (t *sendTool) Definition() openagent.FunctionDefinition {
 	return openagent.FunctionDefinition{
 		Name: "sub_agent_send",
-		Description: "Send a follow-up message to a sub-agent launched earlier (e.g. via explore). " +
+		Description: "Send a follow-up message to a sub-agent launched earlier (e.g. via explorer). " +
 			"The sub-agent keeps its conversation history, so follow-up questions don't need " +
 			"re-explained context. Pass the agent_id returned by the original sub-agent call.",
 		Parameters: openagent.SchemaOf[SendParams](),
@@ -94,6 +94,6 @@ func (t *sendTool) Execute(ctx context.Context, args json.RawMessage) *openagent
 // SendParams are the arguments to sub_agent_send.
 type SendParams struct {
 	Description string `json:"description,omitempty" jsonschema:"description=Short label (3-7 words) for this follow-up, shown in the progress UI"`
-	AgentID     string `json:"agent_id" jsonschema:"description=The agent_id returned by the original sub-agent call (e.g. explore-1)"`
+	AgentID     string `json:"agent_id" jsonschema:"description=The agent_id returned by the original sub-agent call (e.g. explorer-1)"`
 	Message     string `json:"message" jsonschema:"description=The follow-up message or question for the sub-agent"`
 }

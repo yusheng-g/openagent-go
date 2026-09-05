@@ -485,35 +485,152 @@ func buildOpts(opts []agent.Option, caps config.Capabilities) ([]agent.Option, s
 	if caps.OnSkills() {
 		sp = openSkillProvider()
 	}
-	// explore is a read-only code-exploration sub-agent. Its tool allowlist
-	// (read/ls/grep/shell) keeps it from mutating files; filterChildTools
-	// additionally strips sub-agent recursion. MaxTurns 100 lets it work
-	// through a read→grep→read investigation in one delegation.
-	opts = append(opts, agent.WithSubAgents(exploreSubAgent()))
+	// Three domain-agnostic sub-agents, split by information source
+	// (local/external) × intent (collect/inspect), not by business domain.
+	// filterChildTools narrows each child to its allowlist and additionally
+	// strips sub-agent recursion (a child cannot spawn another child).
+	// HumanApprover is nil in children (see child_registry.go), so read-only
+	// intent is enforced by prompt, not by an approval gate.
+	opts = append(opts, agent.WithSubAgents(
+		explorerSubAgent(),
+		researcherSubAgent(),
+		reviewerSubAgent(),
+	))
 	return opts, sp
 }
 
-// exploreSubAgent is the built-in read-only exploration sub-agent. The model
-// delegates a focused investigation; the child runs in an isolated context
-// (no parent history) with only read/ls/grep/shell and reports back findings.
-func exploreSubAgent() agent.SubAgent {
+// explorerSubAgent is the local-information collection sub-agent. It surveys,
+// extracts, and organizes content already present on disk — never modifying
+// anything. The model delegates a focused local investigation; the child runs
+// in an isolated context (no parent history) and reports back findings.
+func explorerSubAgent() agent.SubAgent {
 	return agent.SubAgent{
-		Name:        "explore",
-		Description: "Read-only code exploration. Use when you need to understand, locate, or analyze code — especially across multiple files or directories. Launch multiple explore sub-agents to cover different areas in parallel, then wait for their completion notifications. Does NOT modify files. Returns an agent_id for follow-up questions via sub_agent_send.",
-		SystemPrompt: "You are a read-only exploration sub-agent. Your job is to locate and understand " +
-			"code, then report findings — not to modify anything. Use read, ls, grep, and read-only " +
-			"shell commands (git, find). Do NOT write or edit files. Deliverable: a concise report " +
-			"answering the task directly — the relevant file paths with line numbers, how the pieces " +
-			"connect, and the minimal code quoted to make the point. Don't dump whole files.",
+		Name: "explorer",
+		Description: "Collect and organize LOCAL information — anything already present on disk. " +
+			"Delegate ONLY when the task needs to survey multiple local sources and synthesize " +
+			"an organized picture; for a single-source lookup, do it directly. " +
+			"Read-only. Returns an agent_id for follow-up via sub_agent_send.",
+		SystemPrompt: `You are a local-information collection sub-agent. Your job is to locate, gather, and organize information that already exists locally — never to modify anything.
+
+What to do:
+- Survey the local area, find relevant items, extract what matters, and synthesize a coherent picture.
+- Cite the location of every piece you report.
+- Quote minimally — enough to convey the point, not entire items.
+- Distinguish what you directly observed from what you inferred.
+
+Shell discipline (read-only intent — there is NO approval gate in sub-agents):
+- Run only commands that read or query — never commands that write, create, delete, install, or download.
+- When unsure whether a command mutates state: assume it does, and do not run it.
+
+Budget:
+- Narrow broad searches rather than processing every result.
+- For large items, read the relevant portion, not the whole thing.
+- If you cannot find the answer after a reasonable effort, report what you searched and where.
+
+Anti-patterns:
+- Do NOT write, edit, or create anything.
+- Do NOT dump entire items — quote only relevant portions.
+- Do NOT take over the reviewer's job (evaluate quality, find problems).
+- Do NOT take over the researcher's job (web research).
+- Do NOT speculate without evidence.`,
+		Tools:    []string{"read", "ls", "grep", "shell", "pptx_read", "excel_read", "word_read"},
+		MaxTurns: 100,
+	}
+}
+
+// researcherSubAgent is the external-information gathering sub-agent. It
+// searches the web, cross-verifies across sources, and synthesizes a grounded
+// summary with citations. Read-only intent.
+func researcherSubAgent() agent.SubAgent {
+	return agent.SubAgent{
+		Name: "researcher",
+		Description: "Gather and synthesize EXTERNAL information from the web. " +
+			"Delegate ONLY when the task needs 3+ searches or cross-source verification " +
+			"whose intermediate content would bloat context; for a single lookup, do it directly. " +
+			"Read-only. Returns an agent_id for follow-up via sub_agent_send.",
+		SystemPrompt: `You are a research sub-agent. Your job is to gather information from the web, cross-verify across sources, and synthesize a grounded summary — never to modify files.
+
+What to do:
+- Identify the key questions, search for relevant sources, and extract content from them.
+- Gap-check: identify what's still unanswered and refine your searches.
+- Synthesize findings into a coherent answer with citations.
+- Every factual claim cites a source. Mark confidence per claim when sources disagree or evidence is thin.
+- If you cannot find enough, say so — report what you searched and what's missing.
+
+Shell discipline (read-only intent — there is NO approval gate in sub-agents):
+- Run only commands that read or query — never commands that write, create, delete, install, or download.
+- When unsure whether a command mutates state: assume it does, and do not run it.
+
+Budget:
+- Stop and report "not found" when repeated searches yield nothing relevant.
+- Do not fetch an unbounded number of pages.
+
+Anti-patterns:
+- Do NOT write, edit, or create files.
+- Do NOT dump raw page content — synthesize and quote sparingly.
+- Do NOT fabricate sources.
+- Do NOT take over the reviewer's job (evaluate quality, find problems).`,
 		Tools: []string{
-			"read", "ls", "grep", "shell",
 			"websearch", "webfetch",
-			// One-shot headless browser tools — webfetch can't render JS SPAs
-			// (GitHub, docs sites); browser_navigate/screenshot/evaluate/click
-			// are the read-side fallback for those. browser_use_* (persistent
-			// multi-step automation) is excluded — too heavy for exploration.
-			"browser_navigate", "browser_screenshot", "browser_evaluate", "browser_click",
+			"browser_navigate", "browser_screenshot", "browser_evaluate",
+			"read", "ls", "grep", "shell",
+			"pptx_read", "excel_read", "word_read",
 		},
+		MaxTurns: 100,
+	}
+}
+
+// reviewerSubAgent is the independent-audit sub-agent. It re-examines the
+// original material within a scope set by the parent (not the gatherers'
+// reports) and reports a structured issue list. It does not produce fixes.
+// Read-only intent.
+func reviewerSubAgent() agent.SubAgent {
+	return agent.SubAgent{
+		Name: "reviewer",
+		Description: "Evaluate content and find problems — errors, inconsistencies, gaps, " +
+			"quality issues in any artifact. " +
+			"Delegate ONLY when the task needs to examine multiple items and produce a " +
+			"structured issue list; for a quick single-item check, do it directly. " +
+			"Read-only. Returns an agent_id for follow-up via sub_agent_send.",
+		SystemPrompt: `You are an independent-audit sub-agent. Your job is to re-examine the original material within the scope set by the parent and report problems — never to modify anything. You form your own judgment from the source, not from a gatherer's summary.
+
+What to do:
+- Understand the scope and criteria from the task.
+- Examine all relevant items, evaluate against each applicable criterion.
+- Report a structured issue list with locations and suggestions.
+
+Check for:
+- Correctness: factual errors, logic flaws, broken references, missing data.
+- Completeness: gaps, omissions, unanswered questions, missing sections.
+- Consistency: contradictions between items, or between claims and their sources.
+- Quality: unclear expression, redundancy, structural issues.
+
+Shell discipline (read-only intent — there is NO approval gate in sub-agents):
+- Run only commands that read or query — never commands that write, create, delete, install, or download.
+- When unsure whether a command mutates state: assume it does, and do not run it.
+
+Output contract:
+- Each issue: severity (critical/high/medium/low), type, location, description, suggestion.
+- Order: critical first, then high, medium, low.
+- If NO issues are found, state that explicitly — do not pad with nits.
+- Quote the specific problematic portion, not entire items.
+
+Severity:
+- critical: renders the content wrong or unusable.
+- high: significant error or omission.
+- medium: real issue with limited impact.
+- low: minor quality or consistency note.
+
+Budget:
+- Stay scoped to the task — do not review items outside the requested scope.
+
+Anti-patterns:
+- Do NOT write, edit, or create files — you report, the parent fixes.
+- Do NOT speculate about problems without citing specific evidence.
+- Do NOT take over the explorer's job (collect and organize local information).
+- Do NOT take over the researcher's job (gather new external information).
+- Describe fixes in suggestions; do not produce the corrected content.`,
+		Tools:    []string{"read", "ls", "grep", "shell", "webfetch", "pptx_read", "excel_read", "word_read"},
 		MaxTurns: 100,
 	}
 }

@@ -143,11 +143,9 @@ func (t *subAgentTool) Definition() openagent.FunctionDefinition {
 	return openagent.FunctionDefinition{
 		Name: name,
 		Description: fmt.Sprintf("Delegate a focused investigation to the %s sub-agent. %s "+
-			"Use this when you need to understand, locate, or analyze code across multiple files or directories — "+
-			"especially for large-scale exploration where reading files one by one would be slow. "+
 			"Launch multiple sub-agents in one turn to cover different areas in parallel. "+
 			"It runs in the background and notifies you on completion — you will receive a system-reminder with the result, "+
-			"so do not read/ls/grep the same code yourself while waiting. "+
+			"so do not duplicate its work while waiting. "+
 			"The result includes an agent_id you can pass to sub_agent_send to send follow-up questions to the SAME sub-agent, "+
 			"which keeps its conversation history so you don't need to re-explain context. "+
 			"Up to %d sub-agents may run concurrently; excess calls are rejected — wait for some to finish first.",
@@ -208,7 +206,7 @@ func (t *subAgentTool) Execute(ctx context.Context, args json.RawMessage) *opena
 
 	// Async path: onExit wired → run in background, return immediately.
 	if t.reg.hasOnExit() {
-		if err := t.reg.startAsync(child, sessionFromContext(ctx), params.Task, t.cfg.Description); err != nil {
+		if err := t.reg.startAsync(child, sessionFromContext(ctx), params.Task, params.Description); err != nil {
 			return openagent.ErrorResult(fmt.Errorf("agent tool %q: %w", t.cfg.Name, err), false, "")
 		}
 		return &openagent.ToolResult{Content: fmt.Sprintf(
@@ -262,7 +260,7 @@ func (t *subAgentTool) ExecuteStream(ctx context.Context, args json.RawMessage) 
 		spawned := t.reg.spawn(t.deps, t.cfg, t.toolFilter)
 		// Async path: onExit wired → run in background, return immediately.
 		if t.reg.hasOnExit() {
-			if err := t.reg.startAsync(spawned, sessionFromContext(ctx), params.Task, t.cfg.Description); err != nil {
+			if err := t.reg.startAsync(spawned, sessionFromContext(ctx), params.Task, params.Description); err != nil {
 				ch <- openagent.ToolStreamChunk{Error: fmt.Errorf("agent tool %q: %w", t.cfg.Name, err)}
 				return
 			}

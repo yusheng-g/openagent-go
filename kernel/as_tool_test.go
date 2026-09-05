@@ -21,28 +21,28 @@ func (n nameTool) Execute(_ context.Context, _ json.RawMessage) *openagent.ToolR
 	return &openagent.ToolResult{Content: "ok"}
 }
 
-// TestNew_RegistersSubAgentAsTool verifies that a configured SubAgent appears
-// in the runtime's tool snapshot under its Name, so the model can call it.
-// It also confirms sub_agent_send is registered alongside it for follow-ups.
-func TestNew_RegistersSubAgentAsTool(t *testing.T) {
+// TestNew_RegistersSubAgentsAsTools verifies that each configured SubAgent
+// appears in the runtime's tool snapshot under its Name, so the model can call
+// it. It also confirms sub_agent_send is registered alongside them.
+func TestNew_RegistersSubAgentsAsTools(t *testing.T) {
 	cfg := agent.New("test")
-	cfg.SubAgents = []agent.SubAgent{{
-		Name:         "explore",
-		Description:  "read-only exploration",
-		SystemPrompt: "you are explore",
-		Tools:        []string{"read", "ls", "grep"},
-		MaxTurns:     100,
-	}}
+	cfg.SubAgents = []agent.SubAgent{
+		{Name: "explorer", Tools: []string{"read", "ls", "grep", "shell"}, MaxTurns: 100},
+		{Name: "researcher", Tools: []string{"websearch", "webfetch"}, MaxTurns: 100},
+		{Name: "reviewer", Tools: []string{"read", "grep", "webfetch"}, MaxTurns: 100},
+	}
 	rt := New(cfg, Deps{
 		Tools: []openagent.Tool{nameTool("read")},
 	})
 
 	names := toolNamesFromSnapshot(rt)
-	if !contains(names, "explore") {
-		t.Fatalf("explore sub-agent not registered as a tool; got %v", names)
+	for _, want := range []string{"explorer", "researcher", "reviewer"} {
+		if !contains(names, want) {
+			t.Errorf("%q sub-agent not registered as a tool; got %v", want, names)
+		}
 	}
 	if !contains(names, "sub_agent_send") {
-		t.Errorf("sub_agent_send should be registered alongside explore; got %v", names)
+		t.Errorf("sub_agent_send should be registered alongside the sub-agents; got %v", names)
 	}
 }
 
@@ -58,40 +58,70 @@ func TestNew_NoSubAgentsOmitsSendTool(t *testing.T) {
 	}
 }
 
-// TestFilterChildTools_ExploreReadOnly verifies the explore sub-agent's
-// inherited tool set: the allowlist keeps read/ls/grep/shell/websearch/webfetch
-// + one-shot browser tools, drops write/edit (mutating) and browser_use_*
-// (persistent automation), and always drops sub-agent tools (no recursion).
-func TestFilterChildTools_ExploreReadOnly(t *testing.T) {
+// TestFilterChildTools_ThreeSubAgents verifies the source-based split:
+//   - explorer: local tools only (read/ls/grep/shell); web tools dropped.
+//   - researcher: web tools + local context (read/ls/grep/shell); mutating dropped.
+//   - reviewer: read/ls/grep/shell/webfetch (inspect, not collect); websearch dropped.
+//
+// All three drop mutating tools (write/edit) and sub-agent tools (no recursion).
+func TestFilterChildTools_ThreeSubAgents(t *testing.T) {
 	parent := []openagent.Tool{
 		nameTool("read"), nameTool("write"), nameTool("edit"),
 		nameTool("ls"), nameTool("grep"), nameTool("shell"),
 		nameTool("websearch"), nameTool("webfetch"),
 		nameTool("browser_navigate"), nameTool("browser_screenshot"),
-		nameTool("browser_evaluate"), nameTool("browser_click"),
-		nameTool("browser_use_open"), nameTool("browser_use_click"),
-		nameTool("office_excel"),
-		nameTool("explore"), // a sub-agent tool in the parent set
+		nameTool("browser_evaluate"),
+		// Office tools: read-side (kept by read-only sub-agents) + write-side
+		// (must be filtered out — sub-agents are read-only intent).
+		nameTool("pptx_read"), nameTool("excel_read"), nameTool("word_read"),
+		nameTool("pptx_write"), nameTool("excel_write"), nameTool("word_write"),
+		nameTool("explorer"), nameTool("researcher"), nameTool("reviewer"),
 	}
-	subAgentNames := map[string]bool{"explore": true}
-	allow := []string{
-		"read", "ls", "grep", "shell",
-		"websearch", "webfetch",
-		"browser_navigate", "browser_screenshot", "browser_evaluate", "browser_click",
-	}
+	subAgentNames := map[string]bool{"explorer": true, "researcher": true, "reviewer": true}
 
-	got := filterChildTools(parent, subAgentNames, nil, allow)
+	officeRead := []string{"pptx_read", "excel_read", "word_read"}
+	officeWrite := []string{"pptx_write", "excel_write", "word_write"}
 
-	names := toolNamesFromFilter(got)
-	for _, want := range allow {
-		if !contains(names, want) {
-			t.Errorf("explore child should keep %q; got %v", want, names)
-		}
+	cases := []struct {
+		name    string
+		allow   []string
+		keep    []string
+		blocked []string
+	}{
+		{
+			name:    "explorer",
+			allow:   append([]string{"read", "ls", "grep", "shell"}, officeRead...),
+			keep:    append([]string{"read", "ls", "grep", "shell"}, officeRead...),
+			blocked: append([]string{"write", "edit", "websearch", "webfetch", "browser_navigate", "explorer", "researcher", "reviewer"}, officeWrite...),
+		},
+		{
+			name:    "researcher",
+			allow:   append([]string{"websearch", "webfetch", "browser_navigate", "browser_screenshot", "browser_evaluate", "read", "ls", "grep", "shell"}, officeRead...),
+			keep:    append([]string{"websearch", "webfetch", "browser_navigate", "browser_screenshot", "browser_evaluate", "read", "ls", "grep", "shell"}, officeRead...),
+			blocked: append([]string{"write", "edit", "explorer", "researcher", "reviewer"}, officeWrite...),
+		},
+		{
+			name:    "reviewer",
+			allow:   append([]string{"read", "ls", "grep", "shell", "webfetch"}, officeRead...),
+			keep:    append([]string{"read", "ls", "grep", "shell", "webfetch"}, officeRead...),
+			blocked: append([]string{"write", "edit", "websearch", "browser_navigate", "explorer", "researcher", "reviewer"}, officeWrite...),
+		},
 	}
-	for _, blocked := range []string{"write", "edit", "browser_use_open", "browser_use_click", "office_excel", "explore"} {
-		if contains(names, blocked) {
-			t.Errorf("explore child must not contain %q (read-only + no recursion); got %v", blocked, names)
-		}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := filterChildTools(parent, subAgentNames, nil, tc.allow)
+			names := toolNamesFromFilter(got)
+			for _, want := range tc.keep {
+				if !contains(names, want) {
+					t.Errorf("%s child should keep %q; got %v", tc.name, want, names)
+				}
+			}
+			for _, blocked := range tc.blocked {
+				if contains(names, blocked) {
+					t.Errorf("%s child must not contain %q; got %v", tc.name, blocked, names)
+				}
+			}
+		})
 	}
 }
 
