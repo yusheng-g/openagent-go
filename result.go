@@ -217,7 +217,7 @@ func (p *DefaultResultPolicy) Apply(ctx context.Context, session Session, result
 	origBytes := len(result.Content)
 	sizeKB := (len(raw) + 1023) / 1024
 	lines := strings.Count(raw, "\n") + 1
-	result.Content = "Output saved to " + path + " (" + strconv.Itoa(sizeKB) + " KB, " + strconv.Itoa(lines) + " lines). Use read or grep to search."
+	result.Content = "Output was too large for the context window, so it was saved to " + path + " (" + strconv.Itoa(sizeKB) + " KB, " + strconv.Itoa(lines) + " lines). Use read with a line range or grep to inspect specific parts."
 	result.Truncated = true
 	result.FileRef = path
 	if result.Metadata == nil {
