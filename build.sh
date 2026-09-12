@@ -20,6 +20,15 @@ set -euo pipefail
 NAME="${OPENAGENT_BINARY_NAME:-openagent}"
 VERSION="${OPENAGENT_VERSION:-$(git describe --tags --always 2>/dev/null || echo dev)}"
 
+# Event tracking (ldflags-injected). Empty = disabled. The endpoint URL and
+# AppID are not hardcoded here — they are injected via the OPENAGENT_EVENT_*
+# environment variables, typically set as pipeline variables in CI (not in the
+# repo). A plain `go build` or `./build.sh` without these variables produces a
+# disabled binary.
+EVENT_POST_URL="${OPENAGENT_EVENT_POST_URL:-}"
+EVENT_APP_ID="${OPENAGENT_EVENT_APP_ID:-}"
+SKIP_VERIFY="${OPENAGENT_SKIP_VERIFY:-false}"
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$REPO_ROOT"
 
@@ -29,7 +38,10 @@ echo "==> Building Go binary: $NAME (version $VERSION, embedded skills)"
 go build \
          -ldflags "-s -w \
                    -X github.com/yusheng-g/openagent-go/version.Name=$NAME \
-                   -X github.com/yusheng-g/openagent-go/version.Version=$VERSION" \
+                   -X github.com/yusheng-g/openagent-go/version.Version=$VERSION \
+                   -X github.com/yusheng-g/openagent-go/track.EventPostUrl=$EVENT_POST_URL \
+                   -X github.com/yusheng-g/openagent-go/track.AppID=$EVENT_APP_ID \
+                   -X github.com/yusheng-g/openagent-go/track.EventSkipVerify=$SKIP_VERIFY" \
          -o "$NAME" ./cmd/cli/
 
 echo ""

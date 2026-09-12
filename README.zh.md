@@ -275,6 +275,30 @@ OpenViking 是一个上下文数据库，提供服务端记忆、技能和资源
 
 `context_providers` 对 `memory`、`skill`、`resource` 各域可设为 `"builtin"` 或 `"openviking"`。留空 = 跟随 endpoint 默认值。
 
+## 遥测与隐私
+
+官方二进制可能向华为云 martech 平台上报匿名会话生命周期事件（创建 / 关闭 / 删除），用于了解使用情况、改进产品。
+
+**上报内容：** 事件类型、会话 ID、入口（`acp`/`cli`/`rest`）、会话模式（`auto`/`semi-auto`/`manual`/`plan`）、会话时长、失败原因。`anonymousId`/`distinctId`/`instance_id` 字段携带主机名派生标识（若主机名已是 32 位十六进制则直接使用，否则取主机名的 MD5），用于关联同一部署的事件。**不会上报源代码、提示词、模型输出或文件内容。**
+
+**默认行为——禁用。** 上报端点和 AppID **不**硬编码在仓库中；直接 `go build` 或 `./build.sh` 不注入它们，产出禁用上报的二进制。只有 CI 流水线构建注入了 `OPENAGENT_EVENT_POST_URL` / `OPENAGENT_EVENT_APP_ID`（作为流水线变量存储，不在仓库中）时，才产出上报二进制。
+
+**启用**（CI 流水线）：
+
+```bash
+OPENAGENT_EVENT_POST_URL="https://your-track-endpoint" \
+OPENAGENT_EVENT_APP_ID="your-app-id" \
+./build.sh
+```
+
+**关闭** — 不设置这些变量（默认），或显式将端点置空：
+
+```bash
+OPENAGENT_EVENT_POST_URL="" ./build.sh
+```
+
+也可关闭 TLS 校验（`OPENAGENT_SKIP_VERIFY=true`）。
+
 ## 特性
 
 - **全插件架构** — 每个组件都是接口：Model、Memory、Tools、Guards、Approver、Hooks、Observer

@@ -275,6 +275,30 @@ To keep a specific domain on local storage while using OpenViking for the rest:
 
 `context_providers` accepts `"builtin"` or `"openviking"` for each of `memory`, `skill`, `resource`. Empty = follow the endpoint default.
 
+## Telemetry & Privacy
+
+Official binaries may report anonymous session lifecycle events (create / close / delete) to the Huawei Cloud martech tracking platform. This helps us understand usage and improve the product.
+
+**What is reported:** event type, session ID, entry point (`acp`/`cli`/`rest`), session mode (`auto`/`semi-auto`/`manual`/`plan`), session duration, and failure reason. The `anonymousId`/`distinctId`/`instance_id` fields carry a hostname-derived identifier (hostname used directly if it is already a 32-char hex value, otherwise MD5 of the hostname) so events from one deployment can be correlated. **No source code, prompts, model output, or file contents are reported.**
+
+**Default behavior — disabled.** The tracking endpoint and AppID are **not** hardcoded in the repository; a plain `go build` or `./build.sh` leaves them empty, producing a disabled binary. Only CI pipeline builds that inject `OPENAGENT_EVENT_POST_URL` / `OPENAGENT_EVENT_APP_ID` (stored as pipeline variables, not in the repo) produce a binary that emits events.
+
+**Enable** (CI pipeline):
+
+```bash
+OPENAGENT_EVENT_POST_URL="https://your-track-endpoint" \
+OPENAGENT_EVENT_APP_ID="your-app-id" \
+./build.sh
+```
+
+**Opt out** — leave the variables unset (the default), or explicitly set the endpoint to empty:
+
+```bash
+OPENAGENT_EVENT_POST_URL="" ./build.sh
+```
+
+You may also disable TLS verification (`OPENAGENT_SKIP_VERIFY=true`).
+
 ## Features
 
 - **Pluggable architecture** — every component is an interface: Model, Memory, Tools, Guards, Approver, Hooks, Observer
