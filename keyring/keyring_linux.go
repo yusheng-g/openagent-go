@@ -5,6 +5,7 @@ package keyring
 import (
 	"errors"
 	"fmt"
+	"os"
 
 	dbus "github.com/godbus/dbus/v5"
 	gkr "github.com/zalando/go-keyring"
@@ -36,12 +37,17 @@ func openBackend() (backend, error) {
 }
 
 // isSecretServiceAvailable checks whether the Secret Service D-Bus
-// service is registered on the session bus. Unlike zalando/go-keyring's
-// implicit probe (which triggers `dbus-launch` autolaunch via godbus),
-// this explicitly calls dbus.SessionBus() — on recent godbus versions
-// SessionBus returns an error in headless environments instead of
-// invoking dbus-launch.
+// service is registered on the session bus. It guards against the two
+// autolaunch triggers in godbus getSessionBusAddress — an empty or
+// "autolaunch:" DBUS_SESSION_BUS_ADDRESS — before calling SessionBus,
+// which would otherwise spawn dbus-launch + dbus-daemon. conn.Close()
+// does not terminate the daemon, leaking an orphan dbus-daemon on
+// every call.
 func isSecretServiceAvailable() bool {
+	addr := os.Getenv("DBUS_SESSION_BUS_ADDRESS")
+	if addr == "" || addr == "autolaunch:" {
+		return false
+	}
 	conn, err := dbus.SessionBus()
 	if err != nil {
 		return false
