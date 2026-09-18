@@ -98,7 +98,7 @@ func main() {
 
 	// keyring subcommands don't use plugins; skip loading to avoid
 	// plugin log noise on stdout/stderr.
-	if !isKeyringCmd(os.Args) {
+	if !isOfflineCmd(os.Args) {
 		var cleanup func()
 		settings, cleanup = loadPlugins(ctx, pluginPaths, settings, hub)
 		defer cleanup()
@@ -152,6 +152,7 @@ func main() {
 	rootCmd.AddCommand(buildRunCmd(cfg))
 	rootCmd.AddCommand(buildTuiCmd(cfg))
 	rootCmd.AddCommand(keyringCmd)
+	rootCmd.AddCommand(buildExportCmd())
 	rootCmd.AddCommand(buildSettingsCmd())
 
 	// 7. Wrap every command's RunE to notify observers on entry/exit.
@@ -583,14 +584,19 @@ func keyringOrFail() plugin.Keyring {
 	return sysKr
 }
 
-// isKeyringCmd reports whether the first non-flag argument is "keyring",
-// so plugin loading can be skipped for keyring subcommands.
-func isKeyringCmd(args []string) bool {
+// isOfflineCmd reports whether the first non-flag argument is a command
+// that doesn't need plugins (keyring, export), so plugin loading can be
+// skipped to avoid plugin log noise on stdout/stderr.
+func isOfflineCmd(args []string) bool {
 	for _, a := range args[1:] {
 		if strings.HasPrefix(a, "-") {
 			continue
 		}
-		return a == "keyring"
+		switch a {
+		case "keyring", "export":
+			return true
+		}
+		return false
 	}
 	return false
 }
