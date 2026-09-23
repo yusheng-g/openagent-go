@@ -2,6 +2,7 @@ package context
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -132,3 +133,126 @@ func (f *fakeStore) Recent(context.Context, string, int, int) ([]openagent.Messa
 }
 func (f *fakeStore) Count(context.Context, string) (int, error)  { return 0, nil }
 func (f *fakeStore) DeleteSession(context.Context, string) error { return nil }
+
+// mockModel returns canned responses in order, for testing retry logic.
+type mockModel struct {
+	responses []string
+	idx       int
+}
+
+func (m *mockModel) ChatCompletion(_ context.Context, _ openagent.ChatCompletionRequest) (*openagent.ChatCompletionResponse, error) {
+	if m.idx >= len(m.responses) {
+		return nil, fmt.Errorf("mock: no more responses (idx=%d)", m.idx)
+	}
+	resp := &openagent.ChatCompletionResponse{
+		Choices: []openagent.Choice{
+			{Message: openagent.Message{Content: m.responses[m.idx]}},
+		},
+	}
+	m.idx++
+	return resp, nil
+}
+
+func (m *mockModel) ChatCompletionStream(_ context.Context, _ openagent.ChatCompletionRequest) (openagent.StreamReader, error) {
+	return nil, nil
+}
+
+func (m *mockModel) ContextWindow() int { return 128000 }
+
+// TestParseExtractionItems_Truncated verifies the lenient decoder salvages
+// complete items from truncated JSON (finish_reason: "length" scenarios).
+func TestParseExtractionItems_Truncated(t *testing.T) {
+	cases := []struct {
+		name    string
+		raw     string
+		want    int
+		wantErr bool
+	}{
+		{
+			name: "one complete + one truncated",
+			raw:  `[{"op":"add","kind":"fact","content":"complete item here","topic":"t1"},{"op":"add","kind":"trunca`,
+			want: 1,
+		},
+		{
+			name:    "only truncated element",
+			raw:     `[{"op":"add","kind":"fact","content":"trunca`,
+			wantErr: true,
+		},
+		{
+			name:    "non-JSON Chinese text",
+			raw:     "关于这个问题，我没有相关信息",
+			wantErr: true,
+		},
+		{
+			name: "empty array",
+			raw:  `[]`,
+			want: 0,
+		},
+		{
+			name: "two complete + truncated third",
+			raw:  `[{"op":"add","kind":"fact","content":"first","topic":"a"},{"op":"add","kind":"lesson","content":"second","topic":"b"},{"op":"add","kind":"fact","content":"trun`,
+			want: 2,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			items, err := parseExtractionItems(c.raw)
+			if c.wantErr {
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if len(items) != c.want {
+				t.Fatalf("got %d items, want %d", len(items), c.want)
+			}
+		})
+	}
+}
+
+// TestExtractor_RetryOnParseFailure verifies the corrective retry: when
+// the first response is non-JSON (e.g. a Chinese refusal), the extractor
+// retries with a format correction and stores items from the retry.
+func TestExtractor_RetryOnParseFailure(t *testing.T) {
+	prov := &fakeProvider{}
+	m := &mockModel{
+		responses: []string{
+			"关于这个问题，我没有相关信息",
+			`[{"op":"add","kind":"fact","content":"user prefers terraform for deployment","topic":"deploy"}]`,
+		},
+	}
+	ext := NewLLMExtractor(func() openagent.Model { return m }, prov)
+	ext.Extract(context.Background(), ContextScope{}, []openagent.Message{
+		openagent.UserMessage("I prefer terraform for deployment."),
+	})
+	if len(prov.items) != 1 {
+		t.Fatalf("expected 1 stored item after retry, got %d", len(prov.items))
+	}
+	if m.idx != 2 {
+		t.Fatalf("expected 2 model calls (initial + retry), got %d", m.idx)
+	}
+}
+
+// TestExtractor_NoRetryOnValidJSON verifies no retry when the first
+// response parses successfully.
+func TestExtractor_NoRetryOnValidJSON(t *testing.T) {
+	prov := &fakeProvider{}
+	m := &mockModel{
+		responses: []string{
+			`[{"op":"add","kind":"fact","content":"user likes vim","topic":"editor"}]`,
+		},
+	}
+	ext := NewLLMExtractor(func() openagent.Model { return m }, prov)
+	ext.Extract(context.Background(), ContextScope{}, []openagent.Message{
+		openagent.UserMessage("I use vim."),
+	})
+	if len(prov.items) != 1 {
+		t.Fatalf("expected 1 stored item, got %d", len(prov.items))
+	}
+	if m.idx != 1 {
+		t.Fatalf("expected 1 model call (no retry), got %d", m.idx)
+	}
+}

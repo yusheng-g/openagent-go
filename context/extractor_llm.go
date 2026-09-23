@@ -57,6 +57,9 @@ Existing knowledge (topic → content) — compare each candidate against it:
 - New topic → "add": give a short topic key
 - Already covered, nothing new → "skip"
 
+Output at most 5 items. Keep each content under 200 characters.
+If nothing is worth extracting, respond with [].
+
 Respond with ONLY a JSON array, no markdown fences:
 [{"op":"add","kind":"preference","content":"...","topic":"..."}]
 "kind" is one of "preference", "fact", "lesson".`
@@ -66,6 +69,19 @@ const extractionBudget = 4000
 
 // maxKnowledgeItems caps how many items one extraction pass stores.
 const maxKnowledgeItems = 10
+
+// maxExistingText caps the existing-knowledge text fed to the model.
+// OpenViking recall returns up to 6500 chars; capping at 1500 keeps the
+// total input manageable and leaves room for the model's output.
+const maxExistingText = 1500
+
+// extractionRetryPrompt is sent after a non-JSON or truncated response,
+// following the same corrective-retry pattern as guard/llm/guard.go.
+const extractionRetryPrompt = `Your previous response was not valid JSON. Respond with ONLY a JSON array (no markdown, no prose), at most 3 items, each content under 100 characters. If nothing is worth extracting, respond with [].`
+
+const extractionMaxTokens = 8192
+
+const logRawTruncate = 300
 
 // LLMExtractor extracts knowledge with the runtime model.
 type LLMExtractor struct {
@@ -141,6 +157,18 @@ func (e *LLMExtractor) Extract(ctx context.Context, scope ContextScope, messages
 	if existingText.Len() == 0 {
 		existingText.WriteString("(none)")
 	}
+	// Cap existing-knowledge text so it doesn't squeeze the model's output
+	// budget — OpenViking recall can return up to 6500 chars.
+	if existingText.Len() > maxExistingText {
+		s := existingText.String()
+		cut := maxExistingText
+		if i := strings.LastIndex(s[:cut], "\n"); i > 0 {
+			cut = i
+		}
+		existingText.Reset()
+		existingText.WriteString(s[:cut])
+		existingText.WriteString("\n... (truncated)")
+	}
 
 	input := "Conversation:\n" + transcript +
 		"\n\nExisting knowledge:\n" + existingText.String()
@@ -150,7 +178,7 @@ func (e *LLMExtractor) Extract(ctx context.Context, scope ContextScope, messages
 			{Role: openagent.RoleSystem, Content: extractionPrompt},
 			{Role: openagent.RoleUser, Content: input},
 		},
-		MaxTokens: 2048,
+		MaxTokens: extractionMaxTokens,
 	})
 	if err != nil || resp == nil || len(resp.Choices) == 0 {
 		slog.Warn("knowledge extract failed", "error", err)
@@ -173,10 +201,28 @@ func (e *LLMExtractor) Extract(ctx context.Context, scope ContextScope, messages
 
 	items, err := parseExtractionItems(raw)
 	if err != nil {
-		if len(raw) > 300 {
-			raw = raw[:300]
+		// Corrective retry: the model returned non-JSON (e.g. a Chinese
+		// refusal) or truncated JSON with zero salvageable items. Send
+		// the failed response back with a format correction, following
+		// the same pattern as guard/llm/guard.go retryJudge.
+		slog.Warn("knowledge extract parse failed, retrying", "error", err, "raw", truncateForLog(raw))
+
+		retryResp, retryErr := model.ChatCompletion(ctx, openagent.ChatCompletionRequest{
+			Messages: []openagent.Message{
+				{Role: openagent.RoleSystem, Content: extractionPrompt},
+				{Role: openagent.RoleUser, Content: input},
+				{Role: openagent.RoleAssistant, Content: raw},
+				{Role: openagent.RoleUser, Content: extractionRetryPrompt},
+			},
+			MaxTokens: extractionMaxTokens,
+		})
+		if retryErr == nil && retryResp != nil && len(retryResp.Choices) > 0 {
+			raw = retryResp.Choices[0].Message.Content
+			items, err = parseExtractionItems(raw)
 		}
-		slog.Warn("knowledge extract parse failed", "error", err, "raw", raw)
+	}
+	if err != nil {
+		slog.Warn("knowledge extract parse failed", "error", err, "raw", truncateForLog(raw))
 		return
 	}
 
@@ -264,8 +310,22 @@ func recallQuery(messages []openagent.Message) string {
 	return ""
 }
 
+// truncateForLog truncates a string for log output, capped at logRawTruncate.
+func truncateForLog(s string) string {
+	if len(s) > logRawTruncate {
+		return s[:logRawTruncate]
+	}
+	return s
+}
+
 // parseExtractionItems parses the model's JSON array response (markdown
 // fences tolerated). An empty string returns nil (nothing to extract).
+//
+// When the JSON is truncated (finish_reason: "length" cut the output
+// mid-array), the standard json.Unmarshal fails. The function then falls
+// back to a lenient decoder that reads element-by-element and stops at
+// the first incomplete element — salvaging all complete items before the
+// truncation point.
 func parseExtractionItems(raw string) ([]ExtractionItem, error) {
 	content := strings.TrimSpace(raw)
 	if content == "" {
@@ -275,15 +335,53 @@ func parseExtractionItems(raw string) ([]ExtractionItem, error) {
 	content = strings.TrimPrefix(content, "```")
 	content = strings.TrimSuffix(content, "```")
 	content = strings.TrimSpace(content)
-	// Find the JSON array if the model wrapped it in prose.
+	// Find the JSON array if the model wrapped it in prose. When the
+	// output is truncated there may be no closing "]" — take from "[" to
+	// end so the lenient decoder can salvage complete elements.
 	if i := strings.Index(content, "["); i >= 0 {
 		if j := strings.LastIndex(content, "]"); j > i {
 			content = content[i : j+1]
+		} else {
+			content = content[i:]
 		}
 	}
+	// Fast path: standard unmarshal works for well-formed JSON.
 	var items []ExtractionItem
-	if err := json.Unmarshal([]byte(content), &items); err != nil {
+	if err := json.Unmarshal([]byte(content), &items); err == nil {
+		return items, nil
+	}
+	// Fallback: lenient decoder salvages complete items from truncated JSON.
+	items, err := parseExtractionItemsLenient(content)
+	if err != nil {
 		return nil, fmt.Errorf("parse extraction output: %w", err)
+	}
+	return items, nil
+}
+
+// parseExtractionItemsLenient reads a JSON array element-by-element using
+// json.Decoder. When the input is truncated mid-element, Decode fails and
+// the loop breaks — all items decoded before the truncation are returned.
+// Returns an error when zero items are recovered (nothing useful).
+func parseExtractionItemsLenient(content string) ([]ExtractionItem, error) {
+	dec := json.NewDecoder(strings.NewReader(content))
+	tok, err := dec.Token()
+	if err != nil {
+		return nil, fmt.Errorf("expected '[': %w", err)
+	}
+	delim, ok := tok.(json.Delim)
+	if !ok || delim != '[' {
+		return nil, fmt.Errorf("expected '[' got %v", tok)
+	}
+	var items []ExtractionItem
+	for dec.More() {
+		var item ExtractionItem
+		if err := dec.Decode(&item); err != nil {
+			break
+		}
+		items = append(items, item)
+	}
+	if len(items) == 0 {
+		return nil, fmt.Errorf("no complete items parsed")
 	}
 	return items, nil
 }
