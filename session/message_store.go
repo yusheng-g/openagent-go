@@ -61,3 +61,14 @@ type Compressor interface {
 	// Compressed returns the stored CompressedContext, or nil if none exists.
 	Compressed(ctx context.Context, sessionID string) (*openagent.CompressedContext, error)
 }
+
+// CompressedCopier is an optional SessionStore capability: copying the
+// compressed-summary layer from one session to another. Backends that
+// implement it let Runtime.Fork carry the summary across, so the fork
+// resumes with the same context budget as its source. Backends that
+// don't are skipped (the fork re-compresses from scratch when needed).
+type CompressedCopier interface {
+	// CopyCompressed copies srcID's compressed context to dstID,
+	// replacing anything dstID already has. A no-op when srcID has none.
+	CopyCompressed(ctx context.Context, srcID, dstID string) error
+}

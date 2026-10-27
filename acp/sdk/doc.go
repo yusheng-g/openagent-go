@@ -60,6 +60,9 @@
 //	session/cancel                 cancel ongoing prompt
 //	session/set_mode               change session mode
 //	session/set_config_option      change config option
+//	session/list_messages          list a session's stored messages (paginated)
+//	session/list_config_options    list a fresh session's config options
+//	session/fork                   copy a session under a new ID; active on response, prompts right away (not while the source is mid-turn)
 //
 // Session/update notification variants (Agent → Client, sent via
 // SessionEventSender or received via EventHandler):

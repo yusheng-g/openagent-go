@@ -76,6 +76,10 @@ func (h *elicitWireHandler) OnListSessions(context.Context, ListSessionsRequest)
 func (h *elicitWireHandler) OnListMessages(context.Context, ListMessagesRequest) (*ListMessagesResponse, error) {
 	return &ListMessagesResponse{}, nil
 }
+func (h *elicitWireHandler) OnForkSession(context.Context, ForkSessionRequest) (*ForkSessionResponse, error) {
+	return &ForkSessionResponse{SessionID: "fork1"}, nil
+}
+
 func (h *elicitWireHandler) OnListConfigOptions(context.Context, ListConfigOptionsRequest) (*ListConfigOptionsResponse, error) {
 	return &ListConfigOptionsResponse{}, nil
 }

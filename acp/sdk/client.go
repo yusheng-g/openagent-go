@@ -319,6 +319,18 @@ func (s *Session) ListConfigOptions(ctx context.Context, req ListConfigOptionsRe
 	return &resp, nil
 }
 
+// ForkSession forks a session under a new ID (messages, compressed
+// summary, and metadata are copied; the source is untouched):
+// session/fork. Rejected with ErrorCodeSessionBusy while a turn is
+// running on the source session.
+func (s *Session) ForkSession(ctx context.Context, req ForkSessionRequest) (*ForkSessionResponse, error) {
+	var resp ForkSessionResponse
+	if err := s.call(ctx, "session/fork", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // SetSessionMode changes the active session mode: session/set_mode.
 func (s *Session) SetSessionMode(ctx context.Context, req SetSessionModeRequest) (*SetSessionModeResponse, error) {
 	var resp SetSessionModeResponse

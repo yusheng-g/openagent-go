@@ -388,6 +388,7 @@ const (
 	actionNone cmdAction = iota
 	actionExit
 	actionNew
+	actionFork
 	actionSessions
 	actionModels
 	actionUpdateSkills
@@ -430,6 +431,7 @@ func allPanelCommands() []panelCommand {
 	return []panelCommand{
 		{"/sessions", "Switch session", actionSessions, true, false, true},
 		{"/new", "New session", actionNew, true, false, true},
+		{"/fork", "Fork session (copy context)", actionFork, true, false, true},
 		{"/models", "Switch model", actionModels, true, false, true},
 		// /toggle_mode stays listed: switching modes is a primary action,
 		// unlike the visibility toggles below it (typed-runnable only).
@@ -777,6 +779,11 @@ type sessionLoadedMsg struct {
 	configOptions []openacp.SessionConfigOption
 	mode          string
 	err           error
+}
+type sessionForkedMsg struct {
+	sessionID string
+	title     string // from the fork response meta; empty when untitled
+	err       error
 }
 type configSetMsg struct {
 	id            string
@@ -1424,6 +1431,24 @@ func (m *Model) update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.sessionItems = msg.items
 		m.panelIdx = 0
 		return m, nil
+	case sessionForkedMsg:
+		if msg.err != nil {
+			m.statusText = "Fork failed: " + msg.err.Error()
+			return m, nil
+		}
+		// Switch into the fork like a picker load: wipe the view state,
+		// then replay the forked session's copied history.
+		m.abandonPendingPermission()
+		m.turnEpoch++
+		m.inChat = true
+		// Switch into the fork like a picker load: wipe the view state,
+		// then replay the forked session's copied history.
+		m.resetForSessionSwitch()
+		m.loading = true
+		m.replaying = true
+		m.replayBuffering = true
+		m.statusText = "Loading forked session..."
+		return m, m.loadSessionCmd(msg.sessionID, msg.title)
 	case sessionLoadedMsg:
 		buf := m.replayBuf
 		m.replayBuf = nil
@@ -1769,7 +1794,7 @@ func (m *Model) commandEnabled(pc panelCommand) bool {
 		return false
 	}
 	switch pc.action {
-	case actionSessions, actionModels, actionNew, actionCompact:
+	case actionSessions, actionModels, actionNew, actionFork, actionCompact:
 		return m.acpSession != nil
 	}
 	return true
@@ -2035,23 +2060,36 @@ func (m *Model) executeCommand(pc panelCommand) (tea.Model, tea.Cmd) {
 		m.turnEpoch++
 		m.activeSessionID = ""
 		m.sessionTitle = ""
-		m.messages = nil
-		m.renderCache = nil
-		m.renderSeq = 0
-		m.expandOverride = nil
-		m.retry = nil
-		m.lastTurnRetries = 0
-		m.lastTurnSteps = 0
-		m.sessionSteps = 0
+		m.resetForSessionSwitch()
 		m.inputQueue = nil
 		m.pendingConfigSet = nil
-		m.usedTokens, m.contextSize, m.promptCount = 0, 0, 0
 		m.loading = false
 		m.inChat = false
 		m.updateInputWidth() // welcome box is narrower than chat; re-fit on page switch
 		m.viewportDirty = true
 		m.statusText = ""
 		return m, nil
+	case actionFork:
+		// Fork copies the active session under a new ID and switches to
+		// it — the "rerun from here without losing context" escape hatch.
+		// The backend also rejects the fork while a turn is running; the
+		// local guard short-circuits the doomed RPC.
+		if m.acpSession == nil {
+			m.statusText = "Backend not connected"
+			return m, nil
+		}
+		if m.activeSessionID == "" {
+			m.statusText = "No active session to fork"
+			return m, nil
+		}
+		if m.loading {
+			m.statusText = "Wait for the current turn to finish"
+			return m, nil
+		}
+		m.panelOpen = false
+		m.panelMode = panelModeCommand
+		m.statusText = "Forking session..."
+		return m, m.forkSessionCmd(m.activeSessionID)
 	case actionSessions:
 		if m.acpSession == nil {
 			m.statusText = "Backend not connected"
@@ -2391,6 +2429,30 @@ func (m *Model) listSessionsCmd() tea.Cmd {
 	}
 }
 
+// resetForSessionSwitch wipes per-session view state before switching the
+// transcript to another session (/sessions picker, /fork) or resetting to
+// the welcome page (/new). The abandoned turn's late bookkeeping is fenced
+// off by turnEpoch. The full wipe is the union of every switch site's
+// needs: render cache and retry state are per-session and must not leak
+// across the switch even though only some sites historically cleared them.
+// resetForSessionSwitch wipes per-session view state before switching the
+// transcript to another session (/sessions picker, /fork) or resetting to
+// the welcome page (/new). The abandoned turn's late bookkeeping is fenced
+// off by turnEpoch. The full wipe is the union of every switch site's
+// needs: render cache and retry state are per-session and must not leak
+// across the switch even though only some sites historically cleared them.
+func (m *Model) resetForSessionSwitch() {
+	m.messages = nil
+	m.renderCache = nil
+	m.renderSeq = 0
+	m.expandOverride = nil
+	m.retry = nil
+	m.lastTurnRetries = 0
+	m.lastTurnSteps = 0
+	m.sessionSteps = 0
+	m.usedTokens, m.contextSize, m.promptCount = 0, 0, 0
+}
+
 // execSelectedSession loads the chosen session: the transcript is cleared,
 // history replays in, and on completion the session state is refreshed.
 func (m *Model) execSelectedSession() (tea.Model, tea.Cmd) {
@@ -2410,11 +2472,9 @@ func (m *Model) execSelectedSession() (tea.Model, tea.Cmd) {
 	m.abandonPendingPermission()
 	m.turnEpoch++
 	m.inChat = true
-	m.messages = nil
 	// The target session's own replay re-counts turns; usage waits for its
 	// first usage_update.
-	m.usedTokens, m.contextSize, m.promptCount = 0, 0, 0
-	m.lastTurnSteps, m.sessionSteps = 0, 0
+	m.resetForSessionSwitch()
 	m.loading = true
 	m.replaying = true
 	m.replayBuffering = true
@@ -2447,6 +2507,27 @@ func (m *Model) loadSessionCmd(id, title string) tea.Cmd {
 			msg.mode = string(resp.Modes.CurrentModeID)
 		}
 		return msg
+	}
+}
+
+// forkSessionCmd forks the given session on the backend (session/fork) and
+// reports the new session to load. Snapshot the backend handle: the closure
+// runs off the event loop.
+func (m *Model) forkSessionCmd(srcID string) tea.Cmd {
+	sess, ctx, workDir := m.acpSession, m.ctx, m.workDir
+	return func() tea.Msg {
+		if sess == nil {
+			return sessionForkedMsg{err: fmt.Errorf("backend not connected")}
+		}
+		resp, err := sess.ForkSession(ctx, openacp.ForkSessionRequest{
+			SessionID: openacp.SessionId(srcID),
+			Cwd:       workDir,
+		})
+		if err != nil {
+			return sessionForkedMsg{err: err}
+		}
+		title, _ := resp.Meta["title"].(string)
+		return sessionForkedMsg{sessionID: string(resp.SessionID), title: title}
 	}
 }
 

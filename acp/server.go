@@ -1615,6 +1615,7 @@ func (s *AgentServer) OnInitialize(ctx context.Context, req openacp.InitializeRe
 			Delete: &openacp.SessionDeleteCapabilities{},
 			List:   &openacp.SessionListCapabilities{},
 			Resume: &openacp.SessionResumeCapabilities{},
+			Fork:   &openacp.SessionForkCapabilities{},
 		},
 		Auth: openacp.AgentAuthCapabilities{
 			Logout: &openacp.LogoutCapabilities{},
@@ -1695,43 +1696,55 @@ func (s *AgentServer) OnNewSession(ctx context.Context, req openacp.NewSessionRe
 	}, nil
 }
 
+// activateColdSession builds the live agentSession for a session that is
+// not in the sessions map — the shared cold-path activation behind
+// OnLoadSession and OnForkSession. Session state (mode/config/createdAt)
+// is restored from the stored meta; cwd must already be resolved by the
+// caller (their fallback rules differ). Does NOT replay history, restore
+// plan entries, or send commands/skills updates — those stay with the
+// callers (fork must not replay; load streams to its sender).
+func (s *AgentServer) activateColdSession(ctx context.Context, id openacp.SessionId, cwd string, additionalDirectories []string, mcpServers openacp.McpServers) *agentSession {
+	mode, prevMode, createdAt, config := s.loadSessionState(ctx, string(id))
+	if mode == "" {
+		mode = s.defaultMode()
+	}
+	if config == nil {
+		config = s.freshSessionConfig()
+	}
+	s.sanitizeSessionModelConfig(id, config)
+	ss := &agentSession{
+		id:                    id,
+		cwd:                   cwd,
+		createdAt:             createdAt,
+		mode:                  mode,
+		previousMode:          prevMode,
+		config:                config,
+		firstPrompt:           false,
+		additionalDirectories: additionalDirectories,
+		mcpServers:            mcpServers,
+	}
+	// Reconnect MCP servers and inject tools for this session.
+	ss.mcpConns, ss.mcpTools = s.connectMCP(ctx, id, mcpServers)
+	s.sendMcpServersUpdate(id, ss.mcpConns)
+
+	// Create per-session process manager for long-running shell commands.
+	if cwd != "" {
+		if pm, err := process.NewManager(filepath.Join(opentool.ArtifactRoot(), "sess-"+string(id))); err == nil {
+			ss.processMgr = pm
+		}
+	}
+	// Build the session-scoped Runtime once; reused for every prompt.
+	ss.setRuntime(s.buildRuntimeForSession(id, ss))
+	s.putSession(id, ss)
+	return ss
+}
+
 func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSessionRequest, sender openacp.SessionEventSender) (*openacp.LoadSessionResponse, error) {
 	ss := s.getSession(req.SessionID)
 	if ss == nil {
-		mode, prevMode, createdAt, config := s.loadSessionState(ctx, string(req.SessionID))
-		if mode == "" {
-			mode = s.defaultMode()
-		}
-		if config == nil {
-			config = s.freshSessionConfig()
-		}
-		s.sanitizeSessionModelConfig(req.SessionID, config)
-		cwd := s.resolveSessionCwd(ctx, string(req.SessionID), req.Cwd)
-		ss = &agentSession{
-			id:                    req.SessionID,
-			cwd:                   cwd,
-			createdAt:             createdAt,
-			mode:                  mode,
-			previousMode:          prevMode,
-			config:                config,
-			firstPrompt:           false,
-			additionalDirectories: req.AdditionalDirectories,
-			mcpServers:            req.McpServers,
-		}
-		// Reconnect MCP servers and inject tools for this session.
-		ss.mcpConns, ss.mcpTools = s.connectMCP(ctx, req.SessionID, req.McpServers)
-		s.sendMcpServersUpdate(req.SessionID, ss.mcpConns)
-
-		// Create per-session process manager for long-running shell commands.
-		if cwd != "" {
-			pm, err := process.NewManager(filepath.Join(opentool.ArtifactRoot(), "sess-"+string(req.SessionID)))
-			if err == nil {
-				ss.processMgr = pm
-			}
-		}
-		// Build the session-scoped Runtime once; reused for every prompt.
-		ss.setRuntime(s.buildRuntimeForSession(req.SessionID, ss))
-		s.putSession(req.SessionID, ss)
+		ss = s.activateColdSession(ctx, req.SessionID,
+			s.resolveSessionCwd(ctx, string(req.SessionID), req.Cwd),
+			req.AdditionalDirectories, req.McpServers)
 	}
 
 	// Restore accumulated token count so /context survives server restarts.
@@ -1971,6 +1984,70 @@ func (s *AgentServer) OnListSessions(ctx context.Context, req openacp.ListSessio
 		})
 	}
 	return &openacp.ListSessionsResponse{Sessions: out}, nil
+}
+
+// OnForkSession copies a session under a new ID (per the ACP session-fork
+// RFD). Runtime.Fork duplicates the stored messages, compressed summary, and
+// metadata; the handler then activates the fork like a session/load cold
+// path — mode/config restored from the copied meta, MCP connected from the
+// request — so the forked session is active once the response returns and
+// the client can prompt it right away. The mid-turn guard lives in the SDK
+// mux (per-session prompt lock).
+func (s *AgentServer) OnForkSession(ctx context.Context, req openacp.ForkSessionRequest) (*openacp.ForkSessionResponse, error) {
+	// Runtime.Fork already wraps its errors; no double wrapping here.
+	info, err := s.Runtime.Fork(ctx, string(req.SessionID))
+	if err != nil {
+		return nil, err
+	}
+	id := openacp.SessionId(info.ID)
+
+	// Empty req.Cwd is legal per the RFD; fall back to the fork's stored cwd
+	// (copied from the source session) BEFORE normalizing — NormalizePath
+	// maps "" to the user's home directory, which would silently override
+	// the fallback with an unrelated cwd.
+	cwd := req.Cwd
+	if cwd == "" {
+		cwd = s.resolveSessionCwd(ctx, string(id), "")
+	} else {
+		cwd = utils.NormalizePath(cwd)
+	}
+	// Additional directories were persisted by Runtime.Fork; re-read them so
+	// the live fork keeps the source session's workspace scope (mirrors the
+	// stored-into-live restoration OnLoadSession does for mode/config).
+	additionalDirs := info.AdditionalDirectories
+	ss := s.activateColdSession(ctx, id, cwd, additionalDirs, req.McpServers)
+
+	// Restore the persisted plan (copied from the source session's meta) so
+	// plan-mode forks keep working without a reload. No replay: the fork
+	// response must not stream history (the RFD active-on-response contract
+	// leaves replaying to session/load if the client wants it).
+	if entries := s.loadPlan(ctx, string(id)); len(entries) > 0 {
+		ss.SetPlanEntries(entries)
+	}
+
+	// Send available commands and skills so the client can show them
+	// immediately (same as session/new and session/load).
+	if s.updateSender != nil {
+		s.updateSender.SendSessionUpdate(id, openacp.SessionUpdate{
+			SessionUpdate:     "available_commands_update",
+			AvailableCommands: s.availableCommands(),
+		})
+		s.updateSender.SendSessionUpdate(id, openacp.SessionUpdate{
+			SessionUpdate:   "available_skills_update",
+			AvailableSkills: s.availableSkills(ss),
+		})
+	}
+
+	meta := map[string]any{"forked_from": req.SessionID, "title": info.Title}
+	if !ss.createdAt.IsZero() {
+		meta["created_at"] = ss.createdAt.UTC().Format(time.RFC3339Nano)
+	}
+	return &openacp.ForkSessionResponse{
+		Meta:          meta,
+		SessionID:     id,
+		ConfigOptions: s.buildConfigOptions(id),
+		Modes:         s.buildModeState(id),
+	}, nil
 }
 
 // OnListMessages returns a session's stored messages (oldest first) without
@@ -3389,6 +3466,16 @@ func (s *AgentServer) buildSlashContext(ctx context.Context, sid openacp.Session
 			ss.ClearPlanEntries()
 			s.savePlan(ctx, string(sid), nil)
 			return nil
+		},
+		// Fork runs at slash-dispatch time: OnPrompt holds the per-session
+		// lock and the turn has not written anything yet, so the store is
+		// quiescent and the copy cannot race a concurrent append.
+		Fork: func() (string, error) {
+			info, err := s.Runtime.Fork(ctx, string(sid))
+			if err != nil {
+				return "", err
+			}
+			return info.ID, nil
 		},
 		ListSess: func() ([]slash.SessionInfo, error) {
 			list, err := s.Runtime.List(ctx)

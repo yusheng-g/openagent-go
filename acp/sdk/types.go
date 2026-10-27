@@ -126,7 +126,15 @@ type SessionCapabilities struct {
 	Delete                *SessionDeleteCapabilities                `json:"delete,omitempty"`
 	List                  *SessionListCapabilities                  `json:"list,omitempty"`
 	Resume                *SessionResumeCapabilities                `json:"resume,omitempty"`
+	Fork                  *SessionForkCapabilities                  `json:"fork,omitempty"`
 	AdditionalDirectories *SessionAdditionalDirectoriesCapabilities `json:"additionalDirectories,omitempty"`
+}
+
+// SessionForkCapabilities is an empty object in JSON; presence signals
+// session/fork support (per the ACP session-fork RFD). Reserved for future
+// fork options, such as forking from a specific message.
+type SessionForkCapabilities struct {
+	Meta map[string]any `json:"_meta,omitempty"`
 }
 
 // AgentAuthCapabilities advertises auth feature support.
@@ -380,6 +388,29 @@ type ListConfigOptionsRequest struct {
 type ListConfigOptionsResponse struct {
 	Meta          map[string]any        `json:"_meta,omitempty"`
 	ConfigOptions []SessionConfigOption `json:"configOptions,omitempty"`
+}
+
+// ── ForkSession ──
+
+// ForkSessionRequest forks a session: its messages, compressed summary,
+// and metadata are copied under a new session ID, leaving the source
+// untouched. Rejected while a turn is running on the source session.
+type ForkSessionRequest struct {
+	Meta       map[string]any `json:"_meta,omitempty"`
+	SessionID  SessionId      `json:"sessionId"`
+	Cwd        string         `json:"cwd,omitempty"`        // absolute path; falls back to the source session's stored cwd
+	McpServers McpServers     `json:"mcpServers,omitempty"` // connected like session/load
+}
+
+// ForkSessionResponse reports the new session created by session/fork.
+// Per the ACP session-fork RFD, the forked session is active once the agent
+// responds (the response carries session/new's shape): the client can prompt
+// it right away, without calling session/load or session/resume first.
+type ForkSessionResponse struct {
+	Meta          map[string]any        `json:"_meta,omitempty"`
+	SessionID     SessionId             `json:"sessionId"`
+	ConfigOptions []SessionConfigOption `json:"configOptions,omitempty"`
+	Modes         *SessionModeState     `json:"modes,omitempty"`
 }
 
 // Message is a lightweight ACP view of one stored conversation message,
@@ -1055,6 +1086,7 @@ const (
 	ErrorCodeInternal         ErrorCode = -32603
 	ErrorCodeRequestCancelled ErrorCode = -32800
 	ErrorCodeAuthRequired     ErrorCode = -32000
+	ErrorCodeSessionBusy      ErrorCode = -32001
 	ErrorCodeResourceNotFound ErrorCode = -32002
 )
 

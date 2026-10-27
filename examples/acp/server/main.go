@@ -147,6 +147,12 @@ func (s *calcServer) OnListConfigOptions(ctx context.Context, req openacp.ListCo
 	return &openacp.ListConfigOptionsResponse{ConfigOptions: []openacp.SessionConfigOption{}}, nil
 }
 
+// The example does not implement session forking; requests reach it only
+// through hand-rolled clients (the example client has no ForkSession call).
+func (s *calcServer) OnForkSession(ctx context.Context, req openacp.ForkSessionRequest) (*openacp.ForkSessionResponse, error) {
+	return nil, fmt.Errorf("fork not supported by the calc example")
+}
+
 func (s *calcServer) OnSetSessionMode(ctx context.Context, req openacp.SetSessionModeRequest) (*openacp.SetSessionModeResponse, error) {
 	return &openacp.SetSessionModeResponse{}, nil
 }

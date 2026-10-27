@@ -76,6 +76,9 @@ func (floodHandler) OnSetSessionMode(context.Context, SetSessionModeRequest) (*S
 func (floodHandler) OnSetSessionConfigOption(context.Context, SetSessionConfigOptionRequest) (*SetSessionConfigOptionResponse, error) {
 	return &SetSessionConfigOptionResponse{}, nil
 }
+func (floodHandler) OnForkSession(context.Context, ForkSessionRequest) (*ForkSessionResponse, error) {
+	return &ForkSessionResponse{SessionID: "fork1"}, nil
+}
 func (floodHandler) OnLogout(context.Context, LogoutRequest) (*LogoutResponse, error) {
 	return &LogoutResponse{}, nil
 }

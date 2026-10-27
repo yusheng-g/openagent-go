@@ -238,6 +238,30 @@ func (m *MessageStore) RecentAfter(ctx context.Context, sessionID string, throug
 
 var _ session.Compressor = (*MessageStore)(nil)
 
+// CopyCompressed implements session.CompressedCopier: duplicate the
+// source's compressed summary under the fork's ID, replacing anything the
+// destination already has (delete-then-insert honors the interface
+// contract even though forks start fresh today). No rows are written
+// when the source has no summary (INSERT … SELECT matches nothing).
+func (m *MessageStore) CopyCompressed(ctx context.Context, srcID, dstID string) error {
+	_, err := m.db.ExecContext(ctx,
+		`DELETE FROM compressed WHERE session_id = ?`,
+		dstID,
+	)
+	if err != nil {
+		return fmt.Errorf("sqlite copy compressed: %w", err)
+	}
+	_, err = m.db.ExecContext(ctx,
+		`INSERT INTO compressed (session_id, data)
+		 SELECT ?, data FROM compressed WHERE session_id = ?`,
+		dstID, srcID,
+	)
+	if err != nil {
+		return fmt.Errorf("sqlite copy compressed: %w", err)
+	}
+	return nil
+}
+
 // Compact compresses messages up to throughIndex into a summary. The
 // runtime calls this when the working set exceeds the token budget.
 // Compression is incremental (rolling): new overflow messages are

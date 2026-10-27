@@ -33,6 +33,7 @@ type AgentHandler interface {
 	OnListSessions(ctx context.Context, req ListSessionsRequest) (*ListSessionsResponse, error)
 	OnListMessages(ctx context.Context, req ListMessagesRequest) (*ListMessagesResponse, error)
 	OnListConfigOptions(ctx context.Context, req ListConfigOptionsRequest) (*ListConfigOptionsResponse, error)
+	OnForkSession(ctx context.Context, req ForkSessionRequest) (*ForkSessionResponse, error)
 	OnSetSessionMode(ctx context.Context, req SetSessionModeRequest) (*SetSessionModeResponse, error)
 	OnSetSessionConfigOption(ctx context.Context, req SetSessionConfigOptionRequest) (*SetSessionConfigOptionResponse, error)
 	OnPrompt(ctx context.Context, req PromptRequest, sender SessionEventSender) (*PromptResponse, error)
@@ -429,6 +430,10 @@ func (m *mux) route(msg jsonrpcMessage) {
 				return m.handler.OnListConfigOptions(ctx, req)
 			})
 		}
+	case "session/fork":
+		if isReq {
+			m.handleForkSession(msg)
+		}
 	case "session/prompt":
 		if isReq {
 			// Run in a goroutine so the serve loop continues
@@ -540,6 +545,33 @@ func (m *mux) handlePrompt(msg jsonrpcMessage) {
 			m.writeResult(msg.ID, PromptResponse{StopReason: StopReasonCancelled})
 			return
 		}
+		m.writeError(msg.ID, ErrorCodeInternal, err.Error())
+		return
+	}
+	m.writeResult(msg.ID, resp)
+}
+
+// handleForkSession processes a session/fork request. The fork snapshots
+// the stored history, so the source session must not be mid-turn: a
+// concurrent prompt could append to the store while the copy runs. The
+// guard is a try-lock on the same per-session mutex handlePrompt holds
+// for the whole turn — held means busy, and the fork is rejected.
+func (m *mux) handleForkSession(msg jsonrpcMessage) {
+	var req ForkSessionRequest
+	if err := json.Unmarshal(msg.Params, &req); err != nil {
+		m.writeError(msg.ID, ErrorCodeInvalidParams, err.Error())
+		return
+	}
+	muI, _ := m.sessionLocks.LoadOrStore(req.SessionID, &sync.Mutex{})
+	mu := muI.(*sync.Mutex)
+	if !mu.TryLock() {
+		m.writeError(msg.ID, ErrorCodeSessionBusy, "session is running a turn; fork after it completes")
+		return
+	}
+	defer mu.Unlock()
+
+	resp, err := m.handler.OnForkSession(context.Background(), req)
+	if err != nil {
 		m.writeError(msg.ID, ErrorCodeInternal, err.Error())
 		return
 	}

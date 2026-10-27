@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,6 +36,10 @@ type Runtime interface {
 	// Checkpoint persists metadata + the current message count as a
 	// recoverable restore point.
 	Checkpoint(ctx context.Context, id string) error
+	// Fork copies a session under a new ID: messages, the compressed
+	// summary, and metadata (minus per-session counters). The source
+	// session is left untouched.
+	Fork(ctx context.Context, srcID string) (SessionInfo, error)
 	// Delete removes metadata and messages for a session.
 	Delete(ctx context.Context, id string) error
 }
@@ -59,11 +64,15 @@ func NewRuntime(meta Store, msgs SessionStore) *DefaultRuntime {
 	return &DefaultRuntime{Meta: meta, Messages: msgs}
 }
 
+func newSessionID() string {
+	return "sess-" + uuid.NewString()[:12]
+}
+
 // Create implements Runtime.
 func (r *DefaultRuntime) Create(ctx context.Context, userID string) (SessionInfo, error) {
 	now := time.Now()
 	info := SessionInfo{
-		ID:        "sess-" + uuid.NewString()[:12],
+		ID:        newSessionID(),
 		CreatedAt: now,
 		UpdatedAt: now,
 		Meta:      map[string]any{},
@@ -177,6 +186,111 @@ func (r *DefaultRuntime) Checkpoint(ctx context.Context, id string) error {
 	info.Meta["checkpoint_at"] = time.Now().Format(time.RFC3339)
 	info.UpdatedAt = time.Now()
 	return r.Meta.Save(ctx, *info)
+}
+
+// Fork implements Runtime: copy the source session under a new ID. The
+// message history and the compressed-summary layer (when the backend
+// supports copying it) are duplicated; metadata is copied except for the
+// keys that must not carry over (checkpoint markers, counters, creation
+// stamps), and the fork is stamped with its origin.
+func (r *DefaultRuntime) Fork(ctx context.Context, srcID string) (SessionInfo, error) {
+	var src SessionInfo
+	if r.Meta != nil {
+		got, err := r.Meta.Get(ctx, srcID)
+		if err != nil {
+			return SessionInfo{}, fmt.Errorf("session fork: %w", err)
+		}
+		if got == nil {
+			return SessionInfo{}, fmt.Errorf("session fork: session %q not found", srcID)
+		}
+		src = *got
+	}
+
+	now := time.Now()
+	dst := SessionInfo{
+		ID:                    newSessionID(),
+		Cwd:                   src.Cwd,
+		Title:                 forkedTitle(src.Title),
+		AdditionalDirectories: src.AdditionalDirectories,
+		CreatedAt:             now,
+		UpdatedAt:             now,
+		Meta:                  forkMeta(src.Meta),
+	}
+	dst.SetMeta("forked_from", srcID)
+	dst.SetMeta("forked_at", now.Format(time.RFC3339))
+
+	if r.Messages != nil {
+		if err := r.copyMessages(ctx, srcID, dst.ID); err != nil {
+			return SessionInfo{}, err
+		}
+		if c, ok := r.Messages.(CompressedCopier); ok {
+			if err := c.CopyCompressed(ctx, srcID, dst.ID); err != nil {
+				return SessionInfo{}, fmt.Errorf("session fork compressed: %w", err)
+			}
+		}
+	}
+	if r.Meta != nil {
+		if err := r.Meta.Save(ctx, dst); err != nil {
+			return SessionInfo{}, fmt.Errorf("session fork: %w", err)
+		}
+	}
+	return dst, nil
+}
+
+func forkedTitle(src string) string {
+	if src == "" {
+		return ""
+	}
+	// A fork of a fork must not accumulate suffixes: strip a trailing
+	// " (forked)" before appending, so lineage depth stays invisible.
+	src = strings.TrimSuffix(src, " (forked)")
+	return src + " (forked)"
+}
+
+// forkMeta copies session metadata, dropping keys that must not carry
+// over to a fork: checkpoint markers, per-session counters, and creation
+// stamps (the fork gets fresh values of its own). The keys are the
+// cross-package contract of "per-session state that a fork must reset" —
+// keep this list in sync with the writers (runtime.go Checkpoint,
+// acp/server.go saveTotalTokens / session meta created_at).
+var forkMetaResetKeys = map[string]struct{}{
+	"checkpoint_msgs": {},
+	"checkpoint_at":   {},
+	"total_tokens":    {},
+	"created_at":      {},
+}
+
+func forkMeta(src map[string]any) map[string]any {
+	dst := make(map[string]any, len(src)+2)
+	for k, v := range src {
+		if _, drop := forkMetaResetKeys[k]; drop {
+			continue
+		}
+		dst[k] = v
+	}
+	return dst
+}
+
+// copyMessages duplicates the full conversation, oldest first, so the
+// fork's stored order matches the source exactly.
+func (r *DefaultRuntime) copyMessages(ctx context.Context, srcID, dstID string) error {
+	total, err := r.Messages.Count(ctx, srcID)
+	if err != nil {
+		return fmt.Errorf("session fork count: %w", err)
+	}
+	if total == 0 {
+		return nil
+	}
+	msgs, err := r.Messages.RecentAfter(ctx, srcID, 0, total)
+	if err != nil {
+		return fmt.Errorf("session fork read: %w", err)
+	}
+	for _, msg := range msgs {
+		if err := r.Messages.Append(ctx, dstID, msg); err != nil {
+			return fmt.Errorf("session fork append: %w", err)
+		}
+	}
+	return nil
 }
 
 // Delete implements Runtime: metadata + messages.

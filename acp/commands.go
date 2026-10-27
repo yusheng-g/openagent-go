@@ -74,6 +74,18 @@ func (s *AgentServer) buildCommandRegistry() *slash.Registry {
 			return "Manual context compaction complete.\n", nil
 		})
 
+	r.Register("fork", "Fork this session into a new one with the same context", nil,
+		func(ctx slash.Context, _ string) (string, error) {
+			if ctx.Fork == nil {
+				return "Fork unavailable (no session store configured).\n", nil
+			}
+			id, err := ctx.Fork()
+			if err != nil {
+				return "", err
+			}
+			return "Forked to session " + id + ". Refresh the page if the forked session does not appear.\n", nil
+		})
+
 	r.Register("cwd", "Show current working directory", nil,
 		func(ctx slash.Context, _ string) (string, error) {
 			return "Working directory: " + ctx.Cwd + "\n", nil

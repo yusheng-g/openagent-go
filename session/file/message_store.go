@@ -172,6 +172,22 @@ func (m *MessageStore) RecentAfter(ctx context.Context, sessionID string, throug
 
 var _ session.Compressor = (*MessageStore)(nil)
 
+// CopyCompressed implements session.CompressedCopier: duplicate the
+// source's compressed-summary file under the fork's ID. A no-op when
+// the source has none (readCompressed returns nil, nil).
+func (m *MessageStore) CopyCompressed(ctx context.Context, srcID, dstID string) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	cc, err := m.readCompressed(srcID)
+	if err != nil || cc == nil {
+		return err
+	}
+	return m.writeCompressed(dstID, cc)
+}
+
 // Compact compresses messages up to throughIndex into a summary. The
 // runtime calls this when the working set exceeds the token budget.
 // Compression is incremental (rolling): new overflow messages are

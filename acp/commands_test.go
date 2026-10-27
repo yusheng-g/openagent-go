@@ -98,3 +98,41 @@ func TestModeUsageShowsCurrentMode(t *testing.T) {
 		t.Errorf("/mode: resp = %q, want 'current: plan' in usage", resp)
 	}
 }
+
+// TestForkCommandDispatch pins the /fork text command: it calls the Fork
+// callback and reports the new session ID, or degrades to a plain message
+// when no store is wired.
+func TestForkCommandDispatch(t *testing.T) {
+	reg := newModeTestRegistry()
+	var forked string
+	ctx := slash.Context{
+		Fork: func() (string, error) {
+			forked = "sess-new"
+			return "sess-new", nil
+		},
+	}
+
+	resp, ok := reg.Handle(ctx, "/fork")
+	if !ok {
+		t.Fatal("/fork: expected dispatch")
+	}
+	if forked != "sess-new" {
+		t.Fatalf("Fork callback not called (forked=%q)", forked)
+	}
+	if !strings.Contains(resp, "sess-new") || !strings.Contains(resp, "Refresh the page if the forked session does not appear") {
+		t.Errorf("/fork resp = %q, want the new session ID and the refresh hint", resp)
+	}
+}
+
+func TestForkCommandWithoutStore(t *testing.T) {
+	reg := newModeTestRegistry()
+	ctx := slash.Context{} // Fork == nil
+
+	resp, ok := reg.Handle(ctx, "/fork")
+	if !ok {
+		t.Fatal("/fork: expected dispatch")
+	}
+	if !strings.Contains(resp, "Fork unavailable") {
+		t.Errorf("/fork resp = %q, want the unavailable notice", resp)
+	}
+}

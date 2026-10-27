@@ -4,6 +4,7 @@ import (
 	"charm.land/bubbles/v2/textarea"
 	"charm.land/lipgloss/v2"
 	"context"
+	"errors"
 	"fmt"
 	"image/color"
 	"os"
@@ -2343,7 +2344,7 @@ func TestBackendDependentCommandsDisabledWithoutSession(t *testing.T) {
 	for _, pc := range allPanelCommands() {
 		enabled := m.commandEnabled(pc)
 		switch pc.action {
-		case actionSessions, actionModels, actionNew, actionUpdateSkills:
+		case actionSessions, actionModels, actionNew, actionFork, actionUpdateSkills:
 			if enabled {
 				t.Errorf("%s should be disabled without a backend", pc.slash)
 			}
@@ -4227,6 +4228,86 @@ func TestCompactCommandLifecycle(t *testing.T) {
 	m = upd.(*Model)
 	if m.compacting || m.loading {
 		t.Error("prompt_done should end the compacting state")
+	}
+}
+
+// ── /fork ──
+
+// TestForkCommandRegistered keeps the fork command reachable from the
+// palette.
+func TestForkCommandRegistered(t *testing.T) {
+	for _, pc := range allPanelCommands() {
+		if pc.slash == "/fork" && pc.action == actionFork {
+			return
+		}
+	}
+	t.Error("/fork should be registered in the command panel")
+}
+
+// TestForkCommandGuards: the command refuses without a backend, without
+// an active session, and while a turn is in flight.
+func TestForkCommandGuards(t *testing.T) {
+	m := newTestModel()
+	upd, _ := m.executeCommand(panelCommand{slash: "/fork", action: actionFork})
+	m = upd.(*Model)
+	if m.statusText != "Backend not connected" {
+		t.Errorf("nil backend must refuse, got %q", m.statusText)
+	}
+
+	m.acpSession = testAcpSession(t)
+	upd, _ = m.executeCommand(panelCommand{slash: "/fork", action: actionFork})
+	m = upd.(*Model)
+	if m.statusText != "No active session to fork" {
+		t.Errorf("no session must refuse, got %q", m.statusText)
+	}
+
+	m.activeSessionID = "s1"
+	m.loading = true
+	upd, _ = m.executeCommand(panelCommand{slash: "/fork", action: actionFork})
+	m = upd.(*Model)
+	if m.statusText != "Wait for the current turn to finish" {
+		t.Errorf("in-flight turn must refuse, got %q", m.statusText)
+	}
+}
+
+// TestForkCommandLifecycle: a successful fork switches the view into the
+// loading state and issues a session load for the new ID; a failed fork
+// only reports in the status bar.
+func TestForkCommandLifecycle(t *testing.T) {
+	m := newTestModel()
+	m.width, m.height = 100, 40
+	m.inChat = true
+	m.acpSession = testAcpSession(t)
+	m.activeSessionID = "s1"
+	m.messages = []ChatMessage{{Role: "user", Content: "old"}}
+	m.usedTokens = 100
+
+	upd, _ := m.Update(sessionForkedMsg{sessionID: "s2", title: "t (forked)"})
+	m = upd.(*Model)
+	if !m.loading || !m.replaying || !m.replayBuffering {
+		t.Fatalf("fork should enter the loading state, got loading=%v replaying=%v buffering=%v",
+			m.loading, m.replaying, m.replayBuffering)
+	}
+	if len(m.messages) != 0 || m.usedTokens != 0 {
+		t.Errorf("fork must reset the transcript view, got %d messages, %d tokens",
+			len(m.messages), m.usedTokens)
+	}
+	if m.statusText != "Loading forked session..." {
+		t.Errorf("status = %q", m.statusText)
+	}
+
+	upd, _ = m.Update(sessionLoadedMsg{sessionID: "s2"}) // settle the load
+	m = upd.(*Model)
+
+	// A failed fork only reports in the status bar; no view state changes.
+	upd, _ = m.Update(sessionForkedMsg{err: errors.New("session busy")})
+	m = upd.(*Model)
+	if m.statusText != "Fork failed: session busy" {
+		t.Errorf("error status = %q", m.statusText)
+	}
+	if m.loading || m.replaying || len(m.messages) != 0 || m.activeSessionID != "s2" {
+		t.Errorf("a failed fork must not disturb the view state, got loading=%v replaying=%v msgs=%d session=%q",
+			m.loading, m.replaying, len(m.messages), m.activeSessionID)
 	}
 }
 

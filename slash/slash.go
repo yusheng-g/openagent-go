@@ -77,6 +77,9 @@ type Context struct {
 	// Compaction.
 	Compact func() (*CompactStats, error) // compacts all history into a summary
 
+	// Forking.
+	Fork func() (sessionID string, err error) // copies this session under a new ID
+
 	// Settings operations (wired by the server package).
 	SettingsList     func() (string, error)                                   // list all settings
 	SettingsGet      func(key string) (string, error)                         // get a setting by dotted path
