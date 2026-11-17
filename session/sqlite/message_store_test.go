@@ -97,3 +97,63 @@ func TestForkWithoutSummary(t *testing.T) {
 		t.Fatalf("fork compressed = %+v, want nil", cc)
 	}
 }
+
+// TestMigrateFTSBackfillOnReopen pins the count-gated backfill contract:
+// a database whose FTS index is missing rows (the pre-FTS upgrade case,
+// simulated by wiping the index) gets re-indexed on open, and reopening
+// an in-sync database leaves exactly one FTS row per non-empty message.
+func TestMigrateFTSBackfillOnReopen(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "test.db")
+
+	ms, err := NewMessageStore(path)
+	if err != nil {
+		t.Fatalf("NewMessageStore: %v", err)
+	}
+	for _, c := range []string{"one", "two", "three"} {
+		if err := ms.Append(ctx, "s1", openagent.UserMessage(c)); err != nil {
+			t.Fatalf("Append: %v", err)
+		}
+	}
+	// Simulate an out-of-sync index: rows exist, FTS entries gone.
+	if _, err := ms.DB().Exec(`DELETE FROM messages_fts`); err != nil {
+		t.Fatalf("wipe fts: %v", err)
+	}
+	ms.Close()
+
+	// Reopen: count mismatch must trigger the backfill.
+	ms, err = NewMessageStore(path)
+	if err != nil {
+		t.Fatalf("reopen out-of-sync: %v", err)
+	}
+	var msgCount, ftsCount int
+	if err := ms.DB().QueryRow(
+		`SELECT COUNT(*) FROM messages WHERE content != ''`,
+	).Scan(&msgCount); err != nil {
+		t.Fatalf("count messages: %v", err)
+	}
+	if err := ms.DB().QueryRow(
+		`SELECT COUNT(*) FROM messages_fts`,
+	).Scan(&ftsCount); err != nil {
+		t.Fatalf("count fts: %v", err)
+	}
+	if msgCount != 3 || ftsCount != msgCount {
+		t.Fatalf("after backfill: messages=%d fts=%d, want 3/3", msgCount, ftsCount)
+	}
+	ms.Close()
+
+	// Reopen again: in-sync index must stay exactly one row per message.
+	ms, err = NewMessageStore(path)
+	if err != nil {
+		t.Fatalf("reopen in-sync: %v", err)
+	}
+	defer ms.Close()
+	if err := ms.DB().QueryRow(
+		`SELECT COUNT(*) FROM messages_fts`,
+	).Scan(&ftsCount); err != nil {
+		t.Fatalf("count fts: %v", err)
+	}
+	if ftsCount != msgCount {
+		t.Fatalf("in-sync reopen duplicated fts rows: fts=%d messages=%d", ftsCount, msgCount)
+	}
+}

@@ -32,10 +32,12 @@ type Memory struct {
 }
 
 // New opens the knowledge database at path and runs migrations. WAL mode
-// and a 5s busy timeout make concurrent access from the session store
-// safe.
+// and a 30s busy timeout make concurrent access from the session store
+// safe — the session store's startup migrations can hold the write lock
+// for several seconds on this shared database file (the old 5s timeout
+// tripped with SQLITE_BUSY on concurrent cold starts).
 func New(path string) (*Memory, error) {
-	dsn := path + "?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)"
+	dsn := path + "?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=busy_timeout(30000)"
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite knowledge: open: %w", err)
