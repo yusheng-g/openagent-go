@@ -26,11 +26,15 @@ type MessageStore struct {
 }
 
 // NewMessageStore opens a SQLite database at path and runs migrations.
-// Enables WAL mode, foreign keys, and a 5s busy timeout for concurrent
-// safety. DB() shares the connection with the metadata Store and the
-// knowledge provider.
+// Enables WAL mode, foreign keys, and a 30s busy timeout for concurrent
+// safety. The timeout has to absorb startup migrations holding the write
+// lock for several seconds: every process of this user (serve/run/export,
+// plus the MCP iac-server) opens the same database file, and concurrent
+// cold starts (e.g. after reboot) tripped the old 5s timeout with
+// SQLITE_BUSY. DB() shares the connection with the metadata Store and
+// the knowledge provider.
 func NewMessageStore(path string) (*MessageStore, error) {
-	dsn := path + "?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)"
+	dsn := path + "?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=busy_timeout(30000)"
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sqlite message store: open: %w", err)
@@ -472,8 +476,30 @@ func (m *MessageStore) migrate() error {
 		return fmt.Errorf("sqlite message store migrate fts create: %w", err)
 	}
 
-	// Backfill any messages not yet indexed (fresh/rebuilt table, or rows
-	// from a pre-FTS schema). Idempotent via the NOT IN guard.
+	// Backfill only when the index is actually missing rows: fresh or
+	// rebuilt FTS table, or rows from a pre-FTS schema. The backfill
+	// INSERT..SELECT holds the write lock for a full table scan, so
+	// running it on every startup made concurrent cold starts on this
+	// shared database file time out with SQLITE_BUSY. Append/DeleteSession
+	// maintain messages and messages_fts in one transaction, so equal
+	// counts mean the index is in sync — and counting is read-only,
+	// keeping the common in-sync path off the write lock entirely.
+	var msgCount, ftsCount int
+	if err := m.db.QueryRow(
+		`SELECT COUNT(*) FROM messages WHERE content != ''`,
+	).Scan(&msgCount); err != nil {
+		return fmt.Errorf("sqlite message store migrate fts count messages: %w", err)
+	}
+	if err := m.db.QueryRow(
+		`SELECT COUNT(*) FROM messages_fts`,
+	).Scan(&ftsCount); err != nil {
+		return fmt.Errorf("sqlite message store migrate fts count index: %w", err)
+	}
+	if msgCount == ftsCount {
+		return nil
+	}
+
+	// Backfill messages not yet indexed. Idempotent via the NOT IN guard.
 	if _, err := m.db.Exec(
 		`INSERT INTO messages_fts (rowid, content)
 		 SELECT id, content FROM messages
