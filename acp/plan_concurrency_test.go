@@ -108,6 +108,11 @@ func toolCallChunk(index int, id, name string, args any) openagent.StreamChunk {
 
 // ── fake SessionEventSender (records notifications in order) ──
 
+// historyEvent records one replayed history-message notification.
+type historyEvent struct {
+	kind, text, mid string
+}
+
 type recordedUpdate struct {
 	kind    string // "plan", "tool_call", "usage_update", ...
 	entries []openacp.PlanEntry
@@ -118,6 +123,7 @@ type recordedUpdate struct {
 type recordingSender struct {
 	mu      sync.Mutex
 	updates []recordedUpdate
+	history []historyEvent
 }
 
 func (s *recordingSender) record(u recordedUpdate) {
@@ -157,12 +163,24 @@ func (s *recordingSender) SendUsageUpdate(used, total int, cost *openacp.Cost) e
 	s.record(recordedUpdate{kind: "usage_update"})
 	return nil
 }
-func (s *recordingSender) SendSessionInfo(title string, metadata map[string]any) error { return nil }
-func (s *recordingSender) SendHistoryMessage(sessionUpdate, text, messageID string) error {
+func (s *recordingSender) SendSessionInfo(title string, metadata map[string]any) error {
 	return nil
 }
-func (s *recordingSender) SendHistoryMessageWithMeta(sessionUpdate, text, messageID string, meta map[string]any) error {
-	return s.SendHistoryMessage(sessionUpdate, text, messageID)
+func (s *recordingSender) SendHistoryMessage(sessionUpdate, text, messageID string) error {
+	return s.SendHistoryMessageWithMeta(sessionUpdate, text, messageID, nil)
+}
+func (s *recordingSender) SendHistoryMessageWithMeta(sessionUpdate, text, messageID string, _ map[string]any) error {
+	s.mu.Lock()
+	s.history = append(s.history, historyEvent{sessionUpdate, text, messageID})
+	s.mu.Unlock()
+	return nil
+}
+
+// historySnapshot returns the recorded history-message events in order.
+func (s *recordingSender) historySnapshot() []historyEvent {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return append([]historyEvent{}, s.history...)
 }
 
 // ── fake session.Store (in-memory) ──
