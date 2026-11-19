@@ -1750,9 +1750,12 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 	// Restore accumulated token count so /context survives server restarts.
 	ss.setTotalTokens(s.loadTotalTokens(ctx, string(req.SessionID)))
 
-	// Replay history from Memory if available.
+	// Replay history from Memory if available. With replayLimit > 0 only
+	// the tail window is replayed; the caller reports the window bounds in
+	// the response _meta so the client can backfill older pages.
+	var replayStart, historyTotal int
 	if s.Mem != nil {
-		s.replayHistory(ctx, req.SessionID, sender)
+		replayStart, historyTotal = s.replayHistory(ctx, req.SessionID, sender, req.ReplayLimit)
 	}
 
 	// Replay persisted plan if present.
@@ -1779,6 +1782,14 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 	if !ss.createdAt.IsZero() {
 		meta["created_at"] = ss.createdAt.UTC().Format(time.RFC3339Nano)
 	}
+	// Tail-replay bounds, reported only when the client opted in via
+	// replayLimit: it needs history_total and replay_start_index to page
+	// the skipped prefix back via session/list_messages. Clients that don't
+	// send replayLimit keep the legacy full replay and an unchanged meta.
+	if req.ReplayLimit > 0 {
+		meta["history_total"] = historyTotal
+		meta["replay_start_index"] = replayStart
+	}
 
 	return &openacp.LoadSessionResponse{
 		Meta:          meta,
@@ -1789,23 +1800,42 @@ func (s *AgentServer) OnLoadSession(ctx context.Context, req openacp.LoadSession
 
 // replayHistory replays stored conversation history as session/update
 // notifications: user_message_chunk, agent_message_chunk, and tool call
-// events so the client can reconstruct the full conversation.
-func (s *AgentServer) replayHistory(ctx context.Context, sid openacp.SessionId, sender openacp.SessionEventSender) {
+// events so the client can reconstruct the conversation.
+//
+// replayLimit > 0 replays only the last replayLimit messages (the tail
+// window); 0 replays everything, capped at 2000 as before. It returns the
+// window's start position and the session's total message count so the
+// caller can report both in the load response _meta for client-side
+// backfill paging.
+//
+// Messages are addressed by absolute session position (hist_<pos>), not
+// by replay order, so ids stay stable across partial replays and never
+// collide with ids the client later reconstructs from list_messages
+// pages. Reads go through RecentAfter, which is position-exact — unlike
+// Recent, whose orphan-tool trimming would shift the window's start and
+// desync the reported replay_start_index from the store.
+func (s *AgentServer) replayHistory(ctx context.Context, sid openacp.SessionId, sender openacp.SessionEventSender, replayLimit int) (start, total int) {
 	n := 200
 	if s.Mem != nil {
-		if total, err := s.Mem.Count(ctx, string(sid)); err == nil && total > 0 {
+		if t, err := s.Mem.Count(ctx, string(sid)); err == nil && t > 0 {
+			total = t
 			n = total
 			if n > 2000 {
 				n = 2000
 			}
 		}
 	}
-	msgs, err := s.Mem.Recent(ctx, string(sid), n, 0)
+	if replayLimit > 0 && replayLimit < n {
+		n = replayLimit
+	}
+	start = max(0, total-n)
+
+	msgs, err := s.Mem.RecentAfter(ctx, string(sid), start, n)
 	if err != nil {
-		return
+		return start, total
 	}
 	for i, msg := range msgs {
-		mid := fmt.Sprintf("hist_%d", i)
+		mid := fmt.Sprintf("hist_%d", start+i)
 		// Carry the stored wall-clock as _meta.created_at so the frontend
 		// can render per-message times from loadSession replay. nil for
 		// legacy rows (pre-column or never stamped) keeps _meta off the
@@ -1859,6 +1889,7 @@ func (s *AgentServer) replayHistory(ctx context.Context, sid openacp.SessionId, 
 			// System messages are not rendered to clients; skip.
 		}
 	}
+	return start, total
 }
 
 // replayPlan sends persisted plan entries as a session/update(plan) notification.
@@ -2050,10 +2081,16 @@ func (s *AgentServer) OnForkSession(ctx context.Context, req openacp.ForkSession
 	}, nil
 }
 
-// OnListMessages returns a session's stored messages (oldest first) without
-// loading or resuming the session — a paginated window over the same
-// SessionStore the load-replay reads, mirroring REST /sessions/{id}/messages.
-// nil memory (--memory=off) or an unknown session yields an empty list.
+// OnListMessages returns a position-exact page of a session's stored
+// messages (oldest first) without loading or resuming the session — a
+// paginated window over the same SessionStore the load-replay reads,
+// mirroring REST /sessions/{id}/messages. nil memory (--memory=off) or
+// an unknown session yields an empty list.
+//
+// The window is computed in session-relative positions (0..Total-1) via
+// RecentAfter — NOT Recent, whose orphan-tool trimming would silently
+// shift positions and desync the client cursor from the store. Positions
+// are stable because messages are append-only.
 func (s *AgentServer) OnListMessages(ctx context.Context, req openacp.ListMessagesRequest) (*openacp.ListMessagesResponse, error) {
 	if s.Mem == nil {
 		return &openacp.ListMessagesResponse{Messages: []openacp.Message{}}, nil
@@ -2065,19 +2102,33 @@ func (s *AgentServer) OnListMessages(ctx context.Context, req openacp.ListMessag
 	if limit > 200 {
 		limit = 200
 	}
-	before := max(0, req.Before)
 
-	msgs, err := s.Mem.Recent(ctx, string(req.SessionID), limit, before)
+	total, err := s.Mem.Count(ctx, string(req.SessionID))
+	if err != nil {
+		return nil, fmt.Errorf("list messages count: %w", err)
+	}
+
+	// Exclusive end position. Before is the stable cursor clients page
+	// with (a position held from a previous page never moves, even while
+	// the session grows); 0 means the latest page.
+	end := total
+	if req.Before > 0 {
+		end = min(req.Before, total)
+	}
+	start := max(0, end-limit)
+
+	msgs, err := s.Mem.RecentAfter(ctx, string(req.SessionID), start, end-start)
 	if err != nil {
 		return nil, fmt.Errorf("list messages: %w", err)
 	}
 	out := make([]openacp.Message, 0, len(msgs))
-	for _, m := range msgs {
+	for i, m := range msgs {
 		item := openacp.Message{
 			Role:             string(m.Role),
 			Content:          m.Content,
 			ReasoningContent: m.ReasoningContent,
 			ToolCallID:       m.ToolCallID,
+			Index:            start + i,
 		}
 		for _, tc := range m.ToolCalls {
 			item.ToolCalls = append(item.ToolCalls, openacp.ToolCallRef{
@@ -2089,7 +2140,11 @@ func (s *AgentServer) OnListMessages(ctx context.Context, req openacp.ListMessag
 		}
 		out = append(out, item)
 	}
-	return &openacp.ListMessagesResponse{Messages: out}, nil
+	return &openacp.ListMessagesResponse{
+		Messages: out,
+		Total:    total,
+		HasMore:  start > 0,
+	}, nil
 }
 
 // ── Config & modes ──

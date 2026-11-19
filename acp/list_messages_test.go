@@ -3,6 +3,8 @@ package acp
 import (
 	"context"
 	"errors"
+	"fmt"
+	"slices"
 	"testing"
 	"time"
 
@@ -13,24 +15,35 @@ import (
 	"github.com/yusheng-g/openagent-go/session"
 )
 
-// fakeMsgStore is an in-memory session.SessionStore that records the
-// Recent parameters it is called with.
+// fakeMsgStore is an in-memory session.SessionStore with position-exact
+// RecentAfter semantics (window = [start, start+n)), recording the window
+// it was last asked for.
 type fakeMsgStore struct {
-	recentN, recentOff int
+	afterStart, afterN int
 	msgs               []openagent.Message
 	err                error
 }
 
 func (f *fakeMsgStore) Append(context.Context, string, openagent.Message) error { return nil }
-func (f *fakeMsgStore) Recent(_ context.Context, _ string, n, offset int) ([]openagent.Message, error) {
-	f.recentN, f.recentOff = n, offset
+func (f *fakeMsgStore) Recent(_ context.Context, _ string, _, _ int) ([]openagent.Message, error) {
 	if f.err != nil {
 		return nil, f.err
 	}
 	return f.msgs, nil
 }
-func (f *fakeMsgStore) RecentAfter(context.Context, string, int, int) ([]openagent.Message, error) {
-	return nil, nil
+func (f *fakeMsgStore) RecentAfter(_ context.Context, _ string, start, n int) ([]openagent.Message, error) {
+	f.afterStart, f.afterN = start, n
+	if f.err != nil {
+		return nil, f.err
+	}
+	if start >= len(f.msgs) || n <= 0 {
+		return nil, nil
+	}
+	end := start + n
+	if end > len(f.msgs) {
+		end = len(f.msgs)
+	}
+	return f.msgs[start:end], nil
 }
 func (f *fakeMsgStore) Count(context.Context, string) (int, error)  { return len(f.msgs), nil }
 func (f *fakeMsgStore) DeleteSession(context.Context, string) error { return nil }
@@ -55,6 +68,25 @@ func newListMessagesServer(ms *fakeMsgStore) *AgentServer {
 	return NewAgentServer(agent.New("t"), deps, &fakeMetaStore{}, nil)
 }
 
+// numberedMsgs builds n user messages with content "m<i>", so a test can
+// assert which session positions came back in a page.
+func numberedMsgs(n int) []openagent.Message {
+	msgs := make([]openagent.Message, n)
+	for i := range msgs {
+		msgs[i] = openagent.Message{Role: openagent.RoleUser, Content: fmt.Sprintf("m%d", i)}
+	}
+	return msgs
+}
+
+// pageIndexes returns the Index field of every message in the page.
+func pageIndexes(msgs []openacp.Message) []int {
+	out := make([]int, len(msgs))
+	for i, m := range msgs {
+		out[i] = m.Index
+	}
+	return out
+}
+
 func TestOnListMessagesMapsAndForwards(t *testing.T) {
 	ts := time.Date(2026, 9, 3, 12, 0, 0, 0, time.UTC)
 	ms := &fakeMsgStore{msgs: []openagent.Message{
@@ -68,19 +100,22 @@ func TestOnListMessagesMapsAndForwards(t *testing.T) {
 	if err != nil {
 		t.Fatalf("OnListMessages: %v", err)
 	}
-	// Default limit 50, no paging.
-	if ms.recentN != 50 || ms.recentOff != 0 {
-		t.Errorf("Recent called with (%d, %d), want (50, 0)", ms.recentN, ms.recentOff)
+	// Default limit 50 over a 2-message store: full window from position 0.
+	if ms.afterStart != 0 || ms.afterN != 2 {
+		t.Errorf("RecentAfter called with (%d, %d), want (0, 2)", ms.afterStart, ms.afterN)
 	}
 	if len(resp.Messages) != 2 {
 		t.Fatalf("messages = %d, want 2", len(resp.Messages))
 	}
+	if resp.Total != 2 || resp.HasMore {
+		t.Errorf("total/hasMore = %d/%v, want 2/false", resp.Total, resp.HasMore)
+	}
 	first := resp.Messages[0]
-	if first.Role != "user" || first.Content != "hello" || first.CreatedAt != ts.UTC().Format(time.RFC3339Nano) {
+	if first.Role != "user" || first.Content != "hello" || first.Index != 0 || first.CreatedAt != ts.UTC().Format(time.RFC3339Nano) {
 		t.Errorf("user message mapped wrong: %+v", first)
 	}
 	second := resp.Messages[1]
-	if second.Role != "assistant" || second.ReasoningContent != "think" {
+	if second.Role != "assistant" || second.ReasoningContent != "think" || second.Index != 1 {
 		t.Errorf("assistant message mapped wrong: %+v", second)
 	}
 	if len(second.ToolCalls) != 1 || second.ToolCalls[0] != (openacp.ToolCallRef{
@@ -90,20 +125,55 @@ func TestOnListMessagesMapsAndForwards(t *testing.T) {
 	}
 }
 
-func TestOnListMessagesPagingAndLimitCap(t *testing.T) {
-	ms := &fakeMsgStore{msgs: []openagent.Message{{Role: openagent.RoleUser, Content: "x"}}}
-	srv := newListMessagesServer(ms)
+func TestOnListMessagesPositionalPaging(t *testing.T) {
+	srv := newListMessagesServer(&fakeMsgStore{msgs: numberedMsgs(10)})
 
-	if _, err := srv.OnListMessages(context.Background(), openacp.ListMessagesRequest{
-		SessionID: "s1", Limit: 999, Before: 5,
-	}); err != nil {
+	cases := []struct {
+		name        string
+		req         openacp.ListMessagesRequest
+		wantIndexes []int
+		wantHasMore bool
+	}{
+		{"tail page", openacp.ListMessagesRequest{SessionID: "s1", Limit: 3}, []int{7, 8, 9}, true},
+		{"before cursor", openacp.ListMessagesRequest{SessionID: "s1", Limit: 3, Before: 7}, []int{4, 5, 6}, true},
+		{"before first page", openacp.ListMessagesRequest{SessionID: "s1", Limit: 3, Before: 2}, []int{0, 1}, false},
+		{"before beyond total clamps to tail", openacp.ListMessagesRequest{SessionID: "s1", Limit: 3, Before: 99}, []int{7, 8, 9}, true},
+		{"before equals total is the tail page", openacp.ListMessagesRequest{SessionID: "s1", Limit: 3, Before: 10}, []int{7, 8, 9}, true},
+	}
+	for _, tc := range cases {
+		resp, err := srv.OnListMessages(context.Background(), tc.req)
+		if err != nil {
+			t.Fatalf("%s: OnListMessages: %v", tc.name, err)
+		}
+		if resp.Total != 10 {
+			t.Errorf("%s: total = %d, want 10", tc.name, resp.Total)
+		}
+		if got := pageIndexes(resp.Messages); !slices.Equal(got, tc.wantIndexes) {
+			t.Errorf("%s: indexes = %v, want %v", tc.name, got, tc.wantIndexes)
+		}
+		if resp.HasMore != tc.wantHasMore {
+			t.Errorf("%s: hasMore = %v, want %v", tc.name, resp.HasMore, tc.wantHasMore)
+		}
+	}
+}
+
+func TestOnListMessagesLimitCap(t *testing.T) {
+	srv := newListMessagesServer(&fakeMsgStore{msgs: numberedMsgs(250)})
+
+	resp, err := srv.OnListMessages(context.Background(), openacp.ListMessagesRequest{
+		SessionID: "s1", Limit: 999,
+	})
+	if err != nil {
 		t.Fatalf("OnListMessages: %v", err)
 	}
-	if ms.recentN != 200 {
-		t.Errorf("limit not capped to 200, got %d", ms.recentN)
+	if len(resp.Messages) != 200 {
+		t.Errorf("limit not capped to 200, got %d messages", len(resp.Messages))
 	}
-	if ms.recentOff != 5 {
-		t.Errorf("before not forwarded, got %d", ms.recentOff)
+	if resp.Messages[0].Index != 50 {
+		t.Errorf("capped page should start at position 50, got %d", resp.Messages[0].Index)
+	}
+	if !resp.HasMore {
+		t.Error("capped page should report hasMore")
 	}
 }
 

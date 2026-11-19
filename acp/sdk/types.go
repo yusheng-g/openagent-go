@@ -278,12 +278,18 @@ type NewSessionResponse struct {
 }
 
 // LoadSessionRequest loads a session and replays its history.
+// ReplayLimit, when > 0, replays only the last ReplayLimit messages
+// instead of the full history; the response _meta then reports
+// history_total and replay_start_index so the client can backfill older
+// messages via session/list_messages (beforeIndex = replay_start_index).
+// Omitted (0) keeps the legacy behavior: replay everything (capped at 2000).
 type LoadSessionRequest struct {
 	Meta                  map[string]any `json:"_meta,omitempty"`
 	SessionID             SessionId      `json:"sessionId"`
 	Cwd                   string         `json:"cwd"` // absolute path
 	McpServers            McpServers     `json:"mcpServers"`
 	AdditionalDirectories []string       `json:"additionalDirectories,omitempty"`
+	ReplayLimit           int            `json:"replayLimit,omitempty"`
 }
 
 // LoadSessionResponse is the result of loading a session.
@@ -357,21 +363,31 @@ type SessionInfo struct {
 
 // ── ListMessages ──
 
-// ListMessagesRequest requests the most recent messages of a session
-// without loading it. Messages are returned oldest-first (the store order);
-// Before skips the most recent Before messages to page further back, and
-// Limit caps the window (default 50, max 200).
+// ListMessagesRequest requests a page of a session's stored messages
+// without loading it. Messages are returned oldest-first (the store order),
+// each stamped with its session-relative position (Index, 0-based).
+//
+// Paging is position-exact: the response is the Limit-sized window that
+// ends right before an exclusive end position. Before sets that end
+// position directly (a position held from a previous page never moves,
+// even while the session grows); 0 (omitted) returns the latest Limit
+// messages. Limit caps the window (default 50, max 200). Total and
+// HasMore in the response tell the client whether older pages remain.
 type ListMessagesRequest struct {
 	Meta      map[string]any `json:"_meta,omitempty"`
 	SessionID SessionId      `json:"sessionId"`
 	Limit     int            `json:"limit,omitempty"`
-	Before    int            `json:"before,omitempty"`
+	Before    int            `json:"before,omitempty"` // exclusive end position; 0 = latest page
 }
 
 // ListMessagesResponse is the result of listing a session's messages.
+// Total is the session's stored message count; HasMore reports whether
+// messages older than the returned page exist (its start position > 0).
 type ListMessagesResponse struct {
 	Meta     map[string]any `json:"_meta,omitempty"`
 	Messages []Message      `json:"messages"`
+	Total    int            `json:"total"`
+	HasMore  bool           `json:"hasMore"`
 }
 
 // ── ListConfigOptions ──
@@ -421,6 +437,7 @@ type Message struct {
 	ReasoningContent string        `json:"reasoningContent,omitempty"`
 	ToolCalls        []ToolCallRef `json:"toolCalls,omitempty"`
 	ToolCallID       string        `json:"toolCallId,omitempty"` // tool results
+	Index            int           `json:"index"`                // session-relative position, 0-based oldest-first
 	CreatedAt        string        `json:"createdAt,omitempty"`  // ISO 8601
 }
 
